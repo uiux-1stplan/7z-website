@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-12T08:05:57.740Z",
+  "media": {
+    "architectureVideos": [
+      {
+        "id": "arch-vertical-interior-film",
+        "src": "media/arch_projects/16-9V/1.mp4",
+        "title": "Vertical Interior Film",
+        "layout": "is-tall",
+        "poster": ""
+      },
+      {
+        "id": "arch-architectural-atmosphere",
+        "src": "media/arch_projects/9-16H/1.mp4",
+        "title": "Architectural Atmosphere",
+        "layout": "is-wide",
+        "poster": ""
+      },
+      {
+        "id": "arch-residence-walkthrough",
+        "src": "media/arch_projects/9-16H/2.mp4",
+        "title": "Residence Walkthrough",
+        "layout": "is-wide",
+        "poster": ""
+      },
+      {
+        "id": "arch-spatial-transformation",
+        "src": "media/arch_projects/9-16H/3.mp4",
+        "title": "Spatial Transformation",
+        "layout": "is-wide",
+        "poster": ""
+      },
+      {
+        "id": "arch-luxury-detail-study",
+        "src": "media/arch_projects/9-16H/4.mp4",
+        "title": "Luxury Detail Study",
+        "layout": "is-wide",
+        "poster": ""
+      }
+    ],
+    "mediaProjects": [
+      {
+        "id": "media-campaign-film-01",
+        "src": "media/media_projects/Media (1).mp4",
+        "title": "Campaign Film 01",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-02",
+        "src": "media/media_projects/Media (2).mp4",
+        "title": "Campaign Film 02",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-03",
+        "src": "media/media_projects/Media (3).mp4",
+        "title": "Campaign Film 03",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-04",
+        "src": "media/media_projects/Media (4).mp4",
+        "title": "Campaign Film 04",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-05",
+        "src": "media/media_projects/Media (5).mp4",
+        "title": "Campaign Film 05",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-06",
+        "src": "media/media_projects/Media (6).mp4",
+        "title": "Campaign Film 06",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-07",
+        "src": "media/media_projects/Media (7).mp4",
+        "title": "Campaign Film 07",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-08",
+        "src": "media/media_projects/Media (8).mp4",
+        "title": "Campaign Film 08",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-09",
+        "src": "media/media_projects/Media (9).mp4",
+        "title": "Campaign Film 09",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-10",
+        "src": "media/media_projects/Media (10).mp4",
+        "title": "Campaign Film 10",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-11",
+        "src": "media/media_projects/Media (11).mp4",
+        "title": "Campaign Film 11",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "media-campaign-film-12",
+        "src": "media/media_projects/Media (12).mp4",
+        "title": "Campaign Film 12",
+        "layout": "",
+        "poster": ""
+      }
+    ],
+    "presentations": [
+      {
+        "id": "presentation-01",
+        "src": "media/prop/1.mp4",
+        "title": "Interactive Presentation 01",
+        "layout": "",
+        "poster": ""
+      },
+      {
+        "id": "presentation-02",
+        "src": "media/prop/2.mp4",
+        "title": "Interactive Presentation 02",
+        "layout": "",
+        "poster": ""
+      }
+    ]
+  }
+}

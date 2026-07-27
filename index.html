@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="7Z Magic is an immersive portfolio experience for AI, architecture, web experiences, branding, media production and digital innovation."
+    />
+    <title>7Z Magic | Interactive Digital Experience</title>
+    <link rel="preload" href="media/main_logo/7ZLogo.jpg" as="image" />
+    <link rel="preload" href="media/intro/hero.mp4" as="video" type="video/mp4" media="(max-width: 899px)" />
+    <link rel="preload" href="media/intro/1.mp4" as="video" type="video/mp4" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260715-web-dual2" />
+  </head>
+  <body data-static-background="true">
+    <canvas id="atmosphere" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="loader" id="loader" aria-live="polite">
+      <video class="loader__video-bg" muted playsinline preload="auto" data-src="media/intro/hero.mp4" aria-hidden="true"></video>
+      <video class="loader__video" playsinline preload="auto" data-src="media/intro/hero.mp4"></video>
+      <div class="loader__veil"></div>
+      <div class="loader__phrases" aria-hidden="true"></div>
+      <div class="loader__content">
+        <img class="loader__logo" src="media/main_logo/7ZLogo.jpg" alt="7Z Magic" />
+        <div class="loader__bar" aria-hidden="true"><span id="loaderProgress"></span></div>
+        <p class="loader__count"><span id="loaderCount">0</span>%</p>
+        <button class="loader__sound" type="button" hidden>Start with sound</button>
+      </div>
+    </div>
+
+    <header class="site-header" aria-label="Primary">
+      <a class="brand magnetic" href="#intro" aria-label="7Z Magic home">
+        <img src="media/main_logo/7ZLogo.jpg" alt="" />
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#intro">Home</a>
+        <div class="services-menu">
+          <button class="services-trigger" type="button" aria-expanded="false" aria-controls="servicesPanel">Services</button>
+          <div class="services-panel" id="servicesPanel" aria-label="Service sections" aria-hidden="true">
+            <a href="#architecture">Architectural Design</a>
+            <a href="#media">Marketing Media</a>
+            <a href="#websites">Website Design</a>
+            <a href="#identity">Brand Identity</a>
+            <a href="#advertising-materials">Advertising Materials</a>
+            <a href="#product-design">Product Design</a>
+            <a href="#advertising-7sanz">Advertising on 7SANZ</a>
+            <a href="#presentations">Interactive Presentations</a>
+            <a href="#film">Film Production</a>
+            <a href="#ai-masterclass">AI Masterclass</a>
+          </div>
+        </div>
+        <a href="#partners">Partners</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header-socials" aria-label="Social links">
+        <a class="magnetic social-icon" href="https://www.instagram.com/7sanz.ai/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="5" width="14" height="14" rx="4"></rect>
+            <circle cx="12" cy="12" r="3.2"></circle>
+            <circle cx="16.5" cy="7.5" r="0.9"></circle>
+          </svg>
+        </a>
+        <a class="magnetic social-icon social-icon--behance" href="https://www.behance.net/hassanrayyan3" target="_blank" rel="noopener" aria-label="Behance">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5.2 8.1h4.2c1.8 0 3 .9 3 2.3 0 1-.5 1.7-1.4 2 1.1.3 1.8 1.1 1.8 2.4 0 1.8-1.4 3-3.5 3H5.2V8.1Z"></path>
+            <path d="M7.3 10.1h1.9c.7 0 1.1.3 1.1.9s-.4.9-1.1.9H7.3v-1.8Z"></path>
+            <path d="M7.3 13.6h2.1c.8 0 1.2.4 1.2 1s-.4 1-1.2 1H7.3v-2Z"></path>
+            <path d="M14.5 11h4.4"></path>
+            <path d="M14.5 14.6c.2-1.8 1.2-3 3.1-3 2.1 0 3.1 1.5 3 3.7h-4.1c.2.8.7 1.2 1.6 1.2.7 0 1.1-.2 1.5-.7"></path>
+          </svg>
+        </a>
+        <a class="magnetic social-icon" href="https://web.facebook.com/7sanzi/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
+          </svg>
+        </a>
+        <a class="magnetic social-icon social-icon--whatsapp" href="https://wa.me/962797020089" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.1 11.7a7.9 7.9 0 0 1-11.7 6.9L4.2 20l1.4-4.1a7.9 7.9 0 1 1 14.5-4.2Z"></path>
+            <path d="M9.2 8.2c-.3.2-.7.8-.7 1.5 0 1.8 2.1 4.7 4.8 5.7.8.3 1.5.3 2 .1.5-.2 1-1 1.1-1.4.1-.4 0-.6-.2-.7l-1.8-.9c-.2-.1-.4-.1-.6.2l-.5.7c-.2.2-.4.3-.7.1-1.1-.5-1.9-1.2-2.5-2.3-.1-.2-.1-.4.1-.6l.5-.6c.2-.2.2-.4.1-.6l-.8-1.8c-.1-.3-.4-.3-.6-.2Z"></path>
+          </svg>
+        </a>
+        <a class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.3 9.5v8.2"></path>
+            <path d="M6.3 6.4v.1"></path>
+            <path d="M10.3 17.7v-8.2"></path>
+            <path d="M10.3 12.5c.6-1.8 1.8-3.1 3.8-3.1 2.3 0 3.6 1.5 3.6 4.2v4.1"></path>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="intro" id="intro">
+        <video id="introVideo" muted playsinline preload="auto" src="media/intro/1.mp4"></video>
+        <div class="intro__shade"></div>
+        <div class="intro__content">
+          <img class="hero-logo reveal" src="media/main_logo/7ZLogo.jpg" alt="7Z Magic" />
+          <p class="eyebrow reveal">Interactive Digital Experience</p>
+          <h1 class="hero-title reveal" data-hero-title>Creating Digital Experiences Beyond Imagination</h1>
+          <p class="hero-copy reveal">
+            AI, architecture, web experiences, branding, media production and design shaped into cinematic
+            systems for ambitious brands.
+          </p>
+          <a href="#universe" class="button magnetic reveal">
+            <span>Explore Our Universe</span>
+            <i aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="intro__scroll" aria-hidden="true">
+          <span></span>
+        </div>
+      </section>
+
+      <section class="partners partners--bubbles" id="partners" aria-label="Selected clients and partners">
+        <div class="section-kicker">Trusted Partners</div>
+        <div class="marquee-stack" id="logoMarquee"></div>
+      </section>
+
+      <section class="manifest" id="universe">
+        <div class="manifest__media">
+          <video muted playsinline preload="metadata" src="media/arch_projects/9-16H/1.mp4"></video>
+          <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play architecture universe film">
+            <span>Play</span>
+          </button>
+        </div>
+        <div class="manifest__copy">
+          <p class="eyebrow">7Z Magic Universe</p>
+          <h2>Where spatial design, artificial intelligence and moving image become one premium system.</h2>
+          <p>
+            We build experiences with the precision of an architectural studio and the velocity of a modern AI
+            lab. Every project is designed to feel cinematic, memorable and commercially sharp.
+          </p>
+        </div>
+      </section>
+
+      <section class="service-loop" aria-label="Digital services loop">
+        <div class="service-loop__inner">
+          <div class="service-loop__intro">
+            <p class="eyebrow">Digital Service Layer</p>
+            <h2>Every discipline moves as one connected production system.</h2>
+          </div>
+          <div class="service-orbit" aria-hidden="true">
+            <article class="service-card" style="--i: 0"><span>AI</span><strong>Visual Systems</strong></article>
+            <article class="service-card" style="--i: 1"><span>3D</span><strong>Spatial Stories</strong></article>
+            <article class="service-card" style="--i: 2"><span>UX</span><strong>Web Experiences</strong></article>
+            <article class="service-card" style="--i: 3"><span>FM</span><strong>Campaign Films</strong></article>
+            <article class="service-card" style="--i: 4"><span>ID</span><strong>Brand Identity</strong></article>
+            <article class="service-card" style="--i: 5"><span>PD</span><strong>Product Launches</strong></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter chapter--architecture" id="architecture">
+        <div class="chapter__intro">
+          <p class="chapter__number">01</p>
+          <div>
+            <p class="eyebrow">Architectural Design</p>
+            <h2>Immersive interiors, intelligent transformations and cinematic spatial storytelling.</h2>
+          </div>
+          <p>
+            7Z Magic transforms raw spaces into high-value environments through refined visual direction,
+            realistic presentation and detail-led architectural media.
+          </p>
+        </div>
+
+        <div class="stats-strip" aria-label="Architecture capabilities">
+          <div><strong data-count="3">0</strong><span>Transformations</span></div>
+          <div><strong data-count="4">0</strong><span>Cinematic films</span></div>
+          <div><strong data-count="360">0</strong><span>Degree direction</span></div>
+        </div>
+
+        <div class="comparison-stage" id="comparisonStage"></div>
+
+        <div class="immersive-gallery">
+          <div class="gallery-copy">
+            <p class="eyebrow">Spatial Films</p>
+            <h3>Architecture presented with motion, scale and atmosphere.</h3>
+          </div>
+          <div class="gallery-grid" id="architectureVideos"></div>
+        </div>
+      </section>
+
+      <section class="chapter chapter--horizontal" id="media">
+        <div class="pin-copy">
+          <p class="chapter__number">02</p>
+          <p class="eyebrow">Marketing Media Production</p>
+          <h2>Campaign films engineered for attention, appetite and shareability.</h2>
+          <p>
+            From product-led reels to brand narratives, our media production turns digital moments into polished
+            commercial assets built for modern platforms.
+          </p>
+        </div>
+        <div class="media-rail" id="mediaRail"></div>
+      </section>
+
+      <section class="chapter chapter--web" id="websites">
+        <div class="web-stage">
+          <div class="web-copy">
+            <p class="chapter__number">03</p>
+            <p class="eyebrow">Website Design</p>
+            <h2>Digital products with editorial beauty, clear structure and memorable motion.</h2>
+            <p>
+              We design web experiences that give companies a stronger first impression, clearer storytelling and
+              interfaces that feel alive without losing discipline.
+            </p>
+          </div>
+          <div class="web-showcase" aria-label="Website desktop and mobile previews">
+            <article class="browser-frame web-device web-device--desktop">
+              <div class="browser-frame__chrome">
+                <span></span><span></span><span></span>
+              </div>
+              <video muted playsinline preload="metadata" src="media/website_project/1.mp4"></video>
+              <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play desktop website showcase">
+                <span>Play</span>
+              </button>
+              <span class="web-device__label">Desktop experience</span>
+            </article>
+            <article class="phone-frame web-device web-device--mobile">
+              <div class="phone-frame__speaker" aria-hidden="true"></div>
+              <video muted playsinline preload="metadata" src="media/website_project/2.mp4"></video>
+              <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play mobile website showcase">
+                <span>Play</span>
+              </button>
+              <span class="web-device__label">Mobile version</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter chapter--reach" id="advertising-7sanz">
+        <div class="reach-copy">
+          <p class="chapter__number">07</p>
+          <p class="eyebrow">Advertising on 7SANZ</p>
+          <h2>Premium placements with guaranteed minimum reach.</h2>
+          <p>
+            Put your launch inside a high-visibility media environment built for brands that need scale, clarity
+            and a stronger audience signal.
+          </p>
+        </div>
+        <div class="reach-metric">
+          <span>Guaranteed minimum reach</span>
+          <strong><span data-count="200000">0</span>+</strong>
+          <em>Views</em>
+        </div>
+      </section>
+
+      <section class="chapter chapter--presentations" id="presentations">
+        <div class="chapter__intro compact">
+          <p class="chapter__number">08</p>
+          <div>
+            <p class="eyebrow">Interactive Presentations</p>
+            <h2>Presentation systems with cinematic pacing, clarity and premium movement.</h2>
+          </div>
+        </div>
+        <div class="presentation-stack" id="presentationStack"></div>
+      </section>
+
+      <section class="chapter chapter--film" id="film">
+        <div class="film-copy">
+          <p class="chapter__number">09</p>
+          <p class="eyebrow">Film Production</p>
+          <h2>Commercial film language for brands that need atmosphere, story and authority.</h2>
+        </div>
+        <div class="film-player magnetic">
+          <video muted playsinline preload="metadata" src="media/film/1.mp4"></video>
+          <button class="film-play magnetic" type="button" data-inline-video aria-label="Play film production showcase">Play Film</button>
+        </div>
+      </section>
+
+      <section class="chapter chapter--ai" id="ai-masterclass">
+        <div class="ai-heading">
+          <p class="chapter__number">10</p>
+          <p class="eyebrow">AI Masterclass</p>
+          <h2>A premium learning experience for modern creative and business teams.</h2>
+          <p>
+            Learn how to use AI as a practical operating layer for content, automation, visual production and
+            modern business execution.
+          </p>
+        </div>
+        <div class="timeline" id="aiTimeline">
+          <article><span>01</span><h3>AI Workflow</h3><p>Build repeatable systems that turn ideas into organized execution.</p></article>
+          <article><span>02</span><h3>Prompt Engineering</h3><p>Direct models with clarity, structure and reliable creative intent.</p></article>
+          <article><span>03</span><h3>Content Creation</h3><p>Produce scripts, campaigns, visuals and publishing systems with speed.</p></article>
+          <article><span>04</span><h3>Automation</h3><p>Connect routine tasks into elegant workflows that save operational time.</p></article>
+          <article><span>05</span><h3>Creative AI</h3><p>Use AI as a co-director for ideation, style exploration and production.</p></article>
+          <article><span>06</span><h3>Visual AI</h3><p>Create image and video directions that support premium brand outcomes.</p></article>
+          <article><span>07</span><h3>Business Applications</h3><p>Apply AI to marketing, sales, service and strategic decision-making.</p></article>
+        </div>
+        <a href="#top" class="button button--wide magnetic"><span>Begin the Conversation</span><i aria-hidden="true"></i></a>
+      </section>
+
+      <section class="chapter chapter--studio-suite" id="identity">
+        <div class="studio-suite__intro">
+          <p class="chapter__number">11</p>
+          <p class="eyebrow">Brand, Product & Advertising Systems</p>
+          <h2>Identity, product design and advertising materials inside one final studio system.</h2>
+          <p>
+            This section combines visual identity, product direction and campaign-ready materials so the brand
+            feels consistent across launch, social, presentation and customer touchpoints.
+          </p>
+          <div class="studio-signals" aria-label="Studio capabilities">
+            <span><i aria-hidden="true">ID</i><b>Identity</b></span>
+            <span><i aria-hidden="true">PD</i><b>Product</b></span>
+            <span><i aria-hidden="true">AD</i><b>Campaign</b></span>
+          </div>
+          <a
+            class="behance-cta magnetic"
+            href="https://www.behance.net/gallery/240796369/The-Results-Creativity-That-Spoke-for-Itself/modules/1387513767"
+            target="_blank"
+            rel="noopener"
+          >
+            <span>View Behance Project</span>
+            <i aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="studio-suite__grid">
+          <article class="studio-card studio-card--identity">
+            <img class="studio-card__image" src="media/id_design/1.png" alt="Brand identity showcase" loading="lazy" decoding="async" />
+            <span>Identity</span>
+            <h3>Brand Identity</h3>
+            <p>Logo systems, visual language, launch rules and clear brand behavior.</p>
+          </article>
+          <article class="studio-card studio-card--materials" id="advertising-materials">
+            <img class="studio-card__image" src="media/id_design/2.png" alt="Advertising materials showcase" loading="lazy" decoding="async" />
+            <span>Campaign</span>
+            <h3>Advertising Materials</h3>
+            <p>Social assets, outdoor formats, launch visuals and campaign-ready compositions.</p>
+          </article>
+          <article class="studio-card studio-card--product" id="product-design">
+            <img class="studio-card__image" src="media/id_design/3.png" alt="Product design showcase" loading="lazy" decoding="async" />
+            <span>Product</span>
+            <h3>Product Design</h3>
+            <p>Interfaces, product concepts, premium presentation flows and launch systems.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="contact">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <img src="media/main_logo/7ZLogo.jpg" alt="7Z Magic" />
+          <div>
+            <p class="section-kicker">7Z Magic</p>
+            <h2>Premium creative systems for spaces, screens and modern brands.</h2>
+            <p>
+              Architecture, AI, media production, websites and brand experience shaped with cinematic precision.
+            </p>
+          </div>
+        </div>
+        <nav class="footer__links" aria-label="Footer services">
+          <a href="#architecture">Architecture</a>
+          <a href="#media">Media Production</a>
+          <a href="#websites">Website Design</a>
+          <a href="#identity">Brand Identity</a>
+          <a href="#film">Film Production</a>
+          <a href="#ai-masterclass">AI Masterclass</a>
+          <a href="#partners">Partners</a>
+        </nav>
+        <div class="footer__contact">
+          <p>Ready to start a polished digital experience?</p>
+          <a class="footer__cta magnetic" href="#intro">Start a Project</a>
+          <div class="socials" aria-label="Social links">
+            <a class="magnetic social-icon" href="https://www.instagram.com/7sanz.ai/" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="5" width="14" height="14" rx="4"></rect>
+                <circle cx="12" cy="12" r="3.2"></circle>
+                <circle cx="16.5" cy="7.5" r="0.9"></circle>
+              </svg>
+            </a>
+            <a class="magnetic social-icon social-icon--behance" href="https://www.behance.net/hassanrayyan3" target="_blank" rel="noopener" aria-label="Behance">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5.2 8.1h4.2c1.8 0 3 .9 3 2.3 0 1-.5 1.7-1.4 2 1.1.3 1.8 1.1 1.8 2.4 0 1.8-1.4 3-3.5 3H5.2V8.1Z"></path>
+                <path d="M7.3 10.1h1.9c.7 0 1.1.3 1.1.9s-.4.9-1.1.9H7.3v-1.8Z"></path>
+                <path d="M7.3 13.6h2.1c.8 0 1.2.4 1.2 1s-.4 1-1.2 1H7.3v-2Z"></path>
+                <path d="M14.5 11h4.4"></path>
+                <path d="M14.5 14.6c.2-1.8 1.2-3 3.1-3 2.1 0 3.1 1.5 3 3.7h-4.1c.2.8.7 1.2 1.6 1.2.7 0 1.1-.2 1.5-.7"></path>
+              </svg>
+            </a>
+            <a class="magnetic social-icon" href="https://web.facebook.com/7sanzi/" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
+              </svg>
+            </a>
+            <a class="magnetic social-icon social-icon--whatsapp" href="https://wa.me/962797020089" target="_blank" rel="noopener" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.1 11.7a7.9 7.9 0 0 1-11.7 6.9L4.2 20l1.4-4.1a7.9 7.9 0 1 1 14.5-4.2Z"></path>
+                <path d="M9.2 8.2c-.3.2-.7.8-.7 1.5 0 1.8 2.1 4.7 4.8 5.7.8.3 1.5.3 2 .1.5-.2 1-1 1.1-1.4.1-.4 0-.6-.2-.7l-1.8-.9c-.2-.1-.4-.1-.6.2l-.5.7c-.2.2-.4.3-.7.1-1.1-.5-1.9-1.2-2.5-2.3-.1-.2-.1-.4.1-.6l.5-.6c.2-.2.2-.4.1-.6l-.8-1.8c-.1-.3-.4-.3-.6-.2Z"></path>
+              </svg>
+            </a>
+            <a class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6.3 9.5v8.2"></path>
+                <path d="M6.3 6.4v.1"></path>
+                <path d="M10.3 17.7v-8.2"></path>
+                <path d="M10.3 12.5c.6-1.8 1.8-3.1 3.8-3.1 2.3 0 3.6 1.5 3.6 4.2v4.1"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <small>Copyright &copy; 2026 7Z Magic. All rights reserved.</small>
+        <a href="#intro">Home</a>
+      </div>
+    </footer>
+
+    <script src="assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
+    <script src="assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
+    <script src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
+    <script src="assets/js/app.js?v=20260715-web-dual2"></script>
+  </body>
+</html>

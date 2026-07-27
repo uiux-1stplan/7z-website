@@ -1,0 +1,229 @@
+{
+  "totalVisits": 122,
+  "countries": {
+    "US": 122
+  },
+  "days": {
+    "2026-07-12": 55,
+    "2026-07-13": 1,
+    "2026-07-14": 2,
+    "2026-07-15": 55,
+    "2026-07-16": 5,
+    "2026-07-17": 1,
+    "2026-07-18": 2,
+    "2026-07-27": 1
+  },
+  "sectionViews": {
+    "intro": 122,
+    "universe": 42,
+    "media": 43,
+    "websites": 42,
+    "identity": 37,
+    "advertising-materials": 16,
+    "product-design": 16,
+    "advertising-7sanz": 33,
+    "presentations": 32,
+    "film": 40,
+    "ai-masterclass": 37,
+    "partners": 42,
+    "contact": 32,
+    "architecture": 6
+  },
+  "referrers": {
+    "http://localhost:4173/?v=adminwork": 1,
+    "http://localhost:4173/?v=checkup": 1,
+    "http://localhost:4173/?v=checkup2": 1,
+    "http://localhost:4173/?v=finalcheck": 1,
+    "http://localhost:4173/?v=mobilefinal": 1,
+    "http://localhost:4173/?v=mobilefinal2": 1,
+    "http://localhost:4173/": 114,
+    "http://localhost:4173/?v=transitions": 1,
+    "http://localhost:4173/?v=transitions2": 1
+  },
+  "devices": {
+    "Desktop": 111,
+    "Mobile": 11
+  },
+  "lastVisits": [
+    {
+      "at": "2026-07-27T08:06:12.409Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-18T15:22:26.140Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-18T15:22:16.866Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-17T12:41:49.083Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-16T07:22:03.239Z",
+      "country": "US",
+      "device": "Mobile",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-16T07:20:46.220Z",
+      "country": "US",
+      "device": "Mobile",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-16T07:19:04.181Z",
+      "country": "US",
+      "device": "Mobile",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-16T07:14:26.950Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-16T06:42:23.992Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:50:59.553Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:33:30.524Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:26:40.459Z",
+      "country": "US",
+      "device": "Mobile",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:24:39.787Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:21:40.703Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:16:09.097Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:06:27.881Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:05:59.764Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T13:02:37.851Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:45:36.518Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:45:22.860Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:37:31.494Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:37:25.362Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:25:29.696Z",
+      "country": "US",
+      "device": "Mobile",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:23:59.507Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:23:52.396Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:23:44.590Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:23:33.720Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:23:25.972Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:20:57.249Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    },
+    {
+      "at": "2026-07-15T12:20:54.876Z",
+      "country": "US",
+      "device": "Desktop",
+      "path": "/"
+    }
+  ]
+}
