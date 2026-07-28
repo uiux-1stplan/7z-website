@@ -1,20 +1,34 @@
+video {
+  background-color: #050609;
+}
+
+video[poster] {
+  background-size: cover;
+  background-position: center;
+}
+
 video[data-src]:not([src]) {
   background:
     radial-gradient(
       circle at 50% 42%,
-      rgba(116, 230, 255, 0.11),
-      transparent 42%
+      rgba(255, 255, 255, 0.06),
+      transparent 38%
     ),
-    linear-gradient(
-      145deg,
-      #07090e,
-      #020306
-    );
+    linear-gradient(145deg, #090a0d, #020204);
 }
 
 video[data-src]:not([src]) + [data-inline-video] {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+}
+
+.media-tile,
+.manifest__media,
+.browser-frame,
+.phone-frame,
+.film-player {
+  contain: layout paint style;
 }
 
 @media (max-width: 899px) {
@@ -29,16 +43,6 @@ video[data-src]:not([src]) + [data-inline-video] {
     display: none !important;
   }
 
-  .loader {
-    background:
-      radial-gradient(
-        circle at 50% 45%,
-        rgba(116, 230, 255, 0.08),
-        transparent 35%
-      ),
-      #030407 !important;
-  }
-
   .site-header,
   .services-panel {
     -webkit-backdrop-filter: none !important;
@@ -51,12 +55,6 @@ video[data-src]:not([src]) + [data-inline-video] {
 
   .intro video {
     filter: none !important;
-  }
-
-  .grain,
-  .loader__phrase,
-  .service-card {
-    animation: none !important;
   }
 
   .magnetic {
@@ -76,9 +74,9 @@ video[data-src]:not([src]) + [data-inline-video] {
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
 }

@@ -7,3 +7,5 @@ dist/
 .env.production
 .vercel/
 *.log
+_video_backup/
+_video_work/

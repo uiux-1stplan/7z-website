@@ -16,14 +16,13 @@
     <meta name="theme-color" content="#111111" />
     <link rel="preload" href="media/main_logo/7ZLogo.jpg" as="image" />
     <link rel="stylesheet" href="assets/css/styles.css?v=20260715-web-dual2" />
-    <link rel="stylesheet" href="assets/css/performance.css?v=20260728-perf1" />
-  </head>
+    <link rel="stylesheet" href="assets/css/performance.css?v=20260728-video3" /></head>
   <body data-static-background="true">
     <canvas id="atmosphere" aria-hidden="true"></canvas>
     <div class="grain" aria-hidden="true"></div>
     <div class="loader" id="loader" aria-live="polite">
-      <video class="loader__video-bg" muted playsinline preload="none" data-src="media/intro/hero.mp4" aria-hidden="true"></video>
-      <video class="loader__video" playsinline preload="none" data-src="media/intro/hero.mp4"></video>
+      <video class="loader__video-bg" muted playsinline preload="none" data-src="media/intro/hero.mp4" aria-hidden="true" poster="media/posters/intro/hero.jpg"></video>
+      <video class="loader__video" playsinline preload="none" data-src="media/intro/hero.mp4" poster="media/posters/intro/hero.jpg"></video>
       <div class="loader__veil"></div>
       <div class="loader__phrases" aria-hidden="true"></div>
       <div class="loader__content">
@@ -99,7 +98,7 @@
 
     <main id="top">
       <section class="intro" id="intro">
-        <video id="introVideo" muted playsinline preload="metadata" src="media/intro/1.mp4"></video>
+        <video id="introVideo" muted playsinline preload="metadata" src="media/intro/1.mp4" poster="media/posters/intro/1.jpg"></video>
         <div class="intro__shade"></div>
         <div class="intro__content">
           <img class="hero-logo reveal" src="media/main_logo/7ZLogo.jpg" alt="7Z Magic" />
@@ -126,7 +125,7 @@
 
       <section class="manifest" id="universe">
         <div class="manifest__media">
-          <video muted playsinline preload="metadata" src="media/arch_projects/9-16H/1.mp4"></video>
+          <video muted playsinline preload="none" data-src="media/arch_projects/9-16H/1.mp4" poster="media/posters/arch_projects/9-16H/1.jpg"></video>
           <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play architecture universe film">
             <span>Play</span>
           </button>
@@ -217,7 +216,7 @@
               <div class="browser-frame__chrome">
                 <span></span><span></span><span></span>
               </div>
-              <video muted playsinline preload="metadata" src="media/website_project/1.mp4"></video>
+              <video muted playsinline preload="none" data-src="media/website_project/1.mp4" poster="media/posters/website_project/1.jpg"></video>
               <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play desktop website showcase">
                 <span>Play</span>
               </button>
@@ -225,7 +224,7 @@
             </article>
             <article class="phone-frame web-device web-device--mobile">
               <div class="phone-frame__speaker" aria-hidden="true"></div>
-              <video muted playsinline preload="metadata" src="media/website_project/2.mp4"></video>
+              <video muted playsinline preload="none" data-src="media/website_project/2.mp4" poster="media/posters/website_project/2.jpg"></video>
               <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play mobile website showcase">
                 <span>Play</span>
               </button>
@@ -270,7 +269,7 @@
           <h2>Commercial film language for brands that need atmosphere, story and authority.</h2>
         </div>
         <div class="film-player magnetic">
-          <video muted playsinline preload="metadata" src="media/film/1.mp4"></video>
+          <video muted playsinline preload="none" data-src="media/film/1.mp4" poster="media/posters/film/1.jpg"></video>
           <button class="film-play magnetic" type="button" data-inline-video aria-label="Play film production showcase">Play Film</button>
         </div>
       </section>
@@ -416,7 +415,7 @@
     <script src="assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
     <script src="assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
     <script src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
-    <script src="assets/js/performance.js?v=20260728-perf1"></script>
-    <script src="assets/js/app.js?v=20260715-web-dual2"></script>
+    <script src="assets/js/performance.js?v=20260728-video3"></script>
+<script src="assets/js/app.js?v=20260715-web-dual2"></script>
   </body>
 </html>

@@ -1,119 +1,69 @@
 (() => {
   "use strict";
 
-  const nativeMatchMedia = window.matchMedia.bind(window);
-  const coarsePointer = nativeMatchMedia("(hover: none), (pointer: coarse)").matches;
-  const narrowViewport = nativeMatchMedia("(max-width: 899px)").matches;
+  const all = (selector, scope = document) =>
+    Array.from(scope.querySelectorAll(selector));
+
+  const nativeSrc = Object.getOwnPropertyDescriptor(
+    HTMLMediaElement.prototype,
+    "src"
+  );
+
   const connection =
     navigator.connection ||
     navigator.mozConnection ||
     navigator.webkitConnection;
 
   const constrainedNetwork = Boolean(
-    connection?.saveData ||
-    /(^|-)2g$/.test(connection?.effectiveType || "")
+    connection &&
+      (connection.saveData ||
+        /(^|-)2g$/.test(connection.effectiveType || ""))
   );
 
-  const compactMode =
-    coarsePointer ||
-    narrowViewport ||
-    constrainedNetwork;
+  const registered = new WeakSet();
 
-  /*
-   * Force the existing short desktop loader path on mobile.
-   * This prevents downloading the same loader video twice.
-   */
-  window.matchMedia = (query) => {
-    const result = nativeMatchMedia(query);
-
-    if (
-      query.replace(/\s+/g, "") !== "(min-width:900px)" ||
-      result.matches
-    ) {
-      return result;
-    }
-
-    return new Proxy(result, {
-      get(target, property) {
-        if (property === "matches") return true;
-
-        const value = target[property];
-
-        return typeof value === "function"
-          ? value.bind(target)
-          : value;
-      }
-    });
-  };
-
-  window.setTimeout(() => {
-    window.matchMedia = nativeMatchMedia;
-  }, 30000);
-
-  /*
-   * Mobile uses native scrolling and static reveals.
-   * Desktop keeps the complete cinematic experience.
-   */
-  if (compactMode) {
-    window.Lenis = null;
-    window.gsap = null;
-    window.ScrollTrigger = null;
-
-    document.documentElement.classList.add(
-      "performance-compact"
-    );
-  }
-
-  const nativeSrcDescriptor =
-    Object.getOwnPropertyDescriptor(
-      HTMLMediaElement.prototype,
-      "src"
-    );
-
-  const registeredVideos = new WeakSet();
-
-  const isCriticalVideo = (video) =>
+  const isCritical = (video) =>
     video.id === "introVideo" ||
     video.classList.contains("loader__video") ||
     video.classList.contains("loader__video-bg");
 
-  const nativeSetSrc = (video, value) => {
-    if (nativeSrcDescriptor?.set) {
-      nativeSrcDescriptor.set.call(video, value);
-      return;
-    }
+  const posterFor = (source) => {
+    const clean = String(source || "")
+      .split(/[?#]/)[0]
+      .replace(/^\/+/, "");
 
-    video.setAttribute("src", value);
+    if (!clean.startsWith("media/")) return "";
+
+    return clean
+      .replace(/^media\//, "media/posters/")
+      .replace(/\.[^.]+$/, ".jpg");
   };
 
-  const activateVideo = (
-    video,
-    userInitiated = false
-  ) => {
-    if (
-      !video ||
-      isCriticalVideo(video) ||
-      video.getAttribute("src")
-    ) {
+  const setNativeSource = (video, source) => {
+    if (nativeSrc && nativeSrc.set) {
+      nativeSrc.set.call(video, source);
       return;
     }
 
-    const source = video.dataset.src;
+    video.setAttribute("src", source);
+  };
 
+  const ensurePoster = (video, source) => {
+    if (video.poster) return;
+    const poster = posterFor(source);
+    if (poster) video.poster = poster;
+  };
+
+  const activate = (video, userInitiated = false) => {
+    if (!video || isCritical(video) || video.getAttribute("src")) return;
+
+    const source = video.dataset.src;
     if (!source) return;
 
-    if (userInitiated) {
-      video.dataset.userActivated = "true";
-    }
-
-    video.preload = userInitiated
-      ? "auto"
-      : "metadata";
-
-    nativeSetSrc(video, source);
+    ensurePoster(video, source);
+    video.preload = userInitiated ? "auto" : "metadata";
+    setNativeSource(video, source);
     video.load();
-
-    video.classList.add("is-media-ready");
   };
 
   const observer =
@@ -122,44 +72,33 @@
           (entries) => {
             entries.forEach((entry) => {
               if (!entry.isIntersecting) return;
-
-              const video = entry.target;
-
-              /*
-               * On Data Saver and 2G, videos download
-               * only after the visitor presses Play.
-               */
-              if (!constrainedNetwork) {
-                activateVideo(video, false);
-              }
-
-              observer.unobserve(video);
+              if (!constrainedNetwork) activate(entry.target, false);
+              observer.unobserve(entry.target);
             });
           },
-          {
-            rootMargin: "320px 0px",
-            threshold: 0.01
-          }
+          { rootMargin: "420px 0px", threshold: 0.01 }
         )
       : null;
 
-  const registerVideo = (video) => {
-    if (
-      !(video instanceof HTMLVideoElement) ||
-      registeredVideos.has(video) ||
-      isCriticalVideo(video)
-    ) {
-      return;
-    }
+  const register = (video) => {
+    if (!(video instanceof HTMLVideoElement) || registered.has(video)) return;
 
-    registeredVideos.add(video);
+    registered.add(video);
 
-    const currentSource =
+    const source =
+      video.dataset.src ||
       video.getAttribute("src") ||
       video.currentSrc;
 
-    if (currentSource) {
-      video.dataset.src = currentSource;
+    ensurePoster(video, source);
+
+    if (isCritical(video)) {
+      video.preload = video.id === "introVideo" ? "metadata" : "none";
+      return;
+    }
+
+    if (video.getAttribute("src")) {
+      video.dataset.src = video.getAttribute("src");
       video.removeAttribute("src");
       video.preload = "none";
       video.load();
@@ -167,138 +106,88 @@
       video.preload = "none";
     }
 
-    observer?.observe(video);
+    if (observer) observer.observe(video);
   };
 
-  /*
-   * Dynamic gallery cards assign video.src before
-   * insertion. Capture that assignment and defer it.
-   */
   if (
-    nativeSrcDescriptor?.configurable &&
-    nativeSrcDescriptor.set &&
-    nativeSrcDescriptor.get
+    nativeSrc &&
+    nativeSrc.configurable &&
+    nativeSrc.get &&
+    nativeSrc.set
   ) {
-    Object.defineProperty(
-      HTMLMediaElement.prototype,
-      "src",
-      {
-        configurable: true,
-        enumerable: nativeSrcDescriptor.enumerable,
+    Object.defineProperty(HTMLMediaElement.prototype, "src", {
+      configurable: true,
+      enumerable: nativeSrc.enumerable,
 
-        get() {
-          return nativeSrcDescriptor.get.call(this);
-        },
+      get() {
+        return nativeSrc.get.call(this);
+      },
 
-        set(value) {
-          if (
-            this instanceof HTMLVideoElement &&
-            !this.isConnected &&
-            !isCriticalVideo(this) &&
-            typeof value === "string" &&
-            value
-          ) {
-            this.dataset.src = value;
-            return;
-          }
-
-          nativeSrcDescriptor.set.call(
-            this,
-            value
-          );
+      set(value) {
+        if (
+          this instanceof HTMLVideoElement &&
+          !isCritical(this) &&
+          typeof value === "string" &&
+          /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(value)
+        ) {
+          this.dataset.src = value;
+          this.preload = "none";
+          ensurePoster(this, value);
+          if (this.isConnected) register(this);
+          return;
         }
+
+        nativeSrc.set.call(this, value);
       }
-    );
+    });
   }
 
-  document
-    .querySelectorAll("video")
-    .forEach(registerVideo);
+  all("video").forEach(register);
 
-  const mutationObserver =
-    new MutationObserver((records) => {
-      records.forEach((record) => {
-        record.addedNodes.forEach((node) => {
-          if (!(node instanceof Element)) return;
-
-          if (node.matches("video")) {
-            registerVideo(node);
-          }
-
-          node
-            .querySelectorAll?.("video")
-            .forEach(registerVideo);
-        });
+  const mutations = new MutationObserver((records) => {
+    records.forEach((record) => {
+      record.addedNodes.forEach((node) => {
+        if (!(node instanceof Element)) return;
+        if (node.matches("video")) register(node);
+        all("video", node).forEach(register);
       });
     });
+  });
 
-  mutationObserver.observe(
-    document.documentElement,
-    {
-      childList: true,
-      subtree: true
-    }
-  );
+  mutations.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
 
-  /*
-   * Load the selected film before app.js receives
-   * the Play click.
-   */
-  const activateFromInteraction = (event) => {
+  const activateFromControl = (event) => {
     if (!(event.target instanceof Element)) return;
 
-    const trigger =
-      event.target.closest(
-        "[data-inline-video]"
-      );
-
+    const trigger = event.target.closest("[data-inline-video]");
     if (!trigger) return;
 
-    const root = trigger.closest(
+    const container = trigger.closest(
       ".media-tile, .manifest__media, .browser-frame, .phone-frame, .film-player"
     );
 
-    activateVideo(
-      root?.querySelector("video"),
-      true
-    );
+    activate(container && container.querySelector("video"), true);
   };
 
-  document.addEventListener(
-    "pointerdown",
-    activateFromInteraction,
-    true
-  );
+  document.addEventListener("pointerdown", activateFromControl, true);
 
   document.addEventListener(
     "keydown",
     (event) => {
-      if (
-        event.key === "Enter" ||
-        event.key === " "
-      ) {
-        activateFromInteraction(event);
+      if (event.key === "Enter" || event.key === " ") {
+        activateFromControl(event);
       }
     },
     true
   );
 
-  document.addEventListener(
-    "visibilitychange",
-    () => {
-      if (!document.hidden) return;
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) return;
+    all("main video:not(#introVideo)").forEach((video) => video.pause());
+  });
 
-      document
-        .querySelectorAll(
-          "main video:not(#introVideo)"
-        )
-        .forEach((video) => {
-          video.pause();
-        });
-    }
-  );
-
-  window.setTimeout(() => {
-    mutationObserver.disconnect();
-  }, 12000);
+  window.setTimeout(() => mutations.disconnect(), 15000);
 })();

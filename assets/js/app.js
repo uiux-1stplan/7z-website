@@ -185,7 +185,7 @@
   }
 
   function initLenis() {
-    if (!window.Lenis || prefersReducedMotion) return;
+    if (!window.Lenis || prefersReducedMotion || window.matchMedia("(max-width: 899px), (hover: none), (pointer: coarse)").matches) return;
 
     lenis = new Lenis({
       lerp: 0.12,
@@ -1242,7 +1242,7 @@
     const count = $("#loaderCount");
     if (!progressBar || !count) return;
 
-    const useFastDesktopLoader = window.matchMedia("(min-width: 900px)").matches;
+    const useFastDesktopLoader = true;
     const state = { progress: 0 };
     let completed = false;
     let progressFrame = 0;
