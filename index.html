@@ -9,16 +9,15 @@
     />
     <title>7Z Magic | Interactive Digital Experience</title>
     <link rel="preload" href="media/main_logo/7ZLogo.jpg" as="image" />
-    <link rel="preload" href="media/intro/hero.mp4" as="video" type="video/mp4" media="(max-width: 899px)" />
-    <link rel="preload" href="media/intro/1.mp4" as="video" type="video/mp4" />
     <link rel="stylesheet" href="assets/css/styles.css?v=20260715-web-dual2" />
+    <link rel="stylesheet" href="assets/css/performance.css?v=20260728-perf1" />
   </head>
   <body data-static-background="true">
     <canvas id="atmosphere" aria-hidden="true"></canvas>
     <div class="grain" aria-hidden="true"></div>
     <div class="loader" id="loader" aria-live="polite">
-      <video class="loader__video-bg" muted playsinline preload="auto" data-src="media/intro/hero.mp4" aria-hidden="true"></video>
-      <video class="loader__video" playsinline preload="auto" data-src="media/intro/hero.mp4"></video>
+      <video class="loader__video-bg" muted playsinline preload="none" data-src="media/intro/hero.mp4" aria-hidden="true"></video>
+      <video class="loader__video" playsinline preload="none" data-src="media/intro/hero.mp4"></video>
       <div class="loader__veil"></div>
       <div class="loader__phrases" aria-hidden="true"></div>
       <div class="loader__content">
@@ -94,7 +93,7 @@
 
     <main id="top">
       <section class="intro" id="intro">
-        <video id="introVideo" muted playsinline preload="auto" src="media/intro/1.mp4"></video>
+        <video id="introVideo" muted playsinline preload="metadata" src="media/intro/1.mp4"></video>
         <div class="intro__shade"></div>
         <div class="intro__content">
           <img class="hero-logo reveal" src="media/main_logo/7ZLogo.jpg" alt="7Z Magic" />
@@ -411,6 +410,7 @@
     <script src="assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
     <script src="assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
     <script src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
+    <script src="assets/js/performance.js?v=20260728-perf1"></script>
     <script src="assets/js/app.js?v=20260715-web-dual2"></script>
   </body>
 </html>
