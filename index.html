@@ -15,39 +15,9 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#111111" />
     <link rel="preload" href="media/main_logo/7ZLogo.jpg" as="image" />
-    <link rel="stylesheet" href="assets/css/styles.css?v=20260804-pages1" />
-    <link rel="stylesheet" href="assets/css/performance.css?v=20260728-video3" />
-    <script>
-      (() => {
-        try {
-          const raw = sessionStorage.getItem("z7:route-transition");
-          if (!raw) return;
-          const data = JSON.parse(raw);
-          if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
-            document.documentElement.classList.add("z7-transition-arrival");
-          } else {
-            sessionStorage.removeItem("z7:route-transition");
-          }
-        } catch {
-          document.documentElement.classList.remove("z7-transition-arrival");
-        }
-      })();
-    </script>
-    <link rel="stylesheet" href="assets/css/page-transition.css?v=20260804-route5" />
-</head>
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260715-web-dual2" />
+    <link rel="stylesheet" href="assets/css/performance.css?v=20260728-video3" /></head>
   <body data-static-background="true">
-    <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
-      <div class="z7-route-transition__panel z7-route-transition__panel--left"></div>
-      <div class="z7-route-transition__panel z7-route-transition__panel--right"></div>
-      <div class="z7-route-transition__stage">
-        <p class="z7-route-transition__micro">7Z Magic / Scene Change</p>
-        <div class="z7-route-transition__mark" aria-hidden="true">
-          <img src="/media/main_logo/7ZLogo.jpg" alt="" />
-        </div>
-        <span class="z7-route-transition__line" aria-hidden="true"></span>
-        <p class="z7-route-transition__label" data-z7-route-label>7Z Magic</p>
-      </div>
-    </div>
     <canvas id="atmosphere" aria-hidden="true"></canvas>
     <div class="grain" aria-hidden="true"></div>
     <div class="loader" id="loader" aria-live="polite">
@@ -84,9 +54,8 @@
             <a href="#ai-masterclass">AI Masterclass</a>
           </div>
         </div>
-        <a href="/about">About</a>
-        <a href="/founders">Founders</a>
-        <a href="/contact">Contact</a>
+        <a href="#partners">Partners</a>
+        <a href="#contact">Contact</a>
       </nav>
       <div class="header-socials" aria-label="Social links">
         <a class="magnetic social-icon" href="https://www.instagram.com/7sanz.ai/" target="_blank" rel="noopener" aria-label="Instagram">
@@ -110,10 +79,10 @@
             <path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
           </svg>
         </a>
-        <a class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com" aria-label="Email 7Z Magic">
+        <a class="magnetic social-icon social-icon--whatsapp" href="https://wa.me/962797020089" target="_blank" rel="noopener" aria-label="WhatsApp">
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="6" width="16" height="12" rx="2"></rect>
-            <path d="m5 8 7 5 7-5"></path>
+            <path d="M20.1 11.7a7.9 7.9 0 0 1-11.7 6.9L4.2 20l1.4-4.1a7.9 7.9 0 1 1 14.5-4.2Z"></path>
+            <path d="M9.2 8.2c-.3.2-.7.8-.7 1.5 0 1.8 2.1 4.7 4.8 5.7.8.3 1.5.3 2 .1.5-.2 1-1 1.1-1.4.1-.4 0-.6-.2-.7l-1.8-.9c-.2-.1-.4-.1-.6.2l-.5.7c-.2.2-.4.3-.7.1-1.1-.5-1.9-1.2-2.5-2.3-.1-.2-.1-.4.1-.6l.5-.6c.2-.2.2-.4.1-.6l-.8-1.8c-.1-.3-.4-.3-.6-.2Z"></path>
           </svg>
         </a>
         <a class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" target="_blank" rel="noopener" aria-label="LinkedIn">
@@ -386,18 +355,18 @@
             </p>
           </div>
         </div>
-        <nav class="footer__links" aria-label="Footer navigation">
+        <nav class="footer__links" aria-label="Footer services">
           <a href="#architecture">Architecture</a>
           <a href="#media">Media Production</a>
           <a href="#websites">Website Design</a>
           <a href="#identity">Brand Identity</a>
-          <a href="/about">About Us</a>
-          <a href="/founders">Founders</a>
-          <a href="/contact">Contact Us</a>
+          <a href="#film">Film Production</a>
+          <a href="#ai-masterclass">AI Masterclass</a>
+          <a href="#partners">Partners</a>
         </nav>
         <div class="footer__contact">
           <p>Ready to start a polished digital experience?</p>
-          <a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
+          <a class="footer__cta magnetic" href="#intro">Start a Project</a>
           <div class="socials" aria-label="Social links">
             <a class="magnetic social-icon" href="https://www.instagram.com/7sanz.ai/" target="_blank" rel="noopener" aria-label="Instagram">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -420,12 +389,12 @@
                 <path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
               </svg>
             </a>
-            <a class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com" aria-label="Email 7Z Magic">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="6" width="16" height="12" rx="2"></rect>
-            <path d="m5 8 7 5 7-5"></path>
-          </svg>
-        </a>
+            <a class="magnetic social-icon social-icon--whatsapp" href="https://wa.me/962797020089" target="_blank" rel="noopener" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.1 11.7a7.9 7.9 0 0 1-11.7 6.9L4.2 20l1.4-4.1a7.9 7.9 0 1 1 14.5-4.2Z"></path>
+                <path d="M9.2 8.2c-.3.2-.7.8-.7 1.5 0 1.8 2.1 4.7 4.8 5.7.8.3 1.5.3 2 .1.5-.2 1-1 1.1-1.4.1-.4 0-.6-.2-.7l-1.8-.9c-.2-.1-.4-.1-.6.2l-.5.7c-.2.2-.4.3-.7.1-1.1-.5-1.9-1.2-2.5-2.3-.1-.2-.1-.4.1-.6l.5-.6c.2-.2.2-.4.1-.6l-.8-1.8c-.1-.3-.4-.3-.6-.2Z"></path>
+              </svg>
+            </a>
             <a class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" target="_blank" rel="noopener" aria-label="LinkedIn">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M6.3 9.5v8.2"></path>
@@ -447,7 +416,6 @@
     <script src="assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
     <script src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
     <script src="assets/js/performance.js?v=20260728-video3"></script>
-<script src="assets/js/page-transition.js?v=20260804-route5"></script>
-    <script src="assets/js/app.js?v=20260804-pages1"></script>
+<script src="assets/js/app.js?v=20260715-web-dual2"></script>
   </body>
 </html>
