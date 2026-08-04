@@ -1,0 +1,9 @@
+﻿_backup-*
+*.zip
+local-server.backup-*.mjs
+server*.log
+vercel-deploy*.log
+vercel-deployment-url.txt
+7z-current-*.zip
+7z-magic-*.zip
+*.ps1
