@@ -14,25 +14,27 @@
 <link href="/site.webmanifest" rel="manifest"/>
 <meta content="#111111" name="theme-color"/>
 <link as="image" href="/media/main_logo/7ZLogo.jpg" rel="preload"/>
-<script>
-      (() => {
-        try {
-          const raw = sessionStorage.getItem("z7:route-transition");
-          if (!raw) return;
-          const data = JSON.parse(raw);
-          if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
-            document.documentElement.classList.add("z7-transition-arrival");
-          } else {
-            sessionStorage.removeItem("z7:route-transition");
-          }
-        } catch {
-          document.documentElement.classList.remove("z7-transition-arrival");
-        }
-      })();
-    </script>
-<style id="z7-route-transition-critical">
-      /* Critical fallback: prevents the transition logo/markup from entering page layout
-         before the full transition stylesheet is available. */
+
+
+    
+<link href="/assets/css/styles.css?v=20260804-prod8" rel="stylesheet"/>
+<link href="/assets/css/performance.css?v=20260728-video3" rel="stylesheet"/>
+<link href="/assets/css/pages.css?v=20260804-prod8" rel="stylesheet"/>
+    <link rel="stylesheet" href="/assets/css/navigation-overflow.css?v=20260805-nav9" />
+  <style id="z7-route-transition-critical">
+      html.z7-route-pending,
+      html.z7-route-pending body {
+        background: #030303 !important;
+      }
+
+      html.z7-route-pending body::before {
+        position: fixed;
+        inset: 0;
+        z-index: 2147482000;
+        content: "";
+        background: #030303;
+      }
+
       .z7-route-transition {
         position: fixed;
         inset: 0;
@@ -44,22 +46,8 @@
         pointer-events: none;
       }
 
-      .z7-route-transition.is-covering,
-      .z7-route-transition.is-covered,
-      .z7-route-transition.is-revealing,
-      html.z7-transition-arrival .z7-route-transition {
-        visibility: visible;
-      }
-
-      .z7-route-transition__stage {
-        display: grid;
-        width: min(86vw, 470px);
-        place-items: center;
-        opacity: 0;
-      }
-
       .z7-route-transition__mark {
-        width: clamp(82px, 8vw, 112px);
+        width: 96px;
         max-width: 26vw;
         aspect-ratio: 1;
         overflow: hidden;
@@ -72,11 +60,24 @@
         object-fit: cover;
       }
     </style>
-    <link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route10" />
-<link href="/assets/css/styles.css?v=20260804-prod8" rel="stylesheet"/>
-<link href="/assets/css/performance.css?v=20260728-video3" rel="stylesheet"/>
-<link href="/assets/css/pages.css?v=20260804-prod8" rel="stylesheet"/>
-    <link rel="stylesheet" href="/assets/css/navigation-overflow.css?v=20260805-nav9" />
+    <script id="z7-route-transition-bootstrap">
+      (() => {
+        try {
+          const raw = sessionStorage.getItem("z7:route-transition-v11");
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
+            document.documentElement.classList.add("z7-route-pending");
+          } else {
+            sessionStorage.removeItem("z7:route-transition-v11");
+          }
+        } catch {
+          document.documentElement.classList.remove("z7-route-pending");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route11" />
+    <script defer src="/assets/js/page-transition.js?v=20260805-route11"></script>
   </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -272,7 +273,7 @@
 <script src="/assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
 <script src="/assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
 <script src="/assets/js/performance.js?v=20260728-video3"></script>
-<script src="/assets/js/page-transition.js?v=20260805-route10"></script>
+
 <script src="/assets/js/app.js?v=20260804-prod8"></script>
 <script src="/assets/js/pages.js?v=20260804-prod8"></script>
     <script src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
