@@ -1,0 +1,87 @@
+/* 7Z Magic — static media & partner hover v13
+   Media stays fixed. Partner hover only reveals the original logo colors. */
+
+/* Partner cards: no magnetic translation, no lift, no zoom, no glow. */
+.logo-tile,
+.logo-tile:hover {
+  transform: none !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  box-shadow: none !important;
+}
+
+.logo-tile img {
+  transform: none !important;
+  transition:
+    filter 0.35s ease,
+    opacity 0.35s ease !important;
+}
+
+.logo-tile:hover img {
+  filter: grayscale(0) contrast(1) brightness(1.02) !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Dynamic media cards: keep their exact position on pointer hover. */
+.media-tile,
+.media-tile:hover,
+.presentation-stack .media-tile,
+.presentation-stack .media-tile:hover,
+.film-player,
+.film-player:hover {
+  transform: none !important;
+}
+
+/* Do not zoom, pan, saturate, tilt or shift a video on hover. */
+.media-tile:not(.is-playing):hover video {
+  transform: scale(1.01) !important;
+  filter: none !important;
+}
+
+.film-player:not(.is-playing):hover video {
+  transform: scale(1.04) !important;
+  opacity: 0.82 !important;
+  filter: none !important;
+}
+
+/* Universe featured-film card v12: preserve its resting poster frame. */
+.manifest__media--cinema,
+.manifest__media--cinema:hover {
+  transform: none !important;
+}
+
+.manifest__media--cinema:not(.is-playing):hover video {
+  transform: scale(1.025) !important;
+  opacity: 0.88 !important;
+  filter: grayscale(0.12) contrast(1.06) !important;
+}
+
+/* Website preview frames and any future direct-video magnetic container. */
+.web-device.magnetic,
+.browser-frame.magnetic,
+.phone-frame.magnetic,
+.manifest__media.magnetic,
+.magnetic[data-static-media="true"] {
+  transform: none !important;
+}
+
+/* Keep playback controls interactive without moving the media surface. */
+.media-tile:hover,
+.presentation-stack .media-tile:hover {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: none !important;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .logo-tile img {
+    filter: grayscale(1) contrast(1.04) brightness(0.9);
+    opacity: 0.82;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-tile img {
+    transition-duration: 0.01ms !important;
+  }
+}

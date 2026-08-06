@@ -761,6 +761,21 @@
     if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
 
     $$(".magnetic").forEach((element) => {
+      // 7Z static media exclusion v13:
+      // Keep video surfaces and partner logos fixed; magnetic motion remains on controls/buttons only.
+      const containsDirectVideo = Array.from(element.children).some(
+        (child) => child.tagName === "VIDEO"
+      );
+      const isStaticMediaSurface = element.matches(
+        ".logo-tile, .media-tile, .film-player, .manifest__media, .web-device, .browser-frame, .phone-frame"
+      );
+
+      if (containsDirectVideo || isStaticMediaSurface) {
+        element.classList.remove("magnetic");
+        element.dataset.staticMedia = "true";
+        element.style.removeProperty("transform");
+        return;
+      }
       if (element.getAttribute("aria-disabled") === "true") return;
 
       element.addEventListener("pointermove", (event) => {
