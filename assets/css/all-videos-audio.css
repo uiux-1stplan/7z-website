@@ -1,0 +1,120 @@
+/* 7Z Magic — all content videos loop + sound toggle v15 */
+
+.z7-video-host {
+  position: relative !important;
+  isolation: isolate;
+}
+
+.z7-video-host [data-inline-video] {
+  display: none !important;
+}
+
+.z7-video-audio {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 70;
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  appearance: none;
+  background: rgba(3, 3, 4, 0.72);
+  color: #fff;
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  opacity: 0.86;
+  backdrop-filter: blur(14px);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.z7-video-audio:hover,
+.z7-video-audio:focus-visible {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.13);
+  transform: scale(1.045);
+}
+
+.z7-video-audio.is-audible {
+  border-color: rgba(240, 199, 111, 0.66);
+  background: rgba(240, 199, 111, 0.16);
+  color: #f0c76f;
+  opacity: 1;
+}
+
+.z7-video-audio svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.z7-video-audio .z7-video-audio__waves,
+.z7-video-audio.is-audible .z7-video-audio__slash {
+  display: none;
+}
+
+.z7-video-audio.is-audible .z7-video-audio__waves {
+  display: block;
+}
+
+/* Keep the button clear of common visual chrome. */
+.browser-frame.z7-video-host > .z7-video-audio {
+  top: 44px;
+}
+
+.phone-frame.z7-video-host > .z7-video-audio {
+  top: 10px;
+  right: 10px;
+}
+
+.intro.z7-video-host > .z7-video-audio,
+.hero.z7-video-host > .z7-video-audio,
+.hero-media.z7-video-host > .z7-video-audio {
+  top: clamp(82px, 8vw, 110px);
+  right: clamp(14px, 3vw, 34px);
+}
+
+@media (max-width: 760px) {
+  .z7-video-audio {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .browser-frame.z7-video-host > .z7-video-audio {
+    top: 38px;
+  }
+
+  .intro.z7-video-host > .z7-video-audio,
+  .hero.z7-video-host > .z7-video-audio,
+  .hero-media.z7-video-host > .z7-video-audio {
+    top: 76px;
+    right: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7-video-audio {
+    transition-duration: 0.01ms !important;
+  }
+}
