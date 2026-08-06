@@ -1,0 +1,77 @@
+/* 7Z Magic — Marketing Media copy protection curtain v16
+   Keeps the pinned white copy readable while the campaign videos travel behind it. */
+
+@media (min-width: 1181px) {
+  #media.chapter--horizontal {
+    isolation: isolate;
+  }
+
+  /* The moving rail stays below the black curtain. */
+  #media .media-rail {
+    position: relative;
+    z-index: 1;
+  }
+
+  #media .media-rail .media-tile,
+  #media .media-rail .media-tile:hover {
+    z-index: 1 !important;
+  }
+
+  /* Full-height cinematic black curtain with a soft disappearing edge. */
+  #media.chapter--horizontal::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: 20;
+    width: clamp(560px, 50vw, 860px);
+    background:
+      linear-gradient(
+        90deg,
+        #030303 0%,
+        #030303 66%,
+        rgba(3, 3, 3, 0.995) 76%,
+        rgba(3, 3, 3, 0.94) 84%,
+        rgba(3, 3, 3, 0.66) 91%,
+        rgba(3, 3, 3, 0.22) 97%,
+        transparent 100%
+      );
+    box-shadow: 34px 0 72px rgba(0, 0, 0, 0.24);
+    content: "";
+    pointer-events: none;
+  }
+
+  /* Copy remains crisp above both the rail and the curtain. */
+  #media .pin-copy {
+    position: relative;
+    z-index: 21;
+  }
+
+  #media .pin-copy h2 {
+    text-shadow:
+      0 2px 16px rgba(0, 0, 0, 0.56),
+      0 12px 44px rgba(0, 0, 0, 0.42);
+  }
+
+  #media .pin-copy p:not(.eyebrow):not(.chapter__number) {
+    color: rgba(255, 249, 239, 0.8);
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.58);
+  }
+}
+
+/* Below the pinned-horizontal breakpoint the videos are beneath the copy,
+   so no large overlay is needed and the approved stacked layout stays intact. */
+@media (max-width: 1180px) {
+  #media.chapter--horizontal::before {
+    content: none;
+  }
+
+  #media .pin-copy {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #media.chapter--horizontal::before {
+    box-shadow: none;
+  }
+}
