@@ -78,6 +78,7 @@
     </script>
     <link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route11" />
     <script defer src="/assets/js/page-transition.js?v=20260805-route11"></script>
+      <link rel="stylesheet" href="/assets/css/universe-video.css?v=20260806-video12" />
   </head>
   <body data-static-background="true">
     <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
@@ -199,10 +200,18 @@
       </section>
 
       <section class="manifest" id="universe">
-        <div class="manifest__media">
+        <div class="manifest__media manifest__media--cinema">
+          <div class="manifest__film-header" aria-hidden="true">
+            <span class="manifest__film-kicker">Featured Film</span>
+            <span class="manifest__film-type">Architecture × AI</span>
+          </div>
           <video muted playsinline preload="none" data-src="media/arch_projects/9-16H/1.mp4" poster="media/posters/arch_projects/9-16H/1.jpg"></video>
-          <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play architecture universe film">
-            <span>Play</span>
+                    <div class="manifest__film-caption" aria-hidden="true">
+            <span>7Z Original</span>
+            <strong>Architecture in Motion</strong>
+          </div>
+          <button class="frame-play film-play frame-play--cinema" type="button" data-inline-video aria-label="Play featured film">
+            <span>Play Film</span>
           </button>
         </div>
         <div class="manifest__copy">
@@ -292,17 +301,25 @@
                 <span></span><span></span><span></span>
               </div>
               <video muted playsinline preload="none" data-src="media/website_project/1.mp4" poster="media/posters/website_project/1.jpg"></video>
-              <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play desktop website showcase">
-                <span>Play</span>
-              </button>
+                        <div class="manifest__film-caption" aria-hidden="true">
+            <span>7Z Original</span>
+            <strong>Architecture in Motion</strong>
+          </div>
+          <button class="frame-play film-play frame-play--cinema" type="button" data-inline-video aria-label="Play featured film">
+            <span>Play Film</span>
+          </button>
               <span class="web-device__label">Desktop experience</span>
             </article>
             <article class="phone-frame web-device web-device--mobile">
               <div class="phone-frame__speaker" aria-hidden="true"></div>
               <video muted playsinline preload="none" data-src="media/website_project/2.mp4" poster="media/posters/website_project/2.jpg"></video>
-              <button class="frame-play magnetic" type="button" data-inline-video aria-label="Play mobile website showcase">
-                <span>Play</span>
-              </button>
+                        <div class="manifest__film-caption" aria-hidden="true">
+            <span>7Z Original</span>
+            <strong>Architecture in Motion</strong>
+          </div>
+          <button class="frame-play film-play frame-play--cinema" type="button" data-inline-video aria-label="Play featured film">
+            <span>Play Film</span>
+          </button>
               <span class="web-device__label">Mobile version</span>
             </article>
           </div>
@@ -494,5 +511,6 @@
 
     <script src="assets/js/app.js?v=20260804-prod8"></script>
       <script src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
+      <script src="/assets/js/universe-video.js?v=20260806-video12"></script>
   </body>
 </html>

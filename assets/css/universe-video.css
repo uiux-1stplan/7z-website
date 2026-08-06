@@ -1,0 +1,321 @@
+/* 7Z Magic — Universe featured film card v12
+   Replaces the unclear tilted crop with an obvious cinematic video player. */
+
+.manifest__media--cinema {
+  position: relative;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: clamp(22px, 2vw, 32px);
+  background: #050505;
+  clip-path: none !important;
+  box-shadow:
+    0 34px 100px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transform: none !important;
+}
+
+.manifest__media--cinema::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.42), transparent 30%, transparent 58%, rgba(0, 0, 0, 0.78)),
+    radial-gradient(circle at 50% 45%, transparent 0 32%, rgba(0, 0, 0, 0.18) 74%, rgba(0, 0, 0, 0.44) 100%);
+  content: "";
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.manifest__media--cinema::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 3px,
+      rgba(255, 255, 255, 0.018) 3px 4px
+    );
+  content: "";
+  pointer-events: none;
+}
+
+.manifest__media--cinema video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0 !important;
+  object-fit: cover;
+  opacity: 0.88;
+  filter: grayscale(0.12) contrast(1.06);
+  transform: scale(1.025) !important;
+  transition:
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease,
+    filter 0.35s ease;
+}
+
+.manifest__media--cinema:hover video {
+  opacity: 1;
+  transform: scale(1) !important;
+}
+
+.manifest__film-header,
+.manifest__film-caption {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    transform 0.34s ease;
+}
+
+.manifest__film-header {
+  top: clamp(16px, 2vw, 24px);
+  right: clamp(16px, 2vw, 24px);
+  left: clamp(16px, 2vw, 24px);
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.manifest__film-header span {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(3, 3, 4, 0.62);
+  color: rgba(255, 255, 255, 0.76);
+  font-size: clamp(0.57rem, 0.8vw, 0.68rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  backdrop-filter: blur(14px);
+}
+
+.manifest__film-header .manifest__film-kicker {
+  color: #f0c76f;
+}
+
+.manifest__film-caption {
+  right: clamp(18px, 2vw, 26px);
+  bottom: clamp(18px, 2vw, 26px);
+  left: clamp(18px, 2vw, 26px);
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 150px;
+}
+
+.manifest__film-caption span {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.manifest__film-caption strong {
+  color: #fff;
+  font-size: clamp(1rem, 1.6vw, 1.36rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.manifest__media--cinema .frame-play--cinema {
+  position: absolute;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  z-index: 5;
+  display: inline-flex;
+  width: auto;
+  min-width: 142px;
+  min-height: 56px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(3, 3, 4, 0.74);
+  color: #fff;
+  box-shadow:
+    0 22px 64px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(18px);
+  transition:
+    top 0.34s ease,
+    right 0.34s ease,
+    bottom 0.34s ease,
+    left 0.34s ease,
+    min-width 0.34s ease,
+    min-height 0.34s ease,
+    padding 0.34s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease;
+}
+
+.manifest__media--cinema .frame-play--cinema::before {
+  display: block;
+  width: 0;
+  height: 0;
+  margin: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid currentColor;
+  content: "";
+}
+
+.manifest__media--cinema .frame-play--cinema span {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.manifest__media--cinema .frame-play--cinema:hover,
+.manifest__media--cinema .frame-play--cinema:focus-visible {
+  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.13);
+  transform: translate(-50%, -50%) scale(1.035);
+}
+
+.manifest__media--cinema.is-playing {
+  cursor: default;
+}
+
+.manifest__media--cinema.is-playing::before {
+  opacity: 0.18;
+}
+
+.manifest__media--cinema.is-playing .manifest__film-header,
+.manifest__media--cinema.is-playing .manifest__film-caption {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.manifest__media--cinema.is-playing video {
+  z-index: 2;
+  opacity: 1;
+  filter: none;
+  transform: scale(1) !important;
+}
+
+.manifest__media--cinema.is-playing .frame-play--cinema {
+  top: 18px;
+  right: 18px;
+  bottom: auto;
+  left: auto;
+  min-width: 116px;
+  min-height: 42px;
+  padding: 0 15px;
+  background: rgba(3, 3, 4, 0.58);
+  transform: none;
+  opacity: 0.72;
+}
+
+.manifest__media--cinema.is-playing .frame-play--cinema:hover,
+.manifest__media--cinema.is-playing .frame-play--cinema:focus-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.manifest__media--cinema.is-playing .frame-play--cinema::before {
+  width: 12px;
+  height: 14px;
+  border: 0;
+  background:
+    linear-gradient(
+      90deg,
+      currentColor 0 35%,
+      transparent 35% 65%,
+      currentColor 65%
+    );
+}
+
+@media (max-width: 980px) {
+  .manifest__media--cinema {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 760px) {
+  .manifest__media--cinema {
+    width: 100%;
+    max-width: 640px;
+    margin-inline: auto;
+    aspect-ratio: 16 / 11;
+    border-radius: 22px;
+  }
+
+  .manifest__film-header {
+    top: 14px;
+    right: 14px;
+    left: 14px;
+  }
+
+  .manifest__film-header span {
+    min-height: 27px;
+    padding-inline: 9px;
+    font-size: 0.52rem;
+    letter-spacing: 0.1em;
+  }
+
+  .manifest__film-caption {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    padding-right: 0;
+  }
+
+  .manifest__film-caption strong {
+    max-width: 70%;
+    font-size: 0.96rem;
+  }
+
+  .manifest__media--cinema .frame-play--cinema {
+    min-width: 126px;
+    min-height: 52px;
+    padding-inline: 17px;
+  }
+}
+
+@media (max-width: 390px) {
+  .manifest__film-header .manifest__film-type {
+    display: none;
+  }
+
+  .manifest__film-caption span {
+    font-size: 0.56rem;
+  }
+
+  .manifest__film-caption strong {
+    max-width: 66%;
+    font-size: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manifest__media--cinema video,
+  .manifest__film-header,
+  .manifest__film-caption,
+  .manifest__media--cinema .frame-play--cinema {
+    transition-duration: 0.01ms !important;
+  }
+}
