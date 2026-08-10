@@ -1,0 +1,132 @@
+/* 7Z Magic — content and video protection v14
+   Deterrence layer + lightweight video sound controls. */
+
+/* Prevent normal text/media selection and dragging. */
+html.z7-content-protected,
+html.z7-content-protected body,
+html.z7-content-protected body * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none;
+}
+
+html.z7-content-protected input,
+html.z7-content-protected textarea,
+html.z7-content-protected select,
+html.z7-content-protected option,
+html.z7-content-protected [contenteditable="true"] {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default;
+}
+
+html.z7-content-protected img,
+html.z7-content-protected video {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* Every managed showcase video receives a fixed, lightweight sound control. */
+.z7-video-host {
+  position: relative !important;
+  isolation: isolate;
+}
+
+.z7-video-host.z7-autoloop-enabled [data-inline-video] {
+  display: none !important;
+}
+
+.z7-video-audio {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 40;
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  appearance: none;
+  background: rgba(3, 3, 4, 0.7);
+  color: #fff;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  opacity: 0.84;
+  backdrop-filter: blur(14px);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.z7-video-audio:hover,
+.z7-video-audio:focus-visible {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.13);
+  transform: scale(1.045);
+}
+
+.z7-video-audio.is-audible {
+  border-color: rgba(240, 199, 111, 0.62);
+  background: rgba(240, 199, 111, 0.16);
+  color: #f0c76f;
+  opacity: 1;
+}
+
+.z7-video-audio svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.z7-video-audio .z7-video-audio__waves,
+.z7-video-audio.is-audible .z7-video-audio__slash {
+  display: none;
+}
+
+.z7-video-audio.is-audible .z7-video-audio__waves {
+  display: block;
+}
+
+/* Avoid overlap with the browser-window chrome and homepage header. */
+.browser-frame.z7-video-host > .z7-video-audio {
+  top: 44px;
+}
+
+.intro.z7-video-host > .z7-video-audio {
+  top: clamp(88px, 8vw, 112px);
+  right: clamp(14px, 3vw, 34px);
+}
+
+@media (max-width: 760px) {
+  .z7-video-audio {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .browser-frame.z7-video-host > .z7-video-audio {
+    top: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7-video-audio {
+    transition-duration: 0.01ms !important;
+  }
+}

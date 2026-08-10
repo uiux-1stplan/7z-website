@@ -7,5 +7,11 @@ dist/
 .env.production
 .vercel/
 *.log
+*.pdf
+private/
+documents/
 _video_backup/
 _video_work/
+
+.vercel
+.env*
