@@ -50,7 +50,7 @@ export default function middleware(request) {
     ) {
       return rewrite(
         new URL(
-          '/elcon-arabia-presentation/index.html',
+          '/elcon-arabia-presentation/index',
           request.url
         )
       );
@@ -69,3 +69,4 @@ export const config = {
     '/elcon-arabia-presentation/:path*'
   ]
 };
+
