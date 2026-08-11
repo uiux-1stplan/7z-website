@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base href="/silla-hall-presentation/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silla Hall — AI Venue Upgrade | 7Z Magic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#08090a;
+  --panel:#111113;
+  --line: rgba(255,255,255,0.14);
+  --line-soft: rgba(255,255,255,0.08);
+  --white:#f5f6f7;
+  --dim:#a6a9b0;
+  --dim2:#787b82;
+  --silver:#d3d7dc;
+  --blue:#5b93ff;
+  --blue-glow: rgba(91,147,255,0.55);
+  --glass-bg: rgba(255,255,255,0.07);
+  --glass-bg-strong: rgba(255,255,255,0.11);
+  --glass-border: rgba(255,255,255,0.22);
+  --glass-blur: blur(28px) saturate(160%);
+  --serif: 'Cormorant Garamond', 'Times New Roman', serif;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  background:var(--black); color:var(--white);
+  font-family:'Poppins','Segoe UI',system-ui,sans-serif; font-weight:300;
+  overflow-x:hidden;
+}
+img{ -webkit-user-drag:none; user-select:none; }
+::selection{ background:var(--blue); color:#fff; }
+
+/* ---------- scrollbar (subtle) ---------- */
+::-webkit-scrollbar{ width:9px; }
+::-webkit-scrollbar-track{ background:var(--black); }
+::-webkit-scrollbar-thumb{ background:#2a2b2f; border-radius:10px; }
+::-webkit-scrollbar-thumb:hover{ background:#3a3c42; }
+body.loading{ overflow:hidden; height:100vh; }
+
+/* ============================================================
+   PRELOADER
+   ============================================================ */
+#preloader{
+  position:fixed; inset:0; z-index:500; background:var(--black);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  transition:opacity .8s ease, visibility .8s ease;
+}
+#preloader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+.pl-frame{ position:absolute; inset:28px; pointer-events:none; }
+.pl-corner{ position:absolute; width:22px; height:22px; border-color:var(--line); opacity:0; animation:pl-fade .8s ease forwards .2s; }
+.pl-corner.tl{ top:0; left:0; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+.pl-corner.tr{ top:0; right:0; border-top:1px solid var(--line); border-right:1px solid var(--line); }
+.pl-corner.bl{ bottom:0; left:0; border-bottom:1px solid var(--line); border-left:1px solid var(--line); }
+.pl-corner.br{ bottom:0; right:0; border-bottom:1px solid var(--line); border-right:1px solid var(--line); }
+@keyframes pl-fade{ to{ opacity:1; } }
+.pl-logo{
+  width:56px; height:56px; border-radius:12px; margin-bottom:22px;
+  opacity:0; transform:scale(.7); animation:pl-logo-in 1s cubic-bezier(.2,.8,.2,1) forwards .1s;
+  box-shadow:0 0 40px rgba(91,147,255,0.25);
+}
+@keyframes pl-logo-in{ to{ opacity:1; transform:scale(1); } }
+.pl-word{
+  font-size:13px; letter-spacing:6px; font-weight:600; color:var(--white);
+  opacity:0; animation:pl-fade .8s ease forwards .5s;
+}
+.pl-tag{
+  margin-top:10px; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--dim2);
+  opacity:0; animation:pl-fade .8s ease forwards .8s;
+}
+.pl-bar{
+  margin-top:30px; width:180px; height:2px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;
+  opacity:0; animation:pl-fade .6s ease forwards 1s;
+}
+.pl-bar span{
+  display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--blue), #8fb4ff);
+  box-shadow:0 0 10px var(--blue-glow); animation:pl-fill 4.2s cubic-bezier(.4,0,.2,1) forwards 1s;
+}
+@keyframes pl-fill{ to{ width:100%; } }
+
+/* ============================================================
+   TOP NAV — glass bar, brand mark + jump links
+   ============================================================ */
+.topnav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 32px;
+  background:rgba(8,9,10,0.35);
+  backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  border-bottom:1px solid var(--line-soft);
+  transition:background .4s ease, padding .4s ease;
+}
+.topnav.scrolled{ padding:10px 32px; background:rgba(8,9,10,0.65); }
+.topnav .brand{ display:flex; align-items:center; gap:10px; }
+.topnav .brand img{ width:26px; height:26px; border-radius:5px; display:block; }
+.topnav .brand .t1{ font-size:12.5px; letter-spacing:2px; color:var(--silver); font-weight:500; text-transform:uppercase; }
+.topnav .brand .t2{ font-size:9px; letter-spacing:1.5px; color:var(--dim2); text-transform:uppercase; margin-top:1px; }
+.topnav .links{ display:flex; gap:6px; }
+.topnav .links a{
+  color:var(--dim); text-decoration:none; font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase;
+  padding:8px 16px; border-radius:100px; transition:all .3s ease; font-weight:400;
+}
+.topnav .links a:hover, .topnav .links a.active{ color:var(--white); background:var(--glass-bg-strong); }
+@media (max-width:760px){ .topnav .links{ display:none; } }
+
+/* ============================================================
+   RIGHT-SIDE SECTION DOTS
+   ============================================================ */
+.side-nav{
+  position:fixed; right:26px; top:50%; transform:translateY(-50%); z-index:90;
+  display:flex; flex-direction:column; gap:16px;
+}
+.side-nav button{
+  width:9px; height:9px; border-radius:50%; border:1.5px solid var(--line);
+  background:transparent; cursor:pointer; padding:0; position:relative; transition:all .35s ease;
+}
+.side-nav button::after{
+  content:attr(data-label); position:absolute; right:20px; top:50%; transform:translateY(-50%);
+  font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim);
+  white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .25s ease;
+  background:rgba(10,10,11,0.85); padding:5px 10px; border-radius:6px; border:1px solid var(--line-soft);
+}
+.side-nav button:hover::after{ opacity:1; }
+.side-nav button.active{ background:var(--blue); border-color:var(--blue); box-shadow:0 0 12px var(--blue-glow); transform:scale(1.3); }
+@media (max-width:760px){ .side-nav{ display:none; } }
+
+/* ============================================================
+   HERO / COVER
+   ============================================================ */
+.hero{
+  position:relative; min-height:100vh; display:flex; align-items:center; justify-content:flex-start;
+  text-align:left; padding:0 8vw; overflow:hidden;
+}
+.hero-bg{
+  position:absolute; inset:0; z-index:0; overflow:hidden;
+  background:radial-gradient(ellipse at 50% 30%, #17181b 0%, #08090a 70%);
+}
+.hero-bg video{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; filter:saturate(.7) brightness(.85); transition:opacity 1.4s ease;
+}
+.hero-bg video.show{ opacity:1; }
+.hero-bg .hero-vignette{
+  position:absolute; inset:0; opacity:0; transition:opacity 1.3s ease .3s;
+  background:linear-gradient(90deg, rgba(6,7,8,0.88) 0%, rgba(6,7,8,0.55) 42%, rgba(6,7,8,0.28) 75%, rgba(6,7,8,0.15) 100%),
+             linear-gradient(0deg, var(--black) 0%, transparent 26%, transparent 74%, rgba(6,7,8,0.6) 100%);
+}
+.hero-bg .hero-vignette.show{ opacity:1; }
+.hero-content{ position:relative; z-index:2; max-width:640px; }
+.hero-el{ opacity:0; transform:translateY(22px); transition:opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
+.hero-content.reveal-in .hero-el{ opacity:1; transform:translateY(0); }
+.hero-content.reveal-in .hero-el:nth-child(1){ transition-delay:.15s; }
+.hero-content.reveal-in .hero-el:nth-child(2){ transition-delay:.32s; }
+.hero-content.reveal-in .hero-el:nth-child(3){ transition-delay:.48s; }
+.hero-content.reveal-in .hero-el:nth-child(4){ transition-delay:.64s; }
+.hero-content.reveal-in .hero-el:nth-child(5){ transition-delay:.82s; }
+.hero-logo{
+  width:60px; height:60px; border-radius:13px; margin-bottom:24px; display:block;
+  box-shadow:0 0 60px rgba(91,147,255,0.3), 0 20px 50px rgba(0,0,0,0.5);
+  border:1px solid rgba(255,255,255,0.14);
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:14px; font-size:11px; letter-spacing:5px;
+  text-transform:uppercase; color:var(--blue); font-weight:500; margin-bottom:24px;
+}
+.eyebrow::before{ content:''; width:34px; height:1px; background:linear-gradient(90deg, var(--blue-glow), transparent); }
+.hero h1{
+  font-family:var(--serif); font-size:clamp(52px,8.4vw,104px); font-weight:600; letter-spacing:-1px; line-height:0.96;
+  color:var(--white); font-style:italic;
+}
+.hero h1 span{ color:var(--blue); }
+.hero .sub{ font-size:15px; color:var(--dim); letter-spacing:.5px; margin-top:20px; font-weight:300; }
+
+.hero-meta{
+  margin-top:40px; display:inline-flex; gap:0; border-radius:18px; overflow:hidden;
+  background:var(--glass-bg); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);
+}
+.hero-meta div{ padding:16px 26px; text-align:left; border-right:1px solid var(--line-soft); }
+.hero-meta div:last-child{ border-right:none; }
+.hero-meta .m-lbl{ font-size:8.5px; letter-spacing:2px; text-transform:uppercase; color:var(--dim2); margin-bottom:4px; }
+.hero-meta .m-val{ font-size:12.5px; color:var(--silver); font-weight:400; }
+@media (max-width:640px){ .hero-meta{ flex-wrap:wrap; border-radius:14px; } .hero-meta div{ border-right:none; border-bottom:1px solid var(--line-soft); flex:1 1 50%; } }
+
+.scroll-cue{
+  position:absolute; bottom:38px; left:8vw; z-index:2;
+  display:flex; flex-direction:column; align-items:flex-start; gap:8px; color:var(--dim2);
+  font-size:9.5px; letter-spacing:2px; text-transform:uppercase; animation:bob 2.4s ease-in-out infinite;
+  opacity:0; transition:opacity 1s ease 1.1s;
+}
+.scroll-cue.show{ opacity:1; }
+.scroll-cue svg{ width:14px; height:14px; }
+@keyframes bob{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(0,8px); } }
+@media (max-width:640px){ .hero{ padding:0 6vw; } .scroll-cue{ left:6vw; } }
+
+/* ============================================================
+   SPACE SECTIONS
+   ============================================================ */
+.space-section{
+  position:relative; min-height:100vh; display:flex; align-items:center;
+  padding:130px 6vw 70px; overflow:hidden;
+}
+@media (max-width:640px){
+  .space-section{ padding:110px 5vw 50px; }
+  .space-info{ padding:26px 22px; }
+  .viewer{ padding:10px; }
+  .space-info h2{ font-size:24px; }
+}
+.space-bg{
+  position:absolute; inset:0; z-index:0; background-size:cover; background-position:center;
+  width:100%; height:100%; object-fit:cover;
+  filter:brightness(.42) saturate(.6);
+  transform:scale(1.06); transition:transform 1.6s ease, filter 1.6s ease;
+}
+.space-section.in-view .space-bg{ transform:scale(1); filter:brightness(.5) saturate(.65); }
+.space-bg-overlay{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(90deg, rgba(6,7,8,0.75) 0%, rgba(6,7,8,0.25) 45%, rgba(6,7,8,0.55) 100%),
+             linear-gradient(0deg, rgba(6,7,8,0.85) 0%, rgba(6,7,8,0.1) 30%, rgba(6,7,8,0.1) 75%, rgba(6,7,8,0.7) 100%);
+}
+.space-inner{
+  position:relative; z-index:2; width:100%; max-width:1360px; margin:0 auto;
+  display:grid; grid-template-columns:0.82fr 1.18fr; gap:44px; align-items:center;
+}
+.space-inner > *{ min-width:0; }
+@media (max-width:980px){ .space-inner{ grid-template-columns:1fr; } }
+
+/* -- info glass card -- */
+.space-info{
+  background:var(--glass-bg); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border); border-radius:22px; padding:36px 34px;
+  opacity:0; transform:translateY(26px); transition:opacity .8s ease, transform .8s ease;
+  box-shadow:0 20px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.space-section.in-view .space-info{ opacity:1; transform:translateY(0); }
+.space-num{ font-size:11px; letter-spacing:3px; color:var(--dim2); text-transform:uppercase; margin-bottom:14px; }
+.space-kicker{ font-size:10.5px; letter-spacing:3.5px; text-transform:uppercase; color:var(--blue); font-weight:500; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+.space-kicker::before{ content:''; width:22px; height:1px; background:var(--blue-glow); }
+.space-info h2{ font-family:var(--serif); font-style:italic; font-size:clamp(28px,3.2vw,38px); font-weight:600; letter-spacing:-0.3px; line-height:1.08; margin-bottom:14px; color:var(--white); }
+.space-info p{ font-size:13.5px; color:var(--dim); line-height:1.7; font-weight:300; margin-bottom:22px; }
+.space-divider{ height:1px; background:var(--line-soft); margin:20px 0; }
+.space-qc{ display:flex; flex-direction:column; gap:12px; }
+.space-qc .qc-row{ display:flex; gap:10px; align-items:flex-start; }
+.space-qc .qc-dot{ width:5px; height:5px; border-radius:50%; background:var(--blue); margin-top:6px; flex-shrink:0; box-shadow:0 0 6px var(--blue-glow); }
+.space-qc .qc-text{ font-size:11.5px; color:var(--dim2); line-height:1.6; }
+.space-qc .qc-text b{ color:var(--silver); font-weight:500; }
+
+/* -- viewer glass card -- */
+.viewer{
+  background:var(--glass-bg-strong); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border); border-radius:24px; padding:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.1);
+  opacity:0; transform:translateY(26px); transition:opacity .8s ease .15s, transform .8s ease .15s;
+}
+.space-section.in-view .viewer{ opacity:1; transform:translateY(0); }
+.viewer-frame{
+  position:relative; width:100%; aspect-ratio:16/10; border-radius:16px; overflow:hidden;
+  background:#000; border:1px solid rgba(255,255,255,0.08);
+}
+.viewer-frame img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+  opacity:0; transition:opacity .5s ease; z-index:1;
+}
+.viewer-frame img.active{ opacity:1; z-index:2; }
+.viewer-tag{
+  position:absolute; top:14px; left:14px; z-index:5;
+  background:rgba(8,9,10,0.55); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.16); border-radius:100px;
+  padding:6px 14px; font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--silver);
+  transition:all .3s ease;
+}
+.viewer-tag.is-before{ color:var(--dim); }
+.viewer-tag .idx-badge{ color:var(--blue); font-weight:600; margin-right:6px; }
+
+.viewer-arrow{
+  position:absolute; top:50%; transform:translateY(-50%); z-index:6;
+  width:42px; height:42px; border-radius:50%;
+  background:rgba(8,9,10,0.5); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.2); color:var(--white);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:all .25s ease;
+}
+.viewer-arrow:hover{ background:var(--blue); border-color:var(--blue); box-shadow:0 0 18px var(--blue-glow); }
+.viewer-arrow.prev{ left:14px; }
+.viewer-arrow.next{ right:14px; }
+.viewer-arrow svg{ width:16px; height:16px; }
+
+.viewer-caption{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 6px 4px;
+}
+.viewer-caption .cap-text{ font-size:12.5px; color:var(--silver); letter-spacing:.3px; font-weight:400; }
+.viewer-caption .cap-count{ font-size:10px; color:var(--dim2); letter-spacing:1px; flex-shrink:0; }
+
+/* thumbnails */
+.thumbstrip{ display:flex; gap:8px; margin-top:12px; overflow-x:auto; padding:2px 2px 6px; scrollbar-width:thin; }
+.thumbstrip::-webkit-scrollbar{ height:5px; }
+.thumb{
+  flex:0 0 auto; width:66px; height:44px; border-radius:9px; overflow:hidden; cursor:pointer;
+  border:1.5px solid rgba(255,255,255,0.14); position:relative; opacity:.62; transition:all .25s ease;
+}
+.thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.thumb:hover{ opacity:.9; }
+.thumb.active{ opacity:1; border-color:var(--blue); box-shadow:0 0 0 1px var(--blue), 0 0 12px var(--blue-glow); }
+.thumb .thumb-idx{
+  position:absolute; bottom:2px; right:3px; font-size:7.5px; color:var(--white); letter-spacing:.5px;
+  background:rgba(0,0,0,0.55); padding:1px 4px; border-radius:4px;
+}
+
+/* ============================================================
+   EXPLORE MORE GALLERY
+   ============================================================ */
+.explore-section{
+  position:relative; padding:120px 0 90px; background:linear-gradient(180deg, var(--black) 0%, #0c0d0f 100%);
+  border-top:1px solid var(--line-soft);
+}
+.explore-head{ max-width:640px; margin:0 auto 46px; text-align:center; padding:0 6vw; }
+.explore-head h2{ font-family:var(--serif); font-style:italic; font-size:clamp(28px,3.2vw,40px); font-weight:600; letter-spacing:-0.3px; margin:12px 0 14px; color:var(--white); }
+.explore-head p{ font-size:13px; color:var(--dim); line-height:1.7; font-weight:300; }
+
+.explore-spotlight{
+  display:flex; align-items:baseline; justify-content:space-between;
+  padding:0 6vw; margin-bottom:14px; min-height:20px;
+}
+.explore-spotlight .sp-name{ font-size:13px; letter-spacing:1px; color:var(--silver); font-weight:400; opacity:0; transition:opacity .25s ease; }
+.explore-spotlight .sp-name.show{ opacity:1; }
+.explore-spotlight .sp-hint{ font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim2); }
+
+/* full-bleed irregular grid — fills the entire viewport width */
+.explore-grid{
+  width:100%; display:grid; gap:4px; padding:0 4px;
+  grid-template-columns:repeat(12, 1fr); grid-auto-rows:130px; grid-auto-flow:dense;
+}
+@media (max-width:900px){ .explore-grid{ grid-template-columns:repeat(6, 1fr); grid-auto-rows:110px; } }
+@media (max-width:560px){ .explore-grid{ grid-template-columns:repeat(3, 1fr); grid-auto-rows:100px; gap:3px; } }
+
+.explore-item{
+  grid-column:span 3; grid-row:span 1;
+  overflow:hidden; position:relative; cursor:pointer;
+  opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;
+  transform-style:preserve-3d; will-change:transform;
+}
+.explore-item.in-view{ opacity:1; transform:translateY(0); }
+.explore-item.big{ grid-column:span 6; grid-row:span 2; }
+.explore-item.tall{ grid-row:span 2; }
+.explore-item.wide{ grid-column:span 4; }
+@media (max-width:900px){
+  .explore-item{ grid-column:span 3; }
+  .explore-item.big{ grid-column:span 6; }
+  .explore-item.wide{ grid-column:span 3; }
+}
+@media (max-width:560px){
+  .explore-item{ grid-column:span 3; }
+  .explore-item.big, .explore-item.wide{ grid-column:span 3; }
+}
+.explore-item img{ width:100%; height:100%; display:block; object-fit:cover; transition:transform .5s ease, filter .5s ease; filter:brightness(.82) saturate(.85); }
+.explore-item:hover img{ transform:scale(1.045); filter:brightness(1) saturate(1); }
+.explore-item .ex-idx{
+  position:absolute; top:10px; left:10px; background:rgba(8,9,10,0.55); backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.16); border-radius:100px; padding:4px 11px;
+  font-size:9px; letter-spacing:1.5px; color:var(--silver); text-transform:uppercase; opacity:0; transition:opacity .25s ease;
+}
+.explore-item:hover .ex-idx{ opacity:1; }
+.explore-item .ex-shine{
+  position:absolute; inset:0; z-index:2; pointer-events:none; opacity:0; transition:opacity .3s ease;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.16), transparent 60%);
+}
+.explore-item:hover .ex-shine{ opacity:1; }
+
+/* ============================================================
+   VIDEO EXPLORE — cinematic reel
+   ============================================================ */
+.video-section{
+  position:relative; padding:20px 6vw 100px; background:linear-gradient(180deg, #0c0d0f 0%, var(--black) 100%);
+}
+.video-grid{
+  max-width:1360px; margin:0 auto; display:grid; gap:14px;
+  grid-template-columns:repeat(4, 1fr); grid-auto-rows:170px;
+}
+@media (max-width:980px){ .video-grid{ grid-template-columns:repeat(2, 1fr); } }
+@media (max-width:560px){ .video-grid{ grid-template-columns:1fr; grid-auto-rows:200px; } }
+.video-tile{
+  position:relative; border-radius:14px; overflow:hidden; border:1px solid var(--line-soft);
+  cursor:pointer; opacity:0; transform:translateY(18px) scale(.98); transition:opacity .6s ease, transform .6s ease;
+  grid-column:span 1; grid-row:span 1;
+}
+.video-tile.in-view{ opacity:1; transform:translateY(0) scale(1); }
+.video-tile.tall{ grid-row:span 2; }
+.video-tile.wide{ grid-column:span 2; }
+.video-tile video{ width:100%; height:100%; object-fit:cover; display:block; filter:brightness(.82) saturate(.9); transition:filter .4s ease, transform .6s ease; }
+.video-tile:hover video{ filter:brightness(1) saturate(1); transform:scale(1.04); }
+.video-tile .vt-badge{
+  position:absolute; top:10px; left:10px; z-index:3; display:flex; align-items:center; gap:5px;
+  background:rgba(8,9,10,0.55); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.16);
+  border-radius:100px; padding:4px 10px 4px 8px; font-size:8.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--silver);
+}
+.video-tile .vt-dot{ width:5px; height:5px; border-radius:50%; background:#ff4d4d; box-shadow:0 0 6px rgba(255,77,77,.8); animation:pulse-dot 1.8s ease-in-out infinite; }
+@keyframes pulse-dot{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+.video-tile .vt-play{
+  position:absolute; inset:0; z-index:3; display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .25s ease; background:rgba(4,4,5,0.15);
+}
+.video-tile:hover .vt-play{ opacity:1; }
+.video-tile .vt-play span{
+  width:46px; height:46px; border-radius:50%; background:rgba(8,9,10,0.55); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center;
+}
+.video-tile .vt-play svg{ width:16px; height:16px; color:#fff; margin-left:2px; }
+
+/* video lightbox */
+.video-lightbox{
+  position:fixed; inset:0; z-index:210; background:rgba(4,4,5,0.94); backdrop-filter:blur(8px);
+  display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s ease;
+}
+.video-lightbox.open{ opacity:1; pointer-events:auto; }
+.video-lightbox video{ max-width:82vw; max-height:82vh; border-radius:12px; box-shadow:0 30px 90px rgba(0,0,0,0.6); }
+@media (max-width:760px){ .video-lightbox video{ max-width:92vw; } }
+
+/* lightbox */
+.lightbox{
+  position:fixed; inset:0; z-index:200; background:rgba(4,4,5,0.92); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s ease;
+}
+.lightbox.open{ opacity:1; pointer-events:auto; }
+.lightbox img{ max-width:88vw; max-height:84vh; border-radius:10px; box-shadow:0 30px 90px rgba(0,0,0,0.6); }
+.lightbox-close{
+  position:absolute; top:26px; right:32px; width:42px; height:42px; border-radius:50%;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--white);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px;
+}
+.lightbox-nav{
+  position:absolute; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--white);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.lightbox-nav.lb-prev{ left:24px; } .lightbox-nav.lb-next{ right:24px; }
+.lightbox-nav svg, .lightbox-close svg{ width:18px; height:18px; }
+
+/* ============================================================
+   ABOUT THE DESIGN — closing story section
+   ============================================================ */
+.story-section{
+  position:relative; padding:130px 6vw 130px; background:var(--black);
+  border-top:1px solid var(--line-soft); overflow:hidden;
+}
+.story-section::before{
+  content:''; position:absolute; top:-20%; left:50%; transform:translateX(-50%);
+  width:900px; height:900px; border-radius:50%;
+  background:radial-gradient(circle, rgba(91,147,255,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.story-inner{ position:relative; max-width:840px; margin:0 auto; text-align:center; }
+.story-inner .space-kicker{ justify-content:center; margin-bottom:18px; }
+.story-inner h2{ font-family:var(--serif); font-style:italic; font-size:clamp(30px,3.6vw,44px); font-weight:600; letter-spacing:-0.3px; margin-bottom:28px; color:var(--white); }
+.story-inner p{ font-size:14.5px; color:var(--dim); line-height:1.9; font-weight:300; margin-bottom:20px; }
+.story-inner p b{ color:var(--silver); font-weight:500; }
+.story-pillars{
+  margin-top:52px; display:grid; grid-template-columns:repeat(3, 1fr); gap:28px; text-align:left;
+}
+@media (max-width:760px){ .story-pillars{ grid-template-columns:1fr; } }
+.story-pillar{
+  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:26px 24px;
+  backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+}
+.story-pillar .sp-num{ font-size:10px; letter-spacing:2px; color:var(--blue); margin-bottom:10px; }
+.story-pillar h4{ font-size:15px; font-weight:600; color:var(--white); margin-bottom:10px; }
+.story-pillar p{ font-size:12px; color:var(--dim2); line-height:1.7; margin:0; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer{
+  position:relative; padding:90px 6vw 60px; text-align:center;
+  background:linear-gradient(180deg, var(--black) 0%, #0d0e10 100%);
+  border-top:1px solid var(--line-soft);
+}
+.site-footer img{ width:38px; height:38px; border-radius:8px; margin-bottom:22px; }
+.site-footer h3{ font-size:22px; font-weight:600; letter-spacing:-0.3px; margin-bottom:10px; }
+.site-footer p{ font-size:12px; color:var(--dim2); letter-spacing:.5px; max-width:420px; margin:0 auto; line-height:1.7; }
+.site-footer .foot-tag{ margin-top:28px; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--dim2); }
+
+/* reveal-on-scroll generic */
+.reveal{ opacity:0; transform:translateY(20px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.in-view{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ============ PRELOADER ============ -->
+<div id="preloader">
+  <div class="pl-frame">
+    <span class="pl-corner tl"></span><span class="pl-corner tr"></span>
+    <span class="pl-corner bl"></span><span class="pl-corner br"></span>
+  </div>
+  <img class="pl-logo" src="img/7z_logo.jpg" alt="7Z">
+  <div class="pl-word">7Z MAGIC</div>
+  <div class="pl-tag">Preparing the Silla Hall Experience</div>
+  <div class="pl-bar"><span></span></div>
+</div>
+
+<!-- ============ TOP NAV ============ -->
+<nav class="topnav" id="topnav">
+  <div class="brand">
+    <img src="img/7z_logo.jpg" alt="7Z">
+    <div>
+      <div class="t1">7Z Magic Studio</div>
+      <div class="t2">Silla Hall — Visualization</div>
+    </div>
+  </div>
+  <div class="links" id="navlinks">
+    <a href="#hero" class="nav-link" data-target="hero">Overview</a>
+    <a href="#space-01" class="nav-link" data-target="space-01">Entrance</a>
+    <a href="#space-02" class="nav-link" data-target="space-02">Walkway</a>
+    <a href="#space-03" class="nav-link" data-target="space-03">Staircase</a>
+    <a href="#space-04" class="nav-link" data-target="space-04">Bar</a>
+    <a href="#space-05" class="nav-link" data-target="space-05">Terrace</a>
+    <a href="#space-06" class="nav-link" data-target="space-06">Boundary</a>
+    <a href="#space-07" class="nav-link" data-target="space-07">Stage</a>
+    <a href="#explore" class="nav-link" data-target="explore">Explore</a>
+  </div>
+</nav>
+
+<!-- ============ SIDE DOTS ============ -->
+<div class="side-nav" id="sidenav"></div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <video autoplay muted loop playsinline preload="auto" poster="vid/hero_poster.jpg" id="heroVideo">
+      <source src="vid/hero_bg.mp4" type="video/mp4">
+    </video>
+    <div class="hero-vignette" id="heroVignette"></div>
+  </div>
+  <div class="hero-content" id="heroContent">
+    <img class="hero-logo hero-el" src="img/7z_logo.jpg" alt="7Z Magic">
+    <div class="eyebrow hero-el">7Z Magic Team</div>
+    <h1 class="hero-el">SILLA <span>HALL</span></h1>
+    <div class="sub hero-el">Interactive AI Venue Upgrade Presentation</div>
+    <div class="hero-meta hero-el">
+      <div><div class="m-lbl">Client / Venue</div><div class="m-val">Eng. Yazan</div></div>
+      <div><div class="m-lbl">Design Profile</div><div class="m-val">Luxury Modern — Glass &amp; Bronze</div></div>
+      <div><div class="m-lbl">Mode</div><div class="m-val">Enhance Existing Place</div></div>
+      <div><div class="m-lbl">Date</div><div class="m-val">10 / 08 / 2026</div></div>
+    </div>
+  </div>
+  <div class="scroll-cue" id="scrollCue">
+    <span>Scroll to Explore</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16M6 14l6 6 6-6"/></svg>
+  </div>
+</section>
+
+<!-- Space sections get injected here by JS -->
+<main id="spaces"></main>
+
+<!-- ============ EXPLORE MORE GALLERY ============ -->
+<section class="explore-section" id="explore">
+  <div class="explore-head reveal">
+    <div class="space-kicker" style="justify-content:center;">Explore More</div>
+    <h2>Additional Design Concepts</h2>
+    <p>Further creative directions generated for this project — browse the full set of concepts beyond the seven confirmed spaces above.</p>
+  </div>
+  <div class="explore-spotlight">
+    <span class="sp-hint">Hover to preview</span>
+    <span class="sp-name" id="spName"></span>
+  </div>
+  <div class="explore-rail">
+    <div class="explore-grid" id="exploreGrid"></div>
+  </div>
+</section>
+
+<!-- ============ VIDEO EXPLORE — CINEMATIC REEL ============ -->
+<section class="video-section" id="videoExplore">
+  <div class="explore-head reveal">
+    <div class="space-kicker" style="justify-content:center;">In Motion</div>
+    <h2>Cinematic Reel</h2>
+    <p>Venue ambience and featured moments captured in motion — hover to preview, click to watch in full.</p>
+  </div>
+  <div class="video-grid" id="videoGrid"></div>
+</section>
+
+<!-- ============ ABOUT THE DESIGN ============ -->
+<section class="story-section">
+  <div class="story-inner reveal">
+    <div class="space-kicker">The Philosophy</div>
+    <h2>Designing Silla Hall as a Landmark</h2>
+    <p>Every space in this presentation was approached the same way the 7Z Magic team approaches any palace-grade venue: <b>not as a renovation, but as a landmark in the making.</b> The goal was never to simply brighten a photo — it was to ask what Silla Hall could become if every arch, wall, and threshold were pushed to its most cinematic, most timeless version of itself.</p>
+    <p>That meant locking the camera and the architecture in place — the boundary walls, the staircase geometry, the dance floor footprint — so every option could be judged purely on its design merit, side by side with the original. Light became the main storytelling tool throughout: golden hour warmth at the gate, blue hour drama at the staircase, and a fully choreographed glow across the main stage.</p>
+    <p>The result is a venue that reads as one coherent identity from the first gate to the final dance floor — palace-grade materials, a restrained luxury palette, and lighting designed to feel timeless in every photograph, at any hour of the event.</p>
+    <div class="story-pillars">
+      <div class="story-pillar">
+        <div class="sp-num">01 — LANDMARK DESIGN</div>
+        <h4>Instant Recognition</h4>
+        <p>Every space is composed for a dual day-and-night identity, so Silla Hall is immediately recognizable in any light, from any angle.</p>
+      </div>
+      <div class="story-pillar">
+        <div class="sp-num">02 — CINEMATIC LIGHT</div>
+        <h4>Light as Storyteller</h4>
+        <p>Golden hour, blue hour, and full night treatments were staged deliberately — light does the emotional work in every frame.</p>
+      </div>
+      <div class="story-pillar">
+        <div class="sp-num">03 — MATERIAL HONESTY</div>
+        <h4>Palace-Grade Materials</h4>
+        <p>Stone, brass, and marble were kept true to how they behave in real light — nothing reads as an effect or a filter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer reveal">
+  <img src="img/7z_logo.jpg" alt="7Z">
+  <h3>7Z Magic Studio</h3>
+  <p>Creative Technology Studio · Amman, Jordan — AI-driven architectural visualization for palace-grade, landmark-level spaces.</p>
+  <div class="foot-tag">Prepared by the 7Z Magic Team</div>
+</footer>
+
+<script>
+document.body.classList.add('loading');
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hide');
+    document.body.classList.remove('loading');
+    /* Professional hero reveal sequence: video plays clean first, then overlay, then content staggers in */
+    document.getElementById('heroVideo').classList.add('show');
+    setTimeout(() => document.getElementById('heroVignette').classList.add('show'), 550);
+    setTimeout(() => document.getElementById('heroContent').classList.add('reveal-in'), 900);
+    setTimeout(() => document.getElementById('scrollCue').classList.add('show'), 900);
+  }, 5000);
+});
+
+/* ================================================================
+   DATA — one entry per space. Extend this array for future spaces.
+   ================================================================ */
+const SPACES = [
+  {
+    id:'space-01', label:'Entrance', num:'Space 01 / 07',
+    kicker:'Grand Arrival', title:'Main Entrance Gate',
+    desc:'Camera-locked street-level view of the primary approach. The boundary wall position and central sightline stay fixed across every option below, so the upgrade can be judged on design alone.',
+    qc:[
+      'Boundary wall position & approach axis <b>locked</b> across all options',
+      'Palace-grade sandstone with bronze / gold signage detailing',
+      'Lighting mood verified against the Luxury Modern design profile'
+    ],
+    before:{ src:'img/space01_before.jpg', label:'Before — Original' },
+    options:[
+      { src:'img/space01_opt1.jpg', label:'Palace Arch, Warm Gold' },
+      { src:'img/space01_opt2.jpg', label:'Royal Crest Gate' },
+      { src:'img/space01_opt3.jpg', label:'Fortified Palace Portal' },
+      { src:'img/space01_opt4.jpg', label:'Grand Boulevard Approach' },
+      { src:'img/space01_opt5.jpg', label:'Twilight Arch Colonnade' }
+    ]
+  },
+  {
+    id:'space-02', label:'Walkway', num:'Space 02 / 07',
+    kicker:'Processional Axis', title:'Chandelier Arch Walkway',
+    desc:'The arch rhythm and rear building sightline are preserved across every version, letting the chandelier scale and material language carry the transformation from daylight to golden hour.',
+    qc:[
+      'Arch rhythm & floral hedge line <b>preserved</b> across all options',
+      'Chandelier fixtures and stone detailing at palace-grade quality',
+      'Dusk-to-night lighting verified against the design profile'
+    ],
+    before:{ src:'img/space02_before.jpg', label:'Before — Original' },
+    options:[
+      { src:'img/space02_opt1.jpg', label:'Grand Pillared Corridor' },
+      { src:'img/space02_opt2.jpg', label:'Silla Hall Crest Arch' },
+      { src:'img/space02_opt3.jpg', label:'Carved Relief Archway' },
+      { src:'img/space02_opt4.jpg', label:'Blue Hour Colonnade' },
+      { src:'img/space02_opt5.jpg', label:'Modern Stone Arch, Night' },
+      { src:'img/space02_opt6.jpg', label:'Golden Hour Passage' }
+    ]
+  },
+  {
+    id:'space-03', label:'Staircase', num:'Space 03 / 07',
+    kicker:'The Grand Reveal', title:'Grand Staircase Entrance',
+    desc:'The dual staircase geometry, balcony alcove, and central entry axis anchor every version — from soft daylight blossom to a fully re-imagined modern night facade.',
+    qc:[
+      'Dual staircase geometry & balcony line <b>locked</b> across all options',
+      'Palace-grade signage crown with floral cascade detailing',
+      'Facade lighting verified against the design profile, dusk to night'
+    ],
+    before:{ src:'img/space03_before.jpg', label:'Before — Original' },
+    options:[
+      { src:'img/space03_opt1.jpg', label:'Golden Hour Blossom Crown' },
+      { src:'img/space03_opt2.jpg', label:'Dusk Rose Cascade' },
+      { src:'img/space03_opt3.jpg', label:'Daylight Bloom Facade' },
+      { src:'img/space03_opt4.jpg', label:'Illuminated Crown Portal' },
+      { src:'img/space03_opt5.jpg', label:'Twilight Grand Portico' },
+      { src:'img/space03_opt6.jpg', label:'Modern Emerald Staircase' }
+    ]
+  },
+  {
+    id:'space-04', label:'Bar', num:'Space 04 / 07',
+    kicker:'Social Hub', title:'Outdoor Bar & Lounge',
+    desc:'The bar counter footprint and canopy structure stay fixed while the material language shifts — from classical fluted marble to a fully modern black-marble, laser-cut canopy.',
+    qc:[
+      'Counter footprint & canopy structure <b>locked</b> across all options',
+      'Marble, brass, and backlit shelving detailing at palace-grade quality',
+      'Ambient lighting verified against the design profile, night service mood'
+    ],
+    before:{ src:'img/space04_before.jpg', label:'Before — Original' },
+    options:[
+      { src:'img/space04_opt1.jpg', label:'Classical Marble Colonnade' },
+      { src:'img/space04_opt2.jpg', label:'Ornate Floral Marble Bar' },
+      { src:'img/space04_opt3.jpg', label:'Modern Black Marble, Gold Canopy' }
+    ]
+  },
+  {
+    id:'space-05', label:'Terrace', num:'Space 05 / 07',
+    kicker:'Secondary Approach', title:'Side Staircase Terrace',
+    desc:'A quieter counterpart to the main entrance — the balustrade line and terrace geometry hold steady while lighting intensity and floral density shift from restrained to fully immersive.',
+    qc:[
+      'Balustrade line & terrace geometry <b>locked</b> across all options',
+      'Uplighting rhythm along stone piers verified against the design profile',
+      'Floral cascade density staged from restrained to fully immersive'
+    ],
+    before:{ src:'img/space05_before.jpg', label:'Before — Original' },
+    options:[
+      { src:'img/space05_opt1.jpg', label:'Warm Balustrade Glow' },
+      { src:'img/space05_opt2.jpg', label:'Fully Lit Baluster Cascade' },
+      { src:'img/space05_opt3.jpg', label:'Floral Crown Staircase' },
+      { src:'img/space05_opt4.jpg', label:'Spotlit Stone Base' }
+    ]
+  },
+  {
+    id:'space-06', label:'Boundary', num:'Space 06 / 07',
+    kicker:'Perimeter Identity', title:'Garden Boundary Wall',
+    desc:'The perimeter wall becomes a design moment in its own right — from a plain shade-cloth screen to a fully articulated stone or timber facade with landscape lighting.',
+    qc:[
+      'Wall length & sightline <b>locked</b> across all options',
+      'Cypress and olive tree placement staged for immediate landscape impact',
+      'Vertical accent lighting verified against the design profile'
+    ],
+    before:{ src:'img/space06_before.jpg', label:'Before — Original' },
+    options:[
+      { src:'img/space06_opt1.jpg', label:'Stone Panel & Lantern Screen' },
+      { src:'img/space06_opt2.jpg', label:'Vertical Timber & Olive Grove' }
+    ]
+  },
+  {
+    id:'space-07', label:'Stage', num:'Space 07 / 07',
+    kicker:'The Main Stage', title:'Grand Stage & Dance Floor Wall',
+    desc:'The signature backdrop of the venue — dance floor footprint and rigging line stay fixed while the stage wall itself is restaged across six distinct identities, from classical arcade to full monogram branding.',
+    qc:[
+      'Dance floor footprint & rigging line <b>locked</b> across all options',
+      'Backdrop wall restaged across classical, marble-crest, and modern onyx identities',
+      'Signage & monogram placement verified against the design profile'
+    ],
+    before:{ src:'img/space07_before.jpg', label:'Before — Original' },
+    options:[
+      { src:'img/space07_opt1.jpg', label:'Classic Arcade, Wrought Iron Screens' },
+      { src:'img/space07_opt2.jpg', label:'Marble Crest Arcade' },
+      { src:'img/space07_opt3.jpg', label:'Modern Onyx Wave Panel' },
+      { src:'img/space07_opt4.jpg', label:'WW Monogram Marble Portal' },
+      { src:'img/space07_opt5.jpg', label:'Layered Onyx Vertical Fins' },
+      { src:'img/space07_opt6.jpg', label:'ZS Monogram Fireworks Panel' }
+    ]
+  }
+];
+
+/* Cinematic video reel — every clip captured for this project */
+const VIDEO_EXPLORE = [
+  { src:'vid/reel_space01.mp4', poster:'vid/reel_space01_poster.jpg', label:'Main Entrance Gate', tag:'Venue', big:true },
+  { src:'vid/reel_space02.mp4', poster:'vid/reel_space02_poster.jpg', label:'Chandelier Arch Walkway', tag:'Venue' },
+  { src:'vid/reel_space03.mp4', poster:'vid/reel_space03_poster.jpg', label:'Grand Staircase Reveal', tag:'Venue' },
+  { src:'vid/reel_space04.mp4', poster:'vid/reel_space04_poster.jpg', label:'Outdoor Bar & Lounge', tag:'Venue' },
+  { src:'vid/reel_space05.mp4', poster:'vid/reel_space05_poster.jpg', label:'Side Staircase Terrace', tag:'Venue' },
+  { src:'vid/reel_space06.mp4', poster:'vid/reel_space06_poster.jpg', label:'Boundary Wall Avenue', tag:'Venue' },
+  { src:'vid/reel_space07.mp4', poster:'vid/reel_space07_poster.jpg', label:'Main Stage & Dance Floor', tag:'Venue', big:true },
+  { src:'vid/explore_v01.mp4', poster:'vid/explore_v01_poster.jpg', label:'Entrance Walkway, Dusk', tag:'Venue' },
+  { src:'vid/explore_v02.mp4', poster:'vid/explore_v02_poster.jpg', label:'Arched Corridor Passage', tag:'Venue' },
+  { src:'vid/explore_v03.mp4', poster:'vid/explore_v03_poster.jpg', label:'Signature Entrance Signage', tag:'Venue' },
+  { src:'vid/explore_v04.mp4', poster:'vid/explore_v04_poster.jpg', label:'Angel Wings Photo Moment', tag:'Venue' },
+  { src:'vid/explore_v05.mp4', poster:'vid/explore_v05_poster.jpg', label:'Arrival Car, Golden Hour', tag:'Moment', big:true },
+  { src:'vid/explore_v06.mp4', poster:'vid/explore_v06_poster.jpg', label:'Bride & Groom, Garden Aisle', tag:'Moment' },
+  { src:'vid/explore_v07.mp4', poster:'vid/explore_v07_poster.jpg', label:'Walking the Monogram Corridor', tag:'Moment' },
+  { src:'vid/explore_v08.mp4', poster:'vid/explore_v08_poster.jpg', label:'A Quiet Moment, Floral Wall', tag:'Moment' },
+  { src:'vid/explore_v09.mp4', poster:'vid/explore_v09_poster.jpg', label:'Ceremony Under the Arch', tag:'Moment', big:true },
+  { src:'vid/explore_v10.mp4', poster:'vid/explore_v10_poster.jpg', label:'The Bride, Garden Portrait', tag:'Moment' }
+];
+
+/* Explore More — full V3 creative concept set (not paired) */
+const EXPLORE = [
+  'img/v3_01.jpg',
+  'img/v3_02.jpg',
+  'img/v3_03.jpg',
+  'img/v3_04.jpg',
+  'img/v3_05.jpg',
+  'img/v3_06.jpg',
+  'img/v3_07.jpg',
+  'img/v3_08.jpg',
+  'img/v3_09.jpg',
+  'img/v3_10.jpg',
+  'img/v3_11.jpg',
+  'img/v3_12.jpg',
+  'img/v3_13.jpg',
+  'img/v3_14.jpg',
+  'img/v3_15.jpg',
+  'img/v3_16.jpg',
+  'img/v3_17.jpg',
+  'img/v3_18.jpg',
+  'img/v3_19.jpg',
+  'img/v3_20.jpg',
+  'img/v3_21.jpg',
+  'img/v3_22.jpg',
+  'img/v3_23.jpg',
+  'img/v3_24.jpg',
+  'img/v3_25.jpg',
+  'img/v3_26.jpg',
+  'img/v3_27.jpg',
+  'img/v3_28.jpg',
+  'img/v3_29.jpg',
+  'img/v3_30.jpg',
+  'img/v3_31.jpg',
+  'img/v3_32.jpg',
+  'img/v3_33.jpg',
+  'img/v3_34.jpg',
+  'img/v3_35.jpg',
+  'img/v3_36.jpg',
+  'img/v3_37.jpg',
+  'img/v3_38.jpg',
+  'img/v3_39.jpg',
+  'img/v3_40.jpg',
+  'img/v3_41.jpg',
+];
+
+const ICON_PREV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+const ICON_NEXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+
+/* ================================================================
+   RENDER
+   ================================================================ */
+const spacesRoot = document.getElementById('spaces');
+const sideNav = document.getElementById('sidenav');
+
+SPACES.forEach((sp, sIdx) => {
+  // full list: index 0 = before, 1..n = options
+  const all = [sp.before, ...sp.options];
+
+  const section = document.createElement('section');
+  section.className = 'space-section';
+  section.id = sp.id;
+  section.innerHTML = `
+    <video class="space-bg" autoplay muted loop playsinline preload="metadata" poster="${sp.before.src}">
+      <source src="vid/${sp.id.replace('-','')}_bg.mp4" type="video/mp4">
+    </video>
+    <div class="space-bg-overlay"></div>
+    <div class="space-inner">
+      <div class="space-info">
+        <div class="space-num">${sp.num}</div>
+        <div class="space-kicker">${sp.kicker}</div>
+        <h2>${sp.title}</h2>
+        <p>${sp.desc}</p>
+        <div class="space-divider"></div>
+        <div class="space-qc">
+          ${sp.qc.map(t => `<div class="qc-row"><span class="qc-dot"></span><span class="qc-text">${t}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="viewer">
+        <div class="viewer-frame" data-frame>
+          ${all.map((o,i) => `<img src="${o.src}" alt="${o.label}" data-i="${i}" class="${i===1?'active':''}">`).join('')}
+          <div class="viewer-tag" data-tag>Option 1 / ${sp.options.length}</div>
+          <button class="viewer-arrow prev" data-prev aria-label="Previous">${ICON_PREV}</button>
+          <button class="viewer-arrow next" data-next aria-label="Next">${ICON_NEXT}</button>
+        </div>
+        <div class="viewer-caption">
+          <div class="cap-text" data-cap>${sp.options[0].label}</div>
+          <div class="cap-count" data-count>1 / ${sp.options.length}</div>
+        </div>
+        <div class="thumbstrip" data-thumbs>
+          ${all.map((o,i) => `
+            <div class="thumb ${i===1?'active':''}" data-thumb data-i="${i}">
+              <img src="${o.src}" alt="">
+              <span class="thumb-idx">${i===0?'Before':i}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  spacesRoot.appendChild(section);
+
+  // ---- gallery controller for this section ----
+  let current = 1; // start on first option
+  const frame = section.querySelector('[data-frame]');
+  const imgs = [...frame.querySelectorAll('img')];
+  const tag = section.querySelector('[data-tag]');
+  const cap = section.querySelector('[data-cap]');
+  const count = section.querySelector('[data-count]');
+  const thumbs = [...section.querySelectorAll('[data-thumb]')];
+
+  function render(){
+    imgs.forEach(im => im.classList.toggle('active', +im.dataset.i === current));
+    thumbs.forEach(t => t.classList.toggle('active', +t.dataset.i === current));
+    if(current === 0){
+      tag.textContent = sp.before.label;
+      tag.classList.add('is-before');
+      cap.textContent = sp.before.label;
+      count.textContent = `Original / ${sp.options.length}`;
+    } else {
+      tag.innerHTML = `<span class="idx-badge">${String(current).padStart(2,'0')}</span>${sp.options[current-1].label}`;
+      tag.classList.remove('is-before');
+      cap.textContent = `Option ${current} — ${sp.options[current-1].label}`;
+      count.textContent = `${current} / ${sp.options.length}`;
+    }
+    const active = thumbs.find(t => +t.dataset.i === current);
+    if(active){
+      const stripEl = section.querySelector('[data-thumbs]');
+      const targetLeft = active.offsetLeft - (stripEl.clientWidth - active.clientWidth) / 2;
+      stripEl.scrollTo({ left: Math.max(0, targetLeft), behavior:'smooth' });
+    }
+  }
+  function go(delta){
+    current = (current + delta + all.length) % all.length;
+    render();
+  }
+  section.querySelector('[data-prev]').addEventListener('click', () => go(-1));
+  section.querySelector('[data-next]').addEventListener('click', () => go(1));
+  thumbs.forEach(t => t.addEventListener('click', () => { current = +t.dataset.i; render(); }));
+
+  // touch swipe
+  let touchX = null;
+  frame.addEventListener('touchstart', e => touchX = e.touches[0].clientX, {passive:true});
+  frame.addEventListener('touchend', e => {
+    if(touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+    touchX = null;
+  }, {passive:true});
+
+  // keyboard nav when section is focused/in-view
+  section.tabIndex = -1;
+  section._gallery = { go };
+
+  render();
+
+  // side nav dot
+  const dot = document.createElement('button');
+  dot.dataset.target = sp.id;
+  dot.dataset.label = sp.label;
+  sideNav.appendChild(dot);
+});
+
+// hero dot
+const heroDot = document.createElement('button');
+heroDot.dataset.target = 'hero';
+heroDot.dataset.label = 'Overview';
+heroDot.classList.add('active');
+sideNav.insertBefore(heroDot, sideNav.firstChild);
+
+/* explore dot (appended after space dots) */
+const exploreDot = document.createElement('button');
+exploreDot.dataset.target = 'explore';
+exploreDot.dataset.label = 'Explore';
+sideNav.appendChild(exploreDot);
+
+/* ================================================================
+   EXPLORE MORE GRID + LIGHTBOX
+   ================================================================ */
+const exploreGrid = document.getElementById('exploreGrid');
+const spName = document.getElementById('spName');
+/* Full-bleed irregular masonry — deterministic organic pattern so the grid always fills edge to edge */
+const EX_PATTERN = ['big','','wide','','','tall','','big','wide','','tall','','','wide','big','','','tall','wide','',''];
+EXPLORE.forEach((src, i) => {
+  const item = document.createElement('div');
+  const sizeClass = EX_PATTERN[i % EX_PATTERN.length];
+  item.className = 'explore-item reveal' + (sizeClass ? ' ' + sizeClass : '');
+  item.dataset.i = i;
+  item.innerHTML = `<img src="${src}" alt="Concept ${i+1}" loading="lazy"><span class="ex-shine"></span><span class="ex-idx">Concept ${String(i+1).padStart(2,'0')}</span>`;
+  exploreGrid.appendChild(item);
+});
+
+/* tilt + shine + spotlight label on hover */
+exploreGrid.querySelectorAll('.explore-item').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    const rx = (py - 0.5) * -10, ry = (px - 0.5) * 10;
+    el.style.transform = `translateY(-4px) scale(1.03) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    el.style.setProperty('--mx', `${px*100}%`);
+    el.style.setProperty('--my', `${py*100}%`);
+  });
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; spName.classList.remove('show'); });
+  el.addEventListener('mouseenter', () => {
+    spName.textContent = `Concept ${String(+el.dataset.i+1).padStart(2,'0')}`;
+    spName.classList.add('show');
+  });
+});
+
+const lightbox = document.createElement('div');
+lightbox.className = 'lightbox';
+lightbox.innerHTML = `
+  <button class="lightbox-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="lightbox-nav lb-prev" aria-label="Previous">${ICON_PREV}</button>
+  <img src="" alt="">
+  <button class="lightbox-nav lb-next" aria-label="Next">${ICON_NEXT}</button>
+`;
+document.body.appendChild(lightbox);
+const lbImg = lightbox.querySelector('img');
+let lbIndex = 0;
+function openLightbox(i){
+  lbIndex = i;
+  lbImg.src = EXPLORE[lbIndex];
+  lightbox.classList.add('open');
+}
+function closeLightbox(){ lightbox.classList.remove('open'); }
+function lbGo(delta){ lbIndex = (lbIndex + delta + EXPLORE.length) % EXPLORE.length; lbImg.src = EXPLORE[lbIndex]; }
+exploreGrid.querySelectorAll('.explore-item').forEach(el => el.addEventListener('click', () => openLightbox(+el.dataset.i)));
+lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+lightbox.querySelector('.lb-prev').addEventListener('click', () => lbGo(-1));
+lightbox.querySelector('.lb-next').addEventListener('click', () => lbGo(1));
+lightbox.addEventListener('click', e => { if(e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if(!lightbox.classList.contains('open')) return;
+  if(e.key === 'Escape') closeLightbox();
+  if(e.key === 'ArrowRight') lbGo(1);
+  if(e.key === 'ArrowLeft') lbGo(-1);
+});
+
+
+/* ================================================================
+   VIDEO EXPLORE — cinematic reel grid + lightbox
+   ================================================================ */
+const videoGrid = document.getElementById('videoGrid');
+VIDEO_EXPLORE.forEach((v, i) => {
+  const tile = document.createElement('div');
+  tile.className = 'video-tile reveal' + (v.big ? ' tall wide' : '');
+  tile.dataset.i = i;
+  tile.innerHTML = `
+    <video src="${v.src}" poster="${v.poster}" muted loop playsinline preload="metadata" autoplay></video>
+    <span class="vt-badge"><span class="vt-dot"></span>${v.tag}</span>
+    <div class="vt-play"><span>${ICON_NEXT.replace('9 18l6-6-6-6','8 5v14l11-7z')}</span></div>
+  `;
+  videoGrid.appendChild(tile);
+});
+
+const videoLightbox = document.createElement('div');
+videoLightbox.className = 'video-lightbox';
+videoLightbox.innerHTML = `
+  <button class="lightbox-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="lightbox-nav lb-prev" aria-label="Previous">${ICON_PREV}</button>
+  <video controls autoplay playsinline></video>
+  <button class="lightbox-nav lb-next" aria-label="Next">${ICON_NEXT}</button>
+`;
+document.body.appendChild(videoLightbox);
+const vlVideo = videoLightbox.querySelector('video');
+let vlIndex = 0;
+function openVideoLightbox(i){
+  vlIndex = i;
+  vlVideo.src = VIDEO_EXPLORE[vlIndex].src;
+  videoLightbox.classList.add('open');
+  vlVideo.play().catch(()=>{});
+}
+function closeVideoLightbox(){ videoLightbox.classList.remove('open'); vlVideo.pause(); }
+function vlGo(delta){ vlIndex = (vlIndex + delta + VIDEO_EXPLORE.length) % VIDEO_EXPLORE.length; vlVideo.src = VIDEO_EXPLORE[vlIndex].src; vlVideo.play().catch(()=>{}); }
+videoGrid.querySelectorAll('.video-tile').forEach(el => el.addEventListener('click', () => openVideoLightbox(+el.dataset.i)));
+videoLightbox.querySelector('.lightbox-close').addEventListener('click', closeVideoLightbox);
+videoLightbox.querySelector('.lb-prev').addEventListener('click', () => vlGo(-1));
+videoLightbox.querySelector('.lb-next').addEventListener('click', () => vlGo(1));
+videoLightbox.addEventListener('click', e => { if(e.target === videoLightbox) closeVideoLightbox(); });
+document.addEventListener('keydown', e => {
+  if(!videoLightbox.classList.contains('open')) return;
+  if(e.key === 'Escape') closeVideoLightbox();
+  if(e.key === 'ArrowRight') vlGo(1);
+  if(e.key === 'ArrowLeft') vlGo(-1);
+});
+
+/* ================================================================
+   NAV INTERACTIONS
+   ================================================================ */
+const allDots = [...sideNav.querySelectorAll('button')];
+const navLinks = [...document.querySelectorAll('.nav-link')];
+function scrollToId(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+allDots.forEach(d => d.addEventListener('click', () => scrollToId(d.dataset.target)));
+navLinks.forEach(a => a.addEventListener('click', e => {
+  e.preventDefault(); scrollToId(a.dataset.target);
+}));
+
+/* topnav shrink on scroll */
+const topnav = document.getElementById('topnav');
+window.addEventListener('scroll', () => {
+  topnav.classList.toggle('scrolled', window.scrollY > 40);
+}, {passive:true});
+
+/* IntersectionObserver — active section tracking + reveal animations */
+const allSections = [document.getElementById('hero'), ...SPACES.map(s => document.getElementById(s.id)), document.getElementById('explore')];
+const revealTargets = document.querySelectorAll('.space-section, .reveal, .explore-item, .video-tile');
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if(en.isIntersecting){
+      en.target.classList.add('in-view');
+    }
+  });
+}, { threshold: 0.15 });
+revealTargets.forEach(el => io.observe(el));
+
+const navIo = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if(en.isIntersecting){
+      const id = en.target.id;
+      allDots.forEach(d => d.classList.toggle('active', d.dataset.target === id));
+      navLinks.forEach(a => a.classList.toggle('active', a.dataset.target === id));
+    }
+  });
+}, { threshold: 0.5 });
+allSections.forEach(s => navIo.observe(s));
+
+/* keyboard left/right controls the space section currently centered in viewport */
+document.addEventListener('keydown', (e) => {
+  if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const mid = window.innerHeight / 2;
+  let closest = null, closestDist = Infinity;
+  document.querySelectorAll('.space-section').forEach(sec => {
+    const r = sec.getBoundingClientRect();
+    const dist = Math.abs((r.top + r.bottom)/2 - mid);
+    if(dist < closestDist){ closestDist = dist; closest = sec; }
+  });
+  if(closest && closest._gallery) closest._gallery.go(e.key === 'ArrowRight' ? 1 : -1);
+});
+</script>
+</body>
+</html>
