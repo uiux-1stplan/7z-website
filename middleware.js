@@ -1,106 +1,44 @@
 import { next, rewrite } from '@vercel/functions';
+import { PRIVATE_RESOURCES, readCookie, scopeForPath, verifySession } from './lib/private-access.js';
 
-const protectedPresentations = [
-  {
-    prefix: '/elcon-arabia-presentation',
-    userEnv: 'ELCON_USER',
-    passwordEnv: 'ELCON_PASSWORD',
-    realm: 'ELCON Arabia Private Presentation'
-  },
-  {
-    prefix: '/silla-hall-presentation',
-    userEnv: 'SILLA_HALL_USER',
-    passwordEnv: 'SILLA_HALL_PASSWORD',
-    realm: 'Silla Hall Private Presentation'
-  }
-];
-
-function unauthorized(realm) {
-  return new Response('Authentication Required', {
-    status: 401,
+function accessRedirect(request, scope, url) {
+  const destination = new URL('/access/', request.url);
+  destination.searchParams.set('resource', scope);
+  destination.searchParams.set('next', `${url.pathname}${url.search}`);
+  return new Response(null, {
+    status: 302,
     headers: {
-      'WWW-Authenticate': `Basic realm="${realm}", charset="UTF-8"`,
-      'Cache-Control': 'no-store, no-cache, must-revalidate',
-      'Pragma': 'no-cache'
+      Location: destination.toString(),
+      'Cache-Control': 'no-store, max-age=0',
+      Pragma: 'no-cache'
     }
   });
 }
 
-export default function middleware(request) {
+export default async function middleware(request) {
   const url = new URL(request.url);
+  const scope = scopeForPath(url.pathname);
+  if (!scope) return next();
 
-  const presentation = protectedPresentations.find(({ prefix }) =>
-    url.pathname === prefix ||
-    url.pathname === `${prefix}/` ||
-    url.pathname.startsWith(`${prefix}/`)
-  );
+  const cookieName = PRIVATE_RESOURCES[scope].cookieName;
+  const token = readCookie(request.headers.get('cookie'), cookieName);
+  const authenticated = await verifySession(token, scope, process.env.PRIVATE_ACCESS_SESSION_SECRET);
+  if (!authenticated) return accessRedirect(request, scope, url);
 
-  if (!presentation) {
-    return next();
+  if (scope !== 'blueprint' && (url.pathname === '/silla-hall-presentation' || url.pathname === '/elcon-arabia-presentation' || url.pathname === '/silla-hall-presentation/' || url.pathname === '/elcon-arabia-presentation/')) {
+    return rewrite(new URL(`${url.pathname.replace(/\/$/, '')}/index`, request.url));
   }
-
-  const expectedUser = process.env[presentation.userEnv];
-  const expectedPassword = process.env[presentation.passwordEnv];
-
-  if (!expectedUser || !expectedPassword) {
-    return new Response('Presentation access is not configured.', {
-      status: 503,
-      headers: {
-        'Cache-Control': 'no-store'
-      }
-    });
-  }
-
-  const authorization = request.headers.get('authorization');
-
-  if (!authorization || !authorization.startsWith('Basic ')) {
-    return unauthorized(presentation.realm);
-  }
-
-  try {
-    const encoded = authorization.slice(6);
-    const decoded = atob(encoded);
-
-    const separator = decoded.indexOf(':');
-
-    if (separator === -1) {
-      return unauthorized(presentation.realm);
-    }
-
-    const username = decoded.slice(0, separator);
-    const password = decoded.slice(separator + 1);
-
-    if (
-      username !== expectedUser ||
-      password !== expectedPassword
-    ) {
-      return unauthorized(presentation.realm);
-    }
-
-    if (
-      url.pathname === presentation.prefix ||
-      url.pathname === `${presentation.prefix}/`
-    ) {
-      return rewrite(
-        new URL(
-          `${presentation.prefix}/index`,
-          request.url
-        )
-      );
-    }
-
-    return next();
-
-  } catch {
-    return unauthorized(presentation.realm);
-  }
+  return next();
 }
 
 export const config = {
   matcher: [
+    '/silla-hall-presentation',
+    '/silla-hall-presentation/:path*',
     '/elcon-arabia-presentation',
     '/elcon-arabia-presentation/:path*',
-    '/silla-hall-presentation',
-    '/silla-hall-presentation/:path*'
+    '/strategic-blueprint',
+    '/strategic-blueprint/:path*',
+    '/api/private-documents/blueprint'
   ]
 };

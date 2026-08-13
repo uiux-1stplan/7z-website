@@ -7,6 +7,23 @@
     "cleanUrls":  true,
     "headers":  [
                     {
+                        "source":  "/access/(.*)",
+                        "headers":  [
+                                        {
+                                            "key":  "Cache-Control",
+                                            "value":  "no-store, max-age=0"
+                                        },
+                                        {
+                                            "key":  "X-Robots-Tag",
+                                            "value":  "noindex, noarchive, nosnippet"
+                                        },
+                                        {
+                                            "key":  "Referrer-Policy",
+                                            "value":  "no-referrer"
+                                        }
+                                    ]
+                    },
+                    {
                         "source":  "/assets/(.*)",
                         "headers":  [
                                         {

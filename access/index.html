@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, noarchive, nosnippet">
+  <meta name="theme-color" content="#08090b">
+  <title>7Z Private Access</title>
+  <link rel="stylesheet" href="/access/access.css">
+</head>
+<body>
+  <main class="access-stage">
+    <div class="film-grain" aria-hidden="true"></div>
+    <div class="environment environment--cold" aria-hidden="true"></div>
+    <div class="environment environment--warm" aria-hidden="true"></div>
+    <section class="access-layout" aria-labelledby="access-title">
+      <div class="mark-column" aria-hidden="true">
+        <div class="mark-shell">
+          <div class="private-logo"></div>
+          <div class="mark-reflection"></div>
+        </div>
+      </div>
+      <section class="access-console">
+        <div class="console-topline"><span>7Z PRIVATE ACCESS</span><i></i><span id="scope-code">PRIVATE</span></div>
+        <p class="eyebrow" id="access-type">PRIVATE ACCESS</p>
+        <h1 id="access-title">7Z PRIVATE ACCESS</h1>
+        <p class="resource-name" id="resource-name">VERIFIED RESOURCE</p>
+        <form id="access-form" novalidate>
+          <div class="field-group">
+            <label for="client-id">CLIENT ID</label>
+            <input id="client-id" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="256" required>
+          </div>
+          <div class="field-group">
+            <label for="access-key">ACCESS KEY</label>
+            <input id="access-key" name="current-password" type="password" autocomplete="current-password" maxlength="256" required>
+          </div>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          <button class="access-submit" id="access-submit" type="submit"><span>ENTER EXPERIENCE</span><b aria-hidden="true">→</b></button>
+        </form>
+        <p class="console-note">AUTHORIZED CLIENTS &amp; INTERNAL TEAMS ONLY</p>
+      </section>
+    </section>
+    <div class="grant-screen" aria-live="assertive" aria-hidden="true"><span>ACCESS GRANTED</span></div>
+  </main>
+  <script src="/access/access.js"></script>
+</body>
+</html>
