@@ -15,8 +15,8 @@ export default async function handler(request, response) {
     return response.status(405).end();
   }
 
-  const token = readCookie(request.headers.cookie, PRIVATE_RESOURCES.blueprint.cookieName);
-  const valid = await verifySession(token, 'blueprint', process.env.PRIVATE_ACCESS_SESSION_SECRET);
+  const token = readCookie(request.headers.cookie, PRIVATE_RESOURCES['blueprint-pdf'].cookieName);
+  const valid = await verifySession(token, 'blueprint-pdf', process.env.PRIVATE_ACCESS_SESSION_SECRET);
   if (!valid) {
     applyHeaders(response);
     return response.status(401).end();

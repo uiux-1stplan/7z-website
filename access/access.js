@@ -2,7 +2,8 @@
   const resources = {
     silla: { type: 'PRIVATE CLIENT ACCESS', name: 'SILLA HALL — INTERACTIVE PRESENTATION', code: 'SILLA' },
     elcon: { type: 'PRIVATE CLIENT ACCESS', name: 'ELCON ARABIA — INTERACTIVE PRESENTATION', code: 'ELCON' },
-    blueprint: { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — INTERACTIVE', pdfName: '7Z STRATEGIC BLUEPRINT — CONFIDENTIAL PDF', code: 'BLUEPRINT' }
+    'blueprint-html': { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — PROTECTED HTML', code: 'BLUEPRINT / HTML' },
+    'blueprint-pdf': { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — CONFIDENTIAL PDF', code: 'BLUEPRINT / PDF' }
   };
   const params = new URLSearchParams(window.location.search);
   const resource = params.get('resource');
@@ -24,7 +25,7 @@
   }
 
   document.getElementById('access-type').textContent = config.type;
-  document.getElementById('resource-name').textContent = resource === 'blueprint' && next.startsWith('/api/private-documents/blueprint') ? config.pdfName : config.name;
+  document.getElementById('resource-name').textContent = config.name;
   document.getElementById('scope-code').textContent = config.code;
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !stage.classList.contains('is-authenticating')) {

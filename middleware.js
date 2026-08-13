@@ -25,7 +25,7 @@ export default async function middleware(request) {
   const authenticated = await verifySession(token, scope, process.env.PRIVATE_ACCESS_SESSION_SECRET);
   if (!authenticated) return accessRedirect(request, scope, url);
 
-  if (scope !== 'blueprint' && (url.pathname === '/silla-hall-presentation' || url.pathname === '/elcon-arabia-presentation' || url.pathname === '/silla-hall-presentation/' || url.pathname === '/elcon-arabia-presentation/')) {
+  if ((scope === 'silla' || scope === 'elcon') && (url.pathname === '/silla-hall-presentation' || url.pathname === '/elcon-arabia-presentation' || url.pathname === '/silla-hall-presentation/' || url.pathname === '/elcon-arabia-presentation/')) {
     return rewrite(new URL(`${url.pathname.replace(/\/$/, '')}/index`, request.url));
   }
   return next();
