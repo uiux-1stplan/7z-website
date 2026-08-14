@@ -1,7 +1,7 @@
 import { issueSignedToken, presignUrl } from '@vercel/blob';
 import { PRIVATE_RESOURCES, noStoreHeaders, readCookie, verifySession } from '../../lib/private-access.js';
 
-const BLOB_PATHNAME = 'private/7z-magic-strategic-blueprint-2026-2027.pdf';
+const BLOB_PATHNAME = 'private/7z-magic-strategic-blueprint-2026-2027-v2-20260814.pdf';
 const SIGNED_URL_LIFETIME_MS = 90_000;
 
 function applyHeaders(response, extraHeaders = {}) {
