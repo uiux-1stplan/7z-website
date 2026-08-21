@@ -39,6 +39,10 @@ export const config = {
     '/elcon-arabia-presentation/:path*',
     '/strategic-blueprint',
     '/strategic-blueprint/:path*',
+    '/tawjihi-english-quotation',
+    '/tawjihi-english-quotation/:path*',
+    '/oman-market-partnership',
+    '/oman-market-partnership/:path*',
     '/api/private-documents/blueprint'
   ]
 };

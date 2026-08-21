@@ -3,7 +3,9 @@
     silla: { type: 'PRIVATE CLIENT ACCESS', name: 'SILLA HALL — INTERACTIVE PRESENTATION', code: 'SILLA' },
     elcon: { type: 'PRIVATE CLIENT ACCESS', name: 'ELCON ARABIA — INTERACTIVE PRESENTATION', code: 'ELCON' },
     'blueprint-html': { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — PROTECTED HTML', code: 'BLUEPRINT / HTML' },
-    'blueprint-pdf': { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — CONFIDENTIAL PDF', code: 'BLUEPRINT / PDF' }
+    'blueprint-pdf': { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — CONFIDENTIAL PDF', code: 'BLUEPRINT / PDF' },
+    'tawjihi-quotation': { type: 'PRIVATE QUOTATION', name: 'TAWJIHI ENGLISH DIGITAL CURRICULUM', code: 'TQ-01' },
+    'oman-partnership': { type: 'PRIVATE PARTNERSHIP', name: 'OMAN MARKET PARTNERSHIP', code: 'OM-01' }
   };
   const params = new URLSearchParams(window.location.search);
   const resource = params.get('resource');
