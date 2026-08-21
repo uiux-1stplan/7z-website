@@ -1,0 +1,252 @@
+/* 7Z Magic Admin Panel — content layer only.
+   Global header, footer, atmosphere, navigation and route transitions
+   come from the real 7Z site shell. */
+
+.z7admin-page {
+  position: relative;
+  z-index: 2;
+  overflow: clip;
+}
+
+.z7admin-shell {
+  width: min(1240px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.z7admin-hero {
+  display: grid;
+  min-height: 100svh;
+  align-items: center;
+  padding: clamp(150px, 15vw, 210px) 0 clamp(95px, 10vw, 150px);
+}
+
+.z7admin-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(390px, .72fr);
+  align-items: center;
+  gap: clamp(60px, 9vw, 150px);
+}
+
+.z7admin-copy h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 700;
+  letter-spacing: -.075em;
+  line-height: .86;
+}
+
+.z7admin-copy h1 span {
+  color: rgba(255,255,255,.52);
+}
+
+.z7admin-copy > p:last-child {
+  max-width: 640px;
+  margin: 32px 0 0;
+  color: rgba(255,255,255,.55);
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  line-height: 1.75;
+}
+
+.z7admin-console {
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,.13);
+  background:
+    radial-gradient(circle at 100% 0, rgba(141,238,255,.055), transparent 36%),
+    rgba(8,8,8,.72);
+  backdrop-filter: blur(18px);
+}
+
+.z7admin-console__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.35);
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .15em;
+}
+
+.z7admin-indicator {
+  color: rgba(255,255,255,.48);
+}
+
+.z7admin-indicator.is-active {
+  color: #8deeff;
+}
+
+.z7admin-kicker {
+  margin: 34px 0 10px;
+  color: rgba(255,255,255,.4);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.z7admin-console h2 {
+  margin: 0 0 30px;
+  color: #fff;
+  font-size: clamp(2rem, 3.4vw, 3.7rem);
+  letter-spacing: -.055em;
+}
+
+.z7admin-form {
+  display: grid;
+  gap: 17px;
+}
+
+.z7admin-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.z7admin-form label > span {
+  color: rgba(255,255,255,.4);
+  font-size: .65rem;
+  font-weight: 750;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.z7admin-form input {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  outline: 0;
+  background: rgba(255,255,255,.025);
+  color: #fff;
+  font: inherit;
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.z7admin-form input:focus {
+  border-color: rgba(141,238,255,.48);
+  background: rgba(141,238,255,.025);
+}
+
+.z7admin-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 54px;
+  margin-top: 6px;
+  padding: 0 17px;
+  border: 1px solid rgba(141,238,255,.35);
+  background: rgba(141,238,255,.045);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: .69rem;
+  font-weight: 850;
+  letter-spacing: .1em;
+}
+
+.z7admin-submit:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+.z7admin-message {
+  min-height: 20px;
+  margin: 0;
+  color: rgba(255,255,255,.48);
+  font-size: .75rem;
+}
+
+.z7admin-session-copy {
+  margin: -14px 0 26px;
+  color: rgba(255,255,255,.5);
+  font-size: .84rem;
+  line-height: 1.65;
+}
+
+.z7admin-resources {
+  display: grid;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.z7admin-resources a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 48px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.66);
+  font-size: .78rem;
+  transition: color .2s ease, padding .25s ease;
+}
+
+.z7admin-resources a:hover {
+  padding-left: 7px;
+  color: #fff;
+}
+
+.z7admin-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.z7admin-hub-link,
+.z7admin-panel-actions button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: transparent;
+  color: rgba(255,255,255,.6);
+  font: inherit;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  cursor: pointer;
+}
+
+.z7admin-hub-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.z7admin-hub-link:hover,
+.z7admin-panel-actions button:hover {
+  border-color: rgba(141,238,255,.32);
+  color: #fff;
+}
+
+@media (max-width: 980px) {
+  .z7admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .z7admin-copy {
+    max-width: 800px;
+  }
+
+  .z7admin-console {
+    max-width: 620px;
+  }
+}
+
+@media (max-width: 760px) {
+  .z7admin-shell {
+    width: min(100% - 30px, 1240px);
+  }
+
+  .z7admin-hero {
+    padding: 120px 0 86px;
+  }
+
+  .z7admin-copy h1 {
+    font-size: clamp(3.3rem, 16vw, 5.2rem);
+  }
+
+  .z7admin-console {
+    padding: 22px;
+  }
+}

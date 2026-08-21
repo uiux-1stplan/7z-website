@@ -1,5 +1,5 @@
 import { next, rewrite } from '@vercel/functions';
-import { PRIVATE_RESOURCES, readCookie, scopeForPath, verifySession } from './lib/private-access.js';
+import { ADMIN_COOKIE_NAME, PRIVATE_RESOURCES, readCookie, scopeForPath, verifyAdminSession, verifySession } from './lib/private-access.js';
 
 function accessRedirect(request, scope, url) {
   const destination = new URL('/access/', request.url);
@@ -20,10 +20,16 @@ export default async function middleware(request) {
   const scope = scopeForPath(url.pathname);
   if (!scope) return next();
 
-  const cookieName = PRIVATE_RESOURCES[scope].cookieName;
-  const token = readCookie(request.headers.get('cookie'), cookieName);
-  const authenticated = await verifySession(token, scope, process.env.PRIVATE_ACCESS_SESSION_SECRET);
-  if (!authenticated) return accessRedirect(request, scope, url);
+  const cookieHeader = request.headers.get('cookie');
+  const adminToken = readCookie(cookieHeader, ADMIN_COOKIE_NAME);
+  const adminAuthenticated = await verifyAdminSession(adminToken, process.env.PRIVATE_ACCESS_ADMIN_SESSION_SECRET);
+
+  if (!adminAuthenticated) {
+    const cookieName = PRIVATE_RESOURCES[scope].cookieName;
+    const token = readCookie(cookieHeader, cookieName);
+    const authenticated = await verifySession(token, scope, process.env.PRIVATE_ACCESS_SESSION_SECRET);
+    if (!authenticated) return accessRedirect(request, scope, url);
+  }
 
   if ((scope === 'silla' || scope === 'elcon') && (url.pathname === '/silla-hall-presentation' || url.pathname === '/elcon-arabia-presentation' || url.pathname === '/silla-hall-presentation/' || url.pathname === '/elcon-arabia-presentation/')) {
     return rewrite(new URL(`${url.pathname.replace(/\/$/, '')}/index`, request.url));
