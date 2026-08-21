@@ -4,7 +4,7 @@
   if (window.__z7GlobalAccessControlLoaded) return;
   window.__z7GlobalAccessControlLoaded = true;
 
-  const CONTROL_ID = "z7GlobalAccessControl";
+  const CONTROL_ID = "z7HeaderAuthChip";
   const PROTECTED_PATHS = [
     "/silla-hall-presentation/",
     "/elcon-arabia-presentation/",
@@ -20,25 +20,53 @@
   const isPrivateAccessPage = () => location.pathname.replace(/\/+$/, "/") === "/private-access/";
   const isProtectedPath = () => PROTECTED_PATHS.some((path) => location.pathname.startsWith(path));
 
-  const makeButton = () => {
-    let button = document.getElementById(CONTROL_ID);
-    if (button) return button;
+  const getPrivateAccessLinks = () => {
+    const selectors = [
+      ".site-header a[href='/private-access/']",
+      ".site-header a[href='/private-access']",
+      "header a[href='/private-access/']",
+      "header a[href='/private-access']",
+      ".main-header a[href='/private-access/']",
+      ".main-header a[href='/private-access']"
+    ];
 
-    button = document.createElement("button");
-    button.type = "button";
-    button.id = CONTROL_ID;
-    button.className = "z7-global-access-control";
-    button.innerHTML = '<span>LOGIN</span><b aria-hidden="true">↗</b>';
-    document.body.appendChild(button);
-    return button;
+    return [...new Set(selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector))))];
   };
 
-  const setButtonState = (isAuthenticated) => {
+  const getChip = () => {
+    let chip = document.getElementById(CONTROL_ID);
+    if (chip) return chip;
+
+    const privateAccessLink = getPrivateAccessLinks()[0];
+    if (!privateAccessLink) return null;
+
+    chip = document.createElement("button");
+    chip.type = "button";
+    chip.id = CONTROL_ID;
+    chip.className = "z7-header-auth-chip";
+    chip.innerHTML = '<span>LOGIN</span><b aria-hidden="true">↗</b>';
+
+    privateAccessLink.insertAdjacentElement("afterend", chip);
+    return chip;
+  };
+
+  const setChipState = (isAuthenticated) => {
     authenticated = Boolean(isAuthenticated);
-    const button = makeButton();
-    button.classList.toggle("is-authenticated", authenticated);
-    button.setAttribute("aria-label", authenticated ? "Logout from 7Z private access" : "Login to 7Z private access");
-    button.querySelector("span").textContent = authenticated ? "LOGOUT" : "LOGIN";
+
+    const chip = getChip();
+    if (!chip) return;
+
+    chip.classList.toggle("is-authenticated", authenticated);
+    chip.setAttribute("aria-label", authenticated ? "Logout from 7Z private access" : "Login to 7Z private access");
+    chip.querySelector("span").textContent = authenticated ? "LOGOUT" : "LOGIN";
+
+    // Keep the original PRIVATE ACCESS item unchanged.
+    getPrivateAccessLinks().forEach((link) => {
+      if (!link.dataset.z7OriginalLabel) {
+        link.dataset.z7OriginalLabel = link.textContent.trim() || "PRIVATE ACCESS";
+      }
+      link.textContent = link.dataset.z7OriginalLabel;
+    });
   };
 
   const readStatus = async () => {
@@ -56,20 +84,22 @@
         (payload.admin || (Array.isArray(payload.allowed) && payload.allowed.length > 0))
       );
 
-      setButtonState(hasAccess);
+      setChipState(hasAccess);
     } catch {
-      setButtonState(false);
+      setChipState(false);
     }
   };
 
   const goLogin = () => {
     if (isPrivateAccessPage()) {
       window.dispatchEvent(new CustomEvent("z7pa:focus-login"));
+
       const panel = document.querySelector("[data-z7pa-login-panel]");
       if (panel) {
         panel.hidden = false;
         panel.scrollIntoView({ behavior: "smooth", block: "center" });
       }
+
       window.setTimeout(() => document.getElementById("z7HubClientId")?.focus(), 350);
       return;
     }
@@ -78,10 +108,14 @@
   };
 
   const logout = async () => {
-    const button = makeButton();
+    const chip = getChip();
     busy = true;
-    button.disabled = true;
-    button.querySelector("span").textContent = "EXIT…";
+
+    if (chip) {
+      chip.disabled = true;
+      chip.classList.add("is-busy");
+      chip.querySelector("span").textContent = "EXIT…";
+    }
 
     try {
       await fetch("/api/private-auth/hub-logout", {
@@ -93,8 +127,13 @@
       });
     } finally {
       busy = false;
-      button.disabled = false;
-      setButtonState(false);
+
+      if (chip) {
+        chip.disabled = false;
+        chip.classList.remove("is-busy");
+      }
+
+      setChipState(false);
       window.dispatchEvent(new CustomEvent("z7pa:session-change"));
 
       if (isProtectedPath() && !isPrivateAccessPage()) {
@@ -103,19 +142,34 @@
     }
   };
 
-  const boot = () => {
-    const button = makeButton();
+  const bind = () => {
+    const chip = getChip();
+    if (!chip || chip.dataset.z7AccessBound === "true") return;
 
-    button.addEventListener("click", () => {
+    chip.dataset.z7AccessBound = "true";
+
+    chip.addEventListener("click", (event) => {
+      event.preventDefault();
       if (busy) return;
+
       if (authenticated) logout();
       else goLogin();
     });
+  };
 
+  const boot = () => {
+    bind();
     readStatus();
 
-    window.addEventListener("z7pa:session-change", readStatus);
-    window.addEventListener("pageshow", readStatus);
+    window.addEventListener("z7pa:session-change", () => {
+      bind();
+      readStatus();
+    });
+
+    window.addEventListener("pageshow", () => {
+      bind();
+      readStatus();
+    });
   };
 
   if (document.readyState === "loading") {
