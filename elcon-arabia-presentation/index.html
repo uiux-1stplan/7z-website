@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en" dir="ltr" data-theme="dark">
 <head>
 <base href="/elcon-arabia-presentation/">
@@ -55,6 +55,7 @@ body.toc-open .toc-backdrop{opacity:1;pointer-events:auto}body.toc-open .toc-dra
 @media(max-width:700px){html{scroll-snap-type:none}.scene{min-height:auto!important;overflow:visible}.hero{min-height:100svh!important}.hero-layout,.chapter-layout{gap:24px}.hero-media img,.chapter-media img{max-height:42vh}.index-btn{padding-inline:10px}.toc-drawer{top:8px;bottom:8px;right:8px;width:calc(100vw - 16px)}html[dir="rtl"] .toc-drawer{left:8px;right:auto}.management-grid{grid-template-columns:1fr}.person p{font-size:13px}.media-frame img,.media-frame video{max-height:55vh}}
 
 </style>
+  <link rel="stylesheet" href="/assets/css/private-access-control.css?v=20260822-global-access" />
 </head>
 <body>
 <div class="noise"></div><div class="aurora"></div><div class="progress"><i></i></div>
@@ -199,4 +200,5 @@ render();
 const start=location.hash.match(/^#s(\d{2})$/); if(start)requestAnimationFrame(()=>goToScene(+start[1],'auto'));
 updateProgress();
 </script>
+  <script src="/assets/js/private-access-control.js?v=20260822-global-access"></script>
 </body></html>

@@ -1,0 +1,74 @@
+/* 7Z global login/logout access control */
+
+.z7-global-access-control {
+  position: fixed;
+  top: 34px;
+  right: clamp(26px, 4vw, 74px);
+  z-index: 2147481000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 0 11px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  background: rgba(4,4,4,.58);
+  color: rgba(255,255,255,.78);
+  cursor: pointer;
+  font: inherit;
+  font-size: .52rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.22);
+  transition:
+    border-color .22s ease,
+    background .22s ease,
+    color .22s ease,
+    transform .25s cubic-bezier(.22,1,.36,1),
+    opacity .2s ease;
+}
+
+.z7-global-access-control:hover {
+  border-color: rgba(141,238,255,.42);
+  background: rgba(10,18,20,.68);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.z7-global-access-control.is-authenticated {
+  border-color: rgba(255,255,255,.2);
+  background: rgba(12,12,12,.64);
+}
+
+.z7-global-access-control b {
+  font-size: .68rem;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.z7-global-access-control:disabled {
+  cursor: wait;
+  opacity: .55;
+  transform: none;
+}
+
+/* Hide the old page-local private-access logout button if an older build injected it */
+.z7pa-logout,
+.z7pa-header-access {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .z7-global-access-control {
+    top: 18px;
+    right: 18px;
+    min-height: 28px;
+    padding: 0 10px;
+    font-size: .5rem;
+  }
+}

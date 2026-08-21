@@ -34,15 +34,7 @@
     if (!Array.isArray(payload.allowed)) return [];
     return payload.allowed.filter((scope) => PUBLIC_SCOPES.includes(scope));
   };
-
-  const updateAccessButton = (hasAccess) => {
-    currentHasAccess = hasAccess;
-    accessButton.classList.toggle("is-authenticated", hasAccess);
-    accessButton.setAttribute("aria-label", hasAccess ? "Logout from Private Access" : "Login to Private Access");
-    accessButton.querySelector("span").textContent = hasAccess ? "LOGOUT" : "LOGIN";
-  };
-
-  const focusLogin = () => {
+const focusLogin = () => {
     if (loginPanel) {
       loginPanel.hidden = false;
       loginPanel.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -69,10 +61,22 @@
     if (count) count.textContent = String(allowed.length).padStart(2, "0");
     if (label) label.textContent = isAdmin ? "ADMIN ACCESS" : (hasAccess ? "AUTHORIZED RESOURCE" : "LOGIN REQUIRED");
 
-    updateAccessButton(hasAccess);
+    window.dispatchEvent(new CustomEvent("z7pa:session-change"));
 
     if (message && hasAccess) message.textContent = "";
   };
+
+  window.addEventListener("z7pa:focus-login", () => {
+    if (loginPanel) {
+      loginPanel.hidden = false;
+      loginPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    window.setTimeout(() => clientId?.focus(), 350);
+  });
+
+  window.addEventListener("z7pa:session-change", () => {
+    loadStatus();
+  });
 
   const loadStatus = async () => {
     try {
@@ -87,36 +91,7 @@
       applyAccess(null);
     }
   };
-
-  accessButton.addEventListener("click", async () => {
-    if (!currentHasAccess) {
-      if (message) message.textContent = "";
-      focusLogin();
-      return;
-    }
-
-    accessButton.disabled = true;
-    accessButton.querySelector("span").textContent = "EXIT…";
-
-    try {
-      await fetch("/api/private-auth/hub-logout", {
-        method: "POST",
-        credentials: "same-origin",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: "{}"
-      });
-    } finally {
-      if (clientId) clientId.value = "";
-      if (accessKey) accessKey.value = "";
-      if (message) message.textContent = "SIGNED OUT";
-      applyAccess(null);
-      accessButton.disabled = false;
-      focusLogin();
-    }
-  });
-
-  form?.addEventListener("submit", async (event) => {
+form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const submit = form.querySelector('button[type="submit"]');
