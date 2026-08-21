@@ -193,11 +193,11 @@
       <div class="z7pa-status" data-z7-reveal>
         <div class="z7pa-status__top">
           <span>RESOURCE INDEX</span>
-          <strong>06</strong>
+          <strong data-z7pa-count>00</strong>
         </div>
         <div class="z7pa-status__state">
           <i aria-hidden="true"></i>
-          <span>PROTECTED RESOURCES</span>
+          <span data-z7pa-access-label>LOGIN REQUIRED</span>
         </div>
         <p>Independent credentials and sessions are applied per protected resource.</p>
       </div>
@@ -214,8 +214,31 @@
         <p>Choose an experience below. Existing 7Z Private Access authentication will handle the rest.</p>
       </div>
 
-      <div class="z7pa-grid" data-z7-stagger>
-        <a class="z7pa-card magnetic" href="/silla-hall-presentation/">
+      <div class="z7pa-login" data-z7pa-login-panel>
+        <img class="z7pa-login__watermark" src="/media/main_logo/7ZLogo.jpg" alt="" aria-hidden="true">
+        <div class="z7pa-login__content">
+          <p class="section-kicker">Private Access</p>
+          <h3>Login To Explore</h3>
+          <p>Enter your assigned 7Z access credentials. You will only see the protected experience assigned to your account.</p>
+          <form class="z7pa-login__form" id="z7PrivateAccessLoginForm" autocomplete="on">
+            <label>
+              <span>Username</span>
+              <input id="z7HubClientId" name="clientId" type="text" autocomplete="username" maxlength="256" required>
+            </label>
+            <label>
+              <span>Password</span>
+              <input id="z7HubAccessKey" name="accessKey" type="password" autocomplete="current-password" maxlength="256" required>
+            </label>
+            <button type="submit" class="magnetic">
+              <span>LOGIN TO EXPLORE</span>
+              <b aria-hidden="true">↗</b>
+            </button>
+            <p class="z7pa-login__message" id="z7HubLoginMessage" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+      <div class="z7pa-grid" data-z7-stagger data-z7pa-grid>
+        <a class="z7pa-card magnetic" data-z7pa-resource="silla" href="/silla-hall-presentation/">
           <div class="z7pa-card__meta">
             <span>01</span><span class="z7pa-card__lock"><i></i>Protected</span>
           </div>
@@ -227,7 +250,7 @@
           <div class="z7pa-card__action"><span>Open Private Experience</span><b>↗</b></div>
         </a>
 
-        <a class="z7pa-card magnetic" href="/elcon-arabia-presentation/">
+        <a class="z7pa-card magnetic" data-z7pa-resource="elcon" href="/elcon-arabia-presentation/">
           <div class="z7pa-card__meta">
             <span>02</span><span class="z7pa-card__lock"><i></i>Protected</span>
           </div>
@@ -239,7 +262,7 @@
           <div class="z7pa-card__action"><span>Open Private Experience</span><b>↗</b></div>
         </a>
 
-        <a class="z7pa-card magnetic" href="/strategic-blueprint/">
+        <a class="z7pa-card magnetic" data-z7pa-resource="blueprint-html" href="/strategic-blueprint/">
           <div class="z7pa-card__meta">
             <span>03</span><span class="z7pa-card__lock"><i></i>Protected</span>
           </div>
@@ -251,7 +274,7 @@
           <div class="z7pa-card__action"><span>Open Blueprint</span><b>↗</b></div>
         </a>
 
-        <a class="z7pa-card magnetic" href="/api/private-documents/blueprint">
+        <a class="z7pa-card magnetic" data-z7pa-resource="blueprint-pdf" href="/api/private-documents/blueprint">
           <div class="z7pa-card__meta">
             <span>04</span><span class="z7pa-card__lock"><i></i>Protected</span>
           </div>
@@ -263,7 +286,7 @@
           <div class="z7pa-card__action"><span>Open Protected PDF</span><b>↗</b></div>
         </a>
 
-        <a class="z7pa-card magnetic" href="/tawjihi-english-quotation/">
+        <a class="z7pa-card magnetic" data-z7pa-resource="tawjihi-quotation" href="/tawjihi-english-quotation/">
           <div class="z7pa-card__meta">
             <span>05</span><span class="z7pa-card__lock"><i></i>Protected</span>
           </div>
@@ -275,7 +298,7 @@
           <div class="z7pa-card__action"><span>Open Quotation</span><b>↗</b></div>
         </a>
 
-        <a class="z7pa-card magnetic" href="/oman-market-partnership/">
+        <a class="z7pa-card magnetic" data-z7pa-resource="oman-partnership" href="/oman-market-partnership/">
           <div class="z7pa-card__meta">
             <span>06</span><span class="z7pa-card__lock"><i></i>Protected</span>
           </div>
@@ -326,8 +349,6 @@
 <p>Ready to start a polished digital experience?</p>
 <a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
 <div aria-label="Strategic blueprint documents" class="footer__documents">
-<a class="footer__document-action" href="/strategic-blueprint/"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 3.5h7l3 3V20.5H7z"></path><path d="M14 3.5v3h3M10 11h4M10 15h4"></path></svg><span>PROTECTED HTML</span><span aria-hidden="true" class="footer__document-arrow">↗</span></a>
-<button class="footer__document-action" data-blueprint-access type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="10" rx="2" width="12" x="6" y="10"></rect><path d="M9 10V7a3 3 0 0 1 6 0v3M12 14v2"></path></svg><span>PROTECTED PDF</span></button>
 <a class="footer__document-action" href="/admin/"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 5.5 5.8v5.3c0 4.1 2.7 7.8 6.5 9.9 3.8-2.1 6.5-5.8 6.5-9.9V5.8L12 3Z"></path><path d="M9.5 11.2V9.8a2.5 2.5 0 0 1 5 0v1.4"></path><rect x="8.4" y="11.2" width="7.2" height="5.1" rx="1.2"></rect></svg><span>ADMIN PANEL</span><span aria-hidden="true" class="footer__document-arrow">↗</span></a>
 </div>
 <div aria-label="Social links" class="socials">

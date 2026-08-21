@@ -332,3 +332,129 @@
     transition: none !important;
   }
 }
+/* Role-aware Private Access state */
+
+.z7pa-grid[hidden],
+.z7pa-card[hidden],
+.z7pa-login[hidden] {
+  display: none !important;
+}
+
+.z7pa-login {
+  position: relative;
+  display: grid;
+  min-height: 430px;
+  place-items: center;
+  margin: 20px 0 42px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(141,238,255,.06), transparent 35%),
+    rgba(255,255,255,.018);
+}
+
+.z7pa-login__watermark {
+  position: absolute;
+  width: min(460px, 70vw);
+  opacity: .055;
+  filter: grayscale(1);
+  pointer-events: none;
+  user-select: none;
+}
+
+.z7pa-login__content {
+  position: relative;
+  z-index: 1;
+  width: min(520px, calc(100% - 38px));
+  text-align: center;
+}
+
+.z7pa-login__content h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.4rem, 5vw, 5.1rem);
+  line-height: .92;
+  letter-spacing: -.065em;
+}
+
+.z7pa-login__content > p:not(.section-kicker) {
+  margin: 22px auto 30px;
+  max-width: 460px;
+  color: rgba(255,255,255,.52);
+  font-size: .92rem;
+  line-height: 1.7;
+}
+
+.z7pa-login__form {
+  display: grid;
+  gap: 13px;
+  text-align: left;
+}
+
+.z7pa-login__form label {
+  display: grid;
+  gap: 7px;
+}
+
+.z7pa-login__form label > span {
+  color: rgba(255,255,255,.42);
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.z7pa-login__form input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 15px;
+  border: 1px solid rgba(255,255,255,.14);
+  outline: 0;
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font: inherit;
+}
+
+.z7pa-login__form input:focus {
+  border-color: rgba(141,238,255,.45);
+}
+
+.z7pa-login__form button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  margin-top: 4px;
+  padding: 0 16px;
+  border: 1px solid rgba(141,238,255,.35);
+  background: rgba(141,238,255,.055);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.z7pa-login__form button:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+.z7pa-login__message {
+  min-height: 18px;
+  margin: 0;
+  color: rgba(255,255,255,.52);
+  font-size: .72rem;
+  text-align: center;
+}
+
+body.z7pa-is-locked .z7pa-section-head {
+  border-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .z7pa-login {
+    min-height: 400px;
+  }
+}

@@ -1,5 +1,5 @@
 import { issueSignedToken, presignUrl } from '@vercel/blob';
-import { ADMIN_COOKIE_NAME, PRIVATE_RESOURCES, noStoreHeaders, readCookie, verifyAdminSession, verifySession } from '../../lib/private-access.js';
+import { ADMIN_COOKIE_NAME, noStoreHeaders, readCookie, verifyAdminSession } from '../../lib/private-access.js';
 
 const BLOB_PATHNAME = 'private/7z-magic-strategic-blueprint-2026-2027-v2-20260814.pdf';
 const SIGNED_URL_LIFETIME_MS = 90_000;
@@ -17,9 +17,7 @@ export default async function handler(request, response) {
 
   const adminToken = readCookie(request.headers.cookie, ADMIN_COOKIE_NAME);
   const adminValid = await verifyAdminSession(adminToken, process.env.PRIVATE_ACCESS_ADMIN_SESSION_SECRET);
-  const token = readCookie(request.headers.cookie, PRIVATE_RESOURCES['blueprint-pdf'].cookieName);
-  const resourceValid = await verifySession(token, 'blueprint-pdf', process.env.PRIVATE_ACCESS_SESSION_SECRET);
-  if (!adminValid && !resourceValid) {
+  if (!adminValid) {
     applyHeaders(response);
     return response.status(401).end();
   }

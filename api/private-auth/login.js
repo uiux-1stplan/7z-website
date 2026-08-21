@@ -35,6 +35,10 @@ export default async function handler(request, response) {
   if (Buffer.byteLength(serializedBody, 'utf8') > MAX_BODY_BYTES) return send(response, 413, { ok: false });
 
   const { resource, clientId, accessKey, next } = body;
+  if (resource === 'blueprint-html' || resource === 'blueprint-pdf') {
+    await new Promise((resolve) => setTimeout(resolve, FAILURE_DELAY_MS));
+    return send(response, 401, { ok: false, error: 'Blueprint resources require administrator access' });
+  }
   const destination = isResource(resource) ? safeNextPath(resource, next) : null;
   if (!isResource(resource) || !destination || !validText(clientId) || !validText(accessKey)) {
     await new Promise((resolve) => setTimeout(resolve, FAILURE_DELAY_MS));

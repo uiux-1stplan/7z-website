@@ -15,6 +15,19 @@ function accessRedirect(request, scope, url) {
   });
 }
 
+function adminRedirect(request, url) {
+  const destination = new URL('/admin/', request.url);
+  destination.searchParams.set('next', `${url.pathname}${url.search}`);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: destination.toString(),
+      'Cache-Control': 'no-store, max-age=0',
+      Pragma: 'no-cache'
+    }
+  });
+}
+
 export default async function middleware(request) {
   const url = new URL(request.url);
   const scope = scopeForPath(url.pathname);
@@ -24,7 +37,9 @@ export default async function middleware(request) {
   const adminToken = readCookie(cookieHeader, ADMIN_COOKIE_NAME);
   const adminAuthenticated = await verifyAdminSession(adminToken, process.env.PRIVATE_ACCESS_ADMIN_SESSION_SECRET);
 
-  if (!adminAuthenticated) {
+  if (scope === 'blueprint-html' || scope === 'blueprint-pdf') {
+    if (!adminAuthenticated) return adminRedirect(request, url);
+  } else if (!adminAuthenticated) {
     const cookieName = PRIVATE_RESOURCES[scope].cookieName;
     const token = readCookie(cookieHeader, cookieName);
     const authenticated = await verifySession(token, scope, process.env.PRIVATE_ACCESS_SESSION_SECRET);
