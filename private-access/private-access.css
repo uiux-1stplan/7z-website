@@ -458,3 +458,53 @@ body.z7pa-is-locked .z7pa-section-head {
     min-height: 400px;
   }
 }
+/* Private Access logout / switch user */
+
+.z7pa-logout {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 46px;
+  min-width: 210px;
+  padding: 0 17px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 999px;
+  background: rgba(255,255,255,.025);
+  color: rgba(255,255,255,.68);
+  cursor: pointer;
+  font: inherit;
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition:
+    border-color .25s ease,
+    background .25s ease,
+    color .25s ease,
+    transform .35s cubic-bezier(.22,1,.36,1);
+}
+
+.z7pa-logout:hover {
+  border-color: rgba(141,238,255,.42);
+  background: rgba(141,238,255,.055);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.z7pa-logout:disabled {
+  cursor: wait;
+  opacity: .55;
+  transform: none;
+}
+
+.z7pa-logout[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  .z7pa-logout {
+    justify-self: start;
+  }
+}

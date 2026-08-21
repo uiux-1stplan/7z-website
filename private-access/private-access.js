@@ -13,6 +13,15 @@
   const message = document.getElementById("z7HubLoginMessage");
   const count = document.querySelector("[data-z7pa-count]");
   const label = document.querySelector("[data-z7pa-access-label]");
+  const sectionHead = document.querySelector(".z7pa-section-head");
+
+  const logoutButton = document.createElement("button");
+  logoutButton.type = "button";
+  logoutButton.className = "z7pa-logout magnetic";
+  logoutButton.id = "z7paLogoutButton";
+  logoutButton.hidden = true;
+  logoutButton.innerHTML = "<span>LOGOUT / SWITCH USER</span><b aria-hidden=\"true\">↗</b>";
+  sectionHead?.appendChild(logoutButton);
 
   const normalizeAllowed = (payload) => {
     if (!payload || typeof payload !== "object") return [];
@@ -39,6 +48,7 @@
 
     if (count) count.textContent = String(allowed.length).padStart(2, "0");
     if (label) label.textContent = isAdmin ? "ADMIN ACCESS" : (hasAccess ? "AUTHORIZED RESOURCE" : "LOGIN REQUIRED");
+    if (logoutButton) logoutButton.hidden = !hasAccess;
     if (message && hasAccess) message.textContent = "";
   };
 
@@ -56,6 +66,28 @@
     }
   };
 
+  logoutButton?.addEventListener("click", async () => {
+    logoutButton.disabled = true;
+    logoutButton.querySelector("span").textContent = "LOGGING OUT…";
+
+    try {
+      await fetch("/api/private-auth/hub-logout", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
+      });
+    } finally {
+      if (clientId) clientId.value = "";
+      if (accessKey) accessKey.value = "";
+      if (message) message.textContent = "SIGNED OUT";
+      applyAccess(null);
+      logoutButton.disabled = false;
+      logoutButton.querySelector("span").textContent = "LOGOUT / SWITCH USER";
+      clientId?.focus();
+    }
+  });
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
