@@ -13,21 +13,41 @@
   const message = document.getElementById("z7HubLoginMessage");
   const count = document.querySelector("[data-z7pa-count]");
   const label = document.querySelector("[data-z7pa-access-label]");
-  const sectionHead = document.querySelector(".z7pa-section-head");
+  const siteHeader = document.querySelector(".site-header");
+  const headerSocials = document.querySelector(".header-socials");
 
-  const logoutButton = document.createElement("button");
-  logoutButton.type = "button";
-  logoutButton.className = "z7pa-logout magnetic";
-  logoutButton.id = "z7paLogoutButton";
-  logoutButton.hidden = true;
-  logoutButton.innerHTML = "<span>LOGOUT / SWITCH USER</span><b aria-hidden=\"true\">↗</b>";
-  sectionHead?.appendChild(logoutButton);
+  let currentHasAccess = false;
+
+  const accessButton = document.createElement("button");
+  accessButton.type = "button";
+  accessButton.className = "z7pa-header-access magnetic";
+  accessButton.id = "z7paHeaderAccessButton";
+  accessButton.innerHTML = '<span>LOGIN</span><b aria-hidden="true">↗</b>';
+
+  if (siteHeader) {
+    siteHeader.insertBefore(accessButton, headerSocials || null);
+  }
 
   const normalizeAllowed = (payload) => {
     if (!payload || typeof payload !== "object") return [];
     if (payload.admin) return ADMIN_SCOPES;
     if (!Array.isArray(payload.allowed)) return [];
     return payload.allowed.filter((scope) => PUBLIC_SCOPES.includes(scope));
+  };
+
+  const updateAccessButton = (hasAccess) => {
+    currentHasAccess = hasAccess;
+    accessButton.classList.toggle("is-authenticated", hasAccess);
+    accessButton.setAttribute("aria-label", hasAccess ? "Logout from Private Access" : "Login to Private Access");
+    accessButton.querySelector("span").textContent = hasAccess ? "LOGOUT" : "LOGIN";
+  };
+
+  const focusLogin = () => {
+    if (loginPanel) {
+      loginPanel.hidden = false;
+      loginPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    window.setTimeout(() => clientId?.focus(), 350);
   };
 
   const applyAccess = (payload) => {
@@ -48,7 +68,9 @@
 
     if (count) count.textContent = String(allowed.length).padStart(2, "0");
     if (label) label.textContent = isAdmin ? "ADMIN ACCESS" : (hasAccess ? "AUTHORIZED RESOURCE" : "LOGIN REQUIRED");
-    if (logoutButton) logoutButton.hidden = !hasAccess;
+
+    updateAccessButton(hasAccess);
+
     if (message && hasAccess) message.textContent = "";
   };
 
@@ -66,9 +88,15 @@
     }
   };
 
-  logoutButton?.addEventListener("click", async () => {
-    logoutButton.disabled = true;
-    logoutButton.querySelector("span").textContent = "LOGGING OUT…";
+  accessButton.addEventListener("click", async () => {
+    if (!currentHasAccess) {
+      if (message) message.textContent = "";
+      focusLogin();
+      return;
+    }
+
+    accessButton.disabled = true;
+    accessButton.querySelector("span").textContent = "EXIT…";
 
     try {
       await fetch("/api/private-auth/hub-logout", {
@@ -83,11 +111,11 @@
       if (accessKey) accessKey.value = "";
       if (message) message.textContent = "SIGNED OUT";
       applyAccess(null);
-      logoutButton.disabled = false;
-      logoutButton.querySelector("span").textContent = "LOGOUT / SWITCH USER";
-      clientId?.focus();
+      accessButton.disabled = false;
+      focusLogin();
     }
   });
+
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -130,8 +158,12 @@
   });
 
   cards.forEach((card) => {
-    card.addEventListener("pointerenter", () => { card.dataset.hovered = "true"; });
-    card.addEventListener("pointerleave", () => { delete card.dataset.hovered; });
+    card.addEventListener("pointerenter", () => {
+      card.dataset.hovered = "true";
+    });
+    card.addEventListener("pointerleave", () => {
+      delete card.dataset.hovered;
+    });
   });
 
   loadStatus();
