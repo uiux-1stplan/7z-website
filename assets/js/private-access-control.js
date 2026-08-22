@@ -33,12 +33,31 @@
     return [...new Set(selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector))))];
   };
 
+  const findSocialContainer = () => {
+    const header = document.querySelector(".site-header, .main-header, header");
+    if (!header) return null;
+
+    const socialItems = Array.from(header.querySelectorAll(".social-icon, a[aria-label='Instagram'], a[aria-label='Facebook'], a[aria-label='LinkedIn'], a[aria-label='Email']"));
+    if (!socialItems.length) return null;
+
+    const scoredParents = socialItems
+      .map((item) => item.parentElement)
+      .filter(Boolean)
+      .map((parent) => ({
+        parent,
+        count: parent.querySelectorAll(".social-icon, a[aria-label='Instagram'], a[aria-label='Facebook'], a[aria-label='LinkedIn'], a[aria-label='Email']").length
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    return scoredParents[0]?.parent || socialItems[0].parentElement;
+  };
+
   const getChip = () => {
     let chip = document.getElementById(CONTROL_ID);
     if (chip) return chip;
 
-    const privateAccessLink = getPrivateAccessLinks()[0];
-    if (!privateAccessLink) return null;
+    const socialContainer = findSocialContainer();
+    if (!socialContainer) return null;
 
     chip = document.createElement("button");
     chip.type = "button";
@@ -46,7 +65,8 @@
     chip.className = "z7-header-auth-chip";
     chip.innerHTML = '<span>LOGIN</span><b aria-hidden="true">↗</b>';
 
-    privateAccessLink.insertAdjacentElement("afterend", chip);
+    socialContainer.appendChild(chip);
+    socialContainer.classList.add("z7-socials-with-auth");
     return chip;
   };
 
@@ -60,7 +80,6 @@
     chip.setAttribute("aria-label", authenticated ? "Logout from 7Z private access" : "Login to 7Z private access");
     chip.querySelector("span").textContent = authenticated ? "LOGOUT" : "LOGIN";
 
-    // Keep the original PRIVATE ACCESS item unchanged.
     getPrivateAccessLinks().forEach((link) => {
       if (!link.dataset.z7OriginalLabel) {
         link.dataset.z7OriginalLabel = link.textContent.trim() || "PRIVATE ACCESS";
