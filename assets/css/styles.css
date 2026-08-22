@@ -4685,3 +4685,146 @@ header img.logo-mask,
 }
 
 /* End 7Z full header logo contained */
+
+/* =========================================================
+   Z7 HEADER LOGO — FINAL CORRECT VERSION
+   Logo stays INSIDE header.
+   No independent box behind logo.
+   ========================================================= */
+
+.site-header {
+  position: fixed !important;
+
+  /* restore the approved full header capsule */
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 999px !important;
+
+  background: rgba(3,4,6,.64) !important;
+
+  box-shadow:
+    0 18px 70px rgba(0,0,0,.24) !important;
+
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+
+  overflow: visible !important;
+}
+
+/* kill the fake cutout layer completely */
+.site-header::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* logo remains a normal item INSIDE the header grid */
+.site-header .brand {
+  position: relative !important;
+  z-index: 2 !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  width: 46px !important;
+  height: 46px !important;
+
+  flex: 0 0 46px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  /* THIS is the box we do not want */
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  overflow: visible !important;
+
+  transform: none;
+}
+
+/* no decorative layer behind logo */
+.site-header .brand::before,
+.site-header .brand::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* full logo, no cropping */
+.site-header .brand img {
+  display: block !important;
+
+  width: 46px !important;
+  height: 46px !important;
+
+  max-width: 46px !important;
+  max-height: 46px !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+
+  opacity: 1 !important;
+}
+
+/* =========================================================
+   END Z7 HEADER LOGO — FINAL CORRECT VERSION
+   ========================================================= */
+/* Z7 HEADER LOGO SIZE — FINAL 54PX */
+
+/*
+  Bigger logo while keeping almost the exact
+  approved header height.
+*/
+.site-header {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.site-header .brand {
+  width: 54px !important;
+  height: 54px !important;
+  flex: 0 0 54px !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.site-header .brand img {
+  width: 54px !important;
+  height: 54px !important;
+
+  max-width: 54px !important;
+  max-height: 54px !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* END Z7 HEADER LOGO SIZE — FINAL 54PX */
