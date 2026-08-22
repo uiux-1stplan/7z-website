@@ -4828,3 +4828,38 @@ header img.logo-mask,
 }
 
 /* END Z7 HEADER LOGO SIZE — FINAL 54PX */
+/* Z7 UNIVERSE FULL BLEED */
+
+/*
+   Extend ONLY the visual background to viewport edges.
+   Existing image/text/grid dimensions remain unchanged.
+*/
+.z7-universe-fullbleed {
+  position: relative !important;
+  isolation: isolate;
+}
+
+.z7-universe-fullbleed::before {
+  content: "";
+
+  position: absolute;
+  z-index: -1;
+
+  top: 0;
+  bottom: 0;
+
+  left: 50%;
+
+  width: 100vw;
+  max-width: none;
+
+  transform: translateX(-50%);
+
+  /* inherit the section's existing visual treatment */
+  background: inherit;
+  background-color: #050607;
+
+  pointer-events: none;
+}
+
+/* END Z7 UNIVERSE FULL BLEED */
