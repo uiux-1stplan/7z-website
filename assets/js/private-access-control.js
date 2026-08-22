@@ -220,3 +220,41 @@
     boot();
   }
 })();
+/* Transparent header logo patch */
+(() => {
+  "use strict";
+
+  const applyTransparentHeaderLogo = () => {
+    const header = document.querySelector(".site-header, .main-header, header");
+    if (!header) return;
+
+    const logoImg = Array.from(header.querySelectorAll("img")).find((img) => {
+      const src = String(img.getAttribute("src") || "");
+      const alt = String(img.getAttribute("alt") || "");
+      return /7ZLogo|7z|logo/i.test(src) || /7Z|7z|Magic/i.test(alt);
+    });
+
+    if (!logoImg) return;
+
+    logoImg.src = "/media/main_logo/7ZLogo-header-transparent.png";
+    logoImg.classList.add("z7-clean-header-logo__img");
+
+    let node = logoImg.parentElement;
+    let depth = 0;
+
+    while (node && node !== header && depth < 4) {
+      node.classList.add("z7-clean-header-logo");
+      node = node.parentElement;
+      depth += 1;
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyTransparentHeaderLogo, { once: true });
+  } else {
+    applyTransparentHeaderLogo();
+  }
+
+  window.addEventListener("pageshow", applyTransparentHeaderLogo);
+})();
+/* End transparent header logo patch */
