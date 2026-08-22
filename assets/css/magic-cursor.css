@@ -1,0 +1,216 @@
+/* ==========================================================
+   7Z MAGIC — ELEGANT MAGIC DUST CURSOR
+   Isolated visual layer
+   ========================================================== */
+
+@media (pointer:fine) and (hover:hover) {
+
+  html.z7-magic-cursor-enabled,
+  html.z7-magic-cursor-enabled body,
+  html.z7-magic-cursor-enabled a,
+  html.z7-magic-cursor-enabled button,
+  html.z7-magic-cursor-enabled [role="button"],
+  html.z7-magic-cursor-enabled input,
+  html.z7-magic-cursor-enabled textarea,
+  html.z7-magic-cursor-enabled select,
+  html.z7-magic-cursor-enabled label,
+  html.z7-magic-cursor-enabled summary {
+    cursor: none !important;
+  }
+
+  .z7-magic-cursor-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483600;
+
+    overflow: hidden;
+
+    pointer-events: none;
+    user-select: none;
+
+    contain: strict;
+  }
+
+  /* ------------------------------------------
+     Main precision halo
+     ------------------------------------------ */
+
+  .z7-magic-cursor-halo {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 24px;
+    height: 24px;
+
+    margin-left: -12px;
+    margin-top: -12px;
+
+    border:
+      1px solid rgba(218, 190, 125, .48);
+
+    border-radius: 50%;
+
+    opacity: 0;
+
+    transform:
+      translate3d(-100px,-100px,0)
+      scale(.82);
+
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.025),
+      0 0 16px rgba(210,178,105,.07),
+      inset 0 0 9px rgba(255,255,255,.025);
+
+    backdrop-filter: blur(.35px);
+
+    transition:
+      width .22s cubic-bezier(.2,.8,.2,1),
+      height .22s cubic-bezier(.2,.8,.2,1),
+      margin .22s cubic-bezier(.2,.8,.2,1),
+      border-color .22s ease,
+      box-shadow .22s ease,
+      opacity .18s ease;
+  }
+
+  /* ------------------------------------------
+     Tiny luxury core
+     ------------------------------------------ */
+
+  .z7-magic-cursor-core {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 8px;
+    height: 8px;
+
+    margin-left: -4px;
+    margin-top: -4px;
+
+    border-radius: 2px;
+
+    opacity: 0;
+
+    background:
+      linear-gradient(
+        135deg,
+        #f3eee2 0%,
+        #dec787 44%,
+        #a8874e 100%
+      );
+
+    transform:
+      translate3d(-100px,-100px,0)
+      rotate(45deg);
+
+    box-shadow:
+      0 0 7px rgba(227,198,126,.24),
+      0 0 1px rgba(255,255,255,.8);
+
+    transition:
+      opacity .14s ease,
+      width .16s ease,
+      height .16s ease,
+      margin .16s ease,
+      box-shadow .16s ease;
+  }
+
+  .z7-magic-cursor-layer.is-visible
+  .z7-magic-cursor-core,
+
+  .z7-magic-cursor-layer.is-visible
+  .z7-magic-cursor-halo {
+    opacity: 1;
+  }
+
+  /* ------------------------------------------
+     Interactive state
+     ------------------------------------------ */
+
+  .z7-magic-cursor-layer.is-interactive
+  .z7-magic-cursor-halo {
+    width: 30px;
+    height: 30px;
+
+    margin-left: -15px;
+    margin-top: -15px;
+
+    border-color:
+      rgba(232,205,139,.72);
+
+    box-shadow:
+      0 0 19px rgba(210,178,105,.11),
+      inset 0 0 10px rgba(255,255,255,.035);
+  }
+
+  .z7-magic-cursor-layer.is-interactive
+  .z7-magic-cursor-core {
+    width: 7px;
+    height: 7px;
+
+    margin-left: -3.5px;
+    margin-top: -3.5px;
+
+    box-shadow:
+      0 0 9px rgba(235,205,133,.36);
+  }
+
+  .z7-magic-cursor-layer.is-pressed
+  .z7-magic-cursor-halo {
+    width: 20px;
+    height: 20px;
+
+    margin-left: -10px;
+    margin-top: -10px;
+  }
+
+  /* ------------------------------------------
+     Magic dust
+     ------------------------------------------ */
+
+  .z7-magic-dust {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: var(--z7-dust-size, 2px);
+    height: var(--z7-dust-size, 2px);
+
+    margin-left:
+      calc(var(--z7-dust-size, 2px) / -2);
+
+    margin-top:
+      calc(var(--z7-dust-size, 2px) / -2);
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    background:
+      radial-gradient(
+        circle,
+        rgba(255,248,226,.98) 0%,
+        rgba(225,196,124,.82) 38%,
+        rgba(186,148,78,.16) 68%,
+        transparent 100%
+      );
+
+    box-shadow:
+      0 0 9px rgba(219,184,105,.42),
+      0 0 15px rgba(219,184,105,.12);
+
+    will-change:
+      transform,
+      opacity;
+  }
+}
+
+
+/* Motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .z7-magic-dust {
+    display: none !important;
+  }
+}
