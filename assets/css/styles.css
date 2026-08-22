@@ -4449,3 +4449,50 @@ body[data-static-background="true"] .grain {
 }
 
 /* Production navigation and route availability fix v8 */
+
+/* 7Z official logo replace only */
+img[src*="7ZMagic-official-logo-20260822.png"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  object-fit: contain !important;
+}
+
+.site-header img[src*="7ZMagic-official-logo-20260822.png"],
+.main-header img[src*="7ZMagic-official-logo-20260822.png"],
+header img[src*="7ZMagic-official-logo-20260822.png"] {
+  width: auto !important;
+  height: clamp(34px, 3.4vw, 48px) !important;
+  max-width: clamp(78px, 9vw, 132px) !important;
+}
+
+.site-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+.main-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+.site-header .brand,
+.main-header .brand,
+header .brand {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.loader img[src*="7ZMagic-official-logo-20260822.png"],
+.preloader img[src*="7ZMagic-official-logo-20260822.png"],
+#loader img[src*="7ZMagic-official-logo-20260822.png"],
+.z7-route-transition__mark img[src*="7ZMagic-official-logo-20260822.png"] {
+  width: min(280px, 52vw) !important;
+  height: auto !important;
+  max-height: 190px !important;
+}
+
+footer img[src*="7ZMagic-official-logo-20260822.png"] {
+  width: auto !important;
+  height: clamp(48px, 6vw, 92px) !important;
+  max-width: min(280px, 58vw) !important;
+}
+/* End 7Z official logo replace only */

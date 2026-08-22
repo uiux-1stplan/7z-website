@@ -70,7 +70,7 @@
       <div class="z7-route-transition__stage">
         <p class="z7-route-transition__eyebrow">7Z Magic / Scene Change</p>
         <div class="z7-route-transition__mark" aria-hidden="true">
-          <img src="/media/main_logo/7ZLogo.jpg" alt="" />
+          <img src="/media/main_logo/7ZMagic-official-logo-20260822.png" alt="" />
         </div>
         <span class="z7-route-transition__line" aria-hidden="true"></span>
         <p class="z7-route-transition__label" data-z7-route-label>7Z Magic</p>
