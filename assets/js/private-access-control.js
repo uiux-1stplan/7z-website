@@ -258,3 +258,41 @@
   window.addEventListener("pageshow", applyTransparentHeaderLogo);
 })();
 /* End transparent header logo patch */
+/* 7Z Arabic transparent header logo */
+(() => {
+  "use strict";
+
+  const applyArabicHeaderLogo = () => {
+    const header = document.querySelector(".site-header, .main-header, header");
+    if (!header) return;
+
+    const logoImg = Array.from(header.querySelectorAll("img")).find((img) => {
+      const src = String(img.getAttribute("src") || "");
+      const alt = String(img.getAttribute("alt") || "");
+      return /7ZLogo|7z|logo/i.test(src) || /7Z|7z|Magic/i.test(alt);
+    });
+
+    if (!logoImg) return;
+
+    logoImg.src = "/media/main_logo/7ZMagic-header-arabic-transparent.png";
+    logoImg.classList.add("z7-arabic-header-logo__img");
+
+    let node = logoImg.parentElement;
+    let depth = 0;
+
+    while (node && node !== header && depth < 5) {
+      node.classList.add("z7-arabic-header-logo");
+      node = node.parentElement;
+      depth += 1;
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyArabicHeaderLogo, { once: true });
+  } else {
+    applyArabicHeaderLogo();
+  }
+
+  window.addEventListener("pageshow", applyArabicHeaderLogo);
+})();
+/* End 7Z Arabic transparent header logo */

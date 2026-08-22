@@ -157,3 +157,65 @@ header .z7-clean-header-logo__img {
 }
 
 /* End clean header logo */
+/* Arabic transparent header logo */
+
+.site-header .z7-arabic-header-logo,
+.main-header .z7-arabic-header-logo,
+header .z7-arabic-header-logo {
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: visible !important;
+}
+
+.site-header .z7-arabic-header-logo::before,
+.site-header .z7-arabic-header-logo::after,
+.main-header .z7-arabic-header-logo::before,
+.main-header .z7-arabic-header-logo::after,
+header .z7-arabic-header-logo::before,
+header .z7-arabic-header-logo::after {
+  display: none !important;
+  content: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.site-header .z7-arabic-header-logo__img,
+.main-header .z7-arabic-header-logo__img,
+header .z7-arabic-header-logo__img {
+  display: block !important;
+  width: auto !important;
+  height: clamp(34px, 3.2vw, 46px) !important;
+  max-width: clamp(72px, 7.4vw, 108px) !important;
+  object-fit: contain !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+@media (max-width: 760px) {
+  .site-header .z7-arabic-header-logo__img,
+  .main-header .z7-arabic-header-logo__img,
+  header .z7-arabic-header-logo__img {
+    height: 36px !important;
+    max-width: 86px !important;
+  }
+}
+
+/* End Arabic transparent header logo */
