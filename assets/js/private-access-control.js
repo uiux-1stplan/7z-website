@@ -176,7 +176,29 @@
     });
   };
 
+
+  const cleanHeaderLogo = () => {
+    const header = document.querySelector(".site-header, .main-header, header");
+    if (!header) return;
+
+    const logoImg = Array.from(header.querySelectorAll("img")).find((img) => {
+      const src = String(img.getAttribute("src") || "");
+      const alt = String(img.getAttribute("alt") || "");
+      return /7ZLogo|7z|logo/i.test(src) || /7Z|7z|Magic/i.test(alt);
+    });
+
+    if (!logoImg) return;
+
+    logoImg.classList.add("z7-clean-header-logo__img");
+
+    const logoWrap = logoImg.closest("a, .brand, .logo, .site-logo, .brand-logo, .logo-mark, div, span");
+    if (logoWrap) {
+      logoWrap.classList.add("z7-clean-header-logo");
+    }
+  };
+
   const boot = () => {
+    cleanHeaderLogo();
     bind();
     readStatus();
 
@@ -186,6 +208,7 @@
     });
 
     window.addEventListener("pageshow", () => {
+      cleanHeaderLogo();
       bind();
       readStatus();
     });
