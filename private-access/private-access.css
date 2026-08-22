@@ -510,3 +510,37 @@ body.z7pa-is-locked .z7pa-section-head {
 }
 
 
+
+/* 7Z private login watermark softness */
+.z7pa-login {
+  position: relative;
+  isolation: isolate;
+}
+
+.z7pa-login__watermark {
+  opacity: 0.13 !important;
+  filter: saturate(0.9) contrast(0.92) brightness(0.95) !important;
+  max-width: min(430px, 54vw) !important;
+  width: min(430px, 54vw) !important;
+  height: auto !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+.z7pa-login__content,
+.z7pa-login__form,
+.z7pa-login form,
+.z7pa-login input,
+.z7pa-login button {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 760px) {
+  .z7pa-login__watermark {
+    opacity: 0.10 !important;
+    max-width: min(320px, 72vw) !important;
+    width: min(320px, 72vw) !important;
+  }
+}
+/* End 7Z private login watermark softness */
