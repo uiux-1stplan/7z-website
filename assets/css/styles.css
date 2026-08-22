@@ -4534,3 +4534,154 @@ footer img[src*="7ZMagic-official-logo-20260822.png"] {
 /* Do NOT make brand containers transparent globally anymore */
 
 /* End 7Z official logo visibility fix */
+/* 7Z real logo img fix */
+
+/* Any logo converted from logo-mask to real img */
+img.logo-mask,
+img.logo-mini,
+img.logo-hero,
+img.logo-watermark,
+img.logo-mark,
+img.brand-logo,
+img.brand-mark,
+img.nav-logo,
+img.footer-logo,
+img[src*="7ZMagic-official-logo-20260822.png"] {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+/* Header logo */
+.site-header img.logo-mask,
+.site-header img.logo-mini,
+.main-header img.logo-mask,
+.main-header img.logo-mini,
+header img.logo-mask,
+header img.logo-mini,
+header img[src*="7ZMagic-official-logo-20260822.png"] {
+  width: clamp(54px, 6vw, 92px) !important;
+  height: clamp(34px, 3.6vw, 52px) !important;
+  max-width: 110px !important;
+}
+
+/* Hero / transition / loader */
+.logo-hero,
+img.logo-hero,
+.logo-watermark,
+img.logo-watermark,
+#loader img[src*="7ZMagic-official-logo-20260822.png"],
+.loader img[src*="7ZMagic-official-logo-20260822.png"],
+.preloader img[src*="7ZMagic-official-logo-20260822.png"],
+.z7-route-transition__mark img[src*="7ZMagic-official-logo-20260822.png"] {
+  width: min(320px, 58vw) !important;
+  height: auto !important;
+  max-height: 220px !important;
+}
+
+/* Footer logo */
+footer img.logo-mask,
+footer img.logo-mini,
+footer img.brand-logo,
+footer img.brand-mark,
+footer img[src*="7ZMagic-official-logo-20260822.png"] {
+  width: clamp(90px, 13vw, 190px) !important;
+  height: auto !important;
+  max-height: 110px !important;
+}
+
+/* Keep logo containers visible */
+.site-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+.main-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+footer a:has(img[src*="7ZMagic-official-logo-20260822.png"]) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* End 7Z real logo img fix */
+/* 7Z full header logo contained */
+
+/* استخدم الشعار الكامل داخل الهيدر بدون قص */
+.site-header img[src*="7ZMagic-official-logo-20260822.png"],
+.main-header img[src*="7ZMagic-official-logo-20260822.png"],
+header img[src*="7ZMagic-official-logo-20260822.png"] {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 62px !important;
+  max-height: 42px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* حاوية الشعار في الهيدر: صغيرة ومرتبة وبدون إطار */
+.site-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+.main-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+header a:has(img[src*="7ZMagic-official-logo-20260822.png"]) {
+  width: 72px !important;
+  height: 52px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* لا تخلي logo-mask يعمل قص أو mask على الصورة */
+header img.logo-mask,
+.site-header img.logo-mask,
+.main-header img.logo-mask {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  clip-path: none !important;
+}
+
+/* موبايل: أصغر شوي */
+@media (max-width: 760px) {
+  .site-header img[src*="7ZMagic-official-logo-20260822.png"],
+  .main-header img[src*="7ZMagic-official-logo-20260822.png"],
+  header img[src*="7ZMagic-official-logo-20260822.png"] {
+    max-width: 54px !important;
+    max-height: 36px !important;
+  }
+
+  .site-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+  .main-header a:has(img[src*="7ZMagic-official-logo-20260822.png"]),
+  header a:has(img[src*="7ZMagic-official-logo-20260822.png"]) {
+    width: 62px !important;
+    min-width: 62px !important;
+    max-width: 62px !important;
+    height: 46px !important;
+  }
+}
+
+/* End 7Z full header logo contained */
