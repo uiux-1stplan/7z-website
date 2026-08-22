@@ -99,7 +99,41 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260806-favicon19" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=20260806-favicon19" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20260806-favicon19" />
-  </head>
+  <style id="z7-home-static-copy-fix">
+/* Home static copy fix only — does not touch app.js or media motion */
+#intro ~ section .manifest__copy,
+#intro ~ section .manifest__copy *,
+#intro ~ section .service-loop__intro,
+#intro ~ section .service-loop__intro *,
+#intro ~ section .chapter__intro,
+#intro ~ section .chapter__intro *,
+#intro ~ section .gallery-copy,
+#intro ~ section .gallery-copy *,
+#intro ~ section .pin-copy,
+#intro ~ section .pin-copy *,
+#intro ~ section .web-copy,
+#intro ~ section .web-copy *,
+#intro ~ section .reach-copy,
+#intro ~ section .reach-copy *,
+#intro ~ section .film-copy,
+#intro ~ section .film-copy *,
+#intro ~ section .ai-heading,
+#intro ~ section .ai-heading *,
+#intro ~ section .studio-suite__intro,
+#intro ~ section .studio-suite__intro *,
+#intro ~ section .section-kicker,
+#intro ~ section .eyebrow,
+#intro ~ section .chapter__number {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  filter: none !important;
+  animation: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+</style>
+</head>
   <body data-static-background="true">
     <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
       <div class="z7-route-transition__panel z7-route-transition__panel--left"></div>
