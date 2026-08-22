@@ -245,6 +245,239 @@
 
 </style>
 
+
+<style id="z7-partner-refined-visual-v1">
+
+/* =========================================================
+   7Z MAGIC — REFINED PARTNER LOGOS
+   Scope: Partners page only
+   Same circular UX / no detailed cards
+   ========================================================= */
+
+.z7x-page--partners .z7p-partner {
+  position: relative;
+  text-align: center;
+}
+
+/* cleaner premium stage */
+.z7x-page--partners .z7p-partner__media {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+
+  overflow: hidden !important;
+  border-radius: 50% !important;
+
+  background:
+    radial-gradient(
+      circle at 32% 25%,
+      rgba(255,255,255,.065) 0%,
+      rgba(255,255,255,.020) 38%,
+      rgba(204,180,122,.018) 65%,
+      rgba(4,5,7,.16) 100%
+    ) !important;
+
+  border:
+    1px solid rgba(255,255,255,.075) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    inset 0 -28px 55px rgba(0,0,0,.13) !important;
+
+  transition:
+    transform .55s cubic-bezier(.2,.8,.2,1),
+    border-color .55s ease,
+    box-shadow .55s ease,
+    background .55s ease !important;
+}
+
+/* inner precision ring */
+.z7x-page--partners .z7p-partner__media::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 7% !important;
+
+  border-radius: 50% !important;
+  border: 1px solid rgba(255,255,255,.035) !important;
+
+  pointer-events: none !important;
+
+  transition:
+    transform .55s cubic-bezier(.2,.8,.2,1),
+    border-color .55s ease !important;
+}
+
+/* cinematic light sweep */
+.z7x-page--partners .z7p-partner__media::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: -35% !important;
+
+  border-radius: 50% !important;
+
+  background:
+    linear-gradient(
+      118deg,
+      transparent 38%,
+      rgba(255,255,255,.065) 49%,
+      transparent 61%
+    ) !important;
+
+  opacity: 0 !important;
+  transform: translateX(-34%) rotate(8deg) !important;
+
+  pointer-events: none !important;
+
+  transition:
+    opacity .4s ease,
+    transform .8s cubic-bezier(.2,.8,.2,1) !important;
+}
+
+/* transparent rebuilt logos */
+.z7x-page--partners .z7p-partner__media img {
+  position: relative !important;
+  z-index: 2 !important;
+
+  display: block !important;
+
+  width: 78% !important;
+  height: 78% !important;
+  max-width: 78% !important;
+  max-height: 78% !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  opacity: .91 !important;
+
+  transform: scale(.94) !important;
+
+  filter:
+    drop-shadow(
+      0 9px 20px
+      rgba(0,0,0,.20)
+    ) !important;
+
+  transition:
+    opacity .45s ease,
+    transform .55s cubic-bezier(.2,.8,.2,1),
+    filter .55s ease !important;
+}
+
+.z7x-page--partners .z7p-partner > span {
+  display: block !important;
+
+  margin-top: 10px !important;
+
+  font-size: 8px !important;
+  font-weight: 500 !important;
+  letter-spacing: .22em !important;
+
+  color: rgba(232,229,218,.27) !important;
+
+  transition:
+    color .45s ease,
+    transform .45s ease !important;
+}
+
+@media (hover:hover) {
+
+  .z7x-page--partners
+  .z7p-partner:hover
+  .z7p-partner__media {
+
+    transform:
+      translateY(-6px)
+      scale(1.018) !important;
+
+    border-color:
+      rgba(208,182,119,.30) !important;
+
+    background:
+      radial-gradient(
+        circle at 32% 25%,
+        rgba(255,255,255,.09) 0%,
+        rgba(208,182,119,.040) 43%,
+        rgba(208,182,119,.018) 68%,
+        rgba(4,5,7,.11) 100%
+      ) !important;
+
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.055),
+      inset 0 -26px 54px rgba(0,0,0,.11),
+      0 18px 44px rgba(0,0,0,.22),
+      0 0 34px rgba(208,182,119,.055) !important;
+  }
+
+  .z7x-page--partners
+  .z7p-partner:hover
+  .z7p-partner__media::before {
+
+    transform: scale(.96) !important;
+
+    border-color:
+      rgba(208,182,119,.17) !important;
+  }
+
+  .z7x-page--partners
+  .z7p-partner:hover
+  .z7p-partner__media::after {
+
+    opacity: 1 !important;
+
+    transform:
+      translateX(30%)
+      rotate(8deg) !important;
+  }
+
+  .z7x-page--partners
+  .z7p-partner:hover
+  .z7p-partner__media img {
+
+    opacity: 1 !important;
+
+    transform: scale(1.025) !important;
+
+    filter:
+      sepia(.30)
+      saturate(1.20)
+      brightness(1.07)
+      drop-shadow(
+        0 10px 24px
+        rgba(208,182,119,.12)
+      ) !important;
+  }
+
+  .z7x-page--partners
+  .z7p-partner:hover > span {
+
+    color:
+      rgba(208,182,119,.62) !important;
+
+    transform:
+      translateY(2px) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .z7x-page--partners .z7p-partner__media img {
+    width: 73% !important;
+    height: 73% !important;
+    max-width: 73% !important;
+    max-height: 73% !important;
+  }
+}
+
+</style>
+
 </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -388,7 +621,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/1.png"
+                src="/media/partnetslogos-refined/01.png"
                 alt="7Z Magic Partner 01"
                 loading="lazy"
                 decoding="async"
@@ -399,7 +632,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/2.png"
+                src="/media/partnetslogos-refined/02.png"
                 alt="7Z Magic Partner 02"
                 loading="lazy"
                 decoding="async"
@@ -410,7 +643,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/3.png"
+                src="/media/partnetslogos-refined/03.png"
                 alt="7Z Magic Partner 03"
                 loading="lazy"
                 decoding="async"
@@ -421,7 +654,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/4.png"
+                src="/media/partnetslogos-refined/04.png"
                 alt="7Z Magic Partner 04"
                 loading="lazy"
                 decoding="async"
@@ -432,7 +665,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/5.png"
+                src="/media/partnetslogos-refined/05.png"
                 alt="7Z Magic Partner 05"
                 loading="lazy"
                 decoding="async"
@@ -443,7 +676,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/6.jpeg"
+                src="/media/partnetslogos-refined/06.png"
                 alt="7Z Magic Partner 06"
                 loading="lazy"
                 decoding="async"
@@ -454,7 +687,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/7.jpg"
+                src="/media/partnetslogos-refined/07.png"
                 alt="7Z Magic Partner 07"
                 loading="lazy"
                 decoding="async"
@@ -465,7 +698,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/8.jpg"
+                src="/media/partnetslogos-refined/08.png"
                 alt="7Z Magic Partner 08"
                 loading="lazy"
                 decoding="async"
@@ -476,7 +709,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/9.jpg"
+                src="/media/partnetslogos-refined/09.png"
                 alt="7Z Magic Partner 09"
                 loading="lazy"
                 decoding="async"
@@ -487,7 +720,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/10.jpg"
+                src="/media/partnetslogos-refined/10.png"
                 alt="7Z Magic Partner 10"
                 loading="lazy"
                 decoding="async"
@@ -498,7 +731,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/11.jpg"
+                src="/media/partnetslogos-refined/11.png"
                 alt="7Z Magic Partner 11"
                 loading="lazy"
                 decoding="async"
@@ -509,7 +742,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/12.jpg"
+                src="/media/partnetslogos-refined/12.png"
                 alt="7Z Magic Partner 12"
                 loading="lazy"
                 decoding="async"
@@ -520,7 +753,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/13.jpg"
+                src="/media/partnetslogos-refined/13.png"
                 alt="7Z Magic Partner 13"
                 loading="lazy"
                 decoding="async"
@@ -531,7 +764,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/14.png"
+                src="/media/partnetslogos-refined/14.png"
                 alt="7Z Magic Partner 14"
                 loading="lazy"
                 decoding="async"
@@ -542,7 +775,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/15.png"
+                src="/media/partnetslogos-refined/15.png"
                 alt="7Z Magic Partner 15"
                 loading="lazy"
                 decoding="async"
@@ -553,7 +786,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/16.jpg"
+                src="/media/partnetslogos-refined/16.png"
                 alt="7Z Magic Partner 16"
                 loading="lazy"
                 decoding="async"
@@ -564,7 +797,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/17.jpg"
+                src="/media/partnetslogos-refined/17.png"
                 alt="7Z Magic Partner 17"
                 loading="lazy"
                 decoding="async"
@@ -575,7 +808,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/18.jpg"
+                src="/media/partnetslogos-refined/18.png"
                 alt="7Z Magic Partner 18"
                 loading="lazy"
                 decoding="async"
@@ -586,7 +819,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/19.jpg"
+                src="/media/partnetslogos-refined/19.png"
                 alt="7Z Magic Partner 19"
                 loading="lazy"
                 decoding="async"
@@ -597,7 +830,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/20.jpg"
+                src="/media/partnetslogos-refined/20.png"
                 alt="7Z Magic Partner 20"
                 loading="lazy"
                 decoding="async"
@@ -608,7 +841,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/21.png"
+                src="/media/partnetslogos-refined/21.png"
                 alt="7Z Magic Partner 21"
                 loading="lazy"
                 decoding="async"
@@ -619,7 +852,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/media/partnetslogos/22.jpg"
+                src="/media/partnetslogos-refined/22.png"
                 alt="7Z Magic Partner 22"
                 loading="lazy"
                 decoding="async"
