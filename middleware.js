@@ -64,6 +64,8 @@ export const config = {
     '/tawjihi-english-quotation/:path*',
     '/oman-market-partnership',
     '/oman-market-partnership/:path*',
+    '/private-access/scmc-7z-proposal',
+    '/private-access/scmc-7z-proposal/:path*',
     '/api/private-documents/blueprint'
   ]
 };

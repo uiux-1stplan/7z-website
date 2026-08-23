@@ -1,8 +1,8 @@
 (() => {
   "use strict";
 
-  const PUBLIC_SCOPES = ["silla", "elcon", "tawjihi-quotation", "oman-partnership"];
-  const ADMIN_SCOPES = ["silla", "elcon", "blueprint-html", "blueprint-pdf", "tawjihi-quotation", "oman-partnership"];
+  const PUBLIC_SCOPES = ["silla", "elcon", "tawjihi-quotation", "oman-partnership", "scmc-proposal"];
+  const ADMIN_SCOPES = ["silla", "elcon", "blueprint-html", "blueprint-pdf", "tawjihi-quotation", "oman-partnership", "scmc-proposal"];
 
   const cards = Array.from(document.querySelectorAll("[data-z7pa-resource]"));
   const grid = document.querySelector("[data-z7pa-grid]");

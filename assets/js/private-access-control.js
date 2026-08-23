@@ -11,7 +11,8 @@
     "/strategic-blueprint/",
     "/api/private-documents/blueprint",
     "/tawjihi-english-quotation/",
-    "/oman-market-partnership/"
+    "/oman-market-partnership/",
+    "/private-access/scmc-7z-proposal/"
   ];
 
   let authenticated = false;

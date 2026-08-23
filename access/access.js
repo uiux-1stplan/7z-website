@@ -5,7 +5,8 @@
     'blueprint-html': { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — PROTECTED HTML', code: 'BLUEPRINT / HTML' },
     'blueprint-pdf': { type: 'PRIVATE INTERNAL ACCESS', name: '7Z STRATEGIC BLUEPRINT — CONFIDENTIAL PDF', code: 'BLUEPRINT / PDF' },
     'tawjihi-quotation': { type: 'PRIVATE QUOTATION', name: 'TAWJIHI ENGLISH DIGITAL CURRICULUM', code: 'TQ-01' },
-    'oman-partnership': { type: 'PRIVATE PARTNERSHIP', name: 'OMAN MARKET PARTNERSHIP', code: 'OM-01' }
+    'oman-partnership': { type: 'PRIVATE PARTNERSHIP', name: 'OMAN MARKET PARTNERSHIP', code: 'OM-01' },
+    'scmc-proposal': { type: 'PRIVATE CLIENT ACCESS', name: 'SMILE CARE — BRAND EXPERIENCE PROPOSAL', code: 'SCMC-01' }
   };
   const params = new URLSearchParams(window.location.search);
   const resource = params.get('resource');
