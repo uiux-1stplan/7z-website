@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Smile Care Ã— 7Z Magic â€” Brand Experience Upgrade</title>
+<title>Smile Care × 7Z Magic — Brand Experience Upgrade</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=IBM+Plex+Sans+Arabic:wght@200;300;400;500;600&display=swap" rel="stylesheet">
@@ -182,8 +182,8 @@ html[data-theme="light"] .tier .rec-badge{color:#fff}
 .tier ul{list-style:none;font-size:.88rem;color:var(--fg-dim)}
 .tier li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
 .tier li:last-child{border-bottom:none}
-.tier li::before{content:"â€”";color:var(--accent);flex-shrink:0}
-.tier.rec li::before{content:"âœ“"}
+.tier li::before{content:"—";color:var(--accent);flex-shrink:0}
+.tier.rec li::before{content:"✓"}
 
 .headline-price{
   border:1px solid var(--accent);border-radius:3px;padding:40px;background:var(--bg-3);
@@ -216,7 +216,7 @@ html[dir="rtl"] .scope-box h3{letter-spacing:.05em}
 .scope-box li{padding:8px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
 .scope-box li:last-child{border-bottom:none}
 .scope-box li::before{content:"+";color:var(--accent);flex-shrink:0;font-family:var(--f-lat)}
-.scope-box.no li::before{content:"â€“";color:var(--fg-faint)}
+.scope-box.no li::before{content:"–";color:var(--fg-faint)}
 
 /* ---------- cta ---------- */
 .cta{text-align:center;padding:130px 0}
@@ -237,14 +237,14 @@ footer{border-top:1px solid var(--line);padding:44px 0;font-size:.75rem;color:va
 /* ================================================================
    7Z MAGIC LAYER
    Interaction, depth and motion only.
-   No new colours, no new fonts â€” accent is the existing --accent.
+   No new colours, no new fonts — accent is the existing --accent.
    ================================================================ */
 
 /* --- accent as rgba, derived from the existing palette --- */
 :root{--accent-rgb:219,196,143}
 html[data-theme="light"]{--accent-rgb:138,109,47}
 
-/* --- 1 Â· glass mouse-tracked shine on cards --- */
+/* --- 1 · glass mouse-tracked shine on cards --- */
 .card,.tier,.scope-box,.headline-price{position:relative;isolation:isolate;overflow:hidden}
 .card::after,.scope-box::after,.headline-price::after{
   content:"";position:absolute;inset:-40%;z-index:-1;pointer-events:none;opacity:0;
@@ -256,7 +256,7 @@ html[data-theme="light"]{--accent-rgb:138,109,47}
 .card:hover{transform:translateY(-3px);box-shadow:0 22px 44px -26px rgba(0,0,0,.7)}
 html[data-theme="light"] .card:hover{box-shadow:0 22px 44px -28px rgba(0,56,40,.28)}
 
-/* --- 2 Â· cinematic gallery: pop forward, recede siblings --- */
+/* --- 2 · cinematic gallery: pop forward, recede siblings --- */
 .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;perspective:1400px}
 .gcard{
   position:relative;border:1px solid var(--line);border-radius:3px;overflow:hidden;
@@ -286,7 +286,7 @@ html[data-theme="light"] .gcard.is-active{box-shadow:0 40px 70px -32px rgba(0,56
 }
 .gcard.is-active::after{opacity:1}
 
-/* --- 3 Â· loader: 7Z mark resolves into the SCMC mark --- */
+/* --- 3 · loader: 7Z mark resolves into the SCMC mark --- */
 #loader{
   position:fixed;inset:0;z-index:999;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
@@ -311,7 +311,7 @@ html[data-theme="light"] .lmark .l7z img{filter:invert(1) brightness(.28) sepia(
 }
 @keyframes lscIn{0%{opacity:0;transform:scale(.94)}100%{opacity:1;transform:scale(1)}}
 
-/* --- 4 Â· floating 7Z watermark with cursor ink-bleed --- */
+/* --- 4 · floating 7Z watermark with cursor ink-bleed --- */
 #zmark{
   position:fixed;top:50%;left:50%;width:min(62vw,760px);transform:translate(-50%,-50%);
   opacity:.05;z-index:0;pointer-events:none;transition:opacity .6s ease;mix-blend-mode:screen;
@@ -325,7 +325,7 @@ html[data-theme="light"] #zmark{mix-blend-mode:multiply;opacity:.05;filter:inver
 body.z-lit #zmark{opacity:.1}
 body.z-lit #zmark .zshine{opacity:1}
 
-/* --- 5 Â· hero depth --- */
+/* --- 5 · hero depth --- */
 .cover .lockups,.cover h1,.cover .lead,.cover .meta,.cover .eyebrow{
   will-change:transform;transition:transform .9s cubic-bezier(.2,.8,.2,1)
 }
@@ -335,7 +335,7 @@ html[data-theme="light"] .sevenz-logo img{filter:invert(1) brightness(.22) sepia
 .cover .lockups img,.sevenz-logo img{transition:transform .6s cubic-bezier(.22,.8,.2,1),filter .6s ease}
 .lockups:hover img{transform:translateY(-2px)}
 
-/* --- 6 Â· section progress rail --- */
+/* --- 6 · section progress rail --- */
 #rail{
   position:fixed;inset-inline-end:20px;top:50%;transform:translateY(-50%);z-index:90;
   display:flex;flex-direction:column;gap:11px;
@@ -353,7 +353,7 @@ html[data-theme="light"] .sevenz-logo img{filter:invert(1) brightness(.22) sepia
 }
 #rail a:hover::after{opacity:1}
 
-/* --- 7 Â· format choice cards --- */
+/* --- 7 · format choice cards --- */
 .fmt{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch;margin-top:26px}
 .fmt-or{
   display:flex;align-items:center;justify-content:center;font-family:var(--f-lat);
@@ -382,7 +382,7 @@ html[data-theme="light"] .sevenz-logo img{filter:invert(1) brightness(.22) sepia
 }
 .fmt-note strong{color:var(--fg)}
 
-/* --- 8 Â· CTA interaction --- */
+/* --- 8 · CTA interaction --- */
 .step{position:relative;overflow:hidden}
 .step span{position:relative;z-index:1}
 .step::before{
@@ -392,10 +392,10 @@ html[data-theme="light"] .sevenz-logo img{filter:invert(1) brightness(.22) sepia
 }
 .step:hover::before{transform:scaleX(1)}
 
-/* --- 9 Â· number reveal --- */
+/* --- 9 · number reveal --- */
 .cnt{font-variant-numeric:tabular-nums}
 
-/* --- 10 Â· single-package inclusion list --- */
+/* --- 10 · single-package inclusion list --- */
 .pkg-list{columns:2;column-gap:34px}
 .pkg-list li{break-inside:avoid}
 @media (max-width:760px){.pkg-list{columns:1}}
@@ -432,7 +432,7 @@ html[lang="ar"] .en{display:none}
   .lockups img{height:56px}
   .sevenz{font-size:1.5rem}
   .headline-price{padding:28px}
-  /* 7Z layer â€” reduced spatial complexity on tablet */
+  /* 7Z layer — reduced spatial complexity on tablet */
   .gallery{grid-template-columns:1fr;perspective:none}
   .gallery.is-focused .gcard:not(.is-active){filter:none;opacity:.85;transform:none}
   .gcard.is-active{transform:none;box-shadow:none}
@@ -447,7 +447,7 @@ html[lang="ar"] .en{display:none}
   .lockups img{height:44px}
   .meta{gap:18px;font-size:.66rem}
   .btn{padding:7px 11px;font-size:.62rem}
-  /* 7Z layer â€” simplified but still premium on mobile */
+  /* 7Z layer — simplified but still premium on mobile */
   .card:hover{transform:none;box-shadow:none}
   .card::after,.scope-box::after,.headline-price::after,.gcard::after{display:none}
   #zmark{display:none}
@@ -495,8 +495,6 @@ html[lang="ar"] .en{display:none}
   footer{padding:10mm 0}
 }
 </style>
-<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
-<meta http-equiv="Cache-Control" content="no-store, max-age=0">
 </head>
 <body>
 
@@ -511,7 +509,7 @@ html[lang="ar"] .en{display:none}
   </div>
 </div>
 
-<!-- floating 7Z signature â€” depth, parallax, cursor ink-bleed -->
+<!-- floating 7Z signature — depth, parallax, cursor ink-bleed -->
 <div id="zmark" aria-hidden="true">
   <img src="assets/brand/7z-logo.png" alt="">
   <div class="zshine"></div>
@@ -521,10 +519,10 @@ html[lang="ar"] .en{display:none}
 <nav id="rail" aria-label="Sections"></nav>
 
 <div class="bar">
-  <span class="who"><span class="en">Smile Care Ã— 7Z Magic Â· Confidential</span><span class="ar">Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ± Ã— 7Z Ù…Ø§Ø¬ÙŠÙƒ Â· ÙˆØ«ÙŠÙ‚Ø© Ø®Ø§ØµØ©</span></span>
+  <span class="who"><span class="en">Smile Care × 7Z Magic · Confidential</span><span class="ar">سمايل كير × 7Z ماجيك · وثيقة خاصة</span></span>
   <div class="ctrls">
-    <button class="btn" id="langBtn" type="button">Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©</button>
-    <button class="btn" id="themeBtn" type="button"><span class="en">Light</span><span class="ar">ÙØ§ØªØ­</span></button>
+    <button class="btn" id="langBtn" type="button">العربية</button>
+    <button class="btn" id="themeBtn" type="button"><span class="en">Light</span><span class="ar">فاتح</span></button>
   </div>
 </div>
 
@@ -534,22 +532,22 @@ html[lang="ar"] .en{display:none}
     <div class="lockups rv">
       <img class="scmc-dark" src="assets/brand/scmc-lockup-beige.png" alt="Smile Care Medical Center">
       <img class="scmc-light" src="assets/brand/scmc-lockup-emerald.png" alt="Smile Care Medical Center">
-      <span class="cross">Ã—</span>
+      <span class="cross">×</span>
       <span class="sevenz-logo"><img src="assets/brand/7z-logo.png" alt="7Z Magic"><span class="sevenz">7Z <b>MAGIC</b></span></span>
     </div>
-    <span class="eyebrow rv"><span class="en">Brand Experience Upgrade</span><span class="ar">ØªØ±Ù‚ÙŠØ© ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø¹Ù„Ø§Ù…Ø©</span></span>
+    <span class="eyebrow rv"><span class="en">Brand Experience Upgrade</span><span class="ar">ترقية تجربة العلامة</span></span>
     <h1 class="rv">
       <span class="en">Your mark is already modern.<br>Everything around it isn't.</span>
-      <span class="ar">Ø´Ø¹Ø§Ø±ÙƒÙ… Ø¹ØµØ±ÙŠÙ‘ Ø£ØµÙ„Ø§Ù‹.<br>Ù…Ø§ Ø­ÙˆÙ„Ù‡ Ù‡Ùˆ Ø§Ù„Ù…ØªØ£Ø®Ù‘Ø±.</span>
+      <span class="ar">شعاركم عصريّ أصلاً.<br>ما حوله هو المتأخّر.</span>
     </h1>
     <p class="lead rv">
-      <span class="en">A twenty-day programme to modernise how Smile Care looks, moves and sells â€” without touching the brandmark you have spent nineteen years making recognisable in Ras Al Khaimah.</span>
-      <span class="ar">Ø¨Ø±Ù†Ø§Ù…Ø¬ Ù…Ù† Ø¹Ø´Ø±ÙŠÙ† ÙŠÙˆÙ…Ø§Ù‹ Ù„ØªØ­Ø¯ÙŠØ« Ø´ÙƒÙ„ Â«Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ±Â» ÙˆØµÙˆØªÙ‡Ø§ Ø§Ù„Ø¨ØµØ±ÙŠ ÙˆØ­Ø¶ÙˆØ±Ù‡Ø§ Ø§Ù„ØªØ¬Ø§Ø±ÙŠ â€” Ø¯ÙˆÙ† Ø§Ù„Ù…Ø³Ø§Ø³ Ø¨Ø§Ù„Ø´Ø¹Ø§Ø± Ø§Ù„Ø°ÙŠ Ø¨Ù†ÙŠØªÙ… Ø­ÙˆÙ„Ù‡ ØªØ³Ø¹ Ø¹Ø´Ø±Ø© Ø³Ù†Ø© Ù…Ù† Ø§Ù„Ø«Ù‚Ø© ÙÙŠ Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø©.</span>
+      <span class="en">A twenty-day programme to modernise how Smile Care looks, moves and sells — without touching the brandmark you have spent nineteen years making recognisable in Ras Al Khaimah.</span>
+      <span class="ar">برنامج من عشرين يوماً لتحديث شكل «سمايل كير» وصوتها البصري وحضورها التجاري — دون المساس بالشعار الذي بنيتم حوله تسع عشرة سنة من الثقة في رأس الخيمة.</span>
     </p>
     <div class="meta rv">
-      <span><span class="en">Prepared for Dr. Nael Adel &amp; Mrs. Hanan Al Wawi</span><span class="ar">Ù…ÙØ¹Ø¯Ù‘ Ù„Ù„Ø¯ÙƒØªÙˆØ± Ù†Ø§Ø¦Ù„ Ø¹Ø§Ø¯Ù„ ÙˆØ§Ù„Ø³ÙŠØ¯Ø© Ø­Ù†Ø§Ù† Ø§Ù„ÙˆØ§ÙˆÙŠ</span></span>
-      <span><span class="en">Ras Al Khaimah, UAE</span><span class="ar">Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø©ØŒ Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª</span></span>
-      <span><span class="en">August 2026</span><span class="ar">Ø¢Ø¨ Ù¢Ù Ù¢Ù¦</span></span>
+      <span><span class="en">Prepared for Dr. Nael Adel &amp; Mrs. Hanan Al Wawi</span><span class="ar">مُعدّ للدكتور نائل عادل والسيدة حنان الواوي</span></span>
+      <span><span class="en">Ras Al Khaimah, UAE</span><span class="ar">رأس الخيمة، الإمارات</span></span>
+      <span><span class="en">August 2026</span><span class="ar">آب ٢٠٢٦</span></span>
     </div>
   </div>
 </section>
@@ -558,22 +556,22 @@ html[lang="ar"] .en{display:none}
 <section id="opportunity">
   <div class="wrap">
     <span class="num rv">01</span>
-    <span class="eyebrow rv"><span class="en">The Opportunity</span><span class="ar">Ø§Ù„ÙØ±ØµØ©</span></span>
+    <span class="eyebrow rv"><span class="en">The Opportunity</span><span class="ar">الفرصة</span></span>
     <h2 class="rv">
       <span class="en">You already built the hard part.</span>
-      <span class="ar">Ø§Ù„Ø¬Ø²Ø¡ Ø§Ù„ØµØ¹Ø¨ Ø£Ù†Ø¬Ø²ØªÙ…ÙˆÙ‡ ÙØ¹Ù„Ø§Ù‹.</span>
+      <span class="ar">الجزء الصعب أنجزتموه فعلاً.</span>
     </h2>
     <p class="lead rv">
-      <span class="en">One dental chair in 2007 became a six-doctor medical centre with dentistry, dermatology, aesthetics, laser and laboratory services â€” licensed by MOHAP, recognised by the Ministry of Health and by Municipalities &amp; Union magazine, and contracted with more than eighteen insurers.</span>
-      <span class="ar">ÙƒØ±Ø³ÙŠ Ø£Ø³Ù†Ø§Ù† ÙˆØ§Ø­Ø¯ ÙÙŠ Ù¢Ù Ù Ù§ ØµØ§Ø± Ù…Ø±ÙƒØ²Ø§Ù‹ Ø·Ø¨ÙŠØ§Ù‹ Ø¨Ø³ØªØ© Ø£Ø·Ø¨Ø§Ø¡ ÙŠØ¶Ù… Ø§Ù„Ø£Ø³Ù†Ø§Ù† ÙˆØ§Ù„Ø¬Ù„Ø¯ÙŠØ© ÙˆØ§Ù„ØªØ¬Ù…ÙŠÙ„ ÙˆØ§Ù„Ù„ÙŠØ²Ø± ÙˆØ§Ù„Ù…Ø®ØªØ¨Ø± â€” Ù…Ø±Ø®Ù‘Øµ Ù…Ù† ÙˆØ²Ø§Ø±Ø© Ø§Ù„ØµØ­Ø© ÙˆÙˆÙ‚Ø§ÙŠØ© Ø§Ù„Ù…Ø¬ØªÙ…Ø¹ØŒ ÙˆÙ…ÙƒØ±Ù‘Ù… Ù…Ù† Ø§Ù„ÙˆØ²Ø§Ø±Ø© ÙˆÙ…Ù† Ù…Ø¬Ù„Ø© Ø§Ù„Ø¨Ù„Ø¯ÙŠØ§Øª ÙˆØ§Ù„Ø§ØªØ­Ø§Ø¯ØŒ ÙˆÙ…ØªØ¹Ø§Ù‚Ø¯ Ù…Ø¹ Ø£ÙƒØ«Ø± Ù…Ù† Ø«Ù…Ø§Ù†ÙŠØ© Ø¹Ø´Ø± Ù…Ø²ÙˆÙ‘Ø¯ ØªØ£Ù…ÙŠÙ†.</span>
+      <span class="en">One dental chair in 2007 became a six-doctor medical centre with dentistry, dermatology, aesthetics, laser and laboratory services — licensed by MOHAP, recognised by the Ministry of Health and by Municipalities &amp; Union magazine, and contracted with more than eighteen insurers.</span>
+      <span class="ar">كرسي أسنان واحد في ٢٠٠٧ صار مركزاً طبياً بستة أطباء يضم الأسنان والجلدية والتجميل والليزر والمختبر — مرخّص من وزارة الصحة ووقاية المجتمع، ومكرّم من الوزارة ومن مجلة البلديات والاتحاد، ومتعاقد مع أكثر من ثمانية عشر مزوّد تأمين.</span>
     </p>
     <p class="rv">
-      <span class="en">That is a nineteen-year asset. The opportunity is not to reinvent it. It is to make the way Smile Care <strong>looks</strong> finally match what Smile Care has <strong>become</strong> â€” and to do it in a way that protects every dirham of recognition you already own.</span>
-      <span class="ar">Ù‡Ø°Ø§ Ø£ØµÙ„ Ø¹Ù…Ø±Ù‡ ØªØ³Ø¹ Ø¹Ø´Ø±Ø© Ø³Ù†Ø©. ÙˆØ§Ù„ÙØ±ØµØ© Ù„ÙŠØ³Øª ÙÙŠ Ø¥Ø¹Ø§Ø¯Ø© Ø§Ø®ØªØ±Ø§Ø¹Ù‡ØŒ Ø¨Ù„ ÙÙŠ Ø£Ù† ÙŠØµØ¨Ø­ <strong>Ø´ÙƒÙ„</strong> Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ± Ù…Ø·Ø§Ø¨Ù‚Ø§Ù‹ Ù„Ù…Ø§ <strong>ØµØ§Ø±Øª</strong> Ø¹Ù„ÙŠÙ‡ Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ± â€” ÙˆØ¨Ø·Ø±ÙŠÙ‚Ø© ØªØ­Ù…ÙŠ ÙƒÙ„ Ø¯Ø±Ù‡Ù… Ù…Ù† Ø§Ù„ØªØ¹Ø±Ù‘Ù Ø¹Ù„Ù‰ Ø§Ù„Ø¹Ù„Ø§Ù…Ø© ØªÙ…Ù„ÙƒÙˆÙ†Ù‡ Ø§Ù„ÙŠÙˆÙ….</span>
+      <span class="en">That is a nineteen-year asset. The opportunity is not to reinvent it. It is to make the way Smile Care <strong>looks</strong> finally match what Smile Care has <strong>become</strong> — and to do it in a way that protects every dirham of recognition you already own.</span>
+      <span class="ar">هذا أصل عمره تسع عشرة سنة. والفرصة ليست في إعادة اختراعه، بل في أن يصبح <strong>شكل</strong> سمايل كير مطابقاً لما <strong>صارت</strong> عليه سمايل كير — وبطريقة تحمي كل درهم من التعرّف على العلامة تملكونه اليوم.</span>
     </p>
     <div class="fmt-note rv">
-      <span class="en"><strong>And there is a reason to do it this year.</strong> You marked seventeen years with a film. In 2027 Smile Care turns <strong>twenty</strong> â€” the one anniversary that genuinely deserves a campaign. Building the visual system now means the twentieth year arrives on a finished brand, with a year of consistent material already behind it, instead of being the deadline the work is rushed to meet.</span>
-      <span class="ar"><strong>ÙˆÙ‡Ù†Ø§Ùƒ Ø³Ø¨Ø¨ Ù„ÙØ¹Ù„ Ø°Ù„Ùƒ Ù‡Ø°Ø§ Ø§Ù„Ø¹Ø§Ù….</strong> Ø§Ø­ØªÙÙ„ØªÙ… Ø¨Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø³Ø§Ø¨Ø¹Ø© Ø¹Ø´Ø±Ø© Ø¨ÙÙŠÙ„Ù…. ÙˆÙÙŠ Ù¢Ù Ù¢Ù§ ØªÙÙƒÙ…Ù„ Â«Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ±Â» <strong>Ø¹Ø´Ø±ÙŠÙ† Ø¹Ø§Ù…Ø§Ù‹</strong> â€” ÙˆÙ‡ÙŠ Ø§Ù„Ø°ÙƒØ±Ù‰ Ø§Ù„ÙˆØ­ÙŠØ¯Ø© Ø§Ù„ØªÙŠ ØªØ³ØªØ­Ù‚ Ø­Ù…Ù„Ø© ÙØ¹Ù„Ø§Ù‹. ÙˆØ¨Ù†Ø§Ø¡ Ø§Ù„Ù†Ø¸Ø§Ù… Ø§Ù„Ø¨ØµØ±ÙŠ Ø§Ù„Ø¢Ù† ÙŠØ¹Ù†ÙŠ Ø£Ù† ØªØµÙ„ Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¹Ø´Ø±ÙˆÙ† ÙˆØ¹Ù„Ø§Ù…ØªÙƒÙ… Ù…ÙƒØªÙ…Ù„Ø©ØŒ ÙˆÙˆØ±Ø§Ø¡Ù‡Ø§ Ø³Ù†Ø© ÙƒØ§Ù…Ù„Ø© Ù…Ù† Ø§Ù„Ù…ÙˆØ§Ø¯ Ø§Ù„Ù…ØªÙ‘Ø³Ù‚Ø©ØŒ Ø¨Ø¯Ù„ Ø£Ù† ØªÙƒÙˆÙ† Ù‡ÙŠ Ø§Ù„Ù…ÙˆØ¹Ø¯ Ø§Ù„Ø°ÙŠ ÙŠÙØ³ØªØ¹Ø¬Ù„ Ø§Ù„Ø¹Ù…Ù„ Ù…Ù† Ø£Ø¬Ù„Ù‡.</span>
+      <span class="en"><strong>And there is a reason to do it this year.</strong> You marked seventeen years with a film. In 2027 Smile Care turns <strong>twenty</strong> — the one anniversary that genuinely deserves a campaign. Building the visual system now means the twentieth year arrives on a finished brand, with a year of consistent material already behind it, instead of being the deadline the work is rushed to meet.</span>
+      <span class="ar"><strong>وهناك سبب لفعل ذلك هذا العام.</strong> احتفلتم بالسنة السابعة عشرة بفيلم. وفي ٢٠٢٧ تُكمل «سمايل كير» <strong>عشرين عاماً</strong> — وهي الذكرى الوحيدة التي تستحق حملة فعلاً. وبناء النظام البصري الآن يعني أن تصل السنة العشرون وعلامتكم مكتملة، ووراءها سنة كاملة من المواد المتّسقة، بدل أن تكون هي الموعد الذي يُستعجل العمل من أجله.</span>
     </div>
   </div>
 </section>
@@ -582,62 +580,62 @@ html[lang="ar"] .en{display:none}
 <section id="understanding">
   <div class="wrap">
     <span class="num rv">02</span>
-    <span class="eyebrow rv"><span class="en">Our Understanding</span><span class="ar">Ù…Ø§ ÙÙ‡Ù…Ù†Ø§Ù‡ Ø¹Ù†ÙƒÙ…</span></span>
+    <span class="eyebrow rv"><span class="en">Our Understanding</span><span class="ar">ما فهمناه عنكم</span></span>
     <h2 class="rv">
       <span class="en">What we found in your own materials.</span>
-      <span class="ar">Ù…Ø§ ÙˆØ¬Ø¯Ù†Ø§Ù‡ Ø¯Ø§Ø®Ù„ Ù…ÙˆØ§Ø¯Ù‘ÙƒÙ… Ø£Ù†ØªÙ….</span>
+      <span class="ar">ما وجدناه داخل موادّكم أنتم.</span>
     </h2>
     <p class="rv">
       <span class="en">Before writing a single line of this proposal we went through your brand book, your photography, your campaign audio and your website. Five things stood out.</span>
-      <span class="ar">Ù‚Ø¨Ù„ ÙƒØªØ§Ø¨Ø© Ø³Ø·Ø± ÙˆØ§Ø­Ø¯ Ù…Ù† Ù‡Ø°Ø§ Ø§Ù„Ø¹Ø±Ø¶ØŒ Ø±Ø§Ø¬Ø¹Ù†Ø§ Ø¯Ù„ÙŠÙ„ Ù‡ÙˆÙŠØªÙƒÙ… ÙˆØµÙˆØ±ÙƒÙ… ÙˆÙ…ÙˆØ§Ø¯Ù‘ÙƒÙ… Ø§Ù„ØµÙˆØªÙŠØ© ÙˆÙ…ÙˆÙ‚Ø¹ÙƒÙ…. Ø®Ù…Ø³Ø© Ø£Ù…ÙˆØ± Ù„ÙØªØª Ø§Ù†ØªØ¨Ø§Ù‡Ù†Ø§.</span>
+      <span class="ar">قبل كتابة سطر واحد من هذا العرض، راجعنا دليل هويتكم وصوركم وموادّكم الصوتية وموقعكم. خمسة أمور لفتت انتباهنا.</span>
     </p>
 
     <div class="grid g2 rv" style="margin-top:40px">
       <div class="card">
         <span class="num">01</span>
-        <h3><span class="en">Your identity was never finished</span><span class="ar">Ù‡ÙˆÙŠØªÙƒÙ… Ù„Ù… ØªÙØ³ØªÙƒÙ…Ù„ ÙŠÙˆÙ…Ø§Ù‹</span></h3>
-        <p><span class="en">The 2020 brand book built for you is genuinely good work. But a significant number of its application pages â€” the C4 folder, the uniforms, the Instagram templates â€” are still stamped <strong>â€œPending Approval.â€</strong> You paid for a system that was never fully switched on.</span>
-        <span class="ar">Ø¯Ù„ÙŠÙ„ Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ù…ÙØ¹Ø¯Ù‘ Ù„ÙƒÙ… Ø¹Ø§Ù… Ù¢Ù Ù¢Ù  Ø¹Ù…Ù„ Ø¬ÙŠÙ‘Ø¯ ÙØ¹Ù„Ø§Ù‹. Ù„ÙƒÙ† Ø¹Ø¯Ø¯Ø§Ù‹ Ù…Ù† ØµÙØ­Ø§Øª ØªØ·Ø¨ÙŠÙ‚Ø§ØªÙ‡ â€” Ù…Ù„Ù C4ØŒ Ø§Ù„Ø²ÙŠÙ‘ Ø§Ù„Ù…ÙˆØ­Ù‘Ø¯ØŒ Ù‚ÙˆØ§Ù„Ø¨ Ø¥Ù†Ø³ØªØºØ±Ø§Ù… â€” Ù…Ø§ Ø²Ø§Ù„Øª Ù…Ø®ØªÙˆÙ…Ø© Ø¨Ø¹Ø¨Ø§Ø±Ø© <strong>Â«Ø¨Ø§Ù†ØªØ¸Ø§Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯Â»</strong>. Ø¯ÙØ¹ØªÙ… Ø«Ù…Ù† Ù†Ø¸Ø§Ù… Ù„Ù… ÙŠÙØ´ØºÙŽÙ‘Ù„ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„.</span></p>
+        <h3><span class="en">Your identity was never finished</span><span class="ar">هويتكم لم تُستكمل يوماً</span></h3>
+        <p><span class="en">The 2020 brand book built for you is genuinely good work. But a significant number of its application pages — the C4 folder, the uniforms, the Instagram templates — are still stamped <strong>“Pending Approval.”</strong> You paid for a system that was never fully switched on.</span>
+        <span class="ar">دليل الهوية المُعدّ لكم عام ٢٠٢٠ عمل جيّد فعلاً. لكن عدداً من صفحات تطبيقاته — ملف C4، الزيّ الموحّد، قوالب إنستغرام — ما زالت مختومة بعبارة <strong>«بانتظار الاعتماد»</strong>. دفعتم ثمن نظام لم يُشغَّل بالكامل.</span></p>
       </div>
       <div class="card">
         <span class="num">02</span>
-        <h3><span class="en">The brand outgrew its own category</span><span class="ar">Ø§Ù„Ù†Ø´Ø§Ø· ØªØ¬Ø§ÙˆØ² ÙØ¦Ø© Ù‡ÙˆÙŠØªÙ‡</span></h3>
-        <p><span class="en">The name and the mark say <em>smile</em>. Your revenue now also comes from dermatology, injectables, laser and skin â€” a different buyer, with a different price expectation and a much higher visual standard.</span>
-        <span class="ar">Ø§Ù„Ø§Ø³Ù… ÙˆØ§Ù„Ø´Ø¹Ø§Ø± ÙŠÙ‚ÙˆÙ„Ø§Ù† Â«Ø§Ø¨ØªØ³Ø§Ù…Ø©Â». Ù„ÙƒÙ† Ø¥ÙŠØ±Ø§Ø¯ÙƒÙ… Ø§Ù„ÙŠÙˆÙ… ÙŠØ£ØªÙŠ Ø£ÙŠØ¶Ø§Ù‹ Ù…Ù† Ø§Ù„Ø¬Ù„Ø¯ÙŠØ© ÙˆØ§Ù„Ø­Ù‚Ù† ÙˆØ§Ù„Ù„ÙŠØ²Ø± ÙˆØ§Ù„Ø¹Ù†Ø§ÙŠØ© Ø¨Ø§Ù„Ø¨Ø´Ø±Ø© â€” Ø¹Ù…ÙŠÙ„ Ù…Ø®ØªÙ„ÙØŒ ÙˆØªÙˆÙ‚Ù‘Ø¹ Ø³Ø¹Ø±ÙŠ Ù…Ø®ØªÙ„ÙØŒ ÙˆÙ…Ø¹ÙŠØ§Ø± Ø¨ØµØ±ÙŠ Ø£Ø¹Ù„Ù‰ Ø¨ÙƒØ«ÙŠØ±.</span></p>
+        <h3><span class="en">The brand outgrew its own category</span><span class="ar">النشاط تجاوز فئة هويته</span></h3>
+        <p><span class="en">The name and the mark say <em>smile</em>. Your revenue now also comes from dermatology, injectables, laser and skin — a different buyer, with a different price expectation and a much higher visual standard.</span>
+        <span class="ar">الاسم والشعار يقولان «ابتسامة». لكن إيرادكم اليوم يأتي أيضاً من الجلدية والحقن والليزر والعناية بالبشرة — عميل مختلف، وتوقّع سعري مختلف، ومعيار بصري أعلى بكثير.</span></p>
       </div>
       <div class="card">
         <span class="num">03</span>
-        <h3><span class="en">Three dÃ©cor languages in one clinic</span><span class="ar">Ø«Ù„Ø§Ø« Ù„ØºØ§Øª ØªØµÙ…ÙŠÙ… ÙÙŠ Ù…Ø±ÙƒØ² ÙˆØ§Ø­Ø¯</span></h3>
+        <h3><span class="en">Three décor languages in one clinic</span><span class="ar">ثلاث لغات تصميم في مركز واحد</span></h3>
         <p><span class="en">Your photographs show an emerald-and-gold lounge, a rustic blossom-and-birdcage feature room, and a pale damask consultation corridor. Each is attractive. Together they read as three different businesses.</span>
-        <span class="ar">ØªÙØ¸Ù‡Ø± ØµÙˆØ±ÙƒÙ… ØµØ§Ù„Ø© Ø¨Ø§Ù„Ø£Ø®Ø¶Ø± Ø§Ù„Ø²Ù…Ø±Ø¯ÙŠ ÙˆØ§Ù„Ø°Ù‡Ø¨ÙŠØŒ ÙˆØ±ÙƒÙ†Ø§Ù‹ Ø±ÙŠÙÙŠØ§Ù‹ Ø¨Ø§Ù„Ø£Ø²Ù‡Ø§Ø± ÙˆØ£Ù‚ÙØ§Øµ Ø§Ù„Ø·ÙŠÙˆØ±ØŒ ÙˆÙ…Ù…Ø±Ù‘ Ø§Ø³ØªØ´Ø§Ø±Ø§Øª Ø¨ÙˆØ±Ù‚ Ø¬Ø¯Ø±Ø§Ù† ÙƒÙ„Ø§Ø³ÙŠÙƒÙŠ ÙØ§ØªØ­. ÙƒÙ„ ÙˆØ§Ø­Ø¯ Ø¬Ù…ÙŠÙ„ Ø¨Ù…ÙØ±Ø¯Ù‡. Ù„ÙƒÙ†Ù‡Ø§ Ù…Ø¬ØªÙ…Ø¹Ø© ØªØ¨Ø¯Ùˆ ÙƒØ«Ù„Ø§Ø« Ø´Ø±ÙƒØ§Øª Ù…Ø®ØªÙ„ÙØ©.</span></p>
+        <span class="ar">تُظهر صوركم صالة بالأخضر الزمردي والذهبي، وركناً ريفياً بالأزهار وأقفاص الطيور، وممرّ استشارات بورق جدران كلاسيكي فاتح. كل واحد جميل بمفرده. لكنها مجتمعة تبدو كثلاث شركات مختلفة.</span></p>
       </div>
       <div class="card">
         <span class="num">04</span>
-        <h3><span class="en">The clinical rooms carry no brand at all</span><span class="ar">ØºØ±Ù Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø¨Ù„Ø§ Ø£ÙŠ Ø£Ø«Ø± Ù„Ù„Ø¹Ù„Ø§Ù…Ø©</span></h3>
-        <p><span class="en">The treatment rooms are clean and well equipped â€” and completely neutral. They are the moment a patient decides whether your price was fair, and right now they say nothing.</span>
-        <span class="ar">ØºØ±Ù Ø§Ù„Ø¹Ù„Ø§Ø¬ Ù†Ø¸ÙŠÙØ© ÙˆÙ…Ø¬Ù‡Ù‘Ø²Ø© Ø¬ÙŠØ¯Ø§Ù‹ â€” ÙˆÙ…Ø­Ø§ÙŠØ¯Ø© ØªÙ…Ø§Ù…Ø§Ù‹. ÙˆÙ‡ÙŠ Ø§Ù„Ù„Ø­Ø¸Ø© Ø§Ù„ØªÙŠ ÙŠÙ‚Ø±Ù‘Ø± ÙÙŠÙ‡Ø§ Ø§Ù„Ù…Ø±ÙŠØ¶ Ø¥Ù† ÙƒØ§Ù† Ø³Ø¹Ø±ÙƒÙ… Ø¹Ø§Ø¯Ù„Ø§Ù‹ØŒ ÙˆÙ‡ÙŠ Ø§Ù„ÙŠÙˆÙ… Ù„Ø§ ØªÙ‚ÙˆÙ„ Ø´ÙŠØ¦Ø§Ù‹.</span></p>
+        <h3><span class="en">The clinical rooms carry no brand at all</span><span class="ar">غرف العلاج بلا أي أثر للعلامة</span></h3>
+        <p><span class="en">The treatment rooms are clean and well equipped — and completely neutral. They are the moment a patient decides whether your price was fair, and right now they say nothing.</span>
+        <span class="ar">غرف العلاج نظيفة ومجهّزة جيداً — ومحايدة تماماً. وهي اللحظة التي يقرّر فيها المريض إن كان سعركم عادلاً، وهي اليوم لا تقول شيئاً.</span></p>
       </div>
     </div>
 
     <div class="card rv" style="margin-top:22px;border-color:rgba(219,196,143,.3)">
       <span class="num">05</span>
-      <h3><span class="en">You already know how to market â€” you are just doing it in five different visual languages</span><span class="ar">Ø£Ù†ØªÙ… ØªØ¹Ø±ÙÙˆÙ† Ø§Ù„ØªØ³ÙˆÙŠÙ‚ Ø£ØµÙ„Ø§Ù‹ â€” Ù„ÙƒÙ† Ø¨Ø®Ù…Ø³ Ù„ØºØ§Øª Ø¨ØµØ±ÙŠØ© Ù…Ø®ØªÙ„ÙØ©</span></h3>
-      <p><span class="en">Your archive holds three professionally produced campaign tracks â€” <em>Ø£Ø³Ù†Ø§Ù† ÙƒØ§Ù„Ø£Ø¨Ø·Ø§Ù„</em>, <em>ÙƒÙˆÙ†ÙŠ Ù‚ÙˆÙŠØ©</em>, <em>Ø£Ù‡Ù„Ø§Ù‹ Ø±Ù…Ø¶Ø§Ù†</em> â€” and a substantial video library: a 17-year anniversary film cut to a fourth version, Ramadan and Flag Day and Emirati Women's Day pieces, patient-education clips, on-camera pieces with Mrs. Hanan, and behind-the-scenes footage. That is real segmentation, a real seasonal calendar, and a founder confident on camera. Very few clinics in Ras Al Khaimah are doing this much.</span>
-      <span class="ar">ÙÙŠ Ø£Ø±Ø´ÙŠÙÙƒÙ… Ø«Ù„Ø§Ø«Ø© Ø£Ø¹Ù…Ø§Ù„ Ø­Ù…Ù„Ø§Øª Ù…ÙÙ†ØªÙŽØ¬Ø© Ø¨Ø§Ø­ØªØ±Ø§Ù â€” Â«Ø£Ø³Ù†Ø§Ù† ÙƒØ§Ù„Ø£Ø¨Ø·Ø§Ù„Â»ØŒ ÙˆÂ«ÙƒÙˆÙ†ÙŠ Ù‚ÙˆÙŠØ©Â»ØŒ ÙˆÂ«Ø£Ù‡Ù„Ø§Ù‹ Ø±Ù…Ø¶Ø§Ù†Â» â€” ÙˆÙ…ÙƒØªØ¨Ø© ÙÙŠØ¯ÙŠÙˆ ÙƒØ¨ÙŠØ±Ø©: ÙÙŠÙ„Ù… Ø§Ù„Ø°ÙƒØ±Ù‰ Ø§Ù„Ø³Ø§Ø¨Ø¹Ø© Ø¹Ø´Ø±Ø© Ø¨Ù†Ø³Ø®Ø© Ø±Ø§Ø¨Ø¹Ø©ØŒ ÙˆØ£Ø¹Ù…Ø§Ù„ Ø±Ù…Ø¶Ø§Ù† ÙˆÙŠÙˆÙ… Ø§Ù„Ø¹Ù„Ù… ÙˆÙŠÙˆÙ… Ø§Ù„Ù…Ø±Ø£Ø© Ø§Ù„Ø¥Ù…Ø§Ø±Ø§ØªÙŠØ©ØŒ ÙˆÙ…Ù‚Ø§Ø·Ø¹ ØªÙˆØ¹ÙŠØ© Ù„Ù„Ù…Ø±Ø¶Ù‰ØŒ ÙˆÙ…Ù‚Ø§Ø·Ø¹ Ø£Ù…Ø§Ù… Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§ Ù…Ø¹ Ø§Ù„Ø³ÙŠØ¯Ø© Ø­Ù†Ø§Ù†ØŒ ÙˆÙ„Ù‚Ø·Ø§Øª Ù…Ù† ÙƒÙˆØ§Ù„ÙŠØ³ Ø§Ù„ØªØµÙˆÙŠØ±. Ù‡Ø°Ø§ ØªÙ‚Ø³ÙŠÙ… Ø­Ù‚ÙŠÙ‚ÙŠ Ù„Ù„Ø¬Ù…Ù‡ÙˆØ±ØŒ ÙˆØªÙ‚ÙˆÙŠÙ… Ù…ÙˆØ³Ù…ÙŠ Ø­Ù‚ÙŠÙ‚ÙŠØŒ ÙˆÙ…Ø¤Ø³ÙÙ‘Ø³Ø© ÙˆØ§Ø«Ù‚Ø© Ø£Ù…Ø§Ù… Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§. Ù‚Ù„ÙŠÙ„ Ù…Ù† Ø§Ù„Ù…Ø±Ø§ÙƒØ² ÙÙŠ Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø© ÙŠÙØ¹Ù„ Ù‡Ø°Ø§ Ø§Ù„Ù‚Ø¯Ø±.</span></p>
-      <p><span class="en">The problem is not effort. It is that the anniversary film, the national-day posts, the children's animation and the clinic's own interiors each speak a <strong>different visual language</strong> â€” so nineteen years of consistent effort do not accumulate into one recognisable brand. <strong>That is the single thing this programme fixes.</strong></span>
-      <span class="ar">Ø§Ù„Ù…Ø´ÙƒÙ„Ø© Ù„ÙŠØ³Øª ÙÙŠ Ø§Ù„Ø¬Ù‡Ø¯. Ø§Ù„Ù…Ø´ÙƒÙ„Ø© Ø£Ù† ÙÙŠÙ„Ù… Ø§Ù„Ø°ÙƒØ±Ù‰ØŒ ÙˆÙ…Ù†Ø´ÙˆØ±Ø§Øª Ø§Ù„Ø£Ø¹ÙŠØ§Ø¯ Ø§Ù„ÙˆØ·Ù†ÙŠØ©ØŒ ÙˆØ±Ø³ÙˆÙ… Ø§Ù„Ø£Ø·ÙØ§Ù„ Ø§Ù„Ù…ØªØ­Ø±ÙƒØ©ØŒ ÙˆØ¯ÙŠÙƒÙˆØ± Ø§Ù„Ù…Ø±ÙƒØ² Ù†ÙØ³Ù‡ â€” ÙƒÙ„ÙŒÙ‘ Ù…Ù†Ù‡Ø§ ÙŠØªØ­Ø¯Ø« <strong>Ù„ØºØ© Ø¨ØµØ±ÙŠØ© Ù…Ø®ØªÙ„ÙØ©</strong> â€” ÙÙ„Ø§ ØªØªØ±Ø§ÙƒÙ… ØªØ³Ø¹ Ø¹Ø´Ø±Ø© Ø³Ù†Ø© Ù…Ù† Ø§Ù„Ø¬Ù‡Ø¯ Ø§Ù„Ù…ØªÙˆØ§ØµÙ„ ÙÙŠ Ø¹Ù„Ø§Ù…Ø© ÙˆØ§Ø­Ø¯Ø© Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„ØªØ¹Ø±Ù‘Ù. <strong>ÙˆÙ‡Ø°Ø§ ØªØ­Ø¯ÙŠØ¯Ø§Ù‹ Ù…Ø§ ÙŠØ¹Ø§Ù„Ø¬Ù‡ Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬.</strong></span></p>
+      <h3><span class="en">You already know how to market — you are just doing it in five different visual languages</span><span class="ar">أنتم تعرفون التسويق أصلاً — لكن بخمس لغات بصرية مختلفة</span></h3>
+      <p><span class="en">Your archive holds three professionally produced campaign tracks — <em>أسنان كالأبطال</em>, <em>كوني قوية</em>, <em>أهلاً رمضان</em> — and a substantial video library: a 17-year anniversary film cut to a fourth version, Ramadan and Flag Day and Emirati Women's Day pieces, patient-education clips, on-camera pieces with Mrs. Hanan, and behind-the-scenes footage. That is real segmentation, a real seasonal calendar, and a founder confident on camera. Very few clinics in Ras Al Khaimah are doing this much.</span>
+      <span class="ar">في أرشيفكم ثلاثة أعمال حملات مُنتَجة باحتراف — «أسنان كالأبطال»، و«كوني قوية»، و«أهلاً رمضان» — ومكتبة فيديو كبيرة: فيلم الذكرى السابعة عشرة بنسخة رابعة، وأعمال رمضان ويوم العلم ويوم المرأة الإماراتية، ومقاطع توعية للمرضى، ومقاطع أمام الكاميرا مع السيدة حنان، ولقطات من كواليس التصوير. هذا تقسيم حقيقي للجمهور، وتقويم موسمي حقيقي، ومؤسِّسة واثقة أمام الكاميرا. قليل من المراكز في رأس الخيمة يفعل هذا القدر.</span></p>
+      <p><span class="en">The problem is not effort. It is that the anniversary film, the national-day posts, the children's animation and the clinic's own interiors each speak a <strong>different visual language</strong> — so nineteen years of consistent effort do not accumulate into one recognisable brand. <strong>That is the single thing this programme fixes.</strong></span>
+      <span class="ar">المشكلة ليست في الجهد. المشكلة أن فيلم الذكرى، ومنشورات الأعياد الوطنية، ورسوم الأطفال المتحركة، وديكور المركز نفسه — كلٌّ منها يتحدث <strong>لغة بصرية مختلفة</strong> — فلا تتراكم تسع عشرة سنة من الجهد المتواصل في علامة واحدة قابلة للتعرّف. <strong>وهذا تحديداً ما يعالجه هذا البرنامج.</strong></span></p>
     </div>
 
     <div class="hr"></div>
 
-    <h3 class="rv"><span class="en">The gap, in your own words</span><span class="ar">Ø§Ù„ÙØ¬ÙˆØ©ØŒ Ø¨ÙƒÙ„Ù…Ø§ØªÙƒÙ… Ø£Ù†ØªÙ…</span></h3>
+    <h3 class="rv"><span class="en">The gap, in your own words</span><span class="ar">الفجوة، بكلماتكم أنتم</span></h3>
     <p class="lead rv" style="color:var(--accent)">
-      <span class="en">â€œâ€¦a medical center where patients feel they have entered a healing spa, with a luxurious interior that makes them feel safe, comfortable, and cared for.â€</span>
-      <span class="ar">Â«â€¦Ù…Ø±ÙƒØ² Ø·Ø¨ÙŠ ÙŠØ´Ø¹Ø± ÙÙŠÙ‡ Ø§Ù„Ù…Ø±ÙŠØ¶ Ø£Ù†Ù‡ Ø¯Ø®Ù„ Ù…Ù†ØªØ¬Ø¹Ø§Ù‹ Ø¹Ù„Ø§Ø¬ÙŠØ§Ù‹ØŒ Ø¨ØªØµÙ…ÙŠÙ… Ø¯Ø§Ø®Ù„ÙŠ ÙØ§Ø®Ø± ÙŠÙ…Ù†Ø­Ù‡ Ø§Ù„Ø£Ù…Ø§Ù† ÙˆØ§Ù„Ø±Ø§Ø­Ø© ÙˆØ§Ù„Ø§Ù‡ØªÙ…Ø§Ù….Â»</span>
+      <span class="en">“…a medical center where patients feel they have entered a healing spa, with a luxurious interior that makes them feel safe, comfortable, and cared for.”</span>
+      <span class="ar">«…مركز طبي يشعر فيه المريض أنه دخل منتجعاً علاجياً، بتصميم داخلي فاخر يمنحه الأمان والراحة والاهتمام.»</span>
     </p>
     <p class="rv">
-      <span class="en">That is the vision published on your own About page. This entire programme is built to close the distance between that sentence and what a patient actually walks into today. We are not bringing you our taste â€” we are delivering your stated intention.</span>
-      <span class="ar">Ù‡Ø°Ù‡ Ù‡ÙŠ Ø§Ù„Ø±Ø¤ÙŠØ© Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø© Ø¹Ù„Ù‰ ØµÙØ­Ø© Â«Ù…Ù† Ù†Ø­Ù†Â» ÙÙŠ Ù…ÙˆÙ‚Ø¹ÙƒÙ…. ÙˆÙ‡Ø°Ø§ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ Ø¨Ø£ÙƒÙ…Ù„Ù‡ Ù…Ø¨Ù†ÙŠ Ù„Ø¥ØºÙ„Ø§Ù‚ Ø§Ù„Ù…Ø³Ø§ÙØ© Ø¨ÙŠÙ† ØªÙ„Ùƒ Ø§Ù„Ø¬Ù…Ù„Ø© ÙˆØ¨ÙŠÙ† Ù…Ø§ ÙŠØ¯Ø®Ù„ Ø¥Ù„ÙŠÙ‡ Ø§Ù„Ù…Ø±ÙŠØ¶ ÙØ¹Ù„ÙŠØ§Ù‹ Ø§Ù„ÙŠÙˆÙ…. Ù†Ø­Ù† Ù„Ø§ Ù†Ø£ØªÙŠÙƒÙ… Ø¨Ø°ÙˆÙ‚Ù†Ø§ â€” Ù†Ø­Ù† Ù†Ù†ÙÙ‘Ø° Ù†ÙŠÙ‘ØªÙƒÙ… Ø§Ù„Ù…Ø¹Ù„Ù†Ø©.</span>
+      <span class="en">That is the vision published on your own About page. This entire programme is built to close the distance between that sentence and what a patient actually walks into today. We are not bringing you our taste — we are delivering your stated intention.</span>
+      <span class="ar">هذه هي الرؤية المنشورة على صفحة «من نحن» في موقعكم. وهذا البرنامج بأكمله مبني لإغلاق المسافة بين تلك الجملة وبين ما يدخل إليه المريض فعلياً اليوم. نحن لا نأتيكم بذوقنا — نحن ننفّذ نيّتكم المعلنة.</span>
     </p>
   </div>
 </section>
@@ -646,48 +644,48 @@ html[lang="ar"] .en{display:none}
 <section id="direction">
   <div class="wrap">
     <span class="num rv">03</span>
-    <span class="eyebrow rv"><span class="en">The Strategic Direction</span><span class="ar">Ø§Ù„Ø§ØªØ¬Ø§Ù‡ Ø§Ù„Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠ</span></span>
+    <span class="eyebrow rv"><span class="en">The Strategic Direction</span><span class="ar">الاتجاه الاستراتيجي</span></span>
     <h2 class="rv">
       <span class="en">Upgrade the expression. Never the mark.</span>
-      <span class="ar">Ù†ÙØ­Ø¯Ù‘Ø« Ø§Ù„ØªØ¹Ø¨ÙŠØ±. ÙˆÙ„Ø§ Ù†Ù…Ø³Ù‘ Ø§Ù„Ø´Ø¹Ø§Ø±.</span>
+      <span class="ar">نُحدّث التعبير. ولا نمسّ الشعار.</span>
     </h2>
     <p class="lead rv">
       <span class="en">A logo that people recognise is a capital asset. It is built by years of repetition and it is destroyed in an afternoon. So the first decision in this programme is a decision <em>not</em> to do something.</span>
-      <span class="ar">Ø§Ù„Ø´Ø¹Ø§Ø± Ø§Ù„Ø°ÙŠ ÙŠØ¹Ø±ÙÙ‡ Ø§Ù„Ù†Ø§Ø³ Ø£ØµÙ„ Ø±Ø£Ø³Ù…Ø§Ù„ÙŠ. ÙŠÙØ¨Ù†Ù‰ Ø¨Ø³Ù†ÙˆØ§Øª Ù…Ù† Ø§Ù„ØªÙƒØ±Ø§Ø± ÙˆÙŠÙÙ‡Ø¯ÙŽÙ… ÙÙŠ Ø¨Ø¹Ø¯ Ø¸Ù‡Ø± ÙˆØ§Ø­Ø¯. Ù„Ø°Ù„Ùƒ Ø£ÙˆÙ„ Ù‚Ø±Ø§Ø± ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ Ù‡Ùˆ Ù‚Ø±Ø§Ø± <em>Ø¨Ø¹Ø¯Ù…</em> ÙØ¹Ù„ Ø´ÙŠØ¡.</span>
+      <span class="ar">الشعار الذي يعرفه الناس أصل رأسمالي. يُبنى بسنوات من التكرار ويُهدَم في بعد ظهر واحد. لذلك أول قرار في هذا البرنامج هو قرار <em>بعدم</em> فعل شيء.</span>
     </p>
 
     <div class="scroller rv" style="margin-top:36px">
       <table>
         <thead><tr>
-          <th><span class="en">Element</span><span class="ar">Ø§Ù„Ø¹Ù†ØµØ±</span></th>
-          <th><span class="en">Status</span><span class="ar">Ø§Ù„ØªØµÙ†ÙŠÙ</span></th>
-          <th><span class="en">What we do</span><span class="ar">Ù…Ø§ Ø³Ù†ÙØ¹Ù„Ù‡</span></th>
+          <th><span class="en">Element</span><span class="ar">العنصر</span></th>
+          <th><span class="en">Status</span><span class="ar">التصنيف</span></th>
+          <th><span class="en">What we do</span><span class="ar">ما سنفعله</span></th>
         </tr></thead>
         <tbody>
           <tr>
-            <td class="v"><span class="en">The brandmark ( â€¿ )</span><span class="ar">Ø§Ù„Ø´Ø¹Ø§Ø± ( â€¿ )</span></td>
-            <td><span class="en"><strong>Protected</strong></span><span class="ar"><strong>Ù…Ø­Ù…ÙŠÙ‘</strong></span></td>
-            <td><span class="en">Untouched. Not redrawn, not restyled, not â€œrefreshed.â€</span><span class="ar">Ù„Ø§ ÙŠÙÙ…Ø³Ù‘. Ù„Ø§ ÙŠÙØ¹Ø§Ø¯ Ø±Ø³Ù…Ù‡ ÙˆÙ„Ø§ ØªÙ†Ø³ÙŠÙ‚Ù‡ ÙˆÙ„Ø§ Â«ØªØ­Ø¯ÙŠØ«Ù‡Â».</span></td>
+            <td class="v"><span class="en">The brandmark ( ‿ )</span><span class="ar">الشعار ( ‿ )</span></td>
+            <td><span class="en"><strong>Protected</strong></span><span class="ar"><strong>محميّ</strong></span></td>
+            <td><span class="en">Untouched. Not redrawn, not restyled, not “refreshed.”</span><span class="ar">لا يُمسّ. لا يُعاد رسمه ولا تنسيقه ولا «تحديثه».</span></td>
           </tr>
           <tr>
-            <td class="v"><span class="en">Smile Care Emerald &amp; the bilingual lockup</span><span class="ar">Ø§Ù„Ø£Ø®Ø¶Ø± Ø§Ù„Ø²Ù…Ø±Ø¯ÙŠ ÙˆØ§Ù„Ù‚ÙÙ„ Ø«Ù†Ø§Ø¦ÙŠ Ø§Ù„Ù„ØºØ©</span></td>
-            <td><span class="en"><strong>Protected</strong></span><span class="ar"><strong>Ù…Ø­Ù…ÙŠÙ‘</strong></span></td>
-            <td><span class="en">Kept exactly. These are what people recognise.</span><span class="ar">ÙŠÙØ­Ø§ÙØ¸ Ø¹Ù„ÙŠÙ‡Ù…Ø§ ØªÙ…Ø§Ù…Ø§Ù‹. Ù‡Ø°Ø§ Ù…Ø§ ÙŠØ¹Ø±ÙÙ‡ Ø§Ù„Ù†Ø§Ø³.</span></td>
+            <td class="v"><span class="en">Smile Care Emerald &amp; the bilingual lockup</span><span class="ar">الأخضر الزمردي والقفل ثنائي اللغة</span></td>
+            <td><span class="en"><strong>Protected</strong></span><span class="ar"><strong>محميّ</strong></span></td>
+            <td><span class="en">Kept exactly. These are what people recognise.</span><span class="ar">يُحافظ عليهما تماماً. هذا ما يعرفه الناس.</span></td>
           </tr>
           <tr>
-            <td class="v"><span class="en">The arc pattern &amp; gold accent</span><span class="ar">Ù†Ù…Ø· Ø§Ù„Ø£Ù‚ÙˆØ§Ø³ ÙˆØ§Ù„Ù„Ù…Ø³Ø© Ø§Ù„Ø°Ù‡Ø¨ÙŠØ©</span></td>
-            <td><span class="en">Consolidate</span><span class="ar">ØªÙˆØ­ÙŠØ¯</span></td>
-            <td><span class="en">Already yours, barely used. We turn it into the backbone of the system.</span><span class="ar">ØªÙ…Ù„ÙƒÙˆÙ†Ù‡Ù…Ø§ Ø£ØµÙ„Ø§Ù‹ ÙˆØ¨Ø§Ù„ÙƒØ§Ø¯ ØªØ³ØªØ®Ø¯Ù…ÙˆÙ†Ù‡Ù…Ø§. Ø³Ù†Ø­ÙˆÙ‘Ù„Ù‡Ù…Ø§ Ø¥Ù„Ù‰ Ø§Ù„Ø¹Ù…ÙˆØ¯ Ø§Ù„ÙÙ‚Ø±ÙŠ Ù„Ù„Ù†Ø¸Ø§Ù….</span></td>
+            <td class="v"><span class="en">The arc pattern &amp; gold accent</span><span class="ar">نمط الأقواس واللمسة الذهبية</span></td>
+            <td><span class="en">Consolidate</span><span class="ar">توحيد</span></td>
+            <td><span class="en">Already yours, barely used. We turn it into the backbone of the system.</span><span class="ar">تملكونهما أصلاً وبالكاد تستخدمونهما. سنحوّلهما إلى العمود الفقري للنظام.</span></td>
           </tr>
           <tr>
-            <td class="v"><span class="en">Typography, imagery, layout</span><span class="ar">Ø§Ù„Ø·Ø¨Ø§Ø¹Ø© ÙˆØ§Ù„ØµÙˆØ± ÙˆØ§Ù„ØªÙ†Ø³ÙŠÙ‚</span></td>
-            <td><span class="en">Free</span><span class="ar">Ø­Ø±Ù‘</span></td>
-            <td><span class="en">Defined properly for the first time, in Arabic and English.</span><span class="ar">ØªÙØ¹Ø±ÙŽÙ‘Ù Ø¨Ø´ÙƒÙ„ ØµØ­ÙŠØ­ Ù„Ø£ÙˆÙ„ Ù…Ø±Ø©ØŒ Ø¨Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© ÙˆØ§Ù„Ø¥Ù†Ø¬Ù„ÙŠØ²ÙŠØ©.</span></td>
+            <td class="v"><span class="en">Typography, imagery, layout</span><span class="ar">الطباعة والصور والتنسيق</span></td>
+            <td><span class="en">Free</span><span class="ar">حرّ</span></td>
+            <td><span class="en">Defined properly for the first time, in Arabic and English.</span><span class="ar">تُعرَّف بشكل صحيح لأول مرة، بالعربية والإنجليزية.</span></td>
           </tr>
           <tr>
-            <td class="v"><span class="en">DÃ©cor, wallpaper, props, social visuals</span><span class="ar">Ø§Ù„Ø¯ÙŠÙƒÙˆØ± ÙˆÙˆØ±Ù‚ Ø§Ù„Ø¬Ø¯Ø±Ø§Ù† ÙˆØ§Ù„Ø¥ÙƒØ³Ø³ÙˆØ§Ø± ÙˆØ¨ØµØ±ÙŠØ§Øª Ø§Ù„ØªÙˆØ§ØµÙ„</span></td>
-            <td><span class="en">Free</span><span class="ar">Ø­Ø±Ù‘</span></td>
-            <td><span class="en">This is where the entire modernisation happens.</span><span class="ar">Ù‡Ù†Ø§ ÙŠØ­Ø¯Ø« Ø§Ù„ØªØ­Ø¯ÙŠØ« Ø¨Ø£ÙƒÙ…Ù„Ù‡.</span></td>
+            <td class="v"><span class="en">Décor, wallpaper, props, social visuals</span><span class="ar">الديكور وورق الجدران والإكسسوار وبصريات التواصل</span></td>
+            <td><span class="en">Free</span><span class="ar">حرّ</span></td>
+            <td><span class="en">This is where the entire modernisation happens.</span><span class="ar">هنا يحدث التحديث بأكمله.</span></td>
           </tr>
         </tbody>
       </table>
@@ -695,7 +693,7 @@ html[lang="ar"] .en{display:none}
 
     <p class="note rv" style="margin-top:26px">
       <span class="en">This is why the engagement is called a <strong>Brand Experience Upgrade</strong> and not a rebrand. A rebrand would ask Ras Al Khaimah to learn you again. An upgrade asks it to see you properly.</span>
-      <span class="ar">Ù„Ù‡Ø°Ø§ ÙŠÙØ³Ù…Ù‘Ù‰ Ù‡Ø°Ø§ Ø§Ù„Ø¹Ù…Ù„ <strong>ØªØ±Ù‚ÙŠØ© ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø¹Ù„Ø§Ù…Ø©</strong> ÙˆÙ„ÙŠØ³ Ø¥Ø¹Ø§Ø¯Ø© Ø¹Ù„Ø§Ù…Ø©. Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ø¹Ù„Ø§Ù…Ø© ØªØ·Ù„Ø¨ Ù…Ù† Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø© Ø£Ù† ØªØªØ¹Ø±Ù‘Ù Ø¹Ù„ÙŠÙƒÙ… Ù…Ù† Ø¬Ø¯ÙŠØ¯. Ø£Ù…Ø§ Ø§Ù„ØªØ±Ù‚ÙŠØ© ÙØªØ·Ù„Ø¨ Ù…Ù†Ù‡Ø§ Ø£Ù† ØªØ±Ø§ÙƒÙ… Ø¹Ù„Ù‰ Ø­Ù‚ÙŠÙ‚ØªÙƒÙ….</span>
+      <span class="ar">لهذا يُسمّى هذا العمل <strong>ترقية تجربة العلامة</strong> وليس إعادة علامة. إعادة العلامة تطلب من رأس الخيمة أن تتعرّف عليكم من جديد. أما الترقية فتطلب منها أن تراكم على حقيقتكم.</span>
     </p>
   </div>
 </section>
@@ -704,20 +702,20 @@ html[lang="ar"] .en{display:none}
 <section id="approach">
   <div class="wrap">
     <span class="num rv">04</span>
-    <span class="eyebrow rv"><span class="en">The 7Z Approach</span><span class="ar">Ù…Ù†Ù‡Ø¬ÙŠØ© 7Z</span></span>
+    <span class="eyebrow rv"><span class="en">The 7Z Approach</span><span class="ar">منهجية 7Z</span></span>
     <h2 class="rv">
       <span class="en">Four gates. Nothing is produced before you sign it.</span>
-      <span class="ar">Ø£Ø±Ø¨Ø¹ Ø¨ÙˆØ§Ø¨Ø§Øª. ÙˆÙ„Ø§ ÙŠÙÙ†ØªÙŽØ¬ Ø´ÙŠØ¡ Ù‚Ø¨Ù„ ØªÙˆÙ‚ÙŠØ¹ÙƒÙ….</span>
+      <span class="ar">أربع بوابات. ولا يُنتَج شيء قبل توقيعكم.</span>
     </h2>
     <p class="rv">
       <span class="en">The risk in creative work is paying for something finished that you do not like. We remove that risk structurally rather than promising it away: each stage ends in a written approval, and production only begins on approved direction.</span>
-      <span class="ar">Ø§Ù„Ø®Ø·Ø± ÙÙŠ Ø§Ù„Ø¹Ù…Ù„ Ø§Ù„Ø¥Ø¨Ø¯Ø§Ø¹ÙŠ Ù‡Ùˆ Ø£Ù† ØªØ¯ÙØ¹ÙˆØ§ Ø«Ù…Ù† Ø´ÙŠØ¡ Ù…ÙƒØªÙ…Ù„ Ù„Ø§ ÙŠØ¹Ø¬Ø¨ÙƒÙ…. Ù†Ø­Ù† Ù†Ø²ÙŠÙ„ Ù‡Ø°Ø§ Ø§Ù„Ø®Ø·Ø± Ø¨Ù†ÙŠÙˆÙŠØ§Ù‹ Ù„Ø§ Ø¨Ø§Ù„ÙˆØ¹ÙˆØ¯: ÙƒÙ„ Ù…Ø±Ø­Ù„Ø© ØªÙ†ØªÙ‡ÙŠ Ø¨Ø§Ø¹ØªÙ…Ø§Ø¯ Ø®Ø·Ù‘ÙŠØŒ ÙˆÙ„Ø§ ÙŠØ¨Ø¯Ø£ Ø§Ù„Ø¥Ù†ØªØ§Ø¬ Ø¥Ù„Ø§ Ø¹Ù„Ù‰ Ø§ØªØ¬Ø§Ù‡ Ù…Ø¹ØªÙ…Ø¯.</span>
+      <span class="ar">الخطر في العمل الإبداعي هو أن تدفعوا ثمن شيء مكتمل لا يعجبكم. نحن نزيل هذا الخطر بنيوياً لا بالوعود: كل مرحلة تنتهي باعتماد خطّي، ولا يبدأ الإنتاج إلا على اتجاه معتمد.</span>
     </p>
     <div class="grid g4 rv" style="margin-top:40px">
-      <div class="card"><span class="num">Gate 01</span><h3><span class="en">Direction</span><span class="ar">Ø§Ù„Ø§ØªØ¬Ø§Ù‡</span></h3><p><span class="en">Audit, positioning and the visual direction, agreed on paper.</span><span class="ar">Ø§Ù„ØªØ¯Ù‚ÙŠÙ‚ ÙˆØ§Ù„ØªÙ…ÙˆØ¶Ø¹ ÙˆØ§Ù„Ø§ØªØ¬Ø§Ù‡ Ø§Ù„Ø¨ØµØ±ÙŠØŒ Ù…ØªÙÙ‚ Ø¹Ù„ÙŠÙ‡Ø§ ÙƒØªØ§Ø¨ÙŠØ§Ù‹.</span></p></div>
-      <div class="card"><span class="num">Gate 02</span><h3><span class="en">Identity system</span><span class="ar">Ù†Ø¸Ø§Ù… Ø§Ù„Ù‡ÙˆÙŠØ©</span></h3><p><span class="en">Colour, type, arc language, imagery rules â€” signed before use.</span><span class="ar">Ø§Ù„Ù„ÙˆÙ† ÙˆØ§Ù„Ø®Ø· ÙˆÙ„ØºØ© Ø§Ù„Ø£Ù‚ÙˆØ§Ø³ ÙˆÙ‚ÙˆØ§Ø¹Ø¯ Ø§Ù„ØµÙˆØ± â€” ØªÙØ¹ØªÙ…Ø¯ Ù‚Ø¨Ù„ Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù….</span></p></div>
-      <div class="card"><span class="num">Gate 03</span><h3><span class="en">Concepts</span><span class="ar">Ø§Ù„ØªØµÙˆØ±Ø§Øª</span></h3><p><span class="en">You see the environments and applications before anything is built.</span><span class="ar">ØªØ±ÙˆÙ† Ø§Ù„Ø¨ÙŠØ¦Ø§Øª ÙˆØ§Ù„ØªØ·Ø¨ÙŠÙ‚Ø§Øª Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Ø£ÙŠ Ø´ÙŠØ¡.</span></p></div>
-      <div class="card"><span class="num">Gate 04</span><h3><span class="en">Storyboards</span><span class="ar">Ø§Ù„Ù„ÙˆØ­Ø§Øª Ø§Ù„Ù‚ØµØµÙŠØ©</span></h3><p><span class="en">Every film is approved shot-by-shot before a frame is generated.</span><span class="ar">ÙƒÙ„ ÙÙŠÙ„Ù… ÙŠÙØ¹ØªÙ…Ø¯ Ù„Ù‚Ø·Ø© Ø¨Ù„Ù‚Ø·Ø© Ù‚Ø¨Ù„ ØªÙˆÙ„ÙŠØ¯ Ø£ÙŠ Ø¥Ø·Ø§Ø±.</span></p></div>
+      <div class="card"><span class="num">Gate 01</span><h3><span class="en">Direction</span><span class="ar">الاتجاه</span></h3><p><span class="en">Audit, positioning and the visual direction, agreed on paper.</span><span class="ar">التدقيق والتموضع والاتجاه البصري، متفق عليها كتابياً.</span></p></div>
+      <div class="card"><span class="num">Gate 02</span><h3><span class="en">Identity system</span><span class="ar">نظام الهوية</span></h3><p><span class="en">Colour, type, arc language, imagery rules — signed before use.</span><span class="ar">اللون والخط ولغة الأقواس وقواعد الصور — تُعتمد قبل الاستخدام.</span></p></div>
+      <div class="card"><span class="num">Gate 03</span><h3><span class="en">Concepts</span><span class="ar">التصورات</span></h3><p><span class="en">You see the environments and applications before anything is built.</span><span class="ar">ترون البيئات والتطبيقات قبل تنفيذ أي شيء.</span></p></div>
+      <div class="card"><span class="num">Gate 04</span><h3><span class="en">Storyboards</span><span class="ar">اللوحات القصصية</span></h3><p><span class="en">Every film is approved shot-by-shot before a frame is generated.</span><span class="ar">كل فيلم يُعتمد لقطة بلقطة قبل توليد أي إطار.</span></p></div>
     </div>
   </div>
 </section>
@@ -726,31 +724,31 @@ html[lang="ar"] .en{display:none}
 <section id="identity">
   <div class="wrap">
     <span class="num rv">05</span>
-    <span class="eyebrow rv"><span class="en">A Â· Visual Identity Upgrade</span><span class="ar">Ø£ Â· ØªØ±Ù‚ÙŠØ© Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ø¨ØµØ±ÙŠØ©</span></span>
-    <h2 class="rv"><span class="en">What actually changes.</span><span class="ar">Ù…Ø§ Ø§Ù„Ø°ÙŠ ÙŠØªØºÙŠÙ‘Ø± ÙØ¹Ù„ÙŠØ§Ù‹.</span></h2>
+    <span class="eyebrow rv"><span class="en">A · Visual Identity Upgrade</span><span class="ar">أ · ترقية الهوية البصرية</span></span>
+    <h2 class="rv"><span class="en">What actually changes.</span><span class="ar">ما الذي يتغيّر فعلياً.</span></h2>
 
     <div class="cmp rv" style="margin-top:36px">
       <div>
-        <span class="tag now"><span class="en">Today</span><span class="ar">Ø§Ù„ÙŠÙˆÙ…</span></span>
+        <span class="tag now"><span class="en">Today</span><span class="ar">اليوم</span></span>
         <figure><img src="assets/photos/cur-corridor.jpg" alt="Current consultation corridor">
-          <figcaption><span class="en">Pale damask wallpaper and classical furniture in the consultation corridor â€” a different language from the emerald-and-gold lounge twenty metres away.</span><span class="ar">ÙˆØ±Ù‚ Ø¬Ø¯Ø±Ø§Ù† ÙƒÙ„Ø§Ø³ÙŠÙƒÙŠ ÙØ§ØªØ­ ÙˆØ£Ø«Ø§Ø« ØªÙ‚Ù„ÙŠØ¯ÙŠ ÙÙŠ Ù…Ù…Ø±Ù‘ Ø§Ù„Ø§Ø³ØªØ´Ø§Ø±Ø§Øª â€” Ù„ØºØ© Ù…Ø®ØªÙ„ÙØ© Ø¹Ù† ØµØ§Ù„Ø© Ø§Ù„Ø£Ø®Ø¶Ø± ÙˆØ§Ù„Ø°Ù‡Ø¨ÙŠ Ø¹Ù„Ù‰ Ø¨ÙØ¹Ø¯ Ø¹Ø´Ø±ÙŠÙ† Ù…ØªØ±Ø§Ù‹.</span></figcaption>
+          <figcaption><span class="en">Pale damask wallpaper and classical furniture in the consultation corridor — a different language from the emerald-and-gold lounge twenty metres away.</span><span class="ar">ورق جدران كلاسيكي فاتح وأثاث تقليدي في ممرّ الاستشارات — لغة مختلفة عن صالة الأخضر والذهبي على بُعد عشرين متراً.</span></figcaption>
         </figure>
       </div>
       <div>
-        <span class="tag next"><span class="en">Direction</span><span class="ar">Ø§Ù„Ø§ØªØ¬Ø§Ù‡ Ø§Ù„Ù…Ù‚ØªØ±Ø­</span></span>
+        <span class="tag next"><span class="en">Direction</span><span class="ar">الاتجاه المقترح</span></span>
         <figure><img src="assets/concepts/01-reception.jpg" alt="Upgraded reception direction">
-          <figcaption><span class="en">One material story: emerald stone, bone plaster, controlled gold. <b>The wall motif is an architectural derivative of your existing arc pattern â€” the brandmark itself is unchanged.</b></span><span class="ar">Ù‚ØµØ© Ù…ÙˆØ§Ø¯ ÙˆØ§Ø­Ø¯Ø©: Ø­Ø¬Ø± Ø²Ù…Ø±Ø¯ÙŠØŒ Ø¬Ø¨Ø³ Ø¹Ø¸Ù…ÙŠØŒ Ø°Ù‡Ø¨ Ù…Ù†Ø¶Ø¨Ø·. <b>Ø²Ø®Ø±ÙØ© Ø§Ù„Ø¬Ø¯Ø§Ø± Ù…Ø´ØªÙ‚Ù‘Ø© Ù…Ø¹Ù…Ø§Ø±ÙŠØ§Ù‹ Ù…Ù† Ù†Ù…Ø· Ø§Ù„Ø£Ù‚ÙˆØ§Ø³ Ø§Ù„Ø°ÙŠ ØªÙ…Ù„ÙƒÙˆÙ†Ù‡ â€” Ø£Ù…Ø§ Ø§Ù„Ø´Ø¹Ø§Ø± Ù†ÙØ³Ù‡ ÙÙ„Ø§ ÙŠØªØºÙŠÙ‘Ø±.</b></span></figcaption>
+          <figcaption><span class="en">One material story: emerald stone, bone plaster, controlled gold. <b>The wall motif is an architectural derivative of your existing arc pattern — the brandmark itself is unchanged.</b></span><span class="ar">قصة مواد واحدة: حجر زمردي، جبس عظمي، ذهب منضبط. <b>زخرفة الجدار مشتقّة معمارياً من نمط الأقواس الذي تملكونه — أما الشعار نفسه فلا يتغيّر.</b></span></figcaption>
         </figure>
       </div>
     </div>
 
     <div class="grid g3 rv" style="margin-top:40px">
-      <div class="card"><h3><span class="en">Colour, applied</span><span class="ar">Ø§Ù„Ù„ÙˆÙ†ØŒ ØªØ·Ø¨ÙŠÙ‚Ø§Ù‹</span></h3><p><span class="en">Your palette exists on paper â€” Emerald #003828, Beige #f0ede0, Gold #dbc48f, plus the pale support tones. We define the ratios and where each may be used, so nothing drifts again.</span><span class="ar">Ù„ÙˆØ­ØªÙƒÙ… Ø§Ù„Ù„ÙˆÙ†ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯Ø© Ø¹Ù„Ù‰ Ø§Ù„ÙˆØ±Ù‚ â€” Ø§Ù„Ø²Ù…Ø±Ø¯ÙŠ #003828ØŒ Ø§Ù„Ø¨ÙŠØ¬ #f0ede0ØŒ Ø§Ù„Ø°Ù‡Ø¨ÙŠ #dbc48fØŒ Ù…Ø¹ Ø§Ù„Ø¯Ø±Ø¬Ø§Øª Ø§Ù„Ù…Ø³Ø§Ù†Ø¯Ø©. Ù†Ø­Ø¯Ù‘Ø¯ Ø§Ù„Ù†Ø³Ø¨ ÙˆØ£Ù…Ø§ÙƒÙ† Ø§Ø³ØªØ®Ø¯Ø§Ù… ÙƒÙ„ Ù„ÙˆÙ†ØŒ Ø­ØªÙ‰ Ù„Ø§ ÙŠÙ†Ø­Ø±Ù Ø´ÙŠØ¡ Ù…Ø¬Ø¯Ø¯Ø§Ù‹.</span></p></div>
-      <div class="card"><h3><span class="en">Bilingual typography</span><span class="ar">Ø·Ø¨Ø§Ø¹Ø© Ø«Ù†Ø§Ø¦ÙŠØ© Ø§Ù„Ù„ØºØ©</span></h3><p><span class="en">Your brand book has no typography section at all. We define a matched Arabic and Latin pairing with a full hierarchy â€” the single biggest cause of inconsistency, fixed.</span><span class="ar">Ø¯Ù„ÙŠÙ„ Ù‡ÙˆÙŠØªÙƒÙ… Ù„Ø§ ÙŠØ­ØªÙˆÙŠ Ù‚Ø³Ù… Ø·Ø¨Ø§Ø¹Ø© Ø¥Ø·Ù„Ø§Ù‚Ø§Ù‹. Ø³Ù†Ø­Ø¯Ù‘Ø¯ Ø§Ù‚ØªØ±Ø§Ù†Ø§Ù‹ Ù…ØªÙˆØ§ÙÙ‚Ø§Ù‹ Ø¨ÙŠÙ† Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© ÙˆØ§Ù„Ù„Ø§ØªÙŠÙ†ÙŠØ© Ø¨ØªØ¯Ø±Ù‘Ø¬ ÙƒØ§Ù…Ù„ â€” ÙˆÙ‡Ùˆ Ø£ÙƒØ¨Ø± Ø³Ø¨Ø¨ Ù…Ù†ÙØ±Ø¯ Ù„Ø¹Ø¯Ù… Ø§Ù„Ø§ØªØ³Ø§Ù‚ØŒ ÙˆÙŠÙØ¹Ø§Ù„ÙŽØ¬ Ù‡Ù†Ø§.</span></p></div>
-      <div class="card"><h3><span class="en">The arc system</span><span class="ar">Ù†Ø¸Ø§Ù… Ø§Ù„Ø£Ù‚ÙˆØ§Ø³</span></h3><p><span class="en">The pattern you already own becomes a flexible graphic language that works on a wall, a uniform, a story frame and a website header.</span><span class="ar">Ø§Ù„Ù†Ù…Ø· Ø§Ù„Ø°ÙŠ ØªÙ…Ù„ÙƒÙˆÙ†Ù‡ ÙŠØµØ¨Ø­ Ù„ØºØ© Ø±Ø³ÙˆÙ…ÙŠØ© Ù…Ø±Ù†Ø© ØªØ¹Ù…Ù„ Ø¹Ù„Ù‰ Ø§Ù„Ø¬Ø¯Ø§Ø± ÙˆØ§Ù„Ø²ÙŠÙ‘ ÙˆØ¥Ø·Ø§Ø± Ø§Ù„Ø³ØªÙˆØ±ÙŠ ÙˆØªØ±ÙˆÙŠØ³Ø© Ø§Ù„Ù…ÙˆÙ‚Ø¹.</span></p></div>
-      <div class="card"><h3><span class="en">Photography direction</span><span class="ar">Ø§ØªØ¬Ø§Ù‡ Ø§Ù„ØªØµÙˆÙŠØ±</span></h3><p><span class="en">Rules for how people, rooms and treatments are shot and graded, so future photography stays on-brand without us.</span><span class="ar">Ù‚ÙˆØ§Ø¹Ø¯ Ù„ÙƒÙŠÙÙŠØ© ØªØµÙˆÙŠØ± Ø§Ù„Ø£Ø´Ø®Ø§Øµ ÙˆØ§Ù„ØºØ±Ù ÙˆØ§Ù„Ø¹Ù„Ø§Ø¬Ø§Øª ÙˆÙ…Ø¹Ø§Ù„Ø¬ØªÙ‡Ø§ Ù„ÙˆÙ†ÙŠØ§Ù‹ØŒ Ù„ØªØ¨Ù‚Ù‰ ØµÙˆØ±ÙƒÙ… Ø§Ù„Ù‚Ø§Ø¯Ù…Ø© Ø¶Ù…Ù† Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø¯ÙˆÙ† Ø­Ø§Ø¬Ø© Ø¥Ù„ÙŠÙ†Ø§.</span></p></div>
-      <div class="card"><h3><span class="en">Social &amp; advertising language</span><span class="ar">Ù„ØºØ© Ø§Ù„ØªÙˆØ§ØµÙ„ ÙˆØ§Ù„Ø¥Ø¹Ù„Ø§Ù†</span></h3><p><span class="en">Templates for the campaign thinking you are already doing â€” seasonal, women's health, paediatric â€” so each looks unmistakably like Smile Care.</span><span class="ar">Ù‚ÙˆØ§Ù„Ø¨ Ù„Ù„ØªÙÙƒÙŠØ± Ø§Ù„Ø­Ù…Ù„Ø§ØªÙŠ Ø§Ù„Ø°ÙŠ ØªÙ…Ø§Ø±Ø³ÙˆÙ†Ù‡ Ø£ØµÙ„Ø§Ù‹ â€” Ø§Ù„Ù…ÙˆØ³Ù…ÙŠØŒ ÙˆØµØ­Ø© Ø§Ù„Ù…Ø±Ø£Ø©ØŒ ÙˆØ·Ø¨ Ø£Ø³Ù†Ø§Ù† Ø§Ù„Ø£Ø·ÙØ§Ù„ â€” Ù„ÙŠØ¨Ø¯Ùˆ ÙƒÙ„ Ù…Ù†Ù‡Ø§ Â«Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ±Â» Ø¨Ù„Ø§ Ø§Ù„ØªØ¨Ø§Ø³.</span></p></div>
-      <div class="card"><h3><span class="en">Environmental direction</span><span class="ar">Ø§Ù„Ø§ØªØ¬Ø§Ù‡ Ø§Ù„Ø¨ÙŠØ¦ÙŠ Ù„Ù„Ù…ÙƒØ§Ù†</span></h3><p><span class="en">A guide for what to change in the space â€” and, importantly, what to leave alone â€” so dÃ©cor decisions stop being made one item at a time.</span><span class="ar">Ø¯Ù„ÙŠÙ„ Ù„Ù…Ø§ ÙŠØ¬Ø¨ ØªØºÙŠÙŠØ±Ù‡ ÙÙŠ Ø§Ù„Ù…ÙƒØ§Ù† â€” ÙˆØ§Ù„Ø£Ù‡Ù…ØŒ Ù…Ø§ ÙŠØ¬Ø¨ ØªØ±ÙƒÙ‡ ÙƒÙ…Ø§ Ù‡Ùˆ â€” Ù„ØªØªÙˆÙ‚Ù Ù‚Ø±Ø§Ø±Ø§Øª Ø§Ù„Ø¯ÙŠÙƒÙˆØ± Ø¹Ù† ÙƒÙˆÙ†Ù‡Ø§ Ù‚Ø·Ø¹Ø© ØªÙ„Ùˆ Ø§Ù„Ø£Ø®Ø±Ù‰.</span></p></div>
+      <div class="card"><h3><span class="en">Colour, applied</span><span class="ar">اللون، تطبيقاً</span></h3><p><span class="en">Your palette exists on paper — Emerald #003828, Beige #f0ede0, Gold #dbc48f, plus the pale support tones. We define the ratios and where each may be used, so nothing drifts again.</span><span class="ar">لوحتكم اللونية موجودة على الورق — الزمردي #003828، البيج #f0ede0، الذهبي #dbc48f، مع الدرجات المساندة. نحدّد النسب وأماكن استخدام كل لون، حتى لا ينحرف شيء مجدداً.</span></p></div>
+      <div class="card"><h3><span class="en">Bilingual typography</span><span class="ar">طباعة ثنائية اللغة</span></h3><p><span class="en">Your brand book has no typography section at all. We define a matched Arabic and Latin pairing with a full hierarchy — the single biggest cause of inconsistency, fixed.</span><span class="ar">دليل هويتكم لا يحتوي قسم طباعة إطلاقاً. سنحدّد اقتراناً متوافقاً بين العربية واللاتينية بتدرّج كامل — وهو أكبر سبب منفرد لعدم الاتساق، ويُعالَج هنا.</span></p></div>
+      <div class="card"><h3><span class="en">The arc system</span><span class="ar">نظام الأقواس</span></h3><p><span class="en">The pattern you already own becomes a flexible graphic language that works on a wall, a uniform, a story frame and a website header.</span><span class="ar">النمط الذي تملكونه يصبح لغة رسومية مرنة تعمل على الجدار والزيّ وإطار الستوري وترويسة الموقع.</span></p></div>
+      <div class="card"><h3><span class="en">Photography direction</span><span class="ar">اتجاه التصوير</span></h3><p><span class="en">Rules for how people, rooms and treatments are shot and graded, so future photography stays on-brand without us.</span><span class="ar">قواعد لكيفية تصوير الأشخاص والغرف والعلاجات ومعالجتها لونياً، لتبقى صوركم القادمة ضمن العلامة دون حاجة إلينا.</span></p></div>
+      <div class="card"><h3><span class="en">Social &amp; advertising language</span><span class="ar">لغة التواصل والإعلان</span></h3><p><span class="en">Templates for the campaign thinking you are already doing — seasonal, women's health, paediatric — so each looks unmistakably like Smile Care.</span><span class="ar">قوالب للتفكير الحملاتي الذي تمارسونه أصلاً — الموسمي، وصحة المرأة، وطب أسنان الأطفال — ليبدو كل منها «سمايل كير» بلا التباس.</span></p></div>
+      <div class="card"><h3><span class="en">Environmental direction</span><span class="ar">الاتجاه البيئي للمكان</span></h3><p><span class="en">A guide for what to change in the space — and, importantly, what to leave alone — so décor decisions stop being made one item at a time.</span><span class="ar">دليل لما يجب تغييره في المكان — والأهم، ما يجب تركه كما هو — لتتوقف قرارات الديكور عن كونها قطعة تلو الأخرى.</span></p></div>
     </div>
   </div>
 </section>
@@ -759,32 +757,32 @@ html[lang="ar"] .en{display:none}
 <section id="concepts">
   <div class="wrap">
     <span class="num rv">06</span>
-    <span class="eyebrow rv"><span class="en">B Â· AI Visual Concepts</span><span class="ar">Ø¨ Â· Ø§Ù„ØªØµÙˆØ±Ø§Øª Ø§Ù„Ø¨ØµØ±ÙŠØ© Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ</span></span>
-    <h2 class="rv"><span class="en">See it before you build it.</span><span class="ar">Ø´Ø§Ù‡Ø¯ÙˆÙ‡ Ù‚Ø¨Ù„ Ø£Ù† ØªØ¨Ù†ÙˆÙ‡.</span></h2>
+    <span class="eyebrow rv"><span class="en">B · AI Visual Concepts</span><span class="ar">ب · التصورات البصرية بالذكاء الاصطناعي</span></span>
+    <h2 class="rv"><span class="en">See it before you build it.</span><span class="ar">شاهدوه قبل أن تبنوه.</span></h2>
     <p class="lead rv">
       <span class="en">The most expensive mistake in an identity project is discovering you dislike it after the contractor has been paid. We produce <strong>24 photoreal concept visuals across six applications</strong> so the decision is made on evidence, not on imagination.</span>
-      <span class="ar">Ø£ØºÙ„Ù‰ Ø®Ø·Ø£ ÙÙŠ Ù…Ø´Ø±ÙˆØ¹ Ù‡ÙˆÙŠØ© Ù‡Ùˆ Ø£Ù† ØªÙƒØªØ´ÙÙˆØ§ Ø¹Ø¯Ù… Ø¥Ø¹Ø¬Ø§Ø¨ÙƒÙ… Ø¨Ù‡ Ø¨Ø¹Ø¯ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„Ù…Ù‚Ø§ÙˆÙ„ Ù‚Ø¯ Ø§Ø³ØªÙ„Ù… Ø£Ø¬Ø±Ù‡. Ù†Ù†ØªØ¬ <strong>Ù¢Ù¤ ØªØµÙˆÙ‘Ø±Ø§Ù‹ Ø¨ØµØ±ÙŠØ§Ù‹ ÙˆØ§Ù‚Ø¹ÙŠØ§Ù‹ Ø¹Ø¨Ø± Ø³ØªØ© ØªØ·Ø¨ÙŠÙ‚Ø§Øª</strong> Ù„ÙŠÙØªÙ‘Ø®Ø° Ø§Ù„Ù‚Ø±Ø§Ø± Ø¹Ù„Ù‰ Ø¯Ù„ÙŠÙ„ØŒ Ù„Ø§ Ø¹Ù„Ù‰ ØªØ®ÙŠÙ‘Ù„.</span>
+      <span class="ar">أغلى خطأ في مشروع هوية هو أن تكتشفوا عدم إعجابكم به بعد أن يكون المقاول قد استلم أجره. ننتج <strong>٢٤ تصوّراً بصرياً واقعياً عبر ستة تطبيقات</strong> ليُتّخذ القرار على دليل، لا على تخيّل.</span>
     </p>
     <p class="rv">
       <span class="en">There is a second advantage, and it is a practical one: none of this requires closing your clinic for a photoshoot, flying a crew to Ras Al Khaimah, or committing to a contractor before you have seen the outcome.</span>
-      <span class="ar">ÙˆÙ‡Ù†Ø§Ùƒ Ù…ÙŠØ²Ø© Ø«Ø§Ù†ÙŠØ© Ø¹Ù…Ù„ÙŠØ©: Ù„Ø§ Ø´ÙŠØ¡ Ù…Ù† Ù‡Ø°Ø§ ÙŠØªØ·Ù„Ø¨ Ø¥ØºÙ„Ø§Ù‚ Ø§Ù„Ù…Ø±ÙƒØ² Ù„Ø¬Ù„Ø³Ø© ØªØµÙˆÙŠØ±ØŒ ÙˆÙ„Ø§ Ø¥Ø­Ø¶Ø§Ø± Ø·Ø§Ù‚Ù… Ø¥Ù„Ù‰ Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø©ØŒ ÙˆÙ„Ø§ Ø§Ù„Ø§Ù„ØªØ²Ø§Ù… Ø¨Ù…Ù‚Ø§ÙˆÙ„ Ù‚Ø¨Ù„ Ø±Ø¤ÙŠØ© Ø§Ù„Ù†ØªÙŠØ¬Ø©.</span>
+      <span class="ar">وهناك ميزة ثانية عملية: لا شيء من هذا يتطلب إغلاق المركز لجلسة تصوير، ولا إحضار طاقم إلى رأس الخيمة، ولا الالتزام بمقاول قبل رؤية النتيجة.</span>
     </p>
 
     <div class="gallery rv" id="gal" style="margin-top:40px">
-      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/03-lounge.jpg" alt="Waiting lounge concept"></div><figcaption><span class="en"><b>Waiting lounge</b> â€” the â€œhealing spaâ€ from your About page, delivered with restraint instead of ornament.</span><span class="ar"><b>ØµØ§Ù„Ø© Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø±</b> â€” Â«Ø§Ù„Ù…Ù†ØªØ¬Ø¹ Ø§Ù„Ø¹Ù„Ø§Ø¬ÙŠÂ» Ø§Ù„Ù…Ø°ÙƒÙˆØ± ÙÙŠ ØµÙØ­ØªÙƒÙ…ØŒ Ù…ÙÙ†ÙÙŽÙ‘Ø°Ø§Ù‹ Ø¨Ø§Ù„Ø§Ù†Ø¶Ø¨Ø§Ø· Ù„Ø§ Ø¨Ø§Ù„Ø²Ø®Ø±ÙØ©.</span></figcaption></figure>
-      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/04-treatment.jpg" alt="Treatment room concept"></div><figcaption><span class="en"><b>Treatment room</b> â€” warm rather than clinical. This is the room that justifies your price list.</span><span class="ar"><b>ØºØ±ÙØ© Ø§Ù„Ø¹Ù„Ø§Ø¬</b> â€” Ø¯Ø§ÙØ¦Ø© Ù„Ø§ Ø³Ø±ÙŠØ±ÙŠØ©. Ù‡Ø°Ù‡ Ù‡ÙŠ Ø§Ù„ØºØ±ÙØ© Ø§Ù„ØªÙŠ ØªØ¨Ø±Ù‘Ø± Ù‚Ø§Ø¦Ù…Ø© Ø£Ø³Ø¹Ø§Ø±ÙƒÙ….</span></figcaption></figure>
-      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/02-exterior.jpg" alt="Exterior identity concept"></div><figcaption><span class="en"><b>Entrance &amp; signage</b> â€” <b>your existing horizontal brandmark, unchanged</b>, in emerald on champagne gold. Nothing about the mark was redrawn.</span><span class="ar"><b>Ø§Ù„Ù…Ø¯Ø®Ù„ ÙˆØ§Ù„Ù„Ø§ÙØªØ§Øª</b> â€” <b>Ø´Ø¹Ø§Ø±ÙƒÙ… Ø§Ù„Ø£ÙÙ‚ÙŠ Ø§Ù„Ø­Ø§Ù„ÙŠØŒ Ø¯ÙˆÙ† Ø£ÙŠ ØªØºÙŠÙŠØ±</b>ØŒ Ø¨Ø§Ù„Ø£Ø®Ø¶Ø± Ø§Ù„Ø²Ù…Ø±Ø¯ÙŠ Ø¹Ù„Ù‰ Ø§Ù„Ø°Ù‡Ø¨ÙŠ Ø§Ù„Ø´Ù…Ø¨Ø§Ù†ÙŠØ§. Ù„Ù… ÙŠÙØ¹ÙŽØ¯ Ø±Ø³Ù… Ø£ÙŠ Ø¬Ø²Ø¡ Ù…Ù† Ø§Ù„Ø´Ø¹Ø§Ø±.</span></figcaption></figure>
-      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/05-collateral.jpg" alt="Collateral and uniform concept"></div><figcaption><span class="en"><b>Collateral &amp; uniforms</b> â€” your branded scrubs are already in daily use; this extends the same system to the printed and giveaway items your brand book left unresolved.</span><span class="ar"><b>Ø§Ù„Ù…Ø·Ø¨ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ø²ÙŠÙ‘</b> â€” Ø²ÙŠÙ‘ÙƒÙ… Ø§Ù„Ø·Ø¨ÙŠ Ø§Ù„Ù…Ø­Ù…ÙÙ‘Ù„ Ù„Ù„Ø¹Ù„Ø§Ù…Ø© Ù…Ø³ØªØ®Ø¯ÙŽÙ… ÙŠÙˆÙ…ÙŠØ§Ù‹ Ø£ØµÙ„Ø§Ù‹Ø› ÙˆÙ‡Ø°Ø§ ÙŠÙ…Ø¯Ù‘ Ø§Ù„Ù†Ø¸Ø§Ù… Ø°Ø§ØªÙ‡ Ø¥Ù„Ù‰ Ø§Ù„Ù…Ø·Ø¨ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù‡Ø¯Ø§ÙŠØ§ Ø§Ù„ØªÙŠ ØªØ±ÙƒÙ‡Ø§ Ø¯Ù„ÙŠÙ„ÙƒÙ… Ø¯ÙˆÙ† Ø­Ø³Ù….</span></figcaption></figure>
-      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/01-reception.jpg" alt="Reception concept"></div><figcaption><span class="en"><b>Reception</b> â€” one material story: emerald stone, bone plaster, controlled gold. The brandmark itself is unchanged.</span><span class="ar"><b>Ø§Ù„Ø§Ø³ØªÙ‚Ø¨Ø§Ù„</b> â€” Ù‚ØµØ© Ù…ÙˆØ§Ø¯ ÙˆØ§Ø­Ø¯Ø©: Ø­Ø¬Ø± Ø²Ù…Ø±Ø¯ÙŠØŒ Ø¬Ø¨Ø³ Ø¹Ø¸Ù…ÙŠØŒ Ø°Ù‡Ø¨ Ù…Ù†Ø¶Ø¨Ø·. Ø£Ù…Ø§ Ø§Ù„Ø´Ø¹Ø§Ø± Ù†ÙØ³Ù‡ ÙÙ„Ø§ ÙŠØªØºÙŠÙ‘Ø±.</span></figcaption></figure>
-      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/06-digital.jpg" alt="Digital direction concept"></div><figcaption><span class="en"><b>Digital</b> â€” the same material language, translated to screen.</span><span class="ar"><b>Ø§Ù„Ø±Ù‚Ù…ÙŠ</b> â€” Ø§Ù„Ù„ØºØ© Ø§Ù„Ù…Ø§Ø¯ÙŠÙ‘Ø© Ø°Ø§ØªÙ‡Ø§ØŒ Ù…ØªØ±Ø¬ÙŽÙ…Ø© Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø©.</span></figcaption></figure>
+      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/03-lounge.jpg" alt="Waiting lounge concept"></div><figcaption><span class="en"><b>Waiting lounge</b> — the “healing spa” from your About page, delivered with restraint instead of ornament.</span><span class="ar"><b>صالة الانتظار</b> — «المنتجع العلاجي» المذكور في صفحتكم، مُنفَّذاً بالانضباط لا بالزخرفة.</span></figcaption></figure>
+      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/04-treatment.jpg" alt="Treatment room concept"></div><figcaption><span class="en"><b>Treatment room</b> — warm rather than clinical. This is the room that justifies your price list.</span><span class="ar"><b>غرفة العلاج</b> — دافئة لا سريرية. هذه هي الغرفة التي تبرّر قائمة أسعاركم.</span></figcaption></figure>
+      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/02-exterior.jpg" alt="Exterior identity concept"></div><figcaption><span class="en"><b>Entrance &amp; signage</b> — <b>your existing horizontal brandmark, unchanged</b>, in emerald on champagne gold. Nothing about the mark was redrawn.</span><span class="ar"><b>المدخل واللافتات</b> — <b>شعاركم الأفقي الحالي، دون أي تغيير</b>، بالأخضر الزمردي على الذهبي الشمبانيا. لم يُعَد رسم أي جزء من الشعار.</span></figcaption></figure>
+      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/05-collateral.jpg" alt="Collateral and uniform concept"></div><figcaption><span class="en"><b>Collateral &amp; uniforms</b> — your branded scrubs are already in daily use; this extends the same system to the printed and giveaway items your brand book left unresolved.</span><span class="ar"><b>المطبوعات والزيّ</b> — زيّكم الطبي المحمِّل للعلامة مستخدَم يومياً أصلاً؛ وهذا يمدّ النظام ذاته إلى المطبوعات والهدايا التي تركها دليلكم دون حسم.</span></figcaption></figure>
+      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/01-reception.jpg" alt="Reception concept"></div><figcaption><span class="en"><b>Reception</b> — one material story: emerald stone, bone plaster, controlled gold. The brandmark itself is unchanged.</span><span class="ar"><b>الاستقبال</b> — قصة مواد واحدة: حجر زمردي، جبس عظمي، ذهب منضبط. أما الشعار نفسه فلا يتغيّر.</span></figcaption></figure>
+      <figure class="gcard"><div class="gwrap"><img src="assets/concepts/06-digital.jpg" alt="Digital direction concept"></div><figcaption><span class="en"><b>Digital</b> — the same material language, translated to screen.</span><span class="ar"><b>الرقمي</b> — اللغة الماديّة ذاتها، مترجَمة إلى الشاشة.</span></figcaption></figure>
     </div>
     <p class="note rv" style="margin-top:18px">
       <span class="en">Hover or tap any frame to bring it forward.</span>
-      <span class="ar">Ù…Ø±Ù‘Ø±ÙˆØ§ Ø§Ù„Ù…Ø¤Ø´Ø± Ø£Ùˆ Ø§Ù„Ù…Ø³ÙˆØ§ Ø£ÙŠ Ø¥Ø·Ø§Ø± Ù„ÙŠØªÙ‚Ø¯Ù‘Ù… Ø¥Ù„Ù‰ Ø§Ù„Ø£Ù…Ø§Ù….</span>
+      <span class="ar">مرّروا المؤشر أو المسوا أي إطار ليتقدّم إلى الأمام.</span>
     </p>
     <p class="note rv" style="margin-top:24px">
       <span class="en">The images above are direction studies produced for this proposal, not final deliverables. They demonstrate the method and the standard; the approved set is developed with you during Gate 03.</span>
-      <span class="ar">Ø§Ù„ØµÙˆØ± Ø£Ø¹Ù„Ø§Ù‡ Ø¯Ø±Ø§Ø³Ø§Øª Ø§ØªØ¬Ø§Ù‡ Ø£ÙÙ†ØªØ¬Øª Ù„Ù‡Ø°Ø§ Ø§Ù„Ø¹Ø±Ø¶ØŒ ÙˆÙ„ÙŠØ³Øª ØªØ³Ù„ÙŠÙ…Ø§Øª Ù†Ù‡Ø§Ø¦ÙŠØ©. Ù‡ÙŠ ØªÙØ¸Ù‡Ø± Ø§Ù„Ù…Ù†Ù‡Ø¬ ÙˆØ§Ù„Ù…Ø¹ÙŠØ§Ø±Ø› Ø£Ù…Ø§ Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø© Ø§Ù„Ù…Ø¹ØªÙ…Ø¯Ø© ÙØªÙØ·ÙˆÙŽÙ‘Ø± Ù…Ø¹ÙƒÙ… ÙÙŠ Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø«Ø§Ù„Ø«Ø©.</span>
+      <span class="ar">الصور أعلاه دراسات اتجاه أُنتجت لهذا العرض، وليست تسليمات نهائية. هي تُظهر المنهج والمعيار؛ أما المجموعة المعتمدة فتُطوَّر معكم في البوابة الثالثة.</span>
     </p>
   </div>
 </section>
@@ -793,60 +791,60 @@ html[lang="ar"] .en{display:none}
 <section id="films">
   <div class="wrap">
     <span class="num rv">07</span>
-    <span class="eyebrow rv"><span class="en">C Â· Cinematic Content</span><span class="ar">Ø¬ Â· Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø³ÙŠÙ†Ù…Ø§Ø¦ÙŠ</span></span>
-    <h2 class="rv"><span class="en">Three films. One system.</span><span class="ar">Ø«Ù„Ø§Ø«Ø© Ø£ÙÙ„Ø§Ù…. Ù†Ø¸Ø§Ù… ÙˆØ§Ø­Ø¯.</span></h2>
+    <span class="eyebrow rv"><span class="en">C · Cinematic Content</span><span class="ar">ج · المحتوى السينمائي</span></span>
+    <h2 class="rv"><span class="en">Three films. One system.</span><span class="ar">ثلاثة أفلام. نظام واحد.</span></h2>
     <p class="lead rv">
-      <span class="en">Not three unrelated adverts â€” a triptych sharing one visual language, one music family and one colour grade, so they compound rather than compete.</span>
-      <span class="ar">Ù„ÙŠØ³Øª Ø«Ù„Ø§Ø«Ø© Ø¥Ø¹Ù„Ø§Ù†Ø§Øª Ù…Ù†ÙØµÙ„Ø© â€” Ø¨Ù„ Ø«Ù„Ø§Ø«ÙŠØ© ØªØªØ´Ø§Ø±Ùƒ Ù„ØºØ© Ø¨ØµØ±ÙŠØ© ÙˆØ§Ø­Ø¯Ø©ØŒ ÙˆØ¹Ø§Ø¦Ù„Ø© Ù…ÙˆØ³ÙŠÙ‚ÙŠØ© ÙˆØ§Ø­Ø¯Ø©ØŒ ÙˆÙ…Ø¹Ø§Ù„Ø¬Ø© Ù„ÙˆÙ†ÙŠØ© ÙˆØ§Ø­Ø¯Ø©ØŒ ÙØªØªØ±Ø§ÙƒÙ… Ø£Ø«Ø±Ø§Ù‹ Ø¨Ø¯Ù„ Ø£Ù† ØªØªÙ†Ø§ÙØ³.</span>
+      <span class="en">Not three unrelated adverts — a triptych sharing one visual language, one music family and one colour grade, so they compound rather than compete.</span>
+      <span class="ar">ليست ثلاثة إعلانات منفصلة — بل ثلاثية تتشارك لغة بصرية واحدة، وعائلة موسيقية واحدة، ومعالجة لونية واحدة، فتتراكم أثراً بدل أن تتنافس.</span>
     </p>
     <div class="fmt-note rv" style="margin-top:0;margin-bottom:34px">
-      <span class="en"><strong>You already make video â€” so let us be precise about what you are buying.</strong> You are not buying volume; you have that. You are buying a <strong>standard and a system</strong>: a defined look, a defined grade, a defined sound, and three anchor films built to it â€” so that everything your team shoots afterwards has something to match. The films are the reference, not the whole library.</span>
-      <span class="ar"><strong>Ø£Ù†ØªÙ… ØªÙ†ØªØ¬ÙˆÙ† Ø§Ù„ÙÙŠØ¯ÙŠÙˆ Ø£ØµÙ„Ø§Ù‹ â€” Ù„Ø°Ø§ Ù„Ù†ÙƒÙ† Ø¯Ù‚ÙŠÙ‚ÙŠÙ† ÙÙŠ Ù…Ø§ ØªØ´ØªØ±ÙˆÙ†Ù‡.</strong> Ø£Ù†ØªÙ… Ù„Ø§ ØªØ´ØªØ±ÙˆÙ† ÙƒÙ…Ù‘Ø§Ù‹Ø› Ø§Ù„ÙƒÙ…Ù‘ Ø¹Ù†Ø¯ÙƒÙ…. Ø£Ù†ØªÙ… ØªØ´ØªØ±ÙˆÙ† <strong>Ù…Ø¹ÙŠØ§Ø±Ø§Ù‹ ÙˆÙ†Ø¸Ø§Ù…Ø§Ù‹</strong>: Ø´ÙƒÙ„Ø§Ù‹ Ù…Ø­Ø¯Ø¯Ø§Ù‹ØŒ ÙˆÙ…Ø¹Ø§Ù„Ø¬Ø© Ù„ÙˆÙ†ÙŠØ© Ù…Ø­Ø¯Ø¯Ø©ØŒ ÙˆÙ‡ÙˆÙŠØ© ØµÙˆØªÙŠØ© Ù…Ø­Ø¯Ø¯Ø©ØŒ ÙˆØ«Ù„Ø§Ø«Ø© Ø£ÙÙ„Ø§Ù… Ù…Ø±Ø¬Ø¹ÙŠØ© Ù…Ø¨Ù†ÙŠØ© Ø¹Ù„ÙŠÙ‡Ø§ â€” Ù„ÙŠØµØ¨Ø­ Ù„ÙƒÙ„ Ù…Ø§ ÙŠØµÙˆÙ‘Ø±Ù‡ ÙØ±ÙŠÙ‚ÙƒÙ… Ø¨Ø¹Ø¯Ù‡Ø§ Ù…Ø±Ø¬Ø¹ÙŒ ÙŠÙÙ‚Ø§Ø³ Ø¹Ù„ÙŠÙ‡. Ø§Ù„Ø£ÙÙ„Ø§Ù… Ù‡ÙŠ Ø§Ù„Ù…Ø±Ø¬Ø¹ØŒ Ù„Ø§ Ø§Ù„Ù…ÙƒØªØ¨Ø© ÙƒÙ„Ù‡Ø§.</span>
+      <span class="en"><strong>You already make video — so let us be precise about what you are buying.</strong> You are not buying volume; you have that. You are buying a <strong>standard and a system</strong>: a defined look, a defined grade, a defined sound, and three anchor films built to it — so that everything your team shoots afterwards has something to match. The films are the reference, not the whole library.</span>
+      <span class="ar"><strong>أنتم تنتجون الفيديو أصلاً — لذا لنكن دقيقين في ما تشترونه.</strong> أنتم لا تشترون كمّاً؛ الكمّ عندكم. أنتم تشترون <strong>معياراً ونظاماً</strong>: شكلاً محدداً، ومعالجة لونية محددة، وهوية صوتية محددة، وثلاثة أفلام مرجعية مبنية عليها — ليصبح لكل ما يصوّره فريقكم بعدها مرجعٌ يُقاس عليه. الأفلام هي المرجع، لا المكتبة كلها.</span>
     </div>
     <div class="grid g3 rv" style="margin-top:38px">
-      <div class="card"><span class="num">Film 01 Â· â‰¤120s</span><h3><span class="en">The Standard</span><span class="ar">Ø§Ù„Ù…Ø¹ÙŠØ§Ø±</span></h3><p><span class="en">The brand film. Nineteen years, six doctors, one standard of care. This is the film that plays on the waiting-room screen and anchors the website.</span><span class="ar">ÙÙŠÙ„Ù… Ø§Ù„Ø¹Ù„Ø§Ù…Ø©. ØªØ³Ø¹ Ø¹Ø´Ø±Ø© Ø³Ù†Ø©ØŒ Ø³ØªØ© Ø£Ø·Ø¨Ø§Ø¡ØŒ Ù…Ø¹ÙŠØ§Ø± Ø±Ø¹Ø§ÙŠØ© ÙˆØ§Ø­Ø¯. Ù‡Ø°Ø§ Ù‡Ùˆ Ø§Ù„ÙÙŠÙ„Ù… Ø§Ù„Ø°ÙŠ ÙŠÙØ¹Ø±Ø¶ Ø¹Ù„Ù‰ Ø´Ø§Ø´Ø© Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø± ÙˆÙŠØªØµØ¯Ù‘Ø± Ø§Ù„Ù…ÙˆÙ‚Ø¹.</span></p></div>
-      <div class="card"><span class="num">Film 02 Â· â‰¤120s</span><h3><span class="en">The Aesthetic Line</span><span class="ar">Ø®Ø· Ø§Ù„ØªØ¬Ù…ÙŠÙ„</span></h3><p><span class="en">Dermatology, injectables and skin â€” presented at the visual standard that category's buyers expect before they will accept its prices.</span><span class="ar">Ø§Ù„Ø¬Ù„Ø¯ÙŠØ© ÙˆØ§Ù„Ø­Ù‚Ù† ÙˆØ§Ù„Ø¨Ø´Ø±Ø© â€” Ù…Ù‚Ø¯ÙŽÙ‘Ù…Ø© Ø¨Ø§Ù„Ù…Ø¹ÙŠØ§Ø± Ø§Ù„Ø¨ØµØ±ÙŠ Ø§Ù„Ø°ÙŠ ÙŠØªÙˆÙ‚Ø¹Ù‡ Ø¹Ù…Ù„Ø§Ø¡ Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ù‚Ø¨Ù„ Ø£Ù† ÙŠÙ‚Ø¨Ù„ÙˆØ§ Ø£Ø³Ø¹Ø§Ø±Ù‡Ø§.</span></p></div>
-      <div class="card"><span class="num">Film 03 Â· â‰¤120s</span><h3><span class="en">The Human One</span><span class="ar">Ø§Ù„ÙÙŠÙ„Ù… Ø§Ù„Ø¥Ù†Ø³Ø§Ù†ÙŠ</span></h3><p><span class="en">Family and paediatric care â€” the emotional territory <em>Ø£Ø³Ù†Ø§Ù† ÙƒØ§Ù„Ø£Ø¨Ø·Ø§Ù„</em> already opened, given a visual equal to its audio.</span><span class="ar">Ø±Ø¹Ø§ÙŠØ© Ø§Ù„Ø¹Ø§Ø¦Ù„Ø© ÙˆØ§Ù„Ø£Ø·ÙØ§Ù„ â€” Ø§Ù„Ù…Ø³Ø§Ø­Ø© Ø§Ù„Ø¹Ø§Ø·ÙÙŠØ© Ø§Ù„ØªÙŠ ÙØªØ­ØªÙ‡Ø§ Â«Ø£Ø³Ù†Ø§Ù† ÙƒØ§Ù„Ø£Ø¨Ø·Ø§Ù„Â» Ø£ØµÙ„Ø§Ù‹ØŒ ÙˆÙ…Ù†Ø­Ù‡Ø§ Ø¨ØµØ±ÙŠØ§Ù‹ ÙŠÙˆØ§Ø²ÙŠ ØµÙˆØªÙ‡Ø§.</span></p></div>
+      <div class="card"><span class="num">Film 01 · ≤120s</span><h3><span class="en">The Standard</span><span class="ar">المعيار</span></h3><p><span class="en">The brand film. Nineteen years, six doctors, one standard of care. This is the film that plays on the waiting-room screen and anchors the website.</span><span class="ar">فيلم العلامة. تسع عشرة سنة، ستة أطباء، معيار رعاية واحد. هذا هو الفيلم الذي يُعرض على شاشة الانتظار ويتصدّر الموقع.</span></p></div>
+      <div class="card"><span class="num">Film 02 · ≤120s</span><h3><span class="en">The Aesthetic Line</span><span class="ar">خط التجميل</span></h3><p><span class="en">Dermatology, injectables and skin — presented at the visual standard that category's buyers expect before they will accept its prices.</span><span class="ar">الجلدية والحقن والبشرة — مقدَّمة بالمعيار البصري الذي يتوقعه عملاء هذه الفئة قبل أن يقبلوا أسعارها.</span></p></div>
+      <div class="card"><span class="num">Film 03 · ≤120s</span><h3><span class="en">The Human One</span><span class="ar">الفيلم الإنساني</span></h3><p><span class="en">Family and paediatric care — the emotional territory <em>أسنان كالأبطال</em> already opened, given a visual equal to its audio.</span><span class="ar">رعاية العائلة والأطفال — المساحة العاطفية التي فتحتها «أسنان كالأبطال» أصلاً، ومنحها بصرياً يوازي صوتها.</span></p></div>
     </div>
     <div class="scroller rv" style="margin-top:34px">
       <table>
         <tbody>
-          <tr><td class="v"><span class="en">Included per film</span><span class="ar">ÙŠØªØ¶Ù…Ù‘Ù† ÙƒÙ„ ÙÙŠÙ„Ù…</span></td><td><span class="en">Concept Â· script Â· storyboard Â· AI generation Â· art direction Â· edit Â· sound design Â· colour Â· commercial usage rights</span><span class="ar">Ø§Ù„ÙÙƒØ±Ø© Â· Ø§Ù„Ù†Øµ Â· Ø§Ù„Ù„ÙˆØ­Ø© Ø§Ù„Ù‚ØµØµÙŠØ© Â· Ø§Ù„ØªÙˆÙ„ÙŠØ¯ Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ Â· Ø§Ù„Ø¥Ø®Ø±Ø§Ø¬ Ø§Ù„ÙÙ†ÙŠ Â· Ø§Ù„Ù…ÙˆÙ†ØªØ§Ø¬ Â· ØªØµÙ…ÙŠÙ… Ø§Ù„ØµÙˆØª Â· Ø§Ù„Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù„ÙˆÙ†ÙŠØ© Â· Ø­Ù‚ÙˆÙ‚ Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„ØªØ¬Ø§Ø±ÙŠ</span></td></tr>
-          <tr><td class="v"><span class="en">Maximum duration</span><span class="ar">Ø£Ù‚ØµÙ‰ Ù…Ø¯Ø©</span></td><td><span class="en"><strong>120 seconds per film</strong>, and <strong>300 seconds total</strong> across the three.</span><span class="ar"><strong>Ù¡Ù¢Ù  Ø«Ø§Ù†ÙŠØ© Ù„Ù„ÙÙŠÙ„Ù… Ø§Ù„ÙˆØ§Ø­Ø¯</strong>ØŒ Ùˆ<strong>Ù£Ù Ù  Ø«Ø§Ù†ÙŠØ© Ø¥Ø¬Ù…Ø§Ù„Ø§Ù‹</strong> Ù„Ù„Ø£ÙÙ„Ø§Ù… Ø§Ù„Ø«Ù„Ø§Ø«Ø©.</span></td></tr>
-          <tr><td class="v"><span class="en">Languages</span><span class="ar">Ø§Ù„Ù„ØºØ§Øª</span></td><td><span class="en">One primary language per film, plus a subtitled second-language version.</span><span class="ar">Ù„ØºØ© Ø£Ø³Ø§Ø³ÙŠØ© ÙˆØ§Ø­Ø¯Ø© Ù„ÙƒÙ„ ÙÙŠÙ„Ù…ØŒ Ù…Ø¹ Ù†Ø³Ø®Ø© Ù…ØªØ±Ø¬Ù…Ø© Ø¨Ø§Ù„Ø¹Ù†Ø§ÙˆÙŠÙ† Ø¨Ø§Ù„Ù„ØºØ© Ø§Ù„Ø«Ø§Ù†ÙŠØ©.</span></td></tr>
-          <tr><td class="v"><span class="en">Delivery format</span><span class="ar">ØµÙŠØºØ© Ø§Ù„ØªØ³Ù„ÙŠÙ…</span></td><td><span class="en"><strong>One format only</strong>, chosen by you before production begins â€” see below. The three films are produced in the selected format.</span><span class="ar"><strong>ØµÙŠØºØ© ÙˆØ§Ø­Ø¯Ø© ÙÙ‚Ø·</strong>ØŒ ØªØ®ØªØ§Ø±ÙˆÙ†Ù‡Ø§ Ù‚Ø¨Ù„ Ø¨Ø¯Ø¡ Ø§Ù„Ø¥Ù†ØªØ§Ø¬ â€” Ø§Ù†Ø¸Ø±ÙˆØ§ Ø£Ø¯Ù†Ø§Ù‡. ØªÙÙ†ØªÙŽØ¬ Ø§Ù„Ø£ÙÙ„Ø§Ù… Ø§Ù„Ø«Ù„Ø§Ø«Ø© Ø¨Ø§Ù„ØµÙŠØºØ© Ø§Ù„Ù…Ø®ØªØ§Ø±Ø©.</span></td></tr>
+          <tr><td class="v"><span class="en">Included per film</span><span class="ar">يتضمّن كل فيلم</span></td><td><span class="en">Concept · script · storyboard · AI generation · art direction · edit · sound design · colour · commercial usage rights</span><span class="ar">الفكرة · النص · اللوحة القصصية · التوليد بالذكاء الاصطناعي · الإخراج الفني · المونتاج · تصميم الصوت · المعالجة اللونية · حقوق الاستخدام التجاري</span></td></tr>
+          <tr><td class="v"><span class="en">Maximum duration</span><span class="ar">أقصى مدة</span></td><td><span class="en"><strong>120 seconds per film</strong>, and <strong>300 seconds total</strong> across the three.</span><span class="ar"><strong>١٢٠ ثانية للفيلم الواحد</strong>، و<strong>٣٠٠ ثانية إجمالاً</strong> للأفلام الثلاثة.</span></td></tr>
+          <tr><td class="v"><span class="en">Languages</span><span class="ar">اللغات</span></td><td><span class="en">One primary language per film, plus a subtitled second-language version.</span><span class="ar">لغة أساسية واحدة لكل فيلم، مع نسخة مترجمة بالعناوين باللغة الثانية.</span></td></tr>
+          <tr><td class="v"><span class="en">Delivery format</span><span class="ar">صيغة التسليم</span></td><td><span class="en"><strong>One format only</strong>, chosen by you before production begins — see below. The three films are produced in the selected format.</span><span class="ar"><strong>صيغة واحدة فقط</strong>، تختارونها قبل بدء الإنتاج — انظروا أدناه. تُنتَج الأفلام الثلاثة بالصيغة المختارة.</span></td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="hr"></div>
 
-    <span class="eyebrow rv"><span class="en">Video Format â€” Your Choice</span><span class="ar">ØµÙŠØºØ© Ø§Ù„ÙÙŠØ¯ÙŠÙˆ â€” Ø§Ø®ØªÙŠØ§Ø±ÙƒÙ…</span></span>
-    <h3 class="rv"><span class="en">Choose one production format.</span><span class="ar">Ø§Ø®ØªØ§Ø±ÙˆØ§ ØµÙŠØºØ© Ø¥Ù†ØªØ§Ø¬ ÙˆØ§Ø­Ø¯Ø©.</span></h3>
-    <p class="rv"><span class="en">A film is framed, composed and edited for a single aspect ratio from the first storyboard frame. Producing genuinely for both is two productions, not one â€” so you choose the format that matches where these films will actually work hardest.</span><span class="ar">Ø§Ù„ÙÙŠÙ„Ù… ÙŠÙØ¤Ø·ÙŽÙ‘Ø± ÙˆÙŠÙØ±ÙƒÙŽÙ‘Ø¨ ÙˆÙŠÙÙˆÙ†ØªÙŽØ¬ Ù„Ù†Ø³Ø¨Ø© Ø¹Ø±Ø¶ ÙˆØ§Ø­Ø¯Ø© Ù…Ù†Ø° Ø£ÙˆÙ„ Ø¥Ø·Ø§Ø± ÙÙŠ Ø§Ù„Ù„ÙˆØ­Ø© Ø§Ù„Ù‚ØµØµÙŠØ©. ÙˆØ¥Ù†ØªØ§Ø¬Ù‡ ÙØ¹Ù„ÙŠØ§Ù‹ Ø¨Ø§Ù„ØµÙŠØºØªÙŠÙ† Ù‡Ùˆ Ø¥Ù†ØªØ§Ø¬Ø§Ù† Ù„Ø§ Ø¥Ù†ØªØ§Ø¬ ÙˆØ§Ø­Ø¯ â€” Ù„Ø°Ù„Ùƒ ØªØ®ØªØ§Ø±ÙˆÙ† Ø§Ù„ØµÙŠØºØ© Ø§Ù„ØªÙŠ Ø³ØªØ¹Ù…Ù„ ÙÙŠÙ‡Ø§ Ù‡Ø°Ù‡ Ø§Ù„Ø£ÙÙ„Ø§Ù… Ø¨Ø£Ù‚ØµÙ‰ ÙØ§Ø¹Ù„ÙŠØ©.</span></p>
+    <span class="eyebrow rv"><span class="en">Video Format — Your Choice</span><span class="ar">صيغة الفيديو — اختياركم</span></span>
+    <h3 class="rv"><span class="en">Choose one production format.</span><span class="ar">اختاروا صيغة إنتاج واحدة.</span></h3>
+    <p class="rv"><span class="en">A film is framed, composed and edited for a single aspect ratio from the first storyboard frame. Producing genuinely for both is two productions, not one — so you choose the format that matches where these films will actually work hardest.</span><span class="ar">الفيلم يُؤطَّر ويُركَّب ويُونتَج لنسبة عرض واحدة منذ أول إطار في اللوحة القصصية. وإنتاجه فعلياً بالصيغتين هو إنتاجان لا إنتاج واحد — لذلك تختارون الصيغة التي ستعمل فيها هذه الأفلام بأقصى فاعلية.</span></p>
 
     <div class="fmt rv">
       <div class="fmt-card">
         <div class="fmt-ratio r169">16:9</div>
-        <h3><span class="en">Option A â€” Cinematic Landscape</span><span class="ar">Ø§Ù„Ø®ÙŠØ§Ø± Ø£ â€” Ø³ÙŠÙ†Ù…Ø§Ø¦ÙŠ Ø¹Ø±ÙŠØ¶</span></h3>
-        <p><span class="en">16:9 master. Best for the waiting-room screen, the website hero, YouTube and presentations.</span><span class="ar">Ù†Ø³Ø®Ø© Ø±Ø¦ÙŠØ³ÙŠØ© Ù¡Ù¦:Ù©. Ø§Ù„Ø£Ù†Ø³Ø¨ Ù„Ø´Ø§Ø´Ø© ØºØ±ÙØ© Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø±ØŒ ÙˆÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…ÙˆÙ‚Ø¹ØŒ ÙˆÙŠÙˆØªÙŠÙˆØ¨ØŒ ÙˆØ§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„ØªÙ‚Ø¯ÙŠÙ…ÙŠØ©.</span></p>
+        <h3><span class="en">Option A — Cinematic Landscape</span><span class="ar">الخيار أ — سينمائي عريض</span></h3>
+        <p><span class="en">16:9 master. Best for the waiting-room screen, the website hero, YouTube and presentations.</span><span class="ar">نسخة رئيسية ١٦:٩. الأنسب لشاشة غرفة الانتظار، وواجهة الموقع، ويوتيوب، والعروض التقديمية.</span></p>
       </div>
-      <div class="fmt-or"><span class="en">or</span><span class="ar">Ø£Ùˆ</span></div>
+      <div class="fmt-or"><span class="en">or</span><span class="ar">أو</span></div>
       <div class="fmt-card" style="border-color:rgba(219,196,143,.45)">
         <div class="fmt-ratio r916">9:16</div>
-        <h3><span class="en">Option B â€” Social Vertical</span><span class="ar">Ø§Ù„Ø®ÙŠØ§Ø± Ø¨ â€” Ø¹Ù…ÙˆØ¯ÙŠ Ù„Ù„ØªÙˆØ§ØµÙ„</span></h3>
-        <p><span class="en">9:16 vertical. Best for Instagram Reels, TikTok, Snapchat and paid social campaigns.</span><span class="ar">Ø¹Ù…ÙˆØ¯ÙŠ Ù©:Ù¡Ù¦. Ø§Ù„Ø£Ù†Ø³Ø¨ Ù„Ø±ÙŠÙ„Ø² Ø¥Ù†Ø³ØªØºØ±Ø§Ù…ØŒ ÙˆØªÙŠÙƒ ØªÙˆÙƒØŒ ÙˆØ³Ù†Ø§Ø¨ Ø´Ø§ØªØŒ ÙˆØ§Ù„Ø­Ù…Ù„Ø§Øª Ø§Ù„Ù…Ø¯ÙÙˆØ¹Ø©.</span></p>
+        <h3><span class="en">Option B — Social Vertical</span><span class="ar">الخيار ب — عمودي للتواصل</span></h3>
+        <p><span class="en">9:16 vertical. Best for Instagram Reels, TikTok, Snapchat and paid social campaigns.</span><span class="ar">عمودي ٩:١٦. الأنسب لريلز إنستغرام، وتيك توك، وسناب شات، والحملات المدفوعة.</span></p>
       </div>
     </div>
 
     <div class="fmt-note rv">
-      <span class="en"><strong>Our recommendation: Option B, 9:16.</strong> Not as a default â€” because of what your own archive shows. Every finished film we were able to review, including the 17-year anniversary piece, the Ramadan film and the Flag Day post, is already produced vertically. Your audience meets Smile Care on a phone. Producing natively for that, rather than cropping into it, is the difference between a film that fills the screen and one that sits in a letterbox. If the waiting-room screen and the website hero matter more to you, Option A is the right call instead â€” and we will say so.</span>
-      <span class="ar"><strong>ØªÙˆØµÙŠØªÙ†Ø§: Ø§Ù„Ø®ÙŠØ§Ø± Ø¨ØŒ Ù©:Ù¡Ù¦.</strong> Ù„ÙŠØ³ ÙƒØ¥Ø¹Ø¯Ø§Ø¯ Ø§ÙØªØ±Ø§Ø¶ÙŠØŒ Ø¨Ù„ Ù„Ù…Ø§ ÙŠÙØ¸Ù‡Ø±Ù‡ Ø£Ø±Ø´ÙŠÙÙƒÙ… Ø£Ù†ØªÙ…. ÙƒÙ„ ÙÙŠÙ„Ù… Ù…ÙƒØªÙ…Ù„ ØªÙ…ÙƒÙ‘Ù†Ù‘Ø§ Ù…Ù† Ù…Ø±Ø§Ø¬Ø¹ØªÙ‡ â€” Ø¨Ù…Ø§ ÙÙŠÙ‡ Ø¹Ù…Ù„ Ø§Ù„Ø°ÙƒØ±Ù‰ Ø§Ù„Ø³Ø§Ø¨Ø¹Ø© Ø¹Ø´Ø±Ø©ØŒ ÙˆÙÙŠÙ„Ù… Ø±Ù…Ø¶Ø§Ù†ØŒ ÙˆÙ…Ù†Ø´ÙˆØ± ÙŠÙˆÙ… Ø§Ù„Ø¹Ù„Ù… â€” Ù…ÙÙ†ØªÙŽØ¬ Ø¹Ù…ÙˆØ¯ÙŠØ§Ù‹ Ø£ØµÙ„Ø§Ù‹. Ø¬Ù…Ù‡ÙˆØ±ÙƒÙ… ÙŠÙ„ØªÙ‚ÙŠ Â«Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ±Â» Ø¹Ù„Ù‰ Ø§Ù„Ù‡Ø§ØªÙ. ÙˆØ§Ù„Ø¥Ù†ØªØ§Ø¬ Ø§Ù„Ø£ØµÙ„ÙŠ Ù„Ù‡Ø°Ù‡ Ø§Ù„ØµÙŠØºØ©ØŒ Ø¨Ø¯Ù„ Ø§Ù„Ø§Ù‚ØªØµØ§Øµ Ø¥Ù„ÙŠÙ‡Ø§ØŒ Ù‡Ùˆ Ø§Ù„ÙØ±Ù‚ Ø¨ÙŠÙ† ÙÙŠÙ„Ù… ÙŠÙ…Ù„Ø£ Ø§Ù„Ø´Ø§Ø´Ø© ÙˆØ¢Ø®Ø± ÙŠØ¬Ù„Ø³ Ø¯Ø§Ø®Ù„ Ø¥Ø·Ø§Ø±. ÙˆØ¥Ù† ÙƒØ§Ù†Øª Ø´Ø§Ø´Ø© ØºØ±ÙØ© Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø± ÙˆÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ø£Ù‡Ù… Ø¨Ø§Ù„Ù†Ø³Ø¨Ø© Ù„ÙƒÙ…ØŒ ÙØ§Ù„Ø®ÙŠØ§Ø± Ø£ Ù‡Ùˆ Ø§Ù„ØµØ­ÙŠØ­ â€” ÙˆØ³Ù†Ù‚ÙˆÙ„Ù‡Ø§ Ù„ÙƒÙ… Ø¨ØµØ±Ø§Ø­Ø©.</span>
+      <span class="en"><strong>Our recommendation: Option B, 9:16.</strong> Not as a default — because of what your own archive shows. Every finished film we were able to review, including the 17-year anniversary piece, the Ramadan film and the Flag Day post, is already produced vertically. Your audience meets Smile Care on a phone. Producing natively for that, rather than cropping into it, is the difference between a film that fills the screen and one that sits in a letterbox. If the waiting-room screen and the website hero matter more to you, Option A is the right call instead — and we will say so.</span>
+      <span class="ar"><strong>توصيتنا: الخيار ب، ٩:١٦.</strong> ليس كإعداد افتراضي، بل لما يُظهره أرشيفكم أنتم. كل فيلم مكتمل تمكّنّا من مراجعته — بما فيه عمل الذكرى السابعة عشرة، وفيلم رمضان، ومنشور يوم العلم — مُنتَج عمودياً أصلاً. جمهوركم يلتقي «سمايل كير» على الهاتف. والإنتاج الأصلي لهذه الصيغة، بدل الاقتصاص إليها، هو الفرق بين فيلم يملأ الشاشة وآخر يجلس داخل إطار. وإن كانت شاشة غرفة الانتظار وواجهة الموقع أهم بالنسبة لكم، فالخيار أ هو الصحيح — وسنقولها لكم بصراحة.</span>
     </div>
 
     <div class="fmt-note rv">
-      <span class="en"><strong>One format is included, not both.</strong> The three films are delivered in the single format you select before production begins. If you later want the same films adapted to the other format, that is a separate adaptation service and is quoted separately â€” we will never produce it and invoice you for it without your written approval.</span>
-      <span class="ar"><strong>ØµÙŠØºØ© ÙˆØ§Ø­Ø¯Ø© Ù…Ø´Ù…ÙˆÙ„Ø©ØŒ Ù„Ø§ Ø§Ù„Ø§Ø«Ù†ØªØ§Ù†.</strong> ØªÙØ³Ù„ÙŽÙ‘Ù… Ø§Ù„Ø£ÙÙ„Ø§Ù… Ø§Ù„Ø«Ù„Ø§Ø«Ø© Ø¨Ø§Ù„ØµÙŠØºØ© Ø§Ù„ÙˆØ§Ø­Ø¯Ø© Ø§Ù„ØªÙŠ ØªØ®ØªØ§Ø±ÙˆÙ†Ù‡Ø§ Ù‚Ø¨Ù„ Ø¨Ø¯Ø¡ Ø§Ù„Ø¥Ù†ØªØ§Ø¬. ÙˆØ¥Ø°Ø§ Ø±ØºØ¨ØªÙ… Ù„Ø§Ø­Ù‚Ø§Ù‹ Ø¨ØªÙƒÙŠÙŠÙ Ø§Ù„Ø£ÙÙ„Ø§Ù… Ù†ÙØ³Ù‡Ø§ Ù„Ù„ØµÙŠØºØ© Ø§Ù„Ø£Ø®Ø±Ù‰ØŒ ÙÙ‡Ø°Ù‡ Ø®Ø¯Ù…Ø© ØªÙƒÙŠÙŠÙ Ù…Ù†ÙØµÙ„Ø© ØªÙØ³Ø¹ÙŽÙ‘Ø± Ø¹Ù„Ù‰ Ø­Ø¯Ø© â€” ÙˆÙ„Ù† Ù†ÙÙ†ØªØ¬Ù‡Ø§ ÙˆÙ†ÙÙÙˆØªØ±Ù‡Ø§ Ø£Ø¨Ø¯Ø§Ù‹ Ø¯ÙˆÙ† Ø§Ø¹ØªÙ…Ø§Ø¯ÙƒÙ… Ø§Ù„Ø®Ø·ÙŠ.</span>
+      <span class="en"><strong>One format is included, not both.</strong> The three films are delivered in the single format you select before production begins. If you later want the same films adapted to the other format, that is a separate adaptation service and is quoted separately — we will never produce it and invoice you for it without your written approval.</span>
+      <span class="ar"><strong>صيغة واحدة مشمولة، لا الاثنتان.</strong> تُسلَّم الأفلام الثلاثة بالصيغة الواحدة التي تختارونها قبل بدء الإنتاج. وإذا رغبتم لاحقاً بتكييف الأفلام نفسها للصيغة الأخرى، فهذه خدمة تكييف منفصلة تُسعَّر على حدة — ولن نُنتجها ونُفوترها أبداً دون اعتمادكم الخطي.</span>
     </div>
   </div>
 </section>
@@ -855,30 +853,30 @@ html[lang="ar"] .en{display:none}
 <section id="web">
   <div class="wrap">
     <span class="num rv">08</span>
-    <span class="eyebrow rv"><span class="en">D Â· Digital Experience</span><span class="ar">Ø¯ Â· Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø±Ù‚Ù…ÙŠØ©</span></span>
-    <h2 class="rv"><span class="en">The identity, where people actually check you out.</span><span class="ar">Ø§Ù„Ù‡ÙˆÙŠØ©ØŒ Ø­ÙŠØ« ÙŠØªØ­Ù‚Ù‘Ù‚ Ø§Ù„Ù†Ø§Ø³ Ù…Ù†ÙƒÙ… ÙØ¹Ù„Ø§Ù‹.</span></h2>
+    <span class="eyebrow rv"><span class="en">D · Digital Experience</span><span class="ar">د · التجربة الرقمية</span></span>
+    <h2 class="rv"><span class="en">The identity, where people actually check you out.</span><span class="ar">الهوية، حيث يتحقّق الناس منكم فعلاً.</span></h2>
     <p class="lead rv">
-      <span class="en">A new bilingual website is <strong>included at no charge</strong> in this programme â€” not as a giveaway, but because an identity that lives only in a PDF is not an identity. Before a patient in Ras Al Khaimah books an aesthetic treatment, they check the website. That page has to carry the new standard.</span>
-      <span class="ar">Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø§Ù„Ø¬Ø¯ÙŠØ¯ Ø«Ù†Ø§Ø¦ÙŠ Ø§Ù„Ù„ØºØ© <strong>Ù…Ø´Ù…ÙˆÙ„ Ø¯ÙˆÙ† Ù…Ù‚Ø§Ø¨Ù„</strong> ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ â€” Ù„ÙŠØ³ ÙƒÙ‡Ø¯ÙŠÙ‘Ø©ØŒ Ø¨Ù„ Ù„Ø£Ù† Ù‡ÙˆÙŠØ© ØªØ¹ÙŠØ´ Ø¯Ø§Ø®Ù„ Ù…Ù„Ù PDF ÙÙ‚Ø· Ù„ÙŠØ³Øª Ù‡ÙˆÙŠØ©. Ù‚Ø¨Ù„ Ø£Ù† ÙŠØ­Ø¬Ø² Ù…Ø±ÙŠØ¶ ÙÙŠ Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø© Ø¬Ù„Ø³Ø© ØªØ¬Ù…ÙŠÙ„ØŒ ÙŠÙØªØ­ Ø§Ù„Ù…ÙˆÙ‚Ø¹. ÙˆØªÙ„Ùƒ Ø§Ù„ØµÙØ­Ø© ÙŠØ¬Ø¨ Ø£Ù† ØªØ­Ù…Ù„ Ø§Ù„Ù…Ø¹ÙŠØ§Ø± Ø§Ù„Ø¬Ø¯ÙŠØ¯.</span>
+      <span class="en">A new bilingual website is <strong>included at no charge</strong> in this programme — not as a giveaway, but because an identity that lives only in a PDF is not an identity. Before a patient in Ras Al Khaimah books an aesthetic treatment, they check the website. That page has to carry the new standard.</span>
+      <span class="ar">الموقع الإلكتروني الجديد ثنائي اللغة <strong>مشمول دون مقابل</strong> في هذا البرنامج — ليس كهديّة، بل لأن هوية تعيش داخل ملف PDF فقط ليست هوية. قبل أن يحجز مريض في رأس الخيمة جلسة تجميل، يفتح الموقع. وتلك الصفحة يجب أن تحمل المعيار الجديد.</span>
     </p>
 
-    <figure class="rv" style="margin-top:36px"><img src="assets/concepts/06-digital.jpg" alt="Website direction concept"><figcaption><span class="en"><b>Direction study</b> â€” the same material language, translated to screen.</span><span class="ar"><b>Ø¯Ø±Ø§Ø³Ø© Ø§ØªØ¬Ø§Ù‡</b> â€” Ø§Ù„Ù„ØºØ© Ø§Ù„Ù…Ø§Ø¯ÙŠÙ‘Ø© Ø°Ø§ØªÙ‡Ø§ØŒ Ù…ØªØ±Ø¬ÙŽÙ…Ø© Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø©.</span></figcaption></figure>
+    <figure class="rv" style="margin-top:36px"><img src="assets/concepts/06-digital.jpg" alt="Website direction concept"><figcaption><span class="en"><b>Direction study</b> — the same material language, translated to screen.</span><span class="ar"><b>دراسة اتجاه</b> — اللغة الماديّة ذاتها، مترجَمة إلى الشاشة.</span></figcaption></figure>
 
     <div class="grid g2 rv" style="margin-top:34px">
       <div class="card">
-        <h3><span class="en">What it delivers</span><span class="ar">Ù…Ø§ Ø§Ù„Ø°ÙŠ ÙŠÙ‚Ø¯Ù‘Ù…Ù‡</span></h3>
-        <p><span class="en">Premium UI/UX built mobile-first Â· fully responsive across phone, tablet and desktop Â· complete Arabic RTL and English LTR Â· conversion-oriented structure with clear service presentation Â· doctor profiles Â· appointment and WhatsApp enquiry flow Â· SEO-ready semantic structure Â· fast-loading optimised assets Â· modern, restrained motion Â· a scalable architecture you can add services to.</span>
-        <span class="ar">ÙˆØ§Ø¬Ù‡Ø© ÙˆØªØ¬Ø±Ø¨Ø© Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù…ØªÙ…ÙŠØ²Ø© Ù…Ø¨Ù†ÙŠØ© Ù„Ù„Ø¬ÙˆØ§Ù„ Ø£ÙˆÙ„Ø§Ù‹ Â· Ø§Ø³ØªØ¬Ø§Ø¨Ø© ÙƒØ§Ù…Ù„Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø¬ÙˆØ§Ù„ ÙˆØ§Ù„Ù„ÙˆØ­ÙŠ ÙˆØ§Ù„Ù…ÙƒØªØ¨ Â· Ø¯Ø¹Ù… ÙƒØ§Ù…Ù„ Ù„Ù„Ø¹Ø±Ø¨ÙŠØ© Ù…Ù† Ø§Ù„ÙŠÙ…ÙŠÙ† Ù„Ù„ÙŠØ³Ø§Ø± ÙˆÙ„Ù„Ø¥Ù†Ø¬Ù„ÙŠØ²ÙŠØ© Ù…Ù† Ø§Ù„ÙŠØ³Ø§Ø± Ù„Ù„ÙŠÙ…ÙŠÙ† Â· Ø¨Ù†ÙŠØ© Ù…ÙˆØ¬Ù‘Ù‡Ø© Ù„Ù„ØªØ­ÙˆÙŠÙ„ Ù…Ø¹ Ø¹Ø±Ø¶ ÙˆØ§Ø¶Ø­ Ù„Ù„Ø®Ø¯Ù…Ø§Øª Â· ØµÙØ­Ø§Øª Ø§Ù„Ø£Ø·Ø¨Ø§Ø¡ Â· Ù…Ø³Ø§Ø± Ø§Ù„Ø­Ø¬Ø² ÙˆØ§Ù„Ø§Ø³ØªÙØ³Ø§Ø± Ø¹Ø¨Ø± ÙˆØ§ØªØ³Ø§Ø¨ Â· Ø¨Ù†ÙŠØ© Ø¯Ù„Ø§Ù„ÙŠØ© Ø¬Ø§Ù‡Ø²Ø© Ù„ØªØ­Ø³ÙŠÙ† Ù…Ø­Ø±ÙƒØ§Øª Ø§Ù„Ø¨Ø­Ø« Â· Ø£ØµÙˆÙ„ Ù…Ø­Ø³Ù‘Ù†Ø© Ø³Ø±ÙŠØ¹Ø© Ø§Ù„ØªØ­Ù…ÙŠÙ„ Â· Ø­Ø±ÙƒØ© Ø¹ØµØ±ÙŠØ© Ù…Ù†Ø¶Ø¨Ø·Ø© Â· Ù…Ø¹Ù…Ø§Ø±ÙŠØ© Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„ØªÙˆØ³Ù‘Ø¹ Ù„Ø¥Ø¶Ø§ÙØ© Ø®Ø¯Ù…Ø§Øª Ù„Ø§Ø­Ù‚Ø§Ù‹.</span></p>
+        <h3><span class="en">What it delivers</span><span class="ar">ما الذي يقدّمه</span></h3>
+        <p><span class="en">Premium UI/UX built mobile-first · fully responsive across phone, tablet and desktop · complete Arabic RTL and English LTR · conversion-oriented structure with clear service presentation · doctor profiles · appointment and WhatsApp enquiry flow · SEO-ready semantic structure · fast-loading optimised assets · modern, restrained motion · a scalable architecture you can add services to.</span>
+        <span class="ar">واجهة وتجربة استخدام متميزة مبنية للجوال أولاً · استجابة كاملة على الجوال واللوحي والمكتب · دعم كامل للعربية من اليمين لليسار وللإنجليزية من اليسار لليمين · بنية موجّهة للتحويل مع عرض واضح للخدمات · صفحات الأطباء · مسار الحجز والاستفسار عبر واتساب · بنية دلالية جاهزة لتحسين محركات البحث · أصول محسّنة سريعة التحميل · حركة عصرية منضبطة · معمارية قابلة للتوسّع لإضافة خدمات لاحقاً.</span></p>
       </div>
       <div class="card" style="border-color:rgba(219,196,143,.3)">
-        <h3><span class="en">Exactly what is included</span><span class="ar">Ø§Ù„Ù…Ø´Ù…ÙˆÙ„ Ø¨Ø¯Ù‚Ù‘Ø©</span></h3>
-        <p><span class="en"><strong>8 unique page templates</strong> â€” Home, Services index, Service detail, Doctors index, Doctor profile, About, News/Blog, Contact â€” populating <strong>up to 12 pages</strong>, in <strong>2 languages</strong>. Copy and doctor photographs supplied by Smile Care. One consolidated revision round. Hosting, domain and post-launch maintenance are not included.</span>
-        <span class="ar"><strong>Ù¨ Ù‚ÙˆØ§Ù„Ø¨ ØµÙØ­Ø§Øª ÙØ±ÙŠØ¯Ø©</strong> â€” Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©ØŒ ÙÙ‡Ø±Ø³ Ø§Ù„Ø®Ø¯Ù…Ø§ØªØŒ ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø®Ø¯Ù…Ø©ØŒ ÙÙ‡Ø±Ø³ Ø§Ù„Ø£Ø·Ø¨Ø§Ø¡ØŒ Ù…Ù„Ù Ø§Ù„Ø·Ø¨ÙŠØ¨ØŒ Ù…Ù† Ù†Ø­Ù†ØŒ Ø§Ù„Ø£Ø®Ø¨Ø§Ø±/Ø§Ù„Ù…Ø¯ÙˆÙ†Ø©ØŒ Ø§ØªØµÙ„ Ø¨Ù†Ø§ â€” ÙˆØªØ¹Ø¨Ø¦Ø© <strong>Ø­ØªÙ‰ Ù¡Ù¢ ØµÙØ­Ø©</strong>ØŒ Ø¨Ù€<strong>Ù„ØºØªÙŠÙ†</strong>. Ø§Ù„Ù†ØµÙˆØµ ÙˆØµÙˆØ± Ø§Ù„Ø£Ø·Ø¨Ø§Ø¡ ØªÙØ²ÙˆÙŽÙ‘Ø¯ Ù…Ù† Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ±. Ø¬ÙˆÙ„Ø© ØªØ¹Ø¯ÙŠÙ„ ÙˆØ§Ø­Ø¯Ø© Ù…Ø¬Ù…Ù‘Ø¹Ø©. Ø§Ù„Ø§Ø³ØªØ¶Ø§ÙØ© ÙˆØ§Ù„Ù†Ø·Ø§Ù‚ ÙˆØ§Ù„ØµÙŠØ§Ù†Ø© Ø¨Ø¹Ø¯ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚ ØºÙŠØ± Ù…Ø´Ù…ÙˆÙ„Ø©.</span></p>
+        <h3><span class="en">Exactly what is included</span><span class="ar">المشمول بدقّة</span></h3>
+        <p><span class="en"><strong>8 unique page templates</strong> — Home, Services index, Service detail, Doctors index, Doctor profile, About, News/Blog, Contact — populating <strong>up to 12 pages</strong>, in <strong>2 languages</strong>. Copy and doctor photographs supplied by Smile Care. One consolidated revision round. Hosting, domain and post-launch maintenance are not included.</span>
+        <span class="ar"><strong>٨ قوالب صفحات فريدة</strong> — الرئيسية، فهرس الخدمات، تفاصيل الخدمة، فهرس الأطباء، ملف الطبيب، من نحن، الأخبار/المدونة، اتصل بنا — وتعبئة <strong>حتى ١٢ صفحة</strong>، بـ<strong>لغتين</strong>. النصوص وصور الأطباء تُزوَّد من سمايل كير. جولة تعديل واحدة مجمّعة. الاستضافة والنطاق والصيانة بعد الإطلاق غير مشمولة.</span></p>
       </div>
     </div>
     <p class="note rv" style="margin-top:22px">
       <span class="en">This document is itself the proof: fully bilingual, true RTL, light and dark, working offline from a file. The website is built by the same hands.</span>
-      <span class="ar">Ù‡Ø°Ù‡ Ø§Ù„ÙˆØ«ÙŠÙ‚Ø© Ù†ÙØ³Ù‡Ø§ Ù‡ÙŠ Ø§Ù„Ø¯Ù„ÙŠÙ„: Ø«Ù†Ø§Ø¦ÙŠØ© Ø§Ù„Ù„ØºØ© Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ØŒ Ø¨Ø¯Ø¹Ù… Ø­Ù‚ÙŠÙ‚ÙŠ Ù„Ù„Ø§ØªØ¬Ø§Ù‡ Ù…Ù† Ø§Ù„ÙŠÙ…ÙŠÙ† Ù„Ù„ÙŠØ³Ø§Ø±ØŒ Ø¨ÙˆØ¶Ø¹ÙŠÙ† ÙØ§ØªØ­ ÙˆØ¯Ø§ÙƒÙ†ØŒ ÙˆØªØ¹Ù…Ù„ Ø¯ÙˆÙ† Ø§ØªØµØ§Ù„ Ù…Ù† Ù…Ù„Ù Ù…Ø­Ù„ÙŠ. ÙˆØ§Ù„Ù…ÙˆÙ‚Ø¹ ÙŠÙØ¨Ù†Ù‰ Ø¨Ø§Ù„Ø£ÙŠØ¯ÙŠ Ø°Ø§ØªÙ‡Ø§.</span>
+      <span class="ar">هذه الوثيقة نفسها هي الدليل: ثنائية اللغة بالكامل، بدعم حقيقي للاتجاه من اليمين لليسار، بوضعين فاتح وداكن، وتعمل دون اتصال من ملف محلي. والموقع يُبنى بالأيدي ذاتها.</span>
     </p>
   </div>
 </section>
@@ -887,15 +885,15 @@ html[lang="ar"] .en{display:none}
 <section id="direction-svc">
   <div class="wrap">
     <span class="num rv">09</span>
-    <span class="eyebrow rv"><span class="en">E Â· Strategic Creative Direction</span><span class="ar">Ù‡Ù€ Â· Ø§Ù„Ø¥Ø®Ø±Ø§Ø¬ Ø§Ù„Ø¥Ø¨Ø¯Ø§Ø¹ÙŠ Ø§Ù„Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠ</span></span>
-    <h2 class="rv"><span class="en">The line that holds the other four together.</span><span class="ar">Ø§Ù„Ø®ÙŠØ· Ø§Ù„Ø°ÙŠ ÙŠØ±Ø¨Ø· Ø§Ù„Ø£Ø±Ø¨Ø¹Ø© Ø§Ù„Ø£Ø®Ø±Ù‰.</span></h2>
+    <span class="eyebrow rv"><span class="en">E · Strategic Creative Direction</span><span class="ar">هـ · الإخراج الإبداعي الاستراتيجي</span></span>
+    <h2 class="rv"><span class="en">The line that holds the other four together.</span><span class="ar">الخيط الذي يربط الأربعة الأخرى.</span></h2>
     <p class="rv">
-      <span class="en">Four separate suppliers would give you four separate opinions â€” an interior designer's taste, a videographer's style, a web developer's template, a designer's palette. What you would not get is a single decision applied consistently to all of them.</span>
-      <span class="ar">Ø£Ø±Ø¨Ø¹Ø© Ù…ÙˆØ±Ø¯ÙŠÙ† Ù…Ù†ÙØµÙ„ÙŠÙ† Ø³ÙŠÙ…Ù†Ø­ÙˆÙ†ÙƒÙ… Ø£Ø±Ø¨Ø¹Ø© Ø¢Ø±Ø§Ø¡ Ù…Ù†ÙØµÙ„Ø© â€” Ø°ÙˆÙ‚ Ù…ØµÙ…Ù… Ø¯Ø§Ø®Ù„ÙŠØŒ ÙˆØ£Ø³Ù„ÙˆØ¨ Ù…ØµÙˆØ±ØŒ ÙˆÙ‚Ø§Ù„Ø¨ Ù…Ø·ÙˆÙ‘Ø± Ù…ÙˆØ§Ù‚Ø¹ØŒ ÙˆÙ„ÙˆØ­Ø© Ù…ØµÙ…Ù… Ø¬Ø±Ø§ÙÙŠÙƒ. ÙˆÙ…Ø§ Ù„Ù† ØªØ­ØµÙ„ÙˆØ§ Ø¹Ù„ÙŠÙ‡ Ù‡Ùˆ Ù‚Ø±Ø§Ø± ÙˆØ§Ø­Ø¯ Ù…Ø·Ø¨ÙŽÙ‘Ù‚ Ø¨Ø§ØªØ³Ø§Ù‚ Ø¹Ù„Ù‰ Ø§Ù„Ø¬Ù…ÙŠØ¹.</span>
+      <span class="en">Four separate suppliers would give you four separate opinions — an interior designer's taste, a videographer's style, a web developer's template, a designer's palette. What you would not get is a single decision applied consistently to all of them.</span>
+      <span class="ar">أربعة موردين منفصلين سيمنحونكم أربعة آراء منفصلة — ذوق مصمم داخلي، وأسلوب مصور، وقالب مطوّر مواقع، ولوحة مصمم جرافيك. وما لن تحصلوا عليه هو قرار واحد مطبَّق باتساق على الجميع.</span>
     </p>
     <p class="rv">
-      <span class="en">7Z leads the visual direction across every deliverable in this programme: one diagnosis, one direction, one standard â€” carried from the wall to the screen to the film. It is listed as its own line in the investment below because it is the component that makes the others worth more than their sum, and we would rather you see what you are buying than hide it inside the other prices.</span>
-      <span class="ar">ØªØªÙˆÙ„Ù‰ 7Z Ù‚ÙŠØ§Ø¯Ø© Ø§Ù„Ø§ØªØ¬Ø§Ù‡ Ø§Ù„Ø¨ØµØ±ÙŠ Ø¹Ø¨Ø± ÙƒÙ„ ØªØ³Ù„ÙŠÙ… ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬: ØªØ´Ø®ÙŠØµ ÙˆØ§Ø­Ø¯ØŒ ÙˆØ§ØªØ¬Ø§Ù‡ ÙˆØ§Ø­Ø¯ØŒ ÙˆÙ…Ø¹ÙŠØ§Ø± ÙˆØ§Ø­Ø¯ â€” ÙŠÙØ­Ù…Ù„ Ù…Ù† Ø§Ù„Ø¬Ø¯Ø§Ø± Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø¥Ù„Ù‰ Ø§Ù„ÙÙŠÙ„Ù…. ÙˆÙ‡Ùˆ Ù…ÙØ¯Ø±ÙŽØ¬ ÙƒØ¨Ù†Ø¯ Ù…Ø³ØªÙ‚Ù„ ÙÙŠ Ø§Ù„Ø§Ø³ØªØ«Ù…Ø§Ø± Ø£Ø¯Ù†Ø§Ù‡ Ù„Ø£Ù†Ù‡ Ø§Ù„Ø¹Ù†ØµØ± Ø§Ù„Ø°ÙŠ ÙŠØ¬Ø¹Ù„ Ø§Ù„Ø¨Ù‚ÙŠØ© Ø£Ø«Ù…Ù† Ù…Ù† Ù…Ø¬Ù…ÙˆØ¹Ù‡Ø§ØŒ ÙˆÙ„Ø£Ù†Ù†Ø§ Ù†ÙØ¶Ù‘Ù„ Ø£Ù† ØªØ±ÙˆØ§ Ù…Ø§ ØªØ´ØªØ±ÙˆÙ†Ù‡ Ø¨Ø¯Ù„ Ø¥Ø®ÙØ§Ø¦Ù‡ Ø¯Ø§Ø®Ù„ Ø£Ø³Ø¹Ø§Ø± Ø§Ù„Ø¨Ù†ÙˆØ¯ Ø§Ù„Ø£Ø®Ø±Ù‰.</span>
+      <span class="en">7Z leads the visual direction across every deliverable in this programme: one diagnosis, one direction, one standard — carried from the wall to the screen to the film. It is listed as its own line in the investment below because it is the component that makes the others worth more than their sum, and we would rather you see what you are buying than hide it inside the other prices.</span>
+      <span class="ar">تتولى 7Z قيادة الاتجاه البصري عبر كل تسليم في هذا البرنامج: تشخيص واحد، واتجاه واحد، ومعيار واحد — يُحمل من الجدار إلى الشاشة إلى الفيلم. وهو مُدرَج كبند مستقل في الاستثمار أدناه لأنه العنصر الذي يجعل البقية أثمن من مجموعها، ولأننا نفضّل أن تروا ما تشترونه بدل إخفائه داخل أسعار البنود الأخرى.</span>
     </p>
   </div>
 </section>
@@ -904,21 +902,21 @@ html[lang="ar"] .en{display:none}
 <section id="timeline">
   <div class="wrap">
     <span class="num rv">10</span>
-    <span class="eyebrow rv"><span class="en">Delivery Plan</span><span class="ar">Ø®Ø·Ø© Ø§Ù„ØªØ³Ù„ÙŠÙ…</span></span>
-    <h2 class="rv"><span class="en">Twenty days, four gates.</span><span class="ar">Ø¹Ø´Ø±ÙˆÙ† ÙŠÙˆÙ…Ø§Ù‹ØŒ Ø£Ø±Ø¨Ø¹ Ø¨ÙˆØ§Ø¨Ø§Øª.</span></h2>
-    <p class="rv"><span class="en">Tracks overlap deliberately so the schedule is realistic rather than optimistic.</span><span class="ar">Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª Ù…ØªØ¯Ø§Ø®Ù„Ø© Ø¹Ù† Ù‚ØµØ¯ Ù„ØªÙƒÙˆÙ† Ø§Ù„Ø¬Ø¯ÙˆÙ„Ø© ÙˆØ§Ù‚Ø¹ÙŠØ© Ù„Ø§ Ù…ØªÙØ§Ø¦Ù„Ø©.</span></p>
+    <span class="eyebrow rv"><span class="en">Delivery Plan</span><span class="ar">خطة التسليم</span></span>
+    <h2 class="rv"><span class="en">Twenty days, four gates.</span><span class="ar">عشرون يوماً، أربع بوابات.</span></h2>
+    <p class="rv"><span class="en">Tracks overlap deliberately so the schedule is realistic rather than optimistic.</span><span class="ar">المسارات متداخلة عن قصد لتكون الجدولة واقعية لا متفائلة.</span></p>
     <div class="tl rv" style="margin-top:38px">
-      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 1â€“3</span><span class="ar">Ø§Ù„Ø£ÙŠØ§Ù… Ù¡â€“Ù£</span></div><h3><span class="en">Discovery &amp; strategic direction</span><span class="ar">Ø§Ù„Ø§ÙƒØªØ´Ø§Ù ÙˆØ§Ù„Ø§ØªØ¬Ø§Ù‡ Ø§Ù„Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠ</span></h3><p><span class="en">Brand audit, asset classification, positioning, direction options. <strong>Gate 01 signed on day 3.</strong></span><span class="ar">ØªØ¯Ù‚ÙŠÙ‚ Ø§Ù„Ø¹Ù„Ø§Ù…Ø©ØŒ ØªØµÙ†ÙŠÙ Ø§Ù„Ø£ØµÙˆÙ„ØŒ Ø§Ù„ØªÙ…ÙˆØ¶Ø¹ØŒ Ø®ÙŠØ§Ø±Ø§Øª Ø§Ù„Ø§ØªØ¬Ø§Ù‡. <strong>ØªÙØ¹ØªÙ…Ø¯ Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø£ÙˆÙ„Ù‰ ÙÙŠ Ø§Ù„ÙŠÙˆÙ… Ù£.</strong></span></p></div>
-      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 4â€“8</span><span class="ar">Ø§Ù„Ø£ÙŠØ§Ù… Ù¤â€“Ù¨</span></div><h3><span class="en">Identity upgrade system</span><span class="ar">Ù†Ø¸Ø§Ù… ØªØ±Ù‚ÙŠØ© Ø§Ù„Ù‡ÙˆÙŠØ©</span></h3><p><span class="en">Colour application, bilingual typography, arc language, imagery and layout rules. <strong>Gate 02 signed on day 8.</strong></span><span class="ar">ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ù„ÙˆÙ†ØŒ Ø§Ù„Ø·Ø¨Ø§Ø¹Ø© Ø«Ù†Ø§Ø¦ÙŠØ© Ø§Ù„Ù„ØºØ©ØŒ Ù„ØºØ© Ø§Ù„Ø£Ù‚ÙˆØ§Ø³ØŒ Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„ØµÙˆØ± ÙˆØ§Ù„ØªÙ†Ø³ÙŠÙ‚. <strong>ØªÙØ¹ØªÙ…Ø¯ Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø«Ø§Ù†ÙŠØ© ÙÙŠ Ø§Ù„ÙŠÙˆÙ… Ù¨.</strong></span></p></div>
-      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 6â€“11</span><span class="ar">Ø§Ù„Ø£ÙŠØ§Ù… Ù¦â€“Ù¡Ù¡</span></div><h3><span class="en">AI visual concepts</span><span class="ar">Ø§Ù„ØªØµÙˆØ±Ø§Øª Ø§Ù„Ø¨ØµØ±ÙŠØ©</span></h3><p><span class="en">24 concepts across six applications. <strong>Gate 03 signed on day 11.</strong></span><span class="ar">Ù¢Ù¤ ØªØµÙˆÙ‘Ø±Ø§Ù‹ Ø¹Ø¨Ø± Ø³ØªØ© ØªØ·Ø¨ÙŠÙ‚Ø§Øª. <strong>ØªÙØ¹ØªÙ…Ø¯ Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø«Ø§Ù„Ø«Ø© ÙÙŠ Ø§Ù„ÙŠÙˆÙ… Ù¡Ù¡.</strong></span></p></div>
-      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 9â€“17</span><span class="ar">Ø§Ù„Ø£ÙŠØ§Ù… Ù©â€“Ù¡Ù§</span></div><h3><span class="en">Film production</span><span class="ar">Ø¥Ù†ØªØ§Ø¬ Ø§Ù„Ø£ÙÙ„Ø§Ù…</span></h3><p><span class="en">Concept, script and storyboard for all three films â€” <strong>Gate 04 signed on day 12</strong> â€” then generation, edit, sound and grade.</span><span class="ar">Ø§Ù„ÙÙƒØ±Ø© ÙˆØ§Ù„Ù†Øµ ÙˆØ§Ù„Ù„ÙˆØ­Ø© Ø§Ù„Ù‚ØµØµÙŠØ© Ù„Ù„Ø£ÙÙ„Ø§Ù… Ø§Ù„Ø«Ù„Ø§Ø«Ø© â€” <strong>ØªÙØ¹ØªÙ…Ø¯ Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø±Ø§Ø¨Ø¹Ø© ÙÙŠ Ø§Ù„ÙŠÙˆÙ… Ù¡Ù¢</strong> â€” Ø«Ù… Ø§Ù„ØªÙˆÙ„ÙŠØ¯ ÙˆØ§Ù„Ù…ÙˆÙ†ØªØ§Ø¬ ÙˆØ§Ù„ØµÙˆØª ÙˆØ§Ù„Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù„ÙˆÙ†ÙŠØ©.</span></p></div>
-      <div class="tl-item"><div class="tl-days"><span class="en">Days 10â€“18</span><span class="ar">Ø§Ù„Ø£ÙŠØ§Ù… Ù¡Ù â€“Ù¡Ù¨</span></div><h3><span class="en">Website build</span><span class="ar">Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù…ÙˆÙ‚Ø¹</span></h3><p><span class="en">Runs in parallel on a separate team, from the Gate 02 system.</span><span class="ar">ÙŠØ¬Ø±ÙŠ Ø¨Ø§Ù„ØªÙˆØ§Ø²ÙŠ Ø¨ÙØ±ÙŠÙ‚ Ù…Ù†ÙØµÙ„ØŒ Ø§Ù†Ø·Ù„Ø§Ù‚Ø§Ù‹ Ù…Ù† Ù†Ø¸Ø§Ù… Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø«Ø§Ù†ÙŠØ©.</span></p></div>
-      <div class="tl-item"><div class="tl-days"><span class="en">Days 18â€“19</span><span class="ar">Ø§Ù„Ø£ÙŠØ§Ù… Ù¡Ù¨â€“Ù¡Ù©</span></div><h3><span class="en">Consolidation &amp; revision</span><span class="ar">Ø§Ù„ØªØ¬Ù…ÙŠØ¹ ÙˆØ§Ù„ØªØ¹Ø¯ÙŠÙ„</span></h3><p><span class="en">Your consolidated revision round across all deliverables, plus QA.</span><span class="ar">Ø¬ÙˆÙ„Ø© ØªØ¹Ø¯ÙŠÙ„Ø§ØªÙƒÙ… Ø§Ù„Ù…Ø¬Ù…Ù‘Ø¹Ø© Ø¹Ù„Ù‰ ÙƒÙ„ Ø§Ù„ØªØ³Ù„ÙŠÙ…Ø§ØªØŒ Ù…Ø¹ Ø¶Ø¨Ø· Ø§Ù„Ø¬ÙˆØ¯Ø©.</span></p></div>
-      <div class="tl-item gate"><div class="tl-days"><span class="en">Day 20</span><span class="ar">Ø§Ù„ÙŠÙˆÙ… Ù¢Ù </span></div><h3><span class="en">Handover &amp; presentation</span><span class="ar">Ø§Ù„ØªØ³Ù„ÙŠÙ… ÙˆØ§Ù„Ø¹Ø±Ø¶</span></h3><p><span class="en">Full asset handover, brand-system document and a live walkthrough.</span><span class="ar">ØªØ³Ù„ÙŠÙ… ÙƒØ§Ù…Ù„ Ù„Ù„Ø£ØµÙˆÙ„ØŒ ÙˆÙˆØ«ÙŠÙ‚Ø© Ù†Ø¸Ø§Ù… Ø§Ù„Ø¹Ù„Ø§Ù…Ø©ØŒ ÙˆØ¹Ø±Ø¶ Ø­ÙŠÙ‘ Ù„Ù„Ù…Ø´Ø±ÙˆØ¹.</span></p></div>
+      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 1–3</span><span class="ar">الأيام ١–٣</span></div><h3><span class="en">Discovery &amp; strategic direction</span><span class="ar">الاكتشاف والاتجاه الاستراتيجي</span></h3><p><span class="en">Brand audit, asset classification, positioning, direction options. <strong>Gate 01 signed on day 3.</strong></span><span class="ar">تدقيق العلامة، تصنيف الأصول، التموضع، خيارات الاتجاه. <strong>تُعتمد البوابة الأولى في اليوم ٣.</strong></span></p></div>
+      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 4–8</span><span class="ar">الأيام ٤–٨</span></div><h3><span class="en">Identity upgrade system</span><span class="ar">نظام ترقية الهوية</span></h3><p><span class="en">Colour application, bilingual typography, arc language, imagery and layout rules. <strong>Gate 02 signed on day 8.</strong></span><span class="ar">تطبيق اللون، الطباعة ثنائية اللغة، لغة الأقواس، قواعد الصور والتنسيق. <strong>تُعتمد البوابة الثانية في اليوم ٨.</strong></span></p></div>
+      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 6–11</span><span class="ar">الأيام ٦–١١</span></div><h3><span class="en">AI visual concepts</span><span class="ar">التصورات البصرية</span></h3><p><span class="en">24 concepts across six applications. <strong>Gate 03 signed on day 11.</strong></span><span class="ar">٢٤ تصوّراً عبر ستة تطبيقات. <strong>تُعتمد البوابة الثالثة في اليوم ١١.</strong></span></p></div>
+      <div class="tl-item gate"><div class="tl-days"><span class="en">Days 9–17</span><span class="ar">الأيام ٩–١٧</span></div><h3><span class="en">Film production</span><span class="ar">إنتاج الأفلام</span></h3><p><span class="en">Concept, script and storyboard for all three films — <strong>Gate 04 signed on day 12</strong> — then generation, edit, sound and grade.</span><span class="ar">الفكرة والنص واللوحة القصصية للأفلام الثلاثة — <strong>تُعتمد البوابة الرابعة في اليوم ١٢</strong> — ثم التوليد والمونتاج والصوت والمعالجة اللونية.</span></p></div>
+      <div class="tl-item"><div class="tl-days"><span class="en">Days 10–18</span><span class="ar">الأيام ١٠–١٨</span></div><h3><span class="en">Website build</span><span class="ar">بناء الموقع</span></h3><p><span class="en">Runs in parallel on a separate team, from the Gate 02 system.</span><span class="ar">يجري بالتوازي بفريق منفصل، انطلاقاً من نظام البوابة الثانية.</span></p></div>
+      <div class="tl-item"><div class="tl-days"><span class="en">Days 18–19</span><span class="ar">الأيام ١٨–١٩</span></div><h3><span class="en">Consolidation &amp; revision</span><span class="ar">التجميع والتعديل</span></h3><p><span class="en">Your consolidated revision round across all deliverables, plus QA.</span><span class="ar">جولة تعديلاتكم المجمّعة على كل التسليمات، مع ضبط الجودة.</span></p></div>
+      <div class="tl-item gate"><div class="tl-days"><span class="en">Day 20</span><span class="ar">اليوم ٢٠</span></div><h3><span class="en">Handover &amp; presentation</span><span class="ar">التسليم والعرض</span></h3><p><span class="en">Full asset handover, brand-system document and a live walkthrough.</span><span class="ar">تسليم كامل للأصول، ووثيقة نظام العلامة، وعرض حيّ للمشروع.</span></p></div>
     </div>
     <p class="note rv" style="margin-top:12px">
-      <span class="en">The twenty-day schedule assumes written feedback within <strong>48 hours</strong> at each gate and all client materials supplied at kickoff. Later responses shift the remaining schedule day-for-day â€” we do not compress later stages to absorb an earlier delay, because that is where quality is lost.</span>
-      <span class="ar">ØªÙØªØ±Ø¶ Ø¬Ø¯ÙˆÙ„Ø© Ø§Ù„Ø¹Ø´Ø±ÙŠÙ† ÙŠÙˆÙ…Ø§Ù‹ Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø®Ø·ÙŠØ© Ø®Ù„Ø§Ù„ <strong>Ù¤Ù¨ Ø³Ø§Ø¹Ø©</strong> Ø¹Ù†Ø¯ ÙƒÙ„ Ø¨ÙˆØ§Ø¨Ø©ØŒ ÙˆØªØ²ÙˆÙŠØ¯ ÙƒØ§Ù…Ù„ Ù…ÙˆØ§Ø¯Ù‘ Ø§Ù„Ø¹Ù…ÙŠÙ„ Ø¹Ù†Ø¯ Ø§Ù„Ø§Ù†Ø·Ù„Ø§Ù‚. Ø§Ù„ØªØ£Ø®Ø± ÙÙŠ Ø§Ù„Ø±Ø¯ ÙŠØ²ÙŠØ­ Ø¨Ø§Ù‚ÙŠ Ø§Ù„Ø¬Ø¯ÙˆÙ„ ÙŠÙˆÙ…Ø§Ù‹ Ø¨ÙŠÙˆÙ… â€” ÙˆÙ„Ø§ Ù†Ø¶ØºØ· Ø§Ù„Ù…Ø±Ø§Ø­Ù„ Ø§Ù„Ù„Ø§Ø­Ù‚Ø© Ù„Ø§Ø³ØªÙŠØ¹Ø§Ø¨ ØªØ£Ø®ÙŠØ± Ø³Ø§Ø¨Ù‚ØŒ Ù„Ø£Ù† Ù‡Ù†Ø§Ùƒ ØªØ­Ø¯ÙŠØ¯Ø§Ù‹ ØªÙÙÙ‚Ø¯ Ø§Ù„Ø¬ÙˆØ¯Ø©.</span>
+      <span class="en">The twenty-day schedule assumes written feedback within <strong>48 hours</strong> at each gate and all client materials supplied at kickoff. Later responses shift the remaining schedule day-for-day — we do not compress later stages to absorb an earlier delay, because that is where quality is lost.</span>
+      <span class="ar">تفترض جدولة العشرين يوماً ملاحظات خطية خلال <strong>٤٨ ساعة</strong> عند كل بوابة، وتزويد كامل موادّ العميل عند الانطلاق. التأخر في الرد يزيح باقي الجدول يوماً بيوم — ولا نضغط المراحل اللاحقة لاستيعاب تأخير سابق، لأن هناك تحديداً تُفقد الجودة.</span>
     </p>
   </div>
 </section>
@@ -927,70 +925,70 @@ html[lang="ar"] .en{display:none}
 <section id="investment">
   <div class="wrap">
     <span class="num rv">11</span>
-    <span class="eyebrow rv"><span class="en">The Investment</span><span class="ar">Ø§Ù„Ø§Ø³ØªØ«Ù…Ø§Ø±</span></span>
-    <h2 class="rv"><span class="en">What it costs, and how we got there.</span><span class="ar">Ø§Ù„ØªÙƒÙ„ÙØ©ØŒ ÙˆÙƒÙŠÙ ÙˆØµÙ„Ù†Ø§ Ø¥Ù„ÙŠÙ‡Ø§.</span></h2>
+    <span class="eyebrow rv"><span class="en">The Investment</span><span class="ar">الاستثمار</span></span>
+    <h2 class="rv"><span class="en">What it costs, and how we got there.</span><span class="ar">التكلفة، وكيف وصلنا إليها.</span></h2>
     <p class="rv">
-      <span class="en">Commissioned separately, the five paid components of this programme would be quoted at <strong>7,150 JOD</strong>. Delivered together as one twenty-day programme â€” a single diagnosis, one direction and one scheduled production block instead of five briefing cycles â€” the programme rate is <strong>5,000 JOD</strong>, and the website is included at no charge.</span>
-      <span class="ar">Ù„Ùˆ Ø·ÙÙ„Ø¨Øª Ø§Ù„Ù…ÙƒÙˆÙ‘Ù†Ø§Øª Ø§Ù„Ø®Ù…Ø³Ø© Ø§Ù„Ù…Ø¯ÙÙˆØ¹Ø© ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ Ù…Ù†ÙØµÙ„Ø©ØŒ Ù„ÙƒØ§Ù† ØªØ³Ø¹ÙŠØ±Ù‡Ø§ <strong>Ù§Ù¬Ù¡Ù¥Ù  Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ</strong>. Ø£Ù…Ø§ ØªØ³Ù„ÙŠÙ…Ù‡Ø§ Ù…Ø¹Ø§Ù‹ ÙƒØ¨Ø±Ù†Ø§Ù…Ø¬ ÙˆØ§Ø­Ø¯ Ù…Ù† Ø¹Ø´Ø±ÙŠÙ† ÙŠÙˆÙ…Ø§Ù‹ â€” Ø¨ØªØ´Ø®ÙŠØµ ÙˆØ§Ø­Ø¯ ÙˆØ§ØªØ¬Ø§Ù‡ ÙˆØ§Ø­Ø¯ ÙˆÙƒØªÙ„Ø© Ø¥Ù†ØªØ§Ø¬ Ù…Ø¬Ø¯ÙˆÙ„Ø© Ø¨Ø¯Ù„ Ø®Ù…Ø³ Ø¯ÙˆØ±Ø§Øª ØªÙƒÙ„ÙŠÙ â€” ÙØ³Ø¹Ø± Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ <strong>Ù¥Ù¬Ù Ù Ù  Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ</strong>ØŒ Ù…Ø¹ Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø¯ÙˆÙ† Ù…Ù‚Ø§Ø¨Ù„.</span>
+      <span class="en">Commissioned separately, the five paid components of this programme would be quoted at <strong>7,150 JOD</strong>. Delivered together as one twenty-day programme — a single diagnosis, one direction and one scheduled production block instead of five briefing cycles — the programme rate is <strong>5,000 JOD</strong>, and the website is included at no charge.</span>
+      <span class="ar">لو طُلبت المكوّنات الخمسة المدفوعة في هذا البرنامج منفصلة، لكان تسعيرها <strong>٧٬١٥٠ دينار أردني</strong>. أما تسليمها معاً كبرنامج واحد من عشرين يوماً — بتشخيص واحد واتجاه واحد وكتلة إنتاج مجدولة بدل خمس دورات تكليف — فسعر البرنامج <strong>٥٬٠٠٠ دينار أردني</strong>، مع الموقع الإلكتروني دون مقابل.</span>
     </p>
 
     <div class="headline-price rv">
       <div>
         <div class="big">5,000 <small>JOD</small></div>
-        <div class="sub"><span class="en">â‰ˆ 25,890 AED Â· Total investment</span><span class="ar">â‰ˆ Ù¢Ù¥Ù¬Ù¨Ù©Ù  Ø¯Ø±Ù‡Ù… Â· Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø§Ø³ØªØ«Ù…Ø§Ø±</span></div>
+        <div class="sub"><span class="en">≈ 25,890 AED · Total investment</span><span class="ar">≈ ٢٥٬٨٩٠ درهم · إجمالي الاستثمار</span></div>
       </div>
       <div style="text-align:end">
-        <div class="sub" style="margin:0"><span class="en">Payment</span><span class="ar">Ø§Ù„Ø¯ÙØ¹</span></div>
+        <div class="sub" style="margin:0"><span class="en">Payment</span><span class="ar">الدفع</span></div>
         <div style="font-family:var(--f-lat);font-size:1.05rem;color:var(--fg);margin-top:6px">40 / 30 / 30</div>
-        <div class="sub" style="margin-top:4px"><span class="en">2,000 Â· 1,500 Â· 1,500 JOD</span><span class="ar">Ù¢Ù¬Ù Ù Ù  Â· Ù¡Ù¬Ù¥Ù Ù  Â· Ù¡Ù¬Ù¥Ù Ù  Ø¯ÙŠÙ†Ø§Ø±</span></div>
+        <div class="sub" style="margin-top:4px"><span class="en">2,000 · 1,500 · 1,500 JOD</span><span class="ar">٢٬٠٠٠ · ١٬٥٠٠ · ١٬٥٠٠ دينار</span></div>
       </div>
     </div>
 
-    <h3 class="rv" style="margin-top:52px"><span class="en">How the programme fee is allocated</span><span class="ar">ØªÙˆØ²ÙŠØ¹ Ù‚ÙŠÙ…Ø© Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬</span></h3>
+    <h3 class="rv" style="margin-top:52px"><span class="en">How the programme fee is allocated</span><span class="ar">توزيع قيمة البرنامج</span></h3>
     <div class="scroller rv">
       <table>
         <thead><tr>
-          <th><span class="en">Component</span><span class="ar">Ø§Ù„Ù…ÙƒÙˆÙ‘Ù†</span></th>
-          <th><span class="en">Standalone</span><span class="ar">Ù…Ù†ÙØ±Ø¯Ø§Ù‹</span></th>
-          <th><span class="en">In programme</span><span class="ar">Ø¶Ù…Ù† Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬</span></th>
+          <th><span class="en">Component</span><span class="ar">المكوّن</span></th>
+          <th><span class="en">Standalone</span><span class="ar">منفرداً</span></th>
+          <th><span class="en">In programme</span><span class="ar">ضمن البرنامج</span></th>
         </tr></thead>
         <tbody>
-          <tr><td><span class="en">A Â· Strategic Visual Identity Upgrade</span><span class="ar">Ø£ Â· ØªØ±Ù‚ÙŠØ© Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ø¨ØµØ±ÙŠØ© Ø§Ù„Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠØ©</span></td><td class="v">1,700 JOD</td><td class="v">1,250 JOD</td></tr>
-          <tr><td><span class="en">B Â· AI Visual Identity Concepts (24 across 6 applications)</span><span class="ar">Ø¨ Â· ØªØµÙˆØ±Ø§Øª Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ø¨ØµØ±ÙŠØ© (Ù¢Ù¤ Ø¹Ø¨Ø± Ù¦ ØªØ·Ø¨ÙŠÙ‚Ø§Øª)</span></td><td class="v">1,200 JOD</td><td class="v">900 JOD</td></tr>
-          <tr><td><span class="en">C Â· 3 Premium AI Films (â‰¤120s each Â· one selected format)</span><span class="ar">Ø¬ Â· Ù£ Ø£ÙÙ„Ø§Ù… Ù…ØªÙ…ÙŠØ²Ø© (â‰¤Ù¡Ù¢Ù  Ø«Ø§Ù†ÙŠØ© Ù„ÙƒÙ„ Ù…Ù†Ù‡Ø§ Â· Ø¨ØµÙŠØºØ© ÙˆØ§Ø­Ø¯Ø© Ù…Ø®ØªØ§Ø±Ø©)</span></td><td class="v">2,900 JOD</td><td class="v">2,150 JOD</td></tr>
-          <tr><td><span class="en">D Â· Creative &amp; Art Direction</span><span class="ar">Ø¯ Â· Ø§Ù„Ø¥Ø®Ø±Ø§Ø¬ Ø§Ù„Ø¥Ø¨Ø¯Ø§Ø¹ÙŠ ÙˆØ§Ù„ÙÙ†ÙŠ</span></td><td class="v">850 JOD</td><td class="v">450 JOD</td></tr>
-          <tr><td><span class="en">E Â· Strategic Consulting, Final Delivery &amp; Implementation</span><span class="ar">Ù‡Ù€ Â· Ø§Ù„Ø§Ø³ØªØ´Ø§Ø±Ø© Ø§Ù„Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠØ© ÙˆØ§Ù„ØªØ³Ù„ÙŠÙ… Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ ÙˆØ§Ù„ØªØ·Ø¨ÙŠÙ‚</span></td><td class="v">500 JOD</td><td class="v">250 JOD</td></tr>
-          <tr class="free"><td><span class="en">Bilingual Website (8 templates) â€” <b>complimentary</b></span><span class="ar">Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ø«Ù†Ø§Ø¦ÙŠ Ø§Ù„Ù„ØºØ© (Ù¨ Ù‚ÙˆØ§Ù„Ø¨) â€” <b>Ø¯ÙˆÙ† Ù…Ù‚Ø§Ø¨Ù„</b></span></td><td class="v">1,900 JOD</td><td class="v"><span class="en">Included</span><span class="ar">Ù…Ø´Ù…ÙˆÙ„</span></td></tr>
-          <tr class="total"><td><span class="en">Total value of the programme</span><span class="ar">Ø§Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠØ© Ù„Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬</span></td><td class="v">9,050 JOD</td><td class="v">5,000 JOD</td></tr>
+          <tr><td><span class="en">A · Strategic Visual Identity Upgrade</span><span class="ar">أ · ترقية الهوية البصرية الاستراتيجية</span></td><td class="v">1,700 JOD</td><td class="v">1,250 JOD</td></tr>
+          <tr><td><span class="en">B · AI Visual Identity Concepts (24 across 6 applications)</span><span class="ar">ب · تصورات الهوية البصرية (٢٤ عبر ٦ تطبيقات)</span></td><td class="v">1,200 JOD</td><td class="v">900 JOD</td></tr>
+          <tr><td><span class="en">C · 3 Premium AI Films (≤120s each · one selected format)</span><span class="ar">ج · ٣ أفلام متميزة (≤١٢٠ ثانية لكل منها · بصيغة واحدة مختارة)</span></td><td class="v">2,900 JOD</td><td class="v">2,150 JOD</td></tr>
+          <tr><td><span class="en">D · Creative &amp; Art Direction</span><span class="ar">د · الإخراج الإبداعي والفني</span></td><td class="v">850 JOD</td><td class="v">450 JOD</td></tr>
+          <tr><td><span class="en">E · Strategic Consulting, Final Delivery &amp; Implementation</span><span class="ar">هـ · الاستشارة الاستراتيجية والتسليم النهائي والتطبيق</span></td><td class="v">500 JOD</td><td class="v">250 JOD</td></tr>
+          <tr class="free"><td><span class="en">Bilingual Website (8 templates) — <b>complimentary</b></span><span class="ar">الموقع ثنائي اللغة (٨ قوالب) — <b>دون مقابل</b></span></td><td class="v">1,900 JOD</td><td class="v"><span class="en">Included</span><span class="ar">مشمول</span></td></tr>
+          <tr class="total"><td><span class="en">Total value of the programme</span><span class="ar">القيمة الإجمالية للبرنامج</span></td><td class="v">9,050 JOD</td><td class="v">5,000 JOD</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3 class="rv" style="margin-top:56px"><span class="en">What the total investment covers</span><span class="ar">Ù…Ø§ Ø§Ù„Ø°ÙŠ ÙŠØºØ·Ù‘ÙŠÙ‡ Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø§Ø³ØªØ«Ù…Ø§Ø±</span></h3>
-    <p class="rv"><span class="en">One programme, one price, one twenty-day delivery.</span><span class="ar">Ø¨Ø±Ù†Ø§Ù…Ø¬ ÙˆØ§Ø­Ø¯ØŒ ÙˆØ³Ø¹Ø± ÙˆØ§Ø­Ø¯ØŒ ÙˆØªØ³Ù„ÙŠÙ… ÙˆØ§Ø­Ø¯ ÙÙŠ Ø¹Ø´Ø±ÙŠÙ† ÙŠÙˆÙ…Ø§Ù‹.</span></p>
+    <h3 class="rv" style="margin-top:56px"><span class="en">What the total investment covers</span><span class="ar">ما الذي يغطّيه إجمالي الاستثمار</span></h3>
+    <p class="rv"><span class="en">One programme, one price, one twenty-day delivery.</span><span class="ar">برنامج واحد، وسعر واحد، وتسليم واحد في عشرين يوماً.</span></p>
     <div class="tiers rv" style="grid-template-columns:1fr">
       <div class="tier rec">
-        <span class="rec-badge"><span class="en">SCMC Ã— 7Z Magic</span><span class="ar">Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ± Ã— 7Z Ù…Ø§Ø¬ÙŠÙƒ</span></span>
-        <div class="tname"><span class="en">Modern Brand Experience Upgrade</span><span class="ar">ØªØ±Ù‚ÙŠØ© ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„Ø­Ø¯ÙŠØ«Ø©</span></div>
+        <span class="rec-badge"><span class="en">SCMC × 7Z Magic</span><span class="ar">سمايل كير × 7Z ماجيك</span></span>
+        <div class="tname"><span class="en">Modern Brand Experience Upgrade</span><span class="ar">ترقية تجربة العلامة الحديثة</span></div>
         <div class="price">5,000 <small>JOD</small></div>
-        <div class="aed">â‰ˆ 25,890 AED</div>
+        <div class="aed">≈ 25,890 AED</div>
         <ul class="pkg-list">
-          <li><span class="en">Strategic Visual Identity Upgrade</span><span class="ar">ØªØ±Ù‚ÙŠØ© Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ø¨ØµØ±ÙŠØ© Ø§Ù„Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠØ©</span></li>
-          <li><span class="en"><strong>Existing logo preserved â€” unchanged</strong></span><span class="ar"><strong>Ø§Ù„Ø´Ø¹Ø§Ø± Ø§Ù„Ø­Ø§Ù„ÙŠ Ù…Ø­ÙÙˆØ¸ â€” Ø¯ÙˆÙ† ØªØºÙŠÙŠØ±</strong></span></li>
-          <li><span class="en">AI Visual Identity Concepts â€” 24 across 6 applications</span><span class="ar">ØªØµÙˆØ±Ø§Øª Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ø¨ØµØ±ÙŠØ© â€” Ù¢Ù¤ Ø¹Ø¨Ø± Ù¦ ØªØ·Ø¨ÙŠÙ‚Ø§Øª</span></li>
-          <li><span class="en"><strong>3 Premium AI Commercial / Cinematic Videos</strong></span><span class="ar"><strong>Ù£ Ø£ÙÙ„Ø§Ù… ØªØ¬Ø§Ø±ÙŠØ© / Ø³ÙŠÙ†Ù…Ø§Ø¦ÙŠØ© Ù…ØªÙ…ÙŠØ²Ø©</strong></span></li>
-          <li><span class="en"><strong>One format you select: 16:9 OR 9:16</strong> â€” not both</span><span class="ar"><strong>ØµÙŠØºØ© ÙˆØ§Ø­Ø¯Ø© ØªØ®ØªØ§Ø±ÙˆÙ†Ù‡Ø§: Ù¡Ù¦:Ù© Ø£Ùˆ Ù©:Ù¡Ù¦</strong> â€” Ù„Ø§ Ø§Ù„Ø§Ø«Ù†ØªØ§Ù†</span></li>
-          <li><span class="en">Maximum 120 seconds per video (â‰¤300 seconds total)</span><span class="ar">Ø¨Ø­Ø¯ Ø£Ù‚ØµÙ‰ Ù¡Ù¢Ù  Ø«Ø§Ù†ÙŠØ© Ù„ÙƒÙ„ ÙÙŠØ¯ÙŠÙˆ (â‰¤Ù£Ù Ù  Ø«Ø§Ù†ÙŠØ© Ø¥Ø¬Ù…Ø§Ù„Ø§Ù‹)</span></li>
-          <li><span class="en"><strong>Complimentary Premium Website</strong> â€” bilingual, 8 templates</span><span class="ar"><strong>Ù…ÙˆÙ‚Ø¹ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù…ØªÙ…ÙŠØ² Ø¯ÙˆÙ† Ù…Ù‚Ø§Ø¨Ù„</strong> â€” Ø«Ù†Ø§Ø¦ÙŠ Ø§Ù„Ù„ØºØ©ØŒ Ù¨ Ù‚ÙˆØ§Ù„Ø¨</span></li>
-          <li><span class="en">Creative &amp; Art Direction across every deliverable</span><span class="ar">Ø§Ù„Ø¥Ø®Ø±Ø§Ø¬ Ø§Ù„Ø¥Ø¨Ø¯Ø§Ø¹ÙŠ ÙˆØ§Ù„ÙÙ†ÙŠ Ø¹Ø¨Ø± ÙƒÙ„ Ø§Ù„ØªØ³Ù„ÙŠÙ…Ø§Øª</span></li>
-          <li><span class="en">Strategic Visual Consultation</span><span class="ar">Ø§Ù„Ø§Ø³ØªØ´Ø§Ø±Ø© Ø§Ù„Ø¨ØµØ±ÙŠØ© Ø§Ù„Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠØ©</span></li>
-          <li><span class="en">20-Day Delivery, four signed approval gates</span><span class="ar">ØªØ³Ù„ÙŠÙ… Ø®Ù„Ø§Ù„ Ù¢Ù  ÙŠÙˆÙ…Ø§Ù‹ØŒ Ø¨Ø£Ø±Ø¨Ø¹ Ø¨ÙˆØ§Ø¨Ø§Øª Ø§Ø¹ØªÙ…Ø§Ø¯ Ù…ÙˆÙ‚Ù‘Ø¹Ø©</span></li>
+          <li><span class="en">Strategic Visual Identity Upgrade</span><span class="ar">ترقية الهوية البصرية الاستراتيجية</span></li>
+          <li><span class="en"><strong>Existing logo preserved — unchanged</strong></span><span class="ar"><strong>الشعار الحالي محفوظ — دون تغيير</strong></span></li>
+          <li><span class="en">AI Visual Identity Concepts — 24 across 6 applications</span><span class="ar">تصورات الهوية البصرية — ٢٤ عبر ٦ تطبيقات</span></li>
+          <li><span class="en"><strong>3 Premium AI Commercial / Cinematic Videos</strong></span><span class="ar"><strong>٣ أفلام تجارية / سينمائية متميزة</strong></span></li>
+          <li><span class="en"><strong>One format you select: 16:9 OR 9:16</strong> — not both</span><span class="ar"><strong>صيغة واحدة تختارونها: ١٦:٩ أو ٩:١٦</strong> — لا الاثنتان</span></li>
+          <li><span class="en">Maximum 120 seconds per video (≤300 seconds total)</span><span class="ar">بحد أقصى ١٢٠ ثانية لكل فيديو (≤٣٠٠ ثانية إجمالاً)</span></li>
+          <li><span class="en"><strong>Complimentary Premium Website</strong> — bilingual, 8 templates</span><span class="ar"><strong>موقع إلكتروني متميز دون مقابل</strong> — ثنائي اللغة، ٨ قوالب</span></li>
+          <li><span class="en">Creative &amp; Art Direction across every deliverable</span><span class="ar">الإخراج الإبداعي والفني عبر كل التسليمات</span></li>
+          <li><span class="en">Strategic Visual Consultation</span><span class="ar">الاستشارة البصرية الاستراتيجية</span></li>
+          <li><span class="en">20-Day Delivery, four signed approval gates</span><span class="ar">تسليم خلال ٢٠ يوماً، بأربع بوابات اعتماد موقّعة</span></li>
         </ul>
       </div>
     </div>
     <p class="note rv" style="margin-top:26px">
       <span class="en">Prices are in Jordanian Dinars. Dirham figures are indicative at the rate current on the date of this document and are confirmed on invoice. Any applicable VAT or cross-border transfer charges are additional.</span>
-      <span class="ar">Ø§Ù„Ø£Ø³Ø¹Ø§Ø± Ø¨Ø§Ù„Ø¯ÙŠÙ†Ø§Ø± Ø§Ù„Ø£Ø±Ø¯Ù†ÙŠ. Ø£Ø±Ù‚Ø§Ù… Ø§Ù„Ø¯Ø±Ù‡Ù… Ø§Ø³ØªØ±Ø´Ø§Ø¯ÙŠØ© Ø¨Ø³Ø¹Ø± Ø§Ù„ØµØ±Ù Ø§Ù„Ø³Ø§Ø¦Ø¯ Ø¨ØªØ§Ø±ÙŠØ® Ù‡Ø°Ù‡ Ø§Ù„ÙˆØ«ÙŠÙ‚Ø© ÙˆØªÙØ«Ø¨ÙŽÙ‘Øª Ø¹Ù†Ø¯ Ø¥ØµØ¯Ø§Ø± Ø§Ù„ÙØ§ØªÙˆØ±Ø©. Ø£ÙŠ Ø¶Ø±ÙŠØ¨Ø© Ù‚ÙŠÙ…Ø© Ù…Ø¶Ø§ÙØ© Ø£Ùˆ Ø±Ø³ÙˆÙ… ØªØ­ÙˆÙŠÙ„ Ø¯ÙˆÙ„ÙŠ ØªÙØ¶Ø§Ù Ø¹Ù„Ù‰ Ø§Ù„Ø³Ø¹Ø±.</span>
+      <span class="ar">الأسعار بالدينار الأردني. أرقام الدرهم استرشادية بسعر الصرف السائد بتاريخ هذه الوثيقة وتُثبَّت عند إصدار الفاتورة. أي ضريبة قيمة مضافة أو رسوم تحويل دولي تُضاف على السعر.</span>
     </p>
   </div>
 </section>
@@ -999,27 +997,27 @@ html[lang="ar"] .en{display:none}
 <section id="value">
   <div class="wrap">
     <span class="num rv">12</span>
-    <span class="eyebrow rv"><span class="en">Value Stack</span><span class="ar">Ø­ØµÙŠÙ„Ø© Ø§Ù„Ù‚ÙŠÙ…Ø©</span></span>
-    <h2 class="rv"><span class="en">What Smile Care actually receives.</span><span class="ar">Ù…Ø§ Ø§Ù„Ø°ÙŠ ØªØ­ØµÙ„ Ø¹Ù„ÙŠÙ‡ Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ± ÙØ¹Ù„ÙŠØ§Ù‹.</span></h2>
+    <span class="eyebrow rv"><span class="en">Value Stack</span><span class="ar">حصيلة القيمة</span></span>
+    <h2 class="rv"><span class="en">What Smile Care actually receives.</span><span class="ar">ما الذي تحصل عليه سمايل كير فعلياً.</span></h2>
     <div class="scroller rv" style="margin-top:30px">
       <table>
         <thead><tr>
-          <th><span class="en">You receive</span><span class="ar">ØªØ­ØµÙ„ÙˆÙ† Ø¹Ù„Ù‰</span></th>
-          <th><span class="en">What changes</span><span class="ar">Ù…Ø§ Ø§Ù„Ø°ÙŠ ÙŠØªØºÙŠÙ‘Ø±</span></th>
+          <th><span class="en">You receive</span><span class="ar">تحصلون على</span></th>
+          <th><span class="en">What changes</span><span class="ar">ما الذي يتغيّر</span></th>
         </tr></thead>
         <tbody>
-          <tr><td class="v"><span class="en">A finished identity system</span><span class="ar">Ù†Ø¸Ø§Ù… Ù‡ÙˆÙŠØ© Ù…ÙƒØªÙ…Ù„</span></td><td><span class="en">The 2020 book stops being â€œpendingâ€ and becomes a working system your staff and any future supplier can follow without you.</span><span class="ar">Ø¯Ù„ÙŠÙ„ Ù¢Ù Ù¢Ù  ÙŠØªÙˆÙ‚Ù Ø¹Ù† ÙƒÙˆÙ†Ù‡ Â«Ø¨Ø§Ù†ØªØ¸Ø§Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯Â» ÙˆÙŠØµØ¨Ø­ Ù†Ø¸Ø§Ù…Ø§Ù‹ Ø¹Ø§Ù…Ù„Ø§Ù‹ ÙŠØªØ¨Ø¹Ù‡ Ù…ÙˆØ¸ÙÙˆÙƒÙ… ÙˆØ£ÙŠ Ù…ÙˆØ±Ù‘Ø¯ Ù…Ø³ØªÙ‚Ø¨Ù„ÙŠ Ø¯ÙˆÙ† ØªØ¯Ø®Ù‘Ù„ÙƒÙ….</span></td></tr>
-          <tr><td class="v"><span class="en">Bilingual typography &amp; graphic language</span><span class="ar">Ø·Ø¨Ø§Ø¹Ø© ÙˆÙ„ØºØ© Ø±Ø³ÙˆÙ…ÙŠØ© Ø«Ù†Ø§Ø¦ÙŠØ© Ø§Ù„Ù„ØºØ©</span></td><td><span class="en">The single largest source of visual drift is closed. Arabic stops being an afterthought.</span><span class="ar">ÙŠÙØºÙ„Ù‚ Ø£ÙƒØ¨Ø± Ù…ØµØ¯Ø± Ù…Ù†ÙØ±Ø¯ Ù„Ù„Ø§Ù†Ø­Ø±Ø§Ù Ø§Ù„Ø¨ØµØ±ÙŠ. ÙˆØªØªÙˆÙ‚Ù Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø¹Ù† ÙƒÙˆÙ†Ù‡Ø§ Ø¥Ø¶Ø§ÙØ© Ù„Ø§Ø­Ù‚Ø©.</span></td></tr>
-          <tr><td class="v"><span class="en">24 photoreal concepts</span><span class="ar">Ù¢Ù¤ ØªØµÙˆÙ‘Ø±Ø§Ù‹ ÙˆØ§Ù‚Ø¹ÙŠØ§Ù‹</span></td><td><span class="en">DÃ©cor and signage decisions are made from evidence, before money is committed to a contractor.</span><span class="ar">ØªÙØªØ®Ø° Ù‚Ø±Ø§Ø±Ø§Øª Ø§Ù„Ø¯ÙŠÙƒÙˆØ± ÙˆØ§Ù„Ù„Ø§ÙØªØ§Øª Ø¹Ù„Ù‰ Ø¯Ù„ÙŠÙ„ØŒ Ù‚Ø¨Ù„ Ø§Ù„Ø§Ù„ØªØ²Ø§Ù… Ø¨Ù…Ø§Ù„ Ù„Ø£ÙŠ Ù…Ù‚Ø§ÙˆÙ„.</span></td></tr>
-          <tr><td class="v"><span class="en">3 commercial films, one selected format</span><span class="ar">Ù£ Ø£ÙÙ„Ø§Ù… ØªØ¬Ø§Ø±ÙŠØ©ØŒ Ø¨ØµÙŠØºØ© ÙˆØ§Ø­Ø¯Ø© Ù…Ø®ØªØ§Ø±Ø©</span></td><td><span class="en">A reusable content asset â€” owned outright â€” produced natively for the one place these films will work hardest: 16:9 for the waiting room, website and YouTube, or 9:16 for Reels, TikTok and paid social. You choose before production.</span><span class="ar">Ø£ØµÙ„ Ù…Ø­ØªÙˆÙ‰ Ù‚Ø§Ø¨Ù„ Ù„Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… â€” Ø¨Ù…Ù„ÙƒÙŠØ© ÙƒØ§Ù…Ù„Ø© â€” Ù…ÙÙ†ØªÙŽØ¬ Ø£ØµÙ„Ø§Ù‹ Ù„Ù„Ù…ÙƒØ§Ù† Ø§Ù„Ø°ÙŠ Ø³ØªØ¹Ù…Ù„ ÙÙŠÙ‡ Ù‡Ø°Ù‡ Ø§Ù„Ø£ÙÙ„Ø§Ù… Ø¨Ø£Ù‚ØµÙ‰ ÙØ§Ø¹Ù„ÙŠØ©: Ù¡Ù¦:Ù© Ù„ØºØ±ÙØ© Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø± ÙˆØ§Ù„Ù…ÙˆÙ‚Ø¹ ÙˆÙŠÙˆØªÙŠÙˆØ¨ØŒ Ø£Ùˆ Ù©:Ù¡Ù¦ Ù„Ù„Ø±ÙŠÙ„Ø² ÙˆØªÙŠÙƒ ØªÙˆÙƒ ÙˆØ§Ù„Ø­Ù…Ù„Ø§Øª Ø§Ù„Ù…Ø¯ÙÙˆØ¹Ø©. Ø§Ù„Ø§Ø®ØªÙŠØ§Ø± Ù„ÙƒÙ… Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ù†ØªØ§Ø¬.</span></td></tr>
-          <tr class="free"><td class="v"><span class="en">A bilingual website</span><span class="ar">Ù…ÙˆÙ‚Ø¹ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø«Ù†Ø§Ø¦ÙŠ Ø§Ù„Ù„ØºØ©</span></td><td><span class="en">The credibility check that happens before every booking now works in your favour. <b>Included.</b></span><span class="ar">ÙØ­Øµ Ø§Ù„Ù…ØµØ¯Ø§Ù‚ÙŠØ© Ø§Ù„Ø°ÙŠ ÙŠØ³Ø¨Ù‚ ÙƒÙ„ Ø­Ø¬Ø² ÙŠØµØ¨Ø­ ÙÙŠ ØµØ§Ù„Ø­ÙƒÙ…. <b>Ù…Ø´Ù…ÙˆÙ„.</b></span></td></tr>
-          <tr><td class="v"><span class="en">One coherent direction</span><span class="ar">Ø§ØªØ¬Ø§Ù‡ ÙˆØ§Ø­Ø¯ Ù…ØªÙ…Ø§Ø³Ùƒ</span></td><td><span class="en">Three dÃ©cor languages become one. The aesthetic line finally looks like it is priced.</span><span class="ar">Ø«Ù„Ø§Ø« Ù„ØºØ§Øª Ø¯ÙŠÙƒÙˆØ± ØªØµØ¨Ø­ ÙˆØ§Ø­Ø¯Ø©. ÙˆØ®Ø· Ø§Ù„ØªØ¬Ù…ÙŠÙ„ ÙŠØ¨Ø¯Ùˆ Ø£Ø®ÙŠØ±Ø§Ù‹ Ø¨Ù…Ø³ØªÙˆÙ‰ Ø³Ø¹Ø±Ù‡.</span></td></tr>
+          <tr><td class="v"><span class="en">A finished identity system</span><span class="ar">نظام هوية مكتمل</span></td><td><span class="en">The 2020 book stops being “pending” and becomes a working system your staff and any future supplier can follow without you.</span><span class="ar">دليل ٢٠٢٠ يتوقف عن كونه «بانتظار الاعتماد» ويصبح نظاماً عاملاً يتبعه موظفوكم وأي مورّد مستقبلي دون تدخّلكم.</span></td></tr>
+          <tr><td class="v"><span class="en">Bilingual typography &amp; graphic language</span><span class="ar">طباعة ولغة رسومية ثنائية اللغة</span></td><td><span class="en">The single largest source of visual drift is closed. Arabic stops being an afterthought.</span><span class="ar">يُغلق أكبر مصدر منفرد للانحراف البصري. وتتوقف العربية عن كونها إضافة لاحقة.</span></td></tr>
+          <tr><td class="v"><span class="en">24 photoreal concepts</span><span class="ar">٢٤ تصوّراً واقعياً</span></td><td><span class="en">Décor and signage decisions are made from evidence, before money is committed to a contractor.</span><span class="ar">تُتخذ قرارات الديكور واللافتات على دليل، قبل الالتزام بمال لأي مقاول.</span></td></tr>
+          <tr><td class="v"><span class="en">3 commercial films, one selected format</span><span class="ar">٣ أفلام تجارية، بصيغة واحدة مختارة</span></td><td><span class="en">A reusable content asset — owned outright — produced natively for the one place these films will work hardest: 16:9 for the waiting room, website and YouTube, or 9:16 for Reels, TikTok and paid social. You choose before production.</span><span class="ar">أصل محتوى قابل لإعادة الاستخدام — بملكية كاملة — مُنتَج أصلاً للمكان الذي ستعمل فيه هذه الأفلام بأقصى فاعلية: ١٦:٩ لغرفة الانتظار والموقع ويوتيوب، أو ٩:١٦ للريلز وتيك توك والحملات المدفوعة. الاختيار لكم قبل الإنتاج.</span></td></tr>
+          <tr class="free"><td class="v"><span class="en">A bilingual website</span><span class="ar">موقع إلكتروني ثنائي اللغة</span></td><td><span class="en">The credibility check that happens before every booking now works in your favour. <b>Included.</b></span><span class="ar">فحص المصداقية الذي يسبق كل حجز يصبح في صالحكم. <b>مشمول.</b></span></td></tr>
+          <tr><td class="v"><span class="en">One coherent direction</span><span class="ar">اتجاه واحد متماسك</span></td><td><span class="en">Three décor languages become one. The aesthetic line finally looks like it is priced.</span><span class="ar">ثلاث لغات ديكور تصبح واحدة. وخط التجميل يبدو أخيراً بمستوى سعره.</span></td></tr>
         </tbody>
       </table>
     </div>
     <p class="lead rv" style="margin-top:34px">
-      <span class="en">This is not three videos, some design files and a website. It is a modernised brand experience, a commercial content engine, and a digital presence â€” delivered as one decision instead of four.</span>
-      <span class="ar">Ù‡Ø°Ø§ Ù„ÙŠØ³ Ø«Ù„Ø§Ø«Ø© ÙÙŠØ¯ÙŠÙˆÙ‡Ø§Øª ÙˆØ¨Ø¹Ø¶ Ù…Ù„ÙØ§Øª Ø§Ù„ØªØµÙ…ÙŠÙ… ÙˆÙ…ÙˆÙ‚Ø¹Ø§Ù‹. Ø¥Ù†Ù‡ ØªØ¬Ø±Ø¨Ø© Ø¹Ù„Ø§Ù…Ø© Ù…Ø­Ø¯ÙŽÙ‘Ø«Ø©ØŒ ÙˆÙ…Ø­Ø±Ù‘Ùƒ Ù…Ø­ØªÙˆÙ‰ ØªØ¬Ø§Ø±ÙŠØŒ ÙˆØ­Ø¶ÙˆØ± Ø±Ù‚Ù…ÙŠ â€” ØªÙØ³Ù„ÙŽÙ‘Ù… ÙƒÙ‚Ø±Ø§Ø± ÙˆØ§Ø­Ø¯ Ø¨Ø¯Ù„ Ø£Ø±Ø¨Ø¹Ø©.</span>
+      <span class="en">This is not three videos, some design files and a website. It is a modernised brand experience, a commercial content engine, and a digital presence — delivered as one decision instead of four.</span>
+      <span class="ar">هذا ليس ثلاثة فيديوهات وبعض ملفات التصميم وموقعاً. إنه تجربة علامة محدَّثة، ومحرّك محتوى تجاري، وحضور رقمي — تُسلَّم كقرار واحد بدل أربعة.</span>
     </p>
   </div>
 </section>
@@ -1027,36 +1025,36 @@ html[lang="ar"] .en{display:none}
 <!-- ============ SCOPE ============ -->
 <section id="scope">
   <div class="wrap">
-    <span class="eyebrow rv"><span class="en">Scope &amp; Terms</span><span class="ar">Ø§Ù„Ù†Ø·Ø§Ù‚ ÙˆØ§Ù„Ø´Ø±ÙˆØ·</span></span>
-    <h2 class="rv"><span class="en">Precisely what is, and is not, included.</span><span class="ar">Ø§Ù„Ù…Ø´Ù…ÙˆÙ„ ÙˆØºÙŠØ± Ø§Ù„Ù…Ø´Ù…ÙˆÙ„ØŒ Ø¨Ø¯Ù‚Ù‘Ø©.</span></h2>
-    <p class="rv"><span class="en">Stated here rather than buried in a contract, so there are no surprise invoices and no unclear expectations.</span><span class="ar">Ù…Ø°ÙƒÙˆØ± Ù‡Ù†Ø§ Ù„Ø§ Ù…Ø¯ÙÙˆÙ†Ø§Ù‹ ÙÙŠ Ø¹Ù‚Ø¯ØŒ Ø­ØªÙ‰ Ù„Ø§ ØªÙƒÙˆÙ† Ù‡Ù†Ø§Ùƒ ÙÙˆØ§ØªÙŠØ± Ù…ÙØ§Ø¬Ø¦Ø© ÙˆÙ„Ø§ ØªÙˆÙ‚Ø¹Ø§Øª ØºØ§Ù…Ø¶Ø©.</span></p>
+    <span class="eyebrow rv"><span class="en">Scope &amp; Terms</span><span class="ar">النطاق والشروط</span></span>
+    <h2 class="rv"><span class="en">Precisely what is, and is not, included.</span><span class="ar">المشمول وغير المشمول، بدقّة.</span></h2>
+    <p class="rv"><span class="en">Stated here rather than buried in a contract, so there are no surprise invoices and no unclear expectations.</span><span class="ar">مذكور هنا لا مدفوناً في عقد، حتى لا تكون هناك فواتير مفاجئة ولا توقعات غامضة.</span></p>
 
     <div class="scope-grid rv" style="margin-top:34px">
       <div class="scope-box">
-        <h3><span class="en">Included</span><span class="ar">Ø§Ù„Ù…Ø´Ù…ÙˆÙ„</span></h3>
+        <h3><span class="en">Included</span><span class="ar">المشمول</span></h3>
         <ul>
-          <li><span class="en">Visual identity upgrade system document (bilingual)</span><span class="ar">ÙˆØ«ÙŠÙ‚Ø© Ù†Ø¸Ø§Ù… ØªØ±Ù‚ÙŠØ© Ø§Ù„Ù‡ÙˆÙŠØ© Ø§Ù„Ø¨ØµØ±ÙŠØ© (Ø«Ù†Ø§Ø¦ÙŠØ© Ø§Ù„Ù„ØºØ©)</span></li>
-          <li><span class="en">24 AI visual concepts across 6 agreed applications</span><span class="ar">Ù¢Ù¤ ØªØµÙˆÙ‘Ø±Ø§Ù‹ Ø¨ØµØ±ÙŠØ§Ù‹ Ø¹Ø¨Ø± Ù¦ ØªØ·Ø¨ÙŠÙ‚Ø§Øª Ù…ØªÙÙ‚ Ø¹Ù„ÙŠÙ‡Ø§</span></li>
-          <li><span class="en">3 films, maximum 120 seconds each, maximum 300 seconds total</span><span class="ar">Ù£ Ø£ÙÙ„Ø§Ù…ØŒ Ø¨Ø­Ø¯ Ø£Ù‚ØµÙ‰ Ù¡Ù¢Ù  Ø«Ø§Ù†ÙŠØ© Ù„ÙƒÙ„ Ù…Ù†Ù‡Ø§ ÙˆÙ£Ù Ù  Ø«Ø§Ù†ÙŠØ© Ø¥Ø¬Ù…Ø§Ù„Ø§Ù‹</span></li>
-          <li><span class="en"><strong>One delivery format only â€” 16:9 OR 9:16 â€” selected by you before production</strong></span><span class="ar"><strong>ØµÙŠØºØ© ØªØ³Ù„ÙŠÙ… ÙˆØ§Ø­Ø¯Ø© ÙÙ‚Ø· â€” Ù¡Ù¦:Ù© Ø£Ùˆ Ù©:Ù¡Ù¦ â€” ØªØ®ØªØ§Ø±ÙˆÙ†Ù‡Ø§ Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ù†ØªØ§Ø¬</strong></span></li>
-          <li><span class="en">Website: 8 unique templates, up to 12 populated pages, 2 languages</span><span class="ar">Ø§Ù„Ù…ÙˆÙ‚Ø¹: Ù¨ Ù‚ÙˆØ§Ù„Ø¨ ÙØ±ÙŠØ¯Ø©ØŒ Ø­ØªÙ‰ Ù¡Ù¢ ØµÙØ­Ø© Ù…Ø¹Ø¨Ù‘Ø£Ø©ØŒ Ø¨Ù„ØºØªÙŠÙ†</span></li>
-          <li><span class="en">Strategic creative direction across all deliverables</span><span class="ar">Ø¥Ø®Ø±Ø§Ø¬ Ø¥Ø¨Ø¯Ø§Ø¹ÙŠ Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠ Ø¹Ø¨Ø± ÙƒÙ„ Ø§Ù„ØªØ³Ù„ÙŠÙ…Ø§Øª</span></li>
-          <li><span class="en"><strong>One consolidated revision round per deliverable</strong></span><span class="ar"><strong>Ø¬ÙˆÙ„Ø© ØªØ¹Ø¯ÙŠÙ„ ÙˆØ§Ø­Ø¯Ø© Ù…Ø¬Ù…Ù‘Ø¹Ø© Ù„ÙƒÙ„ ØªØ³Ù„ÙŠÙ…</strong></span></li>
-          <li><span class="en">Full ownership of approved deliverables on final payment</span><span class="ar">Ù…Ù„ÙƒÙŠØ© ÙƒØ§Ù…Ù„Ø© Ù„Ù„ØªØ³Ù„ÙŠÙ…Ø§Øª Ø§Ù„Ù…Ø¹ØªÙ…Ø¯Ø© Ø¹Ù†Ø¯ Ø§Ù„Ø³Ø¯Ø§Ø¯ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ</span></li>
+          <li><span class="en">Visual identity upgrade system document (bilingual)</span><span class="ar">وثيقة نظام ترقية الهوية البصرية (ثنائية اللغة)</span></li>
+          <li><span class="en">24 AI visual concepts across 6 agreed applications</span><span class="ar">٢٤ تصوّراً بصرياً عبر ٦ تطبيقات متفق عليها</span></li>
+          <li><span class="en">3 films, maximum 120 seconds each, maximum 300 seconds total</span><span class="ar">٣ أفلام، بحد أقصى ١٢٠ ثانية لكل منها و٣٠٠ ثانية إجمالاً</span></li>
+          <li><span class="en"><strong>One delivery format only — 16:9 OR 9:16 — selected by you before production</strong></span><span class="ar"><strong>صيغة تسليم واحدة فقط — ١٦:٩ أو ٩:١٦ — تختارونها قبل الإنتاج</strong></span></li>
+          <li><span class="en">Website: 8 unique templates, up to 12 populated pages, 2 languages</span><span class="ar">الموقع: ٨ قوالب فريدة، حتى ١٢ صفحة معبّأة، بلغتين</span></li>
+          <li><span class="en">Strategic creative direction across all deliverables</span><span class="ar">إخراج إبداعي استراتيجي عبر كل التسليمات</span></li>
+          <li><span class="en"><strong>One consolidated revision round per deliverable</strong></span><span class="ar"><strong>جولة تعديل واحدة مجمّعة لكل تسليم</strong></span></li>
+          <li><span class="en">Full ownership of approved deliverables on final payment</span><span class="ar">ملكية كاملة للتسليمات المعتمدة عند السداد النهائي</span></li>
         </ul>
       </div>
       <div class="scope-box no">
-        <h3><span class="en">Not included</span><span class="ar">ØºÙŠØ± Ø§Ù„Ù…Ø´Ù…ÙˆÙ„</span></h3>
+        <h3><span class="en">Not included</span><span class="ar">غير المشمول</span></h3>
         <ul>
-          <li><span class="en">Any change to the logo, brandmark or bilingual lockup</span><span class="ar">Ø£ÙŠ ØªØ¹Ø¯ÙŠÙ„ Ø¹Ù„Ù‰ Ø§Ù„Ø´Ø¹Ø§Ø± Ø£Ùˆ Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø£Ùˆ Ø§Ù„Ù‚ÙÙ„ Ø«Ù†Ø§Ø¦ÙŠ Ø§Ù„Ù„ØºØ©</span></li>
-          <li><span class="en">Physical execution: printing, fabrication, signage, fit-out, contractors</span><span class="ar">Ø§Ù„ØªÙ†ÙÙŠØ° Ø§Ù„Ù…Ø§Ø¯ÙŠ: Ø§Ù„Ø·Ø¨Ø§Ø¹Ø© ÙˆØ§Ù„ØªØµÙ†ÙŠØ¹ ÙˆØ§Ù„Ù„Ø§ÙØªØ§Øª ÙˆØ§Ù„ØªØ´Ø·ÙŠØ¨ ÙˆØ§Ù„Ù…Ù‚Ø§ÙˆÙ„ÙˆÙ†</span></li>
-          <li><span class="en">On-site photography or filming in Ras Al Khaimah</span><span class="ar">Ø§Ù„ØªØµÙˆÙŠØ± Ø§Ù„ÙÙˆØªÙˆØºØ±Ø§ÙÙŠ Ø£Ùˆ Ø§Ù„Ø³ÙŠÙ†Ù…Ø§Ø¦ÙŠ ÙÙŠ Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ø¨Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø©</span></li>
-          <li><span class="en">Website hosting, domain, and post-launch maintenance</span><span class="ar">Ø§Ø³ØªØ¶Ø§ÙØ© Ø§Ù„Ù…ÙˆÙ‚Ø¹ ÙˆØ§Ù„Ù†Ø·Ø§Ù‚ ÙˆØ§Ù„ØµÙŠØ§Ù†Ø© Ø¨Ø¹Ø¯ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚</span></li>
-          <li><span class="en">Copywriting for website content and doctor photographs</span><span class="ar">ÙƒØªØ§Ø¨Ø© Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ù…ÙˆÙ‚Ø¹ ÙˆØµÙˆØ± Ø§Ù„Ø£Ø·Ø¨Ø§Ø¡</span></li>
-          <li><span class="en">Paid media buying, ad management and social media management</span><span class="ar">Ø´Ø±Ø§Ø¡ Ø§Ù„Ø¥Ø¹Ù„Ø§Ù†Ø§Øª ÙˆØ¥Ø¯Ø§Ø±ØªÙ‡Ø§ ÙˆØ¥Ø¯Ø§Ø±Ø© Ø­Ø³Ø§Ø¨Ø§Øª Ø§Ù„ØªÙˆØ§ØµÙ„</span></li>
-          <li><span class="en"><strong>The second video format</strong> â€” adapting the films to the format you did not select is a separate service, quoted before it begins</span><span class="ar"><strong>ØµÙŠØºØ© Ø§Ù„ÙÙŠØ¯ÙŠÙˆ Ø§Ù„Ø«Ø§Ù†ÙŠØ©</strong> â€” ØªÙƒÙŠÙŠÙ Ø§Ù„Ø£ÙÙ„Ø§Ù… Ù„Ù„ØµÙŠØºØ© Ø§Ù„ØªÙŠ Ù„Ù… ØªØ®ØªØ§Ø±ÙˆÙ‡Ø§ Ø®Ø¯Ù…Ø© Ù…Ù†ÙØµÙ„Ø©ØŒ ØªÙØ³Ø¹ÙŽÙ‘Ø± Ù‚Ø¨Ù„ Ø¨Ø¯Ø¦Ù‡Ø§</span></li>
-          <li><span class="en">Additional films, languages, revision rounds or applications</span><span class="ar">Ø£ÙÙ„Ø§Ù… Ø£Ùˆ Ù„ØºØ§Øª Ø£Ùˆ Ø¬ÙˆÙ„Ø§Øª ØªØ¹Ø¯ÙŠÙ„ Ø£Ùˆ ØªØ·Ø¨ÙŠÙ‚Ø§Øª Ø¥Ø¶Ø§ÙÙŠØ©</span></li>
-          <li><span class="en">Third-party talent, licensed music beyond the included library</span><span class="ar">Ø§Ù„Ù…ÙˆØ§Ù‡Ø¨ Ù…Ù† Ø£Ø·Ø±Ø§Ù Ø«Ø§Ù„Ø«Ø©ØŒ ÙˆØ§Ù„Ù…ÙˆØ³ÙŠÙ‚Ù‰ Ø§Ù„Ù…Ø±Ø®Ù‘ØµØ© Ø®Ø§Ø±Ø¬ Ø§Ù„Ù…ÙƒØªØ¨Ø© Ø§Ù„Ù…Ø´Ù…ÙˆÙ„Ø©</span></li>
+          <li><span class="en">Any change to the logo, brandmark or bilingual lockup</span><span class="ar">أي تعديل على الشعار أو العلامة أو القفل ثنائي اللغة</span></li>
+          <li><span class="en">Physical execution: printing, fabrication, signage, fit-out, contractors</span><span class="ar">التنفيذ المادي: الطباعة والتصنيع واللافتات والتشطيب والمقاولون</span></li>
+          <li><span class="en">On-site photography or filming in Ras Al Khaimah</span><span class="ar">التصوير الفوتوغرافي أو السينمائي في الموقع برأس الخيمة</span></li>
+          <li><span class="en">Website hosting, domain, and post-launch maintenance</span><span class="ar">استضافة الموقع والنطاق والصيانة بعد الإطلاق</span></li>
+          <li><span class="en">Copywriting for website content and doctor photographs</span><span class="ar">كتابة محتوى الموقع وصور الأطباء</span></li>
+          <li><span class="en">Paid media buying, ad management and social media management</span><span class="ar">شراء الإعلانات وإدارتها وإدارة حسابات التواصل</span></li>
+          <li><span class="en"><strong>The second video format</strong> — adapting the films to the format you did not select is a separate service, quoted before it begins</span><span class="ar"><strong>صيغة الفيديو الثانية</strong> — تكييف الأفلام للصيغة التي لم تختاروها خدمة منفصلة، تُسعَّر قبل بدئها</span></li>
+          <li><span class="en">Additional films, languages, revision rounds or applications</span><span class="ar">أفلام أو لغات أو جولات تعديل أو تطبيقات إضافية</span></li>
+          <li><span class="en">Third-party talent, licensed music beyond the included library</span><span class="ar">المواهب من أطراف ثالثة، والموسيقى المرخّصة خارج المكتبة المشمولة</span></li>
         </ul>
       </div>
     </div>
@@ -1064,14 +1062,14 @@ html[lang="ar"] .en{display:none}
     <div class="scroller rv" style="margin-top:30px">
       <table>
         <tbody>
-          <tr><td class="v"><span class="en">Client responsibilities</span><span class="ar">Ù…Ø³Ø¤ÙˆÙ„ÙŠØ§Øª Ø§Ù„Ø¹Ù…ÙŠÙ„</span></td><td><span class="en">One named approver empowered to sign each gate; brand source files, website copy and doctor photographs supplied at kickoff; written approval at each of the four gates.</span><span class="ar">Ù…ÙØ¹ØªÙ…ÙØ¯ ÙˆØ§Ø­Ø¯ Ù…Ø³Ù…Ù‘Ù‰ ÙˆÙ„Ù‡ ØµÙ„Ø§Ø­ÙŠØ© ØªÙˆÙ‚ÙŠØ¹ ÙƒÙ„ Ø¨ÙˆØ§Ø¨Ø©Ø› Ù…Ù„ÙØ§Øª Ù…ØµØ¯Ø± Ø§Ù„Ø¹Ù„Ø§Ù…Ø© ÙˆÙ†ØµÙˆØµ Ø§Ù„Ù…ÙˆÙ‚Ø¹ ÙˆØµÙˆØ± Ø§Ù„Ø£Ø·Ø¨Ø§Ø¡ ØªÙØ²ÙˆÙŽÙ‘Ø¯ Ø¹Ù†Ø¯ Ø§Ù„Ø§Ù†Ø·Ù„Ø§Ù‚Ø› Ø§Ø¹ØªÙ…Ø§Ø¯ Ø®Ø·ÙŠ Ø¹Ù†Ø¯ ÙƒÙ„ Ø¨ÙˆØ§Ø¨Ø© Ù…Ù† Ø§Ù„Ø£Ø±Ø¨Ø¹.</span></td></tr>
-          <tr><td class="v"><span class="en">Approval window</span><span class="ar">Ù…Ù‡Ù„Ø© Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯</span></td><td><span class="en">48 hours per gate. Later responses shift the remaining schedule day-for-day.</span><span class="ar">Ù¤Ù¨ Ø³Ø§Ø¹Ø© Ù„ÙƒÙ„ Ø¨ÙˆØ§Ø¨Ø©. Ø§Ù„ØªØ£Ø®Ø± ÙÙŠ Ø§Ù„Ø±Ø¯ ÙŠØ²ÙŠØ­ Ø¨Ø§Ù‚ÙŠ Ø§Ù„Ø¬Ø¯ÙˆÙ„ ÙŠÙˆÙ…Ø§Ù‹ Ø¨ÙŠÙˆÙ….</span></td></tr>
-          <tr><td class="v"><span class="en">Changes after a gate</span><span class="ar">Ø§Ù„ØªØºÙŠÙŠØ±Ø§Øª Ø¨Ø¹Ø¯ Ø§Ø¹ØªÙ…Ø§Ø¯ Ø¨ÙˆØ§Ø¨Ø©</span></td><td><span class="en">Reopening an approved direction is quoted as additional scope, because later stages are built on it.</span><span class="ar">Ø¥Ø¹Ø§Ø¯Ø© ÙØªØ­ Ø§ØªØ¬Ø§Ù‡ Ù…Ø¹ØªÙ…Ø¯ ØªÙØ³Ø¹ÙŽÙ‘Ø± ÙƒÙ†Ø·Ø§Ù‚ Ø¥Ø¶Ø§ÙÙŠØŒ Ù„Ø£Ù† Ø§Ù„Ù…Ø±Ø§Ø­Ù„ Ø§Ù„Ù„Ø§Ø­Ù‚Ø© Ø¨ÙÙ†ÙŠØª Ø¹Ù„ÙŠÙ‡.</span></td></tr>
-          <tr><td class="v"><span class="en">Additional revision rounds</span><span class="ar">Ø¬ÙˆÙ„Ø§Øª ØªØ¹Ø¯ÙŠÙ„ Ø¥Ø¶Ø§ÙÙŠØ©</span></td><td><span class="en">150 JOD per additional consolidated round.</span><span class="ar">Ù¡Ù¥Ù  Ø¯ÙŠÙ†Ø§Ø±Ø§Ù‹ Ù„ÙƒÙ„ Ø¬ÙˆÙ„Ø© Ù…Ø¬Ù…Ù‘Ø¹Ø© Ø¥Ø¶Ø§ÙÙŠØ©.</span></td></tr>
-          <tr><td class="v"><span class="en">Out-of-scope work</span><span class="ar">Ø§Ù„Ø£Ø¹Ù…Ø§Ù„ Ø®Ø§Ø±Ø¬ Ø§Ù„Ù†Ø·Ø§Ù‚</span></td><td><span class="en">Always quoted and approved in writing before it begins. Never invoiced without approval.</span><span class="ar">ØªÙØ³Ø¹ÙŽÙ‘Ø± ÙˆØªÙØ¹ØªÙ…Ø¯ Ø®Ø·ÙŠØ§Ù‹ Ø¯Ø§Ø¦Ù…Ø§Ù‹ Ù‚Ø¨Ù„ Ø§Ù„Ø¨Ø¯Ø¡. ÙˆÙ„Ø§ ØªÙÙÙˆØªÙŽØ± Ø£Ø¨Ø¯Ø§Ù‹ Ø¯ÙˆÙ† Ø§Ø¹ØªÙ…Ø§Ø¯.</span></td></tr>
-          <tr><td class="v"><span class="en">Payment</span><span class="ar">Ø§Ù„Ø¯ÙØ¹</span></td><td><span class="en">40% at kickoff, 30% at Gate 03, 30% before final delivery â€” each instalment due before its phase begins.</span><span class="ar">Ù¤Ù Ùª Ø¹Ù†Ø¯ Ø§Ù„Ø§Ù†Ø·Ù„Ø§Ù‚ØŒ Ù£Ù Ùª Ø¹Ù†Ø¯ Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø«Ø§Ù„Ø«Ø©ØŒ Ù£Ù Ùª Ù‚Ø¨Ù„ Ø§Ù„ØªØ³Ù„ÙŠÙ… Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ â€” ÙƒÙ„ Ø¯ÙØ¹Ø© Ù…Ø³ØªØ­Ù‚Ø© Ù‚Ø¨Ù„ Ø¨Ø¯Ø¡ Ù…Ø±Ø­Ù„ØªÙ‡Ø§.</span></td></tr>
-          <tr><td class="v"><span class="en">Portfolio rights</span><span class="ar">Ø­Ù‚ÙˆÙ‚ Ø§Ù„Ø¹Ø±Ø¶</span></td><td><span class="en">7Z may show the work in its portfolio. Tell us if any element is sensitive and we will exclude it.</span><span class="ar">ÙŠØ­Ù‚ Ù„Ù€7Z Ø¹Ø±Ø¶ Ø§Ù„Ø¹Ù…Ù„ ÙÙŠ Ù…Ø¹Ø±Ø¶ Ø£Ø¹Ù…Ø§Ù„Ù‡Ø§. Ø£Ø®Ø¨Ø±ÙˆÙ†Ø§ Ø¨Ø£ÙŠ Ø¹Ù†ØµØ± Ø­Ø³Ù‘Ø§Ø³ ÙˆØ³Ù†Ø³ØªØ«Ù†ÙŠÙ‡.</span></td></tr>
-          <tr><td class="v"><span class="en">Validity</span><span class="ar">ØµÙ„Ø§Ø­ÙŠØ© Ø§Ù„Ø¹Ø±Ø¶</span></td><td><span class="en">This proposal is valid for 7 days. After that we are happy to re-issue it; pricing may change if the production calendar has.</span><span class="ar">Ù‡Ø°Ø§ Ø§Ù„Ø¹Ø±Ø¶ ØµØ§Ù„Ø­ Ù„Ø³Ø¨Ø¹Ø© Ø£ÙŠØ§Ù…. Ø¨Ø¹Ø¯Ù‡Ø§ ÙŠØ³Ø¹Ø¯Ù†Ø§ Ø¥Ø¹Ø§Ø¯Ø© Ø¥ØµØ¯Ø§Ø±Ù‡Ø› ÙˆÙ‚Ø¯ ÙŠØªØºÙŠÙ‘Ø± Ø§Ù„Ø³Ø¹Ø± Ø¥Ø°Ø§ ØªØºÙŠÙ‘Ø± ØªÙ‚ÙˆÙŠÙ… Ø§Ù„Ø¥Ù†ØªØ§Ø¬.</span></td></tr>
+          <tr><td class="v"><span class="en">Client responsibilities</span><span class="ar">مسؤوليات العميل</span></td><td><span class="en">One named approver empowered to sign each gate; brand source files, website copy and doctor photographs supplied at kickoff; written approval at each of the four gates.</span><span class="ar">مُعتمِد واحد مسمّى وله صلاحية توقيع كل بوابة؛ ملفات مصدر العلامة ونصوص الموقع وصور الأطباء تُزوَّد عند الانطلاق؛ اعتماد خطي عند كل بوابة من الأربع.</span></td></tr>
+          <tr><td class="v"><span class="en">Approval window</span><span class="ar">مهلة الاعتماد</span></td><td><span class="en">48 hours per gate. Later responses shift the remaining schedule day-for-day.</span><span class="ar">٤٨ ساعة لكل بوابة. التأخر في الرد يزيح باقي الجدول يوماً بيوم.</span></td></tr>
+          <tr><td class="v"><span class="en">Changes after a gate</span><span class="ar">التغييرات بعد اعتماد بوابة</span></td><td><span class="en">Reopening an approved direction is quoted as additional scope, because later stages are built on it.</span><span class="ar">إعادة فتح اتجاه معتمد تُسعَّر كنطاق إضافي، لأن المراحل اللاحقة بُنيت عليه.</span></td></tr>
+          <tr><td class="v"><span class="en">Additional revision rounds</span><span class="ar">جولات تعديل إضافية</span></td><td><span class="en">150 JOD per additional consolidated round.</span><span class="ar">١٥٠ ديناراً لكل جولة مجمّعة إضافية.</span></td></tr>
+          <tr><td class="v"><span class="en">Out-of-scope work</span><span class="ar">الأعمال خارج النطاق</span></td><td><span class="en">Always quoted and approved in writing before it begins. Never invoiced without approval.</span><span class="ar">تُسعَّر وتُعتمد خطياً دائماً قبل البدء. ولا تُفوتَر أبداً دون اعتماد.</span></td></tr>
+          <tr><td class="v"><span class="en">Payment</span><span class="ar">الدفع</span></td><td><span class="en">40% at kickoff, 30% at Gate 03, 30% before final delivery — each instalment due before its phase begins.</span><span class="ar">٤٠٪ عند الانطلاق، ٣٠٪ عند البوابة الثالثة، ٣٠٪ قبل التسليم النهائي — كل دفعة مستحقة قبل بدء مرحلتها.</span></td></tr>
+          <tr><td class="v"><span class="en">Portfolio rights</span><span class="ar">حقوق العرض</span></td><td><span class="en">7Z may show the work in its portfolio. Tell us if any element is sensitive and we will exclude it.</span><span class="ar">يحق لـ7Z عرض العمل في معرض أعمالها. أخبرونا بأي عنصر حسّاس وسنستثنيه.</span></td></tr>
+          <tr><td class="v"><span class="en">Validity</span><span class="ar">صلاحية العرض</span></td><td><span class="en">This proposal is valid for 7 days. After that we are happy to re-issue it; pricing may change if the production calendar has.</span><span class="ar">هذا العرض صالح لسبعة أيام. بعدها يسعدنا إعادة إصداره؛ وقد يتغيّر السعر إذا تغيّر تقويم الإنتاج.</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1081,24 +1079,24 @@ html[lang="ar"] .en{display:none}
 <!-- ============ 13 NEXT STEP ============ -->
 <section class="cta" id="next">
   <div class="wrap">
-    <span class="eyebrow rv"><span class="en">Next Step</span><span class="ar">Ø§Ù„Ø®Ø·ÙˆØ© Ø§Ù„ØªØ§Ù„ÙŠØ©</span></span>
-    <h2 class="rv"><span class="en">One conversation, forty-five minutes.</span><span class="ar">Ù…Ø­Ø§Ø¯Ø«Ø© ÙˆØ§Ø­Ø¯Ø©ØŒ Ø®Ù…Ø³ ÙˆØ£Ø±Ø¨Ø¹ÙˆÙ† Ø¯Ù‚ÙŠÙ‚Ø©.</span></h2>
+    <span class="eyebrow rv"><span class="en">Next Step</span><span class="ar">الخطوة التالية</span></span>
+    <h2 class="rv"><span class="en">One conversation, forty-five minutes.</span><span class="ar">محادثة واحدة، خمس وأربعون دقيقة.</span></h2>
     <p class="rv" style="max-width:58ch">
-      <span class="en">Not a commitment â€” a working session. We walk through the direction together, you tell us where we have read Smile Care correctly and where we have not, and you decide afterwards whether to proceed. If you would rather begin, the kickoff date is confirmed on receipt of the first instalment.</span>
-      <span class="ar">Ù„ÙŠØ³Øª Ø§Ù„ØªØ²Ø§Ù…Ø§Ù‹ â€” Ø¨Ù„ Ø¬Ù„Ø³Ø© Ø¹Ù…Ù„. Ù†Ø³ØªØ¹Ø±Ø¶ Ø§Ù„Ø§ØªØ¬Ø§Ù‡ Ù…Ø¹Ø§Ù‹ØŒ ÙˆØªØ®Ø¨Ø±ÙˆÙ†Ù†Ø§ Ø£ÙŠÙ† Ù‚Ø±Ø£Ù†Ø§ Â«Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ±Â» Ø¨Ø´ÙƒÙ„ ØµØ­ÙŠØ­ ÙˆØ£ÙŠÙ† Ø£Ø®Ø·Ø£Ù†Ø§ØŒ Ø«Ù… ØªÙ‚Ø±Ø±ÙˆÙ† Ø¨Ø¹Ø¯Ù‡Ø§ Ø¥Ù† ÙƒÙ†ØªÙ… ØªØ±ØºØ¨ÙˆÙ† Ø¨Ø§Ù„Ù…Ø¶ÙŠ. ÙˆØ¥Ù† ÙØ¶Ù‘Ù„ØªÙ… Ø§Ù„Ø¨Ø¯Ø¡ Ù…Ø¨Ø§Ø´Ø±Ø©ØŒ ÙŠÙØ«Ø¨ÙŽÙ‘Øª ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ù†Ø·Ù„Ø§Ù‚ Ø¹Ù†Ø¯ Ø§Ø³ØªÙ„Ø§Ù… Ø§Ù„Ø¯ÙØ¹Ø© Ø§Ù„Ø£ÙˆÙ„Ù‰.</span>
+      <span class="en">Not a commitment — a working session. We walk through the direction together, you tell us where we have read Smile Care correctly and where we have not, and you decide afterwards whether to proceed. If you would rather begin, the kickoff date is confirmed on receipt of the first instalment.</span>
+      <span class="ar">ليست التزاماً — بل جلسة عمل. نستعرض الاتجاه معاً، وتخبروننا أين قرأنا «سمايل كير» بشكل صحيح وأين أخطأنا، ثم تقررون بعدها إن كنتم ترغبون بالمضي. وإن فضّلتم البدء مباشرة، يُثبَّت تاريخ الانطلاق عند استلام الدفعة الأولى.</span>
     </p>
     <div class="fmt-note rv" style="max-width:62ch;margin:30px auto 0;text-align:start">
-      <span class="en"><strong>Two decisions to bring with you:</strong> the total investment of <strong>5,000 JOD</strong>, and your video format â€” <strong>16:9 cinematic</strong> or <strong>9:16 vertical</strong>. One format is produced; the three films are built for it from the first storyboard frame.</span>
-      <span class="ar"><strong>Ù‚Ø±Ø§Ø±Ø§Ù† Ø§Ø­Ù…Ù„ÙˆÙ‡Ù…Ø§ Ù…Ø¹ÙƒÙ…:</strong> Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø§Ø³ØªØ«Ù…Ø§Ø± <strong>Ù¥Ù¬Ù Ù Ù  Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ</strong>ØŒ ÙˆØµÙŠØºØ© Ø§Ù„ÙÙŠØ¯ÙŠÙˆ â€” <strong>Ù¡Ù¦:Ù© Ø§Ù„Ø³ÙŠÙ†Ù…Ø§Ø¦ÙŠØ©</strong> Ø£Ùˆ <strong>Ù©:Ù¡Ù¦ Ø§Ù„Ø¹Ù…ÙˆØ¯ÙŠØ©</strong>. ØªÙÙ†ØªÙŽØ¬ ØµÙŠØºØ© ÙˆØ§Ø­Ø¯Ø©ØŒ ÙˆØªÙØ¨Ù†Ù‰ Ø§Ù„Ø£ÙÙ„Ø§Ù… Ø§Ù„Ø«Ù„Ø§Ø«Ø© Ù„Ù‡Ø§ Ù…Ù†Ø° Ø£ÙˆÙ„ Ø¥Ø·Ø§Ø± ÙÙŠ Ø§Ù„Ù„ÙˆØ­Ø© Ø§Ù„Ù‚ØµØµÙŠØ©.</span>
+      <span class="en"><strong>Two decisions to bring with you:</strong> the total investment of <strong>5,000 JOD</strong>, and your video format — <strong>16:9 cinematic</strong> or <strong>9:16 vertical</strong>. One format is produced; the three films are built for it from the first storyboard frame.</span>
+      <span class="ar"><strong>قراران احملوهما معكم:</strong> إجمالي الاستثمار <strong>٥٬٠٠٠ دينار أردني</strong>، وصيغة الفيديو — <strong>١٦:٩ السينمائية</strong> أو <strong>٩:١٦ العمودية</strong>. تُنتَج صيغة واحدة، وتُبنى الأفلام الثلاثة لها منذ أول إطار في اللوحة القصصية.</span>
     </div>
-    <a class="step" href="#next"><span class="en">Confirm the direction session</span><span class="ar">ØªØ£ÙƒÙŠØ¯ Ø¬Ù„Ø³Ø© Ø§Ù„Ø§ØªØ¬Ø§Ù‡</span></a>
+    <a class="step" href="#next"><span class="en">Confirm the direction session</span><span class="ar">تأكيد جلسة الاتجاه</span></a>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <span class="en">7Z Magic Â· Creative Direction, AI Production &amp; Brand Systems Â· Prepared for Smile Care Medical Center, Ras Al Khaimah Â· Confidential</span>
-    <span class="ar">7Z Ù…Ø§Ø¬ÙŠÙƒ Â· Ø¥Ø®Ø±Ø§Ø¬ Ø¥Ø¨Ø¯Ø§Ø¹ÙŠ ÙˆØ¥Ù†ØªØ§Ø¬ Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ ÙˆØ£Ù†Ø¸Ù…Ø© Ø¹Ù„Ø§Ù…Ø§Øª Â· Ù…ÙØ¹Ø¯Ù‘ Ù„Ù…Ø±ÙƒØ² Ø³Ù…Ø§ÙŠÙ„ ÙƒÙŠØ± Ø§Ù„Ø·Ø¨ÙŠØŒ Ø±Ø£Ø³ Ø§Ù„Ø®ÙŠÙ…Ø© Â· ÙˆØ«ÙŠÙ‚Ø© Ø®Ø§ØµØ©</span>
+    <span class="en">7Z Magic · Creative Direction, AI Production &amp; Brand Systems · Prepared for Smile Care Medical Center, Ras Al Khaimah · Confidential</span>
+    <span class="ar">7Z ماجيك · إخراج إبداعي وإنتاج بالذكاء الاصطناعي وأنظمة علامات · مُعدّ لمركز سمايل كير الطبي، رأس الخيمة · وثيقة خاصة</span>
   </div>
 </footer>
 
@@ -1111,7 +1109,7 @@ html[lang="ar"] .en{display:none}
   function setLang(l){
     html.setAttribute('lang',l);
     html.setAttribute('dir', l==='ar'?'rtl':'ltr');
-    langBtn.textContent = l==='ar' ? 'English' : 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©';
+    langBtn.textContent = l==='ar' ? 'English' : 'العربية';
     try{localStorage.setItem('scmc_lang',l);}catch(e){}
   }
   function setTheme(t){
@@ -1151,7 +1149,7 @@ html[lang="ar"] .en{display:none}
   });
 
   /* ============================================================
-     7Z MAGIC LAYER â€” interaction only
+     7Z MAGIC LAYER — interaction only
      ============================================================ */
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fine    = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
@@ -1228,7 +1226,7 @@ html[lang="ar"] .en{display:none}
         document.body.classList.add('z-lit');
       },{passive:true});
     }
-    // gentle scroll parallax â€” depth without movement noise
+    // gentle scroll parallax — depth without movement noise
     window.addEventListener('scroll',function(){
       var off=(window.scrollY||0)*0.035;
       zm.style.transform='translate(-50%,calc(-50% + '+off.toFixed(1)+'px))';
