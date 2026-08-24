@@ -7,3 +7,15 @@ vercel-deployment-url.txt
 7z-current-*.zip
 7z-magic-*.zip
 *.ps1
+# 7Z local safety files - never deploy
+.env.local
+.env.local.*
+_admin-before-*
+_admin-before-rollback-*
+_portal-ui-backup-*
+_portal-theme-backup-*
+_admin-before-native-private-access-*
+_before-*
+_private-access-before-*
+_hub-login-before-*
+_legacy-file-access-before-*
