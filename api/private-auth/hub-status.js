@@ -1,4 +1,4 @@
-import { ADMIN_COOKIE_NAME, HUB_ADMIN_SCOPES, HUB_PUBLIC_SCOPES, PRIVATE_RESOURCES, noStoreHeaders, readCookie, verifyAdminSession, verifySession } from '../../lib/private-access.js';
+﻿import { ADMIN_COOKIE_NAME, HUB_ADMIN_SCOPES, HUB_PUBLIC_SCOPES, PRIVATE_RESOURCES, noStoreHeaders, readCookie, verifyAdminSession, verifySession } from '../../lib/private-access.js';
 
 function send(response, status, body) {
   for (const [name, value] of Object.entries(noStoreHeaders)) response.setHeader(name, value);
@@ -17,6 +17,42 @@ export default async function handler(request, response) {
 
   if (admin) {
     return send(response, 200, { ok: true, admin: true, allowed: HUB_ADMIN_SCOPES });
+  }
+  /*
+   * Z7_NATIVE_CLIENT_STATUS
+   */
+  try {
+
+    const nativeAuth =
+      await import(
+        "../../lib/portal-native-session.mjs"
+      );
+
+    const nativeClient =
+      await nativeAuth.getNativeClientSession(
+        request
+      );
+
+    if (nativeClient) {
+
+      return send(
+        response,
+        200,
+        {
+          ok: true,
+          admin: false,
+          native: true,
+          allowed: []
+        }
+      );
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Native client status:",
+      error
+    );
   }
 
   const checks = await Promise.all(HUB_PUBLIC_SCOPES.map(async (scope) => {

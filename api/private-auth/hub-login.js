@@ -1,4 +1,4 @@
-import { HUB_ADMIN_SCOPES, HUB_PUBLIC_SCOPES, adminSessionCookie, issueAdminSession, issueSession, noStoreHeaders, sessionCookie, validAdminCredentials, validCredentials } from '../../lib/private-access.js';
+﻿import { HUB_ADMIN_SCOPES, HUB_PUBLIC_SCOPES, adminSessionCookie, issueAdminSession, issueSession, noStoreHeaders, sessionCookie, validAdminCredentials, validCredentials } from '../../lib/private-access.js';
 
 const MAX_BODY_BYTES = 2048;
 const MAX_FIELD_LENGTH = 256;
@@ -37,7 +37,59 @@ export default async function handler(request, response) {
 
   const { clientId, accessKey } = body;
   if (!validText(clientId) || !validText(accessKey)) {
-    await new Promise((resolve) => setTimeout(resolve, FAILURE_DELAY_MS));
+  /*
+   * Z7_NATIVE_CLIENT_LOGIN
+   *
+   * Existing legacy credentials were already
+   * checked above. Only if they did not match
+   * do we try the new Neon Client ID account.
+   */
+  try {
+
+    const nativeAuth =
+      await import(
+        "../../lib/portal-native-session.mjs"
+      );
+
+    const nativeLogin =
+      await nativeAuth.tryNativeClientLogin(
+        request,
+        clientId,
+        accessKey
+      );
+
+    if (nativeLogin.ok) {
+
+      return send(
+        response,
+        200,
+        {
+          ok: true,
+          admin: false,
+          native: true,
+
+          /*
+           * Native clients receive NO legacy
+           * protected-resource scopes.
+           */
+          allowed: []
+        },
+        {
+          "Set-Cookie":
+            nativeLogin.cookie
+        }
+      );
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Native client login:",
+      error
+    );
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, FAILURE_DELAY_MS));
     return send(response, 401, { ok: false, admin: false, allowed: [], error: 'Login To Explore' });
   }
 
@@ -60,6 +112,57 @@ export default async function handler(request, response) {
     if (!session) return send(response, 503, { ok: false, admin: false, allowed: [] });
 
     return send(response, 200, { ok: true, admin: false, allowed: [scope] }, { 'Set-Cookie': sessionCookie(scope, session) });
+  }
+  /*
+   * Z7_NATIVE_CLIENT_LOGIN
+   *
+   * Existing legacy credentials were already
+   * checked above. Only if they did not match
+   * do we try the new Neon Client ID account.
+   */
+  try {
+
+    const nativeAuth =
+      await import(
+        "../../lib/portal-native-session.mjs"
+      );
+
+    const nativeLogin =
+      await nativeAuth.tryNativeClientLogin(
+        request,
+        clientId,
+        accessKey
+      );
+
+    if (nativeLogin.ok) {
+
+      return send(
+        response,
+        200,
+        {
+          ok: true,
+          admin: false,
+          native: true,
+
+          /*
+           * Native clients receive NO legacy
+           * protected-resource scopes.
+           */
+          allowed: []
+        },
+        {
+          "Set-Cookie":
+            nativeLogin.cookie
+        }
+      );
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Native client login:",
+      error
+    );
   }
 
   await new Promise((resolve) => setTimeout(resolve, FAILURE_DELAY_MS));

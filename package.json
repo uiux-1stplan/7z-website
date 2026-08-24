@@ -2,7 +2,15 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@clerk/backend": "^3.16.10",
+    "@neondatabase/serverless": "^1.1.0",
     "@vercel/blob": "^2.4.0",
-    "@vercel/functions": "^3.9.2"
+    "@vercel/functions": "^3.9.2",
+    "drizzle-orm": "^0.45.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10",
+    "esbuild": "^0.28.2"
   }
 }

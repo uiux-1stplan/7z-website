@@ -1,335 +1,463 @@
-<!DOCTYPE html>
-<!DOCTYPE html>
-
+﻿<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta name="description" content="7Z Magic administrator access panel." />
-<title>Admin Panel | 7Z Magic</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>7Z Magic — Admin Portal</title>
 
-
-
-
-<link href="/site.webmanifest" rel="manifest"/>
-<meta content="#111111" name="theme-color"/>
-<link as="image" href="/media/main_logo/7ZMagic-official-logo-20260822.png" rel="preload"/>
-
-
-
-<link href="/assets/css/styles.css?v=20260822-header-full-logo-contained" rel="stylesheet"/>
-<link href="/assets/css/performance.css?v=20260728-video3" rel="stylesheet"/>
-<link href="/assets/css/pages.css?v=20260804-prod8" rel="stylesheet"/>
-    <link rel="stylesheet" href="/assets/css/navigation-overflow.css?v=20260805-nav9" />
-  <style id="z7-route-transition-critical">
-      html.z7-route-pending,
-      html.z7-route-pending body {
-        background: #030303 !important;
-      }
-
-      html.z7-route-pending body::before {
-        position: fixed;
-        inset: 0;
-        z-index: 2147482000;
-        content: "";
-        background: #030303;
-      }
-
-      .z7-route-transition {
-        position: fixed;
-        inset: 0;
-        z-index: 2147483000;
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      .z7-route-transition__mark {
-        width: 96px;
-        max-width: 26vw;
-        aspect-ratio: 1;
-        overflow: hidden;
-      }
-
-      .z7-route-transition__mark img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    </style>
-    <script id="z7-route-transition-bootstrap">
-      (() => {
-        try {
-          const raw = sessionStorage.getItem("z7:route-transition-v11");
-          if (!raw) return;
-          const data = JSON.parse(raw);
-          if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
-            document.documentElement.classList.add("z7-route-pending");
-          } else {
-            sessionStorage.removeItem("z7:route-transition-v11");
-          }
-        } catch {
-          document.documentElement.classList.remove("z7-route-pending");
-        }
-      })();
-    </script>
-    <link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route11" />
-    <script defer src="/assets/js/page-transition.js?v=20260805-route11"></script>
-      <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
-      <link rel="stylesheet" href="/assets/css/all-videos-audio.css?v=20260806-allvideos15" />
-<link rel="stylesheet" href="/assets/css/blueprint-access.css?v=20260813-private-access1" />
-
-
-
-
-
-
-
-
-
-      <link rel="icon" href="/favicon.ico?v=20260806-favicon19" sizes="any" />
-    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=20260806-favicon19" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260806-favicon19" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=20260806-favicon19" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20260806-favicon19" />
-    <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=20260821-admin1" />
-  <link rel="stylesheet" href="/assets/css/private-access-control.css?v=20260822-static-text-recovery" />
+  <link rel="stylesheet" href="/admin/admin.css">
 </head>
-<body class="subpage" data-static-background="true">
-<div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
-<div class="z7-route-transition__panel z7-route-transition__panel--left"></div>
-<div class="z7-route-transition__panel z7-route-transition__panel--right"></div>
-<div class="z7-route-transition__stage">
-<p class="z7-route-transition__micro">7Z Magic / Scene Change</p>
-<div aria-hidden="true" class="z7-route-transition__mark">
-<img alt="" src="/media/main_logo/7ZMagic-official-logo-20260822.png"/>
+
+<body>
+
+<div
+  id="site-header-slot"
+  class="z7-admin-site-header">
 </div>
-<span aria-hidden="true" class="z7-route-transition__line"></span>
-<p class="z7-route-transition__label" data-z7-route-label="">7Z Magic</p>
+
+<div class="ambient ambient-a"></div>
+<div class="ambient ambient-b"></div>
+<div class="grid-bg"></div>
+
+<div id="boot-screen" class="boot-screen">
+  <div class="boot-mark">
+  <img
+    src="/media/main_logo/7ZMagic-official-logo-20260822.png"
+    alt="7Z Magic">
 </div>
+  <div class="boot-copy">
+    <strong>7Z MAGIC</strong>
+    <span>Secure Portal</span>
+  </div>
+  <div class="boot-loader"></div>
 </div>
-<canvas aria-hidden="true" id="atmosphere"></canvas>
-<div aria-hidden="true" class="grain"></div>
-<header aria-label="Primary" class="site-header">
-<a aria-label="7Z Magic home" class="brand magnetic" href="/">
-<img alt="" src="/media/main_logo/7ZMagic-official-logo-20260822.png"/>
-</a>
-<nav aria-label="Main navigation" class="main-nav">
-<a href="/">Home</a>
-<div class="services-menu">
-<button aria-controls="servicesPanel" aria-expanded="false" class="services-trigger" type="button">Services</button>
-<div aria-hidden="true" aria-label="Service sections" class="services-panel" id="servicesPanel">
-<a href="/#architecture">Architectural Design</a>
-<a href="/#media">Marketing Media</a>
-<a href="/#websites">Website Design</a>
-<a href="/#identity">Brand Identity</a>
-<a href="/#advertising-materials">Advertising Materials</a>
-<a href="/#product-design">Product Design</a>
-<a href="/#advertising-7sanz">Advertising on 7SANZ</a>
-<a href="/#presentations">Interactive Presentations</a>
-<a href="/#film">Film Production</a>
-<a href="/#ai-masterclass">AI Masterclass</a>
+
+<div id="auth-screen" class="auth-screen hidden">
+  <div class="auth-shell">
+
+    <section class="auth-brand">
+      <div class="brand-kicker">7Z MAGIC / SECURE ACCESS</div>
+
+      <h1>
+        Client Portal
+        <span>Administration.</span>
+      </h1>
+
+      <p>
+        Secure user management, controlled access and private
+        project delivery.
+      </p>
+
+      <div class="security-points">
+        <div>
+          <span class="dot"></span>
+          Server-side authorization
+        </div>
+
+        <div>
+          <span class="dot"></span>
+          Private file permissions
+        </div>
+
+        <div>
+          <span class="dot"></span>
+          Administrative audit trail
+        </div>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-title">
+        <span>ADMIN ACCESS</span>
+        <h2>Sign in</h2>
+      </div>
+
+      <div id="clerk-signin"></div>
+
+      <p class="login-note">
+        Accounts are created by authorized 7Z Magic administrators only.
+      </p>
+    </section>
+
+  </div>
 </div>
+
+<div id="denied-screen" class="center-state hidden">
+  <div class="state-card">
+    <span class="eyebrow">ACCESS CONTROL</span>
+    <h1>Admin access required.</h1>
+    <p>
+      Your account is authenticated but does not have
+      administrator privileges.
+    </p>
+
+    <button id="denied-signout" class="button button-primary">
+      Sign Out
+    </button>
+  </div>
 </div>
-<a href="/about">About</a>
-<a href="/founders">Founders</a>
-<a href="/contact">Contact</a>
-<a href="/private-access/">Private Access</a>
-</nav>
-<div aria-label="Social links" class="header-socials">
-<a aria-label="Instagram" class="magnetic social-icon" href="https://www.instagram.com/7z.magic" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="14" rx="4" width="14" x="5" y="5"></rect>
-<circle cx="12" cy="12" r="3.2"></circle>
-<circle cx="16.5" cy="7.5" r="0.9"></circle>
-</svg>
-</a>
-<a aria-label="Behance" class="magnetic social-icon social-icon--behance" href="https://www.behance.net/hassanrayyan3" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M5.2 8.1h4.2c1.8 0 3 .9 3 2.3 0 1-.5 1.7-1.4 2 1.1.3 1.8 1.1 1.8 2.4 0 1.8-1.4 3-3.5 3H5.2V8.1Z"></path>
-<path d="M7.3 10.1h1.9c.7 0 1.1.3 1.1.9s-.4.9-1.1.9H7.3v-1.8Z"></path>
-<path d="M7.3 13.6h2.1c.8 0 1.2.4 1.2 1s-.4 1-1.2 1H7.3v-2Z"></path>
-<path d="M14.5 11h4.4"></path>
-<path d="M14.5 14.6c.2-1.8 1.2-3 3.1-3 2.1 0 3.1 1.5 3 3.7h-4.1c.2.8.7 1.2 1.6 1.2.7 0 1.1-.2 1.5-.7"></path>
-</svg>
-</a>
-<a aria-label="Facebook" class="magnetic social-icon" href="https://web.facebook.com/7sanzi/" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
-</svg>
-</a>
-<a aria-label="Email 7Z Magic" class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="12" rx="2" width="16" x="4" y="6"></rect>
-<path d="m5 8 7 5 7-5"></path>
-</svg>
-</a>
-<a aria-label="LinkedIn" class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M6.3 9.5v8.2"></path>
-<path d="M6.3 6.4v.1"></path>
-<path d="M10.3 17.7v-8.2"></path>
-<path d="M10.3 12.5c.6-1.8 1.8-3.1 3.8-3.1 2.3 0 3.6 1.5 3.6 4.2v4.1"></path>
-</svg>
-</a>
-</div>
-</header>
-<main class="subpage-main z7admin-page" id="top">
-  <section class="z7admin-hero">
-    <div class="z7admin-shell z7admin-layout">
-      <div class="z7admin-copy" data-z7-reveal>
-        <p class="section-kicker">7Z Magic / Administration</p>
-        <h1>Admin<br><span>Control Access.</span></h1>
+
+<div id="app" class="app hidden">
+
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-symbol">7Z</div>
+
+      <div>
+        <strong>7Z MAGIC</strong>
+        <span>Client Portal</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+
+      <button class="nav-item active">
+        <span class="nav-icon">01</span>
+        <span>
+          <strong>Users</strong>
+          <small>Access management</small>
+        </span>
+      </button>
+
+      <button class="nav-item disabled" disabled>
+        <span class="nav-icon">02</span>
+        <span>
+          <strong>Files</strong>
+          <small>Next stage</small>
+        </span>
+      </button>
+
+      <button class="nav-item disabled" disabled>
+        <span class="nav-icon">03</span>
+        <span>
+          <strong>Permissions</strong>
+          <small>Next stage</small>
+        </span>
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="security-status">
+        <span></span>
+        SECURE SESSION
+      </div>
+
+      <small>
+        7Z Magic Client Infrastructure
+      </small>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div>
+        <span class="page-kicker">
+          ADMINISTRATION / USERS
+        </span>
+
+        <h1>User Management</h1>
+
         <p>
-          Authorized administrators can open every protected 7Z resource
-          through one secure session.
+          Create users, manage account access,
+          roles and credentials.
         </p>
       </div>
 
-      <section class="z7admin-console" aria-labelledby="admin-console-title" data-z7-reveal>
-        <div class="z7admin-console__top">
-          <span>ADMIN SESSION</span>
-          <span class="z7admin-indicator" data-admin-indicator>LOCKED</span>
+      <div class="admin-profile">
+        <div id="admin-copy">
+          <strong id="admin-name">Administrator</strong>
+          <span id="admin-email"></span>
         </div>
 
-        <div data-admin-login-view>
-          <p class="z7admin-kicker">Administrator Sign In</p>
-          <h2 id="admin-console-title">Authenticate.</h2>
+        <div id="clerk-user-button"></div>
+      </div>
 
-          <form id="adminLoginForm" class="z7admin-form" autocomplete="on">
-            <label>
-              <span>Admin ID</span>
-              <input id="adminClientId" name="clientId" type="text" autocomplete="username" maxlength="256" required>
-            </label>
+    </header>
 
-            <label>
-              <span>Access Key</span>
-              <input id="adminAccessKey" name="accessKey" type="password" autocomplete="current-password" maxlength="256" required>
-            </label>
 
-            <button type="submit" class="z7admin-submit magnetic">
-              <span>OPEN ADMIN SESSION</span>
-              <b aria-hidden="true">↗</b>
-            </button>
+    <section class="stats">
 
-            <p class="z7admin-message" id="adminMessage" role="status" aria-live="polite"></p>
-          </form>
-        </div>
+      <article class="stat">
+        <span>USERS</span>
+        <strong id="stat-users">—</strong>
+        <small>Total portal accounts</small>
+      </article>
 
-        <div data-admin-panel-view hidden>
-          <p class="z7admin-kicker">Administrator Session</p>
-          <h2>Access granted.</h2>
-          <p class="z7admin-session-copy">
-            This browser can now open all protected resources without entering
-            individual resource credentials.
-          </p>
+      <article class="stat">
+        <span>ACTIVE</span>
+        <strong id="stat-active">—</strong>
+        <small>Enabled accounts</small>
+      </article>
 
-          <div class="z7admin-resources">
-            <a href="/silla-hall-presentation/"><span>Silla Hall</span><b>↗</b></a>
-            <a href="/elcon-arabia-presentation/"><span>ELCON Arabia</span><b>↗</b></a>
-            <a href="/strategic-blueprint/"><span>Strategic Blueprint HTML</span><b>↗</b></a>
-            <a href="/api/private-documents/blueprint"><span>Strategic Blueprint PDF</span><b>↗</b></a>
-            <a href="/tawjihi-english-quotation/"><span>Tawjihi English</span><b>↗</b></a>
-            <a href="/oman-market-partnership/"><span>Oman Market</span><b>↗</b></a>
+      <article class="stat">
+        <span>ADMINS</span>
+        <strong id="stat-admins">—</strong>
+        <small>Administrative access</small>
+      </article>
+
+    </section>
+
+
+    <section class="workspace-grid">
+
+      <article class="panel create-panel">
+
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">NEW ACCOUNT</span>
+            <h2>Create User</h2>
           </div>
 
-          <div class="z7admin-panel-actions">
-            <a class="z7admin-hub-link" href="/private-access/">OPEN PRIVATE ACCESS HUB ↗</a>
-            <button type="button" data-admin-logout>END ADMIN SESSION</button>
-          </div>
+          <span class="status-pill">
+            ADMIN ONLY
+          </span>
         </div>
-      </section>
+
+        <form id="create-user-form">
+
+          <label>
+            <span>Display Name</span>
+            <input
+              id="create-name"
+              name="displayName"
+              autocomplete="off"
+              required
+              maxlength="120"
+              placeholder="Client or team member">
+          </label>
+
+          <label>
+            <span>Email Address</span>
+            <input
+              id="create-email"
+              name="email"
+              type="email"
+              autocomplete="off"
+              required
+              placeholder="name@company.com">
+          </label>
+
+          <label>
+            <span>Company</span>
+            <input
+              id="create-company"
+              name="company"
+              autocomplete="off"
+              maxlength="160"
+              placeholder="Company name">
+          </label>
+
+          <label>
+            <span>Initial Password</span>
+
+            <div class="password-field">
+              <input
+                id="create-password"
+                name="password"
+                type="password"
+                minlength="8"
+                maxlength="128"
+                autocomplete="new-password"
+                required
+                placeholder="Minimum 8 characters">
+
+              <button
+                type="button"
+                class="text-button toggle-password"
+                data-target="create-password">
+                SHOW
+              </button>
+            </div>
+          </label>
+
+          <label>
+            <span>Role</span>
+
+            <select
+              id="create-role"
+              name="role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+
+          <button
+            id="create-submit"
+            class="button button-primary full"
+            type="submit">
+            Create Account
+          </button>
+
+        </form>
+
+      </article>
+
+
+      <article class="panel users-panel">
+
+        <div class="panel-head table-head">
+
+          <div>
+            <span class="eyebrow">PORTAL DIRECTORY</span>
+            <h2>Users</h2>
+          </div>
+
+          <button
+            id="refresh-users"
+            type="button"
+            class="button button-secondary">
+            Refresh
+          </button>
+
+        </div>
+
+        <div id="users-loading" class="table-state">
+          Loading users…
+        </div>
+
+        <div id="users-empty" class="table-state hidden">
+          No users found.
+        </div>
+
+        <div
+          id="users-table-wrap"
+          class="table-wrap hidden">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Company</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="users-body"></tbody>
+
+          </table>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<div id="password-modal" class="modal hidden">
+
+  <div class="modal-backdrop" data-close-modal></div>
+
+  <div class="modal-card">
+
+    <div class="modal-head">
+
+      <div>
+        <span class="eyebrow">SECURITY</span>
+        <h2>Change Password</h2>
+      </div>
+
+      <button
+        class="close-button"
+        type="button"
+        data-close-modal>
+        ×
+      </button>
+
     </div>
-  </section>
-</main>
-<footer class="footer" id="contact-footer">
-<div class="footer__inner">
-<div class="footer__brand">
-<img alt="7Z Magic" src="/media/main_logo/7ZMagic-official-logo-20260822.png"/>
-<div>
-<p class="section-kicker">7Z Magic</p>
-<h2>Premium creative systems for spaces, screens and modern brands.</h2>
-<p>Architecture, AI, media production, websites and brand experience shaped with cinematic precision.</p>
-</div>
-</div>
-<nav aria-label="Footer navigation" class="footer__links">
-<a href="/#architecture">Architecture</a>
-<a href="/#media">Media Production</a>
-<a href="/#websites">Website Design</a>
-<a href="/#identity">Brand Identity</a>
-<a href="/about">About Us</a>
-<a href="/founders">Founders</a>
-<a href="/contact">Contact Us</a>
-</nav>
-<div class="footer__contact">
-<p>Ready to start a polished digital experience?</p>
-<a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
-<div aria-label="Strategic blueprint documents" class="footer__documents">
-<a class="footer__document-action" href="/admin/"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 5.5 5.8v5.3c0 4.1 2.7 7.8 6.5 9.9 3.8-2.1 6.5-5.8 6.5-9.9V5.8L12 3Z"></path><path d="M9.5 11.2V9.8a2.5 2.5 0 0 1 5 0v1.4"></path><rect x="8.4" y="11.2" width="7.2" height="5.1" rx="1.2"></rect></svg><span>ADMIN PANEL</span><span aria-hidden="true" class="footer__document-arrow">↗</span></a>
-</div>
-<div aria-label="Social links" class="socials">
-<a aria-label="Instagram" class="magnetic social-icon" href="https://www.instagram.com/7z.magic" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="14" rx="4" width="14" x="5" y="5"></rect>
-<circle cx="12" cy="12" r="3.2"></circle>
-<circle cx="16.5" cy="7.5" r="0.9"></circle>
-</svg>
-</a>
-<a aria-label="Behance" class="magnetic social-icon social-icon--behance" href="https://www.behance.net/hassanrayyan3" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M5.2 8.1h4.2c1.8 0 3 .9 3 2.3 0 1-.5 1.7-1.4 2 1.1.3 1.8 1.1 1.8 2.4 0 1.8-1.4 3-3.5 3H5.2V8.1Z"></path>
-<path d="M7.3 10.1h1.9c.7 0 1.1.3 1.1.9s-.4.9-1.1.9H7.3v-1.8Z"></path>
-<path d="M7.3 13.6h2.1c.8 0 1.2.4 1.2 1s-.4 1-1.2 1H7.3v-2Z"></path>
-<path d="M14.5 11h4.4"></path>
-<path d="M14.5 14.6c.2-1.8 1.2-3 3.1-3 2.1 0 3.1 1.5 3 3.7h-4.1c.2.8.7 1.2 1.6 1.2.7 0 1.1-.2 1.5-.7"></path>
-</svg>
-</a>
-<a aria-label="Facebook" class="magnetic social-icon" href="https://web.facebook.com/7sanzi/" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
-</svg>
-</a>
-<a aria-label="Email 7Z Magic" class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="12" rx="2" width="16" x="4" y="6"></rect>
-<path d="m5 8 7 5 7-5"></path>
-</svg>
-</a>
-<a aria-label="LinkedIn" class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M6.3 9.5v8.2"></path>
-<path d="M6.3 6.4v.1"></path>
-<path d="M10.3 17.7v-8.2"></path>
-<path d="M10.3 12.5c.6-1.8 1.8-3.1 3.8-3.1 2.3 0 3.6 1.5 3.6 4.2v4.1"></path>
-</svg>
-</a>
-</div>
-</div>
-</div>
-<div class="footer__bottom">
-<small>Copyright © 2026 7Z Magic. All rights reserved.</small>
-<a href="/">Home</a>
-</div>
-</footer>
 
-<script src="/assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
-<script src="/assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
-<script src="/assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
-<script src="/assets/js/performance.js?v=20260728-video3"></script>
+    <p id="password-user-label" class="modal-copy"></p>
 
-<script src="/assets/js/app.js?v=20260804-prod8"></script>
-<script src="/assets/js/pages.js?v=20260804-prod8"></script>
-    <script src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
-      <script src="/assets/js/content-protection.js?v=20260806-protect14"></script>
-      <script src="/assets/js/all-videos-audio.js?v=20260806-allvideos15"></script>
-<script src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
+    <form id="password-form">
 
-<script src="/admin/admin.js?v=20260821-admin1"></script>
+      <input
+        type="hidden"
+        id="password-user-id">
 
-  <script src="/assets/js/private-access-control.js?v=20260822-global-access"></script>
+      <label>
+        <span>New Password</span>
+
+        <div class="password-field">
+
+          <input
+            id="new-password"
+            type="password"
+            minlength="8"
+            maxlength="128"
+            autocomplete="new-password"
+            required
+            placeholder="Minimum 8 characters">
+
+          <button
+            type="button"
+            class="text-button toggle-password"
+            data-target="new-password">
+            SHOW
+          </button>
+
+        </div>
+      </label>
+
+      <p class="warning-copy">
+        Existing sessions will be signed out after
+        the password is changed.
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="button button-secondary"
+          data-close-modal>
+          Cancel
+        </button>
+
+        <button
+          id="password-submit"
+          type="submit"
+          class="button button-primary">
+          Update Password
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<div
+  id="site-footer-slot"
+  class="z7-admin-site-footer">
+</div>
+
+<div id="toast-stack" class="toast-stack"></div>
+
+<script src="/admin/site-shell.js?v=20260824"></script>
+<script src="/admin/admin.js"></script>
+
+<script src="/admin/legacy-file-access.js?v=20260824"></script>
+<script src="/admin/private-file-upload.bundle.js?v=20260824"></script>
+<script src="/admin/native-clients.js?v=20260825"></script>
 </body>
 </html>
+
+
+
+
+
+
