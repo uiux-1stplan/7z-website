@@ -1,91 +1,181 @@
 {
-    "$schema":  "https://openapi.vercel.sh/vercel.json",
-    "framework":  null,
-    "buildCommand":  null,
-    "installCommand":  "",
-    "outputDirectory":  ".",
-    "cleanUrls":  true,
-    "headers":  [
-                    {
-                        "source":  "/access/(.*)",
-                        "headers":  [
-                                        {
-                                            "key":  "Cache-Control",
-                                            "value":  "no-store, max-age=0"
-                                        },
-                                        {
-                                            "key":  "X-Robots-Tag",
-                                            "value":  "noindex, noarchive, nosnippet"
-                                        },
-                                        {
-                                            "key":  "Referrer-Policy",
-                                            "value":  "no-referrer"
-                                        }
-                                    ]
-                    },
-                    {
-                        "source":  "/assets/(.*)",
-                        "headers":  [
-                                        {
-                                            "key":  "Cache-Control",
-                                            "value":  "public, max-age=31536000, immutable"
-                                        }
-                                    ]
-                    },
-                    {
-                        "source":  "/media/posters/(.*)",
-                        "headers":  [
-                                        {
-                                            "key":  "Cache-Control",
-                                            "value":  "public, max-age=31536000, immutable"
-                                        }
-                                    ]
-                    },
-                    {
-                        "source":  "/media/(.*)",
-                        "headers":  [
-                                        {
-                                            "key":  "Cache-Control",
-                                            "value":  "public, max-age=2592000, stale-while-revalidate=86400"
-                                        },
-                                        {
-                                            "key":  "X-Content-Type-Options",
-                                            "value":  "nosniff"
-                                        },
-                                        {
-                                            "key":  "Content-Disposition",
-                                            "value":  "inline"
-                                        },
-                                        {
-                                            "key":  "X-Robots-Tag",
-                                            "value":  "noindex, noarchive, nosnippet"
-                                        },
-                                        {
-                                            "key":  "Cross-Origin-Resource-Policy",
-                                            "value":  "same-origin"
-                                        }
-                                    ]
-                    },
-                    {
-                        "source":  "/(.*)",
-                        "headers":  [
-                                        {
-                                            "key":  "Permissions-Policy",
-                                            "value":  "picture-in-picture=(), display-capture=()"
-                                        },
-                                        {
-                                            "key":  "X-Frame-Options",
-                                            "value":  "DENY"
-                                        },
-                                        {
-                                            "key":  "Content-Security-Policy",
-                                            "value":  "frame-ancestors \u0027none\u0027"
-                                        },
-                                        {
-                                            "key":  "Referrer-Policy",
-                                            "value":  "strict-origin-when-cross-origin"
-                                        }
-                                    ]
-                    }
-                ]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": null,
+  "installCommand": "",
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/access/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noarchive, nosnippet"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/media/posters/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/media/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "inline"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noarchive, nosnippet"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Permissions-Policy",
+          "value": "picture-in-picture=(), display-capture=()"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'none'"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/admin/blob-finalize",
+      "destination": "/api/admin-router?__z7route=blob-finalize"
+    },
+    {
+      "source": "/api/admin/blob-upload",
+      "destination": "/api/admin-router?__z7route=blob-upload"
+    },
+    {
+      "source": "/api/admin/blob-upload-intent",
+      "destination": "/api/admin-router?__z7route=blob-upload-intent"
+    },
+    {
+      "source": "/api/admin/client-file-access",
+      "destination": "/api/admin-router?__z7route=client-file-access"
+    },
+    {
+      "source": "/api/admin/clients",
+      "destination": "/api/admin-router?__z7route=clients"
+    },
+    {
+      "source": "/api/admin/user-password",
+      "destination": "/api/admin-router?__z7route=user-password"
+    },
+    {
+      "source": "/api/admin/user-role",
+      "destination": "/api/admin-router?__z7route=user-role"
+    },
+    {
+      "source": "/api/admin/users",
+      "destination": "/api/admin-router?__z7route=users"
+    },
+    {
+      "source": "/api/admin/user-status",
+      "destination": "/api/admin-router?__z7route=user-status"
+    },
+    {
+      "source": "/api/portal/config",
+      "destination": "/api/portal-router?__z7route=config"
+    },
+    {
+      "source": "/api/portal/me",
+      "destination": "/api/portal-router?__z7route=me"
+    },
+    {
+      "source": "/api/private-auth/admin-login",
+      "destination": "/api/private-auth-router?__z7route=admin-login"
+    },
+    {
+      "source": "/api/private-auth/admin-logout",
+      "destination": "/api/private-auth-router?__z7route=admin-logout"
+    },
+    {
+      "source": "/api/private-auth/admin-status",
+      "destination": "/api/private-auth-router?__z7route=admin-status"
+    },
+    {
+      "source": "/api/private-auth/hub-login",
+      "destination": "/api/private-auth-router?__z7route=hub-login"
+    },
+    {
+      "source": "/api/private-auth/hub-logout",
+      "destination": "/api/private-auth-router?__z7route=hub-logout"
+    },
+    {
+      "source": "/api/private-auth/hub-status",
+      "destination": "/api/private-auth-router?__z7route=hub-status"
+    },
+    {
+      "source": "/api/private-auth/login",
+      "destination": "/api/private-auth-router?__z7route=login"
+    },
+    {
+      "source": "/api/private-auth/logout",
+      "destination": "/api/private-auth-router?__z7route=logout"
+    },
+    {
+      "source": "/api/private-auth/portal-file",
+      "destination": "/api/private-auth-router?__z7route=portal-file"
+    },
+    {
+      "source": "/api/private-auth/portal-files",
+      "destination": "/api/private-auth-router?__z7route=portal-files"
+    },
+    {
+      "source": "/api/private-documents/blueprint",
+      "destination": "/api/private-documents-router?__z7route=blueprint"
+    }
+  ]
 }
