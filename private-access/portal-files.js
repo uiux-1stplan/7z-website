@@ -1,11 +1,10 @@
-﻿(() => {
-
+(() => {
   "use strict";
 
   const LIST_API =
     "/api/private-auth/portal-files";
 
-  let loading = false;
+  let serial = 0;
 
 
   function escapeHtml(value) {
@@ -13,19 +12,35 @@
     return String(
       value ?? ""
     )
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;");
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      );
   }
 
 
   function formatBytes(bytes) {
 
     const value =
-      Number(bytes || 0);
+      Number(
+        bytes || 0
+      );
 
-    if (!value) return "";
+    if (!value) {
+      return "";
+    }
 
     const units = [
       "B",
@@ -43,15 +58,18 @@
         units.length - 1
       );
 
+    const amount =
+      value /
+      Math.pow(
+        1024,
+        index
+      );
+
     return `${
-      (
-        value /
-        Math.pow(
-          1024,
-          index
-        )
-      ).toFixed(
-        index === 0 ? 0 : 1
+      amount.toFixed(
+        index === 0
+          ? 0
+          : 1
       )
     } ${units[index]}`;
   }
@@ -64,17 +82,14 @@
         "z7-client-private-files"
       );
 
-
     if (section) {
       return section;
     }
-
 
     section =
       document.createElement(
         "section"
       );
-
 
     section.id =
       "z7-client-private-files";
@@ -82,26 +97,35 @@
     section.className =
       "z7-client-private-files";
 
-    section.hidden = true;
-
+    section.hidden =
+      true;
 
     section.innerHTML = `
       <div class="z7cpf-inner">
 
         <div class="z7cpf-heading">
 
-          <div class="z7cpf-kicker">
-            PRIVATE DELIVERY
+          <div>
+            <div class="z7cpf-kicker">
+              PRIVATE DELIVERY
+            </div>
+
+            <h2>
+              Your Files
+            </h2>
+
+            <p>
+              Secure deliverables assigned specifically
+              to your private 7Z access.
+            </p>
           </div>
 
-          <h2>
-            Your Files
-          </h2>
-
-          <p>
-            Secure files assigned specifically
-            to your access account.
-          </p>
+          <div
+            class="z7cpf-session"
+            aria-label="Secure private session">
+            <i></i>
+            SECURE SESSION
+          </div>
 
         </div>
 
@@ -113,12 +137,10 @@
       </div>
     `;
 
-
     const footer =
       document.querySelector(
         "footer"
       );
-
 
     if (footer) {
 
@@ -138,40 +160,7 @@
       );
     }
 
-
     return section;
-  }
-
-
-  function applyNativeUi(
-    payload
-  ) {
-
-    if (
-      payload?.authenticated &&
-      payload?.authType ===
-        "native"
-    ) {
-
-      document
-        .documentElement
-        .classList
-        .add(
-          "z7-native-client-authenticated"
-        );
-
-
-      const loginPanel =
-        document.querySelector(
-          "[data-z7pa-login-panel]"
-        );
-
-
-      if (loginPanel) {
-        loginPanel.hidden = true;
-      }
-
-    }
   }
 
 
@@ -188,28 +177,39 @@
         "z7cpf-list"
       );
 
+    if (
+      !authenticated
+    ) {
 
-    if (!authenticated) {
+      section.hidden =
+        true;
 
-      section.hidden = true;
-      list.innerHTML = "";
+      if (list) {
+        list.innerHTML = "";
+      }
 
       return;
     }
 
+    section.hidden =
+      false;
 
-    section.hidden = false;
+    if (!list) return;
 
 
     if (
       !Array.isArray(files) ||
-      !files.length
+      files.length === 0
     ) {
 
       list.innerHTML = `
         <div class="z7cpf-empty">
-          No files are currently assigned
-          to this account.
+          <strong>
+            No files assigned yet.
+          </strong>
+          <span>
+            Your secure delivery area is active.
+          </span>
         </div>
       `;
 
@@ -226,25 +226,58 @@
               file.id
             );
 
-
           const viewUrl =
             `/api/private-auth/portal-file?id=${id}&mode=view`;
-
 
           const downloadUrl =
             `/api/private-auth/portal-file?id=${id}&mode=download`;
 
+          const contentType =
+            String(
+              file.contentType || ""
+            );
+
+          let type =
+            "FILE";
+
+          if (
+            contentType.includes(
+              "pdf"
+            )
+          ) {
+            type = "PDF";
+          } else if (
+            contentType.includes(
+              "html"
+            )
+          ) {
+            type = "HTML";
+          } else if (
+            contentType.startsWith(
+              "image/"
+            )
+          ) {
+            type = "IMG";
+          } else if (
+            contentType.startsWith(
+              "video/"
+            )
+          ) {
+            type = "VIDEO";
+          }
 
           return `
             <article class="z7cpf-file">
 
               <div class="z7cpf-file-main">
 
-                <div class="z7cpf-file-icon">
-                  FILE
+                <div
+                  class="z7cpf-file-icon"
+                  aria-hidden="true">
+                  ${escapeHtml(type)}
                 </div>
 
-                <div>
+                <div class="z7cpf-file-copy">
 
                   <strong>
                     ${escapeHtml(
@@ -264,7 +297,6 @@
 
               </div>
 
-
               <div class="z7cpf-actions">
 
                 <a
@@ -272,9 +304,9 @@
                   target="_blank"
                   rel="noopener"
                   class="z7cpf-open">
-                  OPEN
+                  <span>OPEN</span>
+                  <b aria-hidden="true">↗</b>
                 </a>
-
 
                 ${
                   file.canDownload
@@ -297,12 +329,12 @@
   }
 
 
-  async function loadFiles() {
+  async function loadFiles(
+    focus = false
+  ) {
 
-    if (loading) return;
-
-    loading = true;
-
+    const requestId =
+      ++serial;
 
     try {
 
@@ -317,6 +349,25 @@
               "no-store"
           }
         );
+
+      let payload = null;
+
+      try {
+        payload =
+          await response.json();
+      } catch {}
+
+
+      /*
+       * Ignore stale responses.
+       * Prevents pre-login 401 racing
+       * against successful login.
+       */
+      if (
+        requestId !== serial
+      ) {
+        return;
+      }
 
 
       if (
@@ -333,11 +384,10 @@
       }
 
 
-      const payload =
-        await response.json();
-
-
-      if (!response.ok) {
+      if (
+        !response.ok ||
+        !payload
+      ) {
 
         render(
           [],
@@ -348,11 +398,6 @@
       }
 
 
-      applyNativeUi(
-        payload
-      );
-
-
       render(
         payload.files || [],
         Boolean(
@@ -361,43 +406,68 @@
       );
 
 
+      if (
+        focus &&
+        payload.authenticated
+      ) {
+
+        const section =
+          document.getElementById(
+            "z7-client-private-files"
+          );
+
+        window.setTimeout(
+          () => {
+
+            section?.scrollIntoView({
+              behavior:
+                "smooth",
+
+              block:
+                "start"
+            });
+          },
+          80
+        );
+      }
+
+
     } catch (error) {
 
       console.warn(
         "Private files:",
         error
       );
-
-    } finally {
-
-      loading = false;
     }
   }
 
 
-  function refreshAfterLogin() {
+  window.addEventListener(
+    "z7pa:auth-changed",
+    event => {
 
-    [
-      250,
-      600,
-      1100,
-      1800
-    ].forEach(
-      delay => {
-
-        setTimeout(
-          loadFiles,
-          delay
+      const authenticated =
+        Boolean(
+          event.detail
+            ?.authenticated
         );
+
+      if (!authenticated) {
+
+        serial++;
+
+        render(
+          [],
+          false
+        );
+
+        return;
       }
-    );
-  }
 
-
-  document.addEventListener(
-    "submit",
-    refreshAfterLogin,
-    true
+      loadFiles(
+        true
+      );
+    }
   );
 
 
@@ -405,8 +475,16 @@
     "visibilitychange",
     () => {
 
-      if (!document.hidden) {
-        loadFiles();
+      if (
+        !document.hidden &&
+        document.body.classList.contains(
+          "z7pa-is-authenticated"
+        )
+      ) {
+
+        loadFiles(
+          false
+        );
       }
     }
   );
@@ -422,14 +500,20 @@
       () => {
 
         ensureSection();
-        loadFiles();
+
+        loadFiles(
+          false
+        );
       }
     );
 
   } else {
 
     ensureSection();
-    loadFiles();
+
+    loadFiles(
+      false
+    );
   }
 
 })();

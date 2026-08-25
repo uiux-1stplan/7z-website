@@ -1,15 +1,13 @@
-﻿import {
+import {
   ADMIN_COOKIE_NAME,
   HUB_ADMIN_SCOPES,
+  HUB_PUBLIC_SCOPES,
+  PRIVATE_RESOURCES,
   noStoreHeaders,
   readCookie,
-  verifyAdminSession
+  verifyAdminSession,
+  verifySession
 } from "../../lib/private-access.js";
-
-import {
-  resolvePortalClientAccess,
-  getAllowedLegacyResourceScopes
-} from "../../lib/portal-client-access.mjs";
 
 
 function send(
@@ -56,6 +54,7 @@ export default async function handler(
       405,
       {
         ok: false,
+        authenticated: false,
         admin: false,
         allowed: []
       }
@@ -89,7 +88,10 @@ export default async function handler(
       200,
       {
         ok: true,
+        authenticated: true,
+        authType: "admin",
         admin: true,
+        native: false,
         allowed:
           HUB_ADMIN_SCOPES
       }
@@ -97,66 +99,113 @@ export default async function handler(
   }
 
 
+  /*
+   * New native 7Z client session.
+   * File-only access is still a valid
+   * authenticated session.
+   */
   try {
 
-    const access =
-      await resolvePortalClientAccess(
-        request
+    const nativeAuth =
+      await import(
+        "../../lib/portal-native-session.mjs"
       );
 
 
-    if (!access.authenticated) {
+    const nativeClient =
+      await nativeAuth
+        .getNativeClientSession(
+          request
+        );
+
+
+    if (nativeClient) {
 
       return send(
         response,
         200,
         {
           ok: true,
+          authenticated: true,
+          authType: "native",
           admin: false,
+          native: true,
           allowed: []
         }
       );
     }
 
 
-    const allowed =
-      await getAllowedLegacyResourceScopes(
-        access.clientKeys
-      );
-
-
-    return send(
-      response,
-      200,
-      {
-        ok: true,
-        admin: false,
-
-        native:
-          access.authType ===
-          "native",
-
-        allowed
-      }
-    );
-
-
   } catch (error) {
 
     console.error(
-      "Unified hub status:",
+      "Native client status:",
       error
     );
-
-
-    return send(
-      response,
-      500,
-      {
-        ok: false,
-        admin: false,
-        allowed: []
-      }
-    );
   }
+
+
+  /*
+   * Original legacy private-access sessions.
+   */
+  const checks =
+    await Promise.all(
+      HUB_PUBLIC_SCOPES.map(
+        async scope => {
+
+          const cookieName =
+            PRIVATE_RESOURCES[
+              scope
+            ].cookieName;
+
+
+          const token =
+            readCookie(
+              cookieHeader,
+              cookieName
+            );
+
+
+          const valid =
+            await verifySession(
+              token,
+              scope,
+              process.env
+                .PRIVATE_ACCESS_SESSION_SECRET
+            );
+
+
+          return valid
+            ? scope
+            : null;
+        }
+      )
+    );
+
+
+  const allowed =
+    checks.filter(
+      Boolean
+    );
+
+
+  return send(
+    response,
+    200,
+    {
+      ok: true,
+
+      authenticated:
+        allowed.length > 0,
+
+      authType:
+        allowed.length
+          ? "legacy"
+          : null,
+
+      admin: false,
+      native: false,
+      allowed
+    }
+  );
 }

@@ -22,14 +22,9 @@ import {
 } from "../../lib/portal-runtime.mjs";
 
 
-const MAX_BODY_BYTES =
-  2048;
-
-const MAX_FIELD_LENGTH =
-  256;
-
-const FAILURE_DELAY_MS =
-  550;
+const MAX_BODY_BYTES = 2048;
+const MAX_FIELD_LENGTH = 256;
+const FAILURE_DELAY_MS = 450;
 
 
 function send(
@@ -46,7 +41,6 @@ function send(
       ...extraHeaders
     })
   ) {
-
     response.setHeader(
       name,
       value
@@ -175,8 +169,7 @@ export default async function handler(
 
 
   if (
-    typeof body ===
-    "string"
+    typeof body === "string"
   ) {
 
     if (
@@ -239,10 +232,17 @@ export default async function handler(
   }
 
 
-  const {
-    clientId,
-    accessKey
-  } = body;
+  const clientId =
+    String(
+      body.clientId || ""
+    ).trim();
+
+
+  const accessKey =
+    typeof body.accessKey ===
+    "string"
+      ? body.accessKey
+      : "";
 
 
   if (
@@ -257,9 +257,11 @@ export default async function handler(
 
 
   /*
-   * Existing legacy PRIVATE ACCESS admin
-   * credentials remain supported.
+   * =====================================================
+   * 1. CLERK-UNRELATED PRIVATE ADMIN LOGIN
+   * =====================================================
    */
+
   const adminSecret =
     process.env
       .PRIVATE_ACCESS_ADMIN_SESSION_SECRET;
@@ -294,7 +296,9 @@ export default async function handler(
         {
           ok: false,
           admin: false,
-          allowed: []
+          allowed: [],
+          error:
+            "Private access temporarily unavailable."
         }
       );
     }
@@ -319,16 +323,101 @@ export default async function handler(
   }
 
 
+  /*
+   * =====================================================
+   * 2. NATIVE CLIENT
+   *
+   * IMPORTANT:
+   * This runs BEFORE all Legacy environment logic.
+   * A new dashboard-created client therefore does NOT
+   * depend on PRIVATE_ACCESS_SESSION_SECRET or any
+   * PRIVATE_ACCESS_* legacy credentials.
+   * =====================================================
+   */
+
+  try {
+
+    const nativeLogin =
+      await tryNativeClientLogin(
+        request,
+        clientId,
+        accessKey
+      );
+
+
+    if (nativeLogin.ok) {
+
+      const clientKey =
+        nativeLogin
+          .client
+          .client_key ||
+        nativeLogin
+          .client
+          .clientKey;
+
+
+      const allowed =
+        clientKey
+          ? await getAllowedLegacyResourceScopes(
+              [clientKey]
+            )
+          : [];
+
+
+      console.log(
+        "Native client login success:",
+        clientId
+      );
+
+
+      return send(
+        response,
+        200,
+        {
+          ok: true,
+          admin: false,
+          native: true,
+          allowed
+        },
+        {
+          "Set-Cookie":
+            nativeLogin.cookie
+        }
+      );
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Native client login failure:",
+      error
+    );
+
+
+    return send(
+      response,
+      500,
+      {
+        ok: false,
+        admin: false,
+        allowed: [],
+        error:
+          "Private access temporarily unavailable."
+      }
+    );
+  }
+
+
+  /*
+   * =====================================================
+   * 3. LEGACY CLIENTS
+   * =====================================================
+   */
+
   const sql =
     getSql();
 
 
-  /*
-   * LEGACY USER:
-   * credentials still come from the original
-   * Vercel environment values, but the identity
-   * becomes a managed portal client session.
-   */
   for (
     const scope
     of HUB_PUBLIC_SCOPES
@@ -358,8 +447,10 @@ export default async function handler(
         WHERE
           auth_type =
             'legacy_scope'
+
           AND legacy_scope =
             ${scope}
+
           AND status =
             'active'
 
@@ -367,7 +458,11 @@ export default async function handler(
       `;
 
 
-    if (!clients.length) {
+    const client =
+      clients[0];
+
+
+    if (!client) {
 
       return fail(
         response
@@ -378,7 +473,7 @@ export default async function handler(
     const login =
       await createPortalClientSession(
         request,
-        clients[0].client_key
+        client.client_key
       );
 
 
@@ -393,8 +488,7 @@ export default async function handler(
     const allowed =
       await getAllowedLegacyResourceScopes(
         [
-          clients[0]
-            .client_key
+          client.client_key
         ]
       );
 
@@ -411,46 +505,6 @@ export default async function handler(
       {
         "Set-Cookie":
           login.cookie
-      }
-    );
-  }
-
-
-  /*
-   * NATIVE USER
-   */
-  const nativeLogin =
-    await tryNativeClientLogin(
-      request,
-      clientId,
-      accessKey
-    );
-
-
-  if (nativeLogin.ok) {
-
-    const allowed =
-      await getAllowedLegacyResourceScopes(
-        [
-          nativeLogin
-            .client
-            .client_key
-        ]
-      );
-
-
-    return send(
-      response,
-      200,
-      {
-        ok: true,
-        admin: false,
-        native: true,
-        allowed
-      },
-      {
-        "Set-Cookie":
-          nativeLogin.cookie
       }
     );
   }

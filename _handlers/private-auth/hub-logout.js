@@ -1,4 +1,4 @@
-﻿import {
+import {
   PRIVATE_RESOURCES,
   adminSessionCookie,
   noStoreHeaders,
@@ -84,7 +84,9 @@ export default async function handler(
             0
           )
       )
-      .filter(Boolean)
+      .filter(
+        Boolean
+      )
   ];
 
 
