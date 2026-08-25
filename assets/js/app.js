@@ -1246,7 +1246,33 @@
 
   function initLoader() {
     const loader = $("#loader");
-    if (!loader) return;
+    if (!loader) {
+      /*
+       * HOME RETURN FIX
+       *
+       * page-transition.js removes the loader when Home is
+       * reached from another page. Since .reveal elements
+       * begin hidden in CSS, make them visible immediately.
+       */
+      document.body.classList.remove("is-loading");
+
+      if (hasGsap) {
+        gsap.set(".reveal", {
+          autoAlpha: 1,
+          y: 0,
+          clearProps: "filter"
+        });
+      } else {
+        $$(".reveal").forEach((element) => {
+          element.style.opacity = "1";
+          element.style.visibility = "visible";
+          element.style.transform = "none";
+          element.style.filter = "none";
+        });
+      }
+
+      return;
+    }
 
     const loaderVideo = $(".loader__video", loader);
     const loaderBgVideo = $(".loader__video-bg", loader);
