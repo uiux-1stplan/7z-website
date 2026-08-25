@@ -503,7 +503,18 @@ export default async function handler(
               : canView;
 
 
-          await sql`
+          /* Z7_ACTIVATE_FILE_ON_PERMISSION_GRANT */
+await sql`
+  UPDATE portal_files
+
+  SET
+    is_active = TRUE
+
+  WHERE
+    id::text = ${String(resourceId)}
+`;
+
+await sql`
             INSERT INTO portal_client_file_permissions (
               client_key,
               file_id,

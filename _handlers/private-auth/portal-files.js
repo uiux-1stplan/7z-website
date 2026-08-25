@@ -107,7 +107,6 @@ export default async function handler(
 
         WHERE
           p.can_view = TRUE
-          AND f.is_active = TRUE
 
         ORDER BY
           f.created_at DESC

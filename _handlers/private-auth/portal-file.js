@@ -125,8 +125,7 @@ export default async function handler(
           ON f.id =
              p.file_id
 
-        WHERE
-          f.is_active = TRUE
+        WHERE TRUE
       `;
 
 
