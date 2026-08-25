@@ -40,7 +40,13 @@ export default async function handler(
       );
 
 
-    if (!access.authenticated) {
+    if (
+      !access.authenticated ||
+      !Array.isArray(
+        access.clientKeys
+      ) ||
+      !access.clientKeys.length
+    ) {
 
       return res
         .status(401)
@@ -57,15 +63,29 @@ export default async function handler(
         "../../lib/portal-runtime.mjs"
       );
 
+
     const sql =
       runtime.getSql();
 
+
+    /*
+     * Normalize keys defensively.
+     * Permission source of truth = Neon.
+     */
     const allowedKeys =
       new Set(
-        access.clientKeys
+        access.clientKeys.map(
+          value =>
+            String(value)
+        )
       );
 
 
+    /*
+     * IMPORTANT:
+     * No cached permission snapshot.
+     * Every request reads current DB permissions.
+     */
     const rows =
       await sql`
         SELECT
@@ -80,12 +100,10 @@ export default async function handler(
           f.content_type,
           f.created_at
 
-        FROM
-          portal_client_file_permissions p
+        FROM portal_client_file_permissions p
 
-        JOIN portal_files f
-          ON f.id =
-             p.file_id
+        INNER JOIN portal_files f
+          ON f.id = p.file_id
 
         WHERE
           p.can_view = TRUE
@@ -96,7 +114,7 @@ export default async function handler(
       `;
 
 
-    const merged =
+    const files =
       new Map();
 
 
@@ -105,9 +123,15 @@ export default async function handler(
       of rows
     ) {
 
+      const rowClientKey =
+        String(
+          row.client_key
+        );
+
+
       if (
         !allowedKeys.has(
-          row.client_key
+          rowClientKey
         )
       ) {
         continue;
@@ -119,13 +143,14 @@ export default async function handler(
           row.id
         );
 
+
       const existing =
-        merged.get(id);
+        files.get(id);
 
 
       if (!existing) {
 
-        merged.set(
+        files.set(
           id,
           {
             id,
@@ -162,6 +187,7 @@ export default async function handler(
             row.can_view
           );
 
+
         existing.canDownload =
           existing.canDownload ||
           Boolean(
@@ -175,22 +201,27 @@ export default async function handler(
       .status(200)
       .json({
         ok: true,
+
         authenticated: true,
 
         authType:
           access.authType,
 
         files:
-          [...merged.values()]
+          [...files.values()],
+
+        refreshedAt:
+          Date.now()
       });
 
 
   } catch (error) {
 
     console.error(
-      "Unified portal files:",
+      "Live portal files:",
       error
     );
+
 
     return res
       .status(500)

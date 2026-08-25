@@ -551,10 +551,7 @@ export default async function handler(
        * live portal session. On next login they receive
        * the new permission set immediately.
        */
-      await sql`
-        DELETE FROM portal_client_sessions
-        WHERE client_key = ${clientKey}
-      `;
+      
 
 
       await runtime.writeAudit({
@@ -621,3 +618,4 @@ export default async function handler(
     );
   }
 }
+
