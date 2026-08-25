@@ -714,3 +714,739 @@
   );
 
 })();
+
+/* === 7Z INNER CIRCLE LIVE START === */
+
+(() => {
+
+  "use strict";
+
+
+  const gate =
+    document.querySelector(
+      "[data-z7icx-live]"
+    );
+
+
+  if (!gate) {
+    return;
+  }
+
+
+  const seat =
+    document.getElementById(
+      "z7InnerCircleSeat"
+    );
+
+
+  const form =
+    document.getElementById(
+      "z7PrivateAccessLoginForm"
+    );
+
+
+  const memberId =
+    document.getElementById(
+      "z7HubClientId"
+    );
+
+
+  const message =
+    document.getElementById(
+      "z7HubLoginMessage"
+    );
+
+
+  const submitLabel =
+    gate.querySelector(
+      "[data-z7icx-submit-label]"
+    );
+
+
+  const grid =
+    document.querySelector(
+      "[data-z7pa-grid]"
+    );
+
+
+  const reducedMotion =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+
+  let userOpened =
+    false;
+
+
+  let successPlaying =
+    false;
+
+
+  let finalHidden =
+    false;
+
+
+
+  function openCircle() {
+
+
+    if (
+      finalHidden ||
+      userOpened
+    ) {
+      return;
+    }
+
+
+    userOpened =
+      true;
+
+
+    gate.classList.remove(
+      "is-denied"
+    );
+
+
+    gate.classList.add(
+      "is-opening"
+    );
+
+
+    window.setTimeout(
+      () => {
+
+        gate.classList.add(
+          "is-open"
+        );
+
+      },
+      reducedMotion
+        ? 0
+        : 140
+    );
+
+
+    window.setTimeout(
+      () => {
+
+        gate.classList.remove(
+          "is-opening"
+        );
+
+      },
+      reducedMotion
+        ? 0
+        : 1080
+    );
+
+
+    window.setTimeout(
+      () => {
+
+        if (memberId) {
+
+          memberId.focus({
+            preventScroll:
+              true
+          });
+
+        }
+
+      },
+      reducedMotion
+        ? 0
+        : 670
+    );
+
+  }
+
+
+
+  function setSubmitText(
+    text
+  ) {
+
+    if (submitLabel) {
+
+      submitLabel.textContent =
+        text;
+
+    }
+
+  }
+
+
+
+  function finalHide() {
+
+
+    if (finalHidden) {
+      return;
+    }
+
+
+    finalHidden =
+      true;
+
+
+    gate.hidden =
+      true;
+
+
+    gate.style.display =
+      "none";
+
+
+    if (grid) {
+
+      window.setTimeout(
+        () => {
+
+          grid.scrollIntoView({
+            behavior:
+              reducedMotion
+                ? "auto"
+                : "smooth",
+
+            block:
+              "start"
+          });
+
+        },
+        reducedMotion
+          ? 0
+          : 60
+      );
+
+    }
+
+  }
+
+
+
+  function playSuccess() {
+
+
+    if (
+      successPlaying ||
+      finalHidden
+    ) {
+      return;
+    }
+
+
+    successPlaying =
+      true;
+
+
+    /*
+      Existing auth can set hidden immediately.
+      Bring it visually back just for the exit scene.
+    */
+
+    gate.hidden =
+      false;
+
+
+    gate.style.display =
+      "";
+
+
+    gate.classList.remove(
+      "is-denied",
+      "is-authenticating"
+    );
+
+
+    gate.classList.add(
+      "is-open",
+      "is-authorized"
+    );
+
+
+    setSubmitText(
+      "WELCOME INSIDE"
+    );
+
+
+    window.setTimeout(
+      () => {
+
+        gate.classList.add(
+          "is-leaving"
+        );
+
+      },
+      reducedMotion
+        ? 0
+        : 890
+    );
+
+
+    window.setTimeout(
+      finalHide,
+      reducedMotion
+        ? 0
+        : 1270
+    );
+
+  }
+
+
+
+  /*
+    IMPORTANT:
+    TAKE YOUR SEAT is the ONLY normal trigger.
+
+    We intentionally removed the previous focusin trigger
+    because the existing website/auth script may focus
+    an input on page load.
+  */
+
+  if (seat) {
+
+    seat.addEventListener(
+      "click",
+      openCircle
+    );
+
+  }
+
+
+
+  /*
+    Presentation only.
+    Existing login JS still owns the real submit request.
+  */
+
+  if (form) {
+
+    form.addEventListener(
+      "submit",
+      () => {
+
+
+        if (!userOpened) {
+
+          /*
+            Keyboard / browser autofill fallback.
+          */
+
+          userOpened =
+            true;
+
+
+          gate.classList.add(
+            "is-open"
+          );
+
+        }
+
+
+        gate.classList.remove(
+          "is-denied"
+        );
+
+
+        gate.classList.add(
+          "is-authenticating"
+        );
+
+
+        setSubmitText(
+          "CHECKING ACCESS…"
+        );
+
+      },
+      true
+    );
+
+  }
+
+
+
+  /*
+    Real failure message.
+  */
+
+  if (message) {
+
+    const observer =
+      new MutationObserver(
+        () => {
+
+
+          if (
+            successPlaying ||
+            finalHidden
+          ) {
+            return;
+          }
+
+
+          const text =
+            String(
+              message.textContent || ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+          if (!text) {
+            return;
+          }
+
+
+          const failed =
+            text.includes(
+              "NOT RECOGNIZED"
+            ) ||
+
+            text.includes(
+              "INVALID"
+            ) ||
+
+            text.includes(
+              "INCORRECT"
+            ) ||
+
+            text.includes(
+              "FAILED"
+            ) ||
+
+            text.includes(
+              "DENIED"
+            ) ||
+
+            text.includes(
+              "UNAVAILABLE"
+            );
+
+
+          if (!failed) {
+            return;
+          }
+
+
+          gate.classList.remove(
+            "is-authenticating",
+            "is-denied"
+          );
+
+
+          void gate.offsetWidth;
+
+
+          gate.classList.add(
+            "is-denied"
+          );
+
+
+          setSubmitText(
+            "ENTER THE CIRCLE"
+          );
+
+        }
+      );
+
+
+    observer.observe(
+      message,
+      {
+        childList:
+          true,
+
+        subtree:
+          true,
+
+        characterData:
+          true
+      }
+    );
+
+  }
+
+
+
+  /*
+    Existing real authentication hides the login panel
+    after successful login.
+
+    Watch that existing behavior instead of replacing it.
+  */
+
+  const gateObserver =
+    new MutationObserver(
+      () => {
+
+
+        if (
+          !gate.hidden ||
+          finalHidden ||
+          successPlaying
+        ) {
+          return;
+        }
+
+
+        /*
+          Existing valid session on initial load:
+          do not replay login experience.
+        */
+
+        if (!userOpened) {
+
+          finalHidden =
+            true;
+
+
+          gate.style.display =
+            "none";
+
+
+          return;
+        }
+
+
+        playSuccess();
+
+      }
+    );
+
+
+  gateObserver.observe(
+    gate,
+    {
+      attributes:
+        true,
+
+      attributeFilter:
+        ["hidden"]
+    }
+  );
+
+
+
+  /*
+    Backup success signal:
+    protected resources become visible.
+  */
+
+  if (grid) {
+
+    const gridObserver =
+      new MutationObserver(
+        () => {
+
+
+          if (
+            !userOpened ||
+            successPlaying ||
+            finalHidden
+          ) {
+            return;
+          }
+
+
+          if (!grid.hidden) {
+
+            playSuccess();
+
+          }
+
+        }
+      );
+
+
+    gridObserver.observe(
+      grid,
+      {
+        attributes:
+          true,
+
+        attributeFilter:
+          ["hidden"]
+      }
+    );
+
+  }
+
+
+
+  /*
+    Initial appearance.
+
+    DO NOT auto-open the form.
+  */
+
+  if (gate.hidden) {
+
+    finalHidden =
+      true;
+
+
+    gate.style.display =
+      "none";
+
+  }
+  else {
+
+    gate.classList.remove(
+      "is-open",
+      "is-opening",
+      "is-authorized",
+      "is-leaving",
+      "is-authenticating",
+      "is-denied"
+    );
+
+
+    requestAnimationFrame(
+      () => {
+
+        gate.classList.add(
+          "is-ready"
+        );
+
+      }
+    );
+
+  }
+
+
+
+  /*
+    Reduced-motion users still use the same concept,
+    but without the theatrical animation.
+  */
+
+  if (
+    reducedMotion &&
+    !finalHidden
+  ) {
+
+    /*
+      Keep the intro state.
+      TAKE YOUR SEAT still matters.
+    */
+
+    gate.classList.add(
+      "is-ready"
+    );
+
+  }
+
+})();
+
+/* === 7Z INNER CIRCLE LIVE END === */
+
+/* === 7Z OLD PAGE FLASH FIX START === */
+
+(() => {
+
+  const root = document.documentElement;
+
+  const gate =
+    document.querySelector(
+      "[data-z7icx-live]"
+    );
+
+  const grid =
+    document.querySelector(
+      "[data-z7pa-grid]"
+    );
+
+  if (!gate) {
+    return;
+  }
+
+  /*
+    Stay in preauth mode while the Inner Circle
+    login experience is visible.
+  */
+  root.classList.add(
+    "z7icx-preauth"
+  );
+
+
+  function unlockUnderlyingPrivatePage() {
+
+    root.classList.remove(
+      "z7icx-preauth"
+    );
+
+    root.classList.add(
+      "z7icx-authenticated"
+    );
+
+  }
+
+
+  /*
+    If the gate becomes permanently hidden,
+    the real session/auth flow succeeded.
+  */
+
+  const gateObserver =
+    new MutationObserver(() => {
+
+      const permanentlyHidden =
+        gate.hidden ||
+        gate.style.display === "none";
+
+      if (permanentlyHidden) {
+
+        unlockUnderlyingPrivatePage();
+
+      }
+
+    });
+
+
+  gateObserver.observe(
+    gate,
+    {
+      attributes: true,
+      attributeFilter: [
+        "hidden",
+        "style"
+      ]
+    }
+  );
+
+
+  /*
+    Backup signal:
+    real protected resource grid is revealed.
+  */
+
+  if (grid) {
+
+    const gridObserver =
+      new MutationObserver(() => {
+
+        if (!grid.hidden) {
+
+          unlockUnderlyingPrivatePage();
+
+        }
+
+      });
+
+
+    gridObserver.observe(
+      grid,
+      {
+        attributes: true,
+        attributeFilter: [
+          "hidden"
+        ]
+      }
+    );
+
+  }
+
+})();
+
+/* === 7Z OLD PAGE FLASH FIX END === */
