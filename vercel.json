@@ -90,6 +90,18 @@
   ],
   "rewrites": [
     {
+      "source": "/api/admin/admin-accounts",
+      "destination": "/api/admin-router?__z7route=admin-accounts"
+    },
+    {
+      "source": "/api/admin/files",
+      "destination": "/api/admin-router?__z7route=files"
+    },
+    {
+      "source": "/api/admin/all-clients",
+      "destination": "/api/admin-router?__z7route=all-clients"
+    },
+    {
       "source": "/api/admin/blob-finalize",
       "destination": "/api/admin-router?__z7route=blob-finalize"
     },
@@ -176,6 +188,10 @@
     {
       "source": "/api/private-documents/blueprint",
       "destination": "/api/private-documents-router?__z7route=blueprint"
+    },
+    {
+      "source": "/api/private-auth/resource-check",
+      "destination": "/api/private-auth-router?__z7route=resource-check"
     }
   ]
 }

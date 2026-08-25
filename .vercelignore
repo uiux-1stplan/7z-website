@@ -20,3 +20,9 @@ _private-access-before-*
 _hub-login-before-*
 _legacy-file-access-before-*
 _video_backup/
+/7Z_ACCESS_CONTROL_SOURCE_AUDIT.txt
+/_admin-accounts-before-fix-*.js
+/_before-*/
+/_portal-ui-backup-*/
+/_portal-theme-backup-*/
+/_admin-before-*/

@@ -1,39 +1,111 @@
-﻿import { ADMIN_COOKIE_NAME, HUB_ADMIN_SCOPES, HUB_PUBLIC_SCOPES, PRIVATE_RESOURCES, noStoreHeaders, readCookie, verifyAdminSession, verifySession } from '../../lib/private-access.js';
+﻿import {
+  ADMIN_COOKIE_NAME,
+  HUB_ADMIN_SCOPES,
+  noStoreHeaders,
+  readCookie,
+  verifyAdminSession
+} from "../../lib/private-access.js";
 
-function send(response, status, body) {
-  for (const [name, value] of Object.entries(noStoreHeaders)) response.setHeader(name, value);
-  return response.status(status).json(body);
+import {
+  resolvePortalClientAccess,
+  getAllowedLegacyResourceScopes
+} from "../../lib/portal-client-access.mjs";
+
+
+function send(
+  response,
+  status,
+  body
+) {
+
+  for (
+    const [name, value]
+    of Object.entries(
+      noStoreHeaders
+    )
+  ) {
+
+    response.setHeader(
+      name,
+      value
+    );
+  }
+
+  return response
+    .status(status)
+    .json(body);
 }
 
-export default async function handler(request, response) {
-  if (request.method !== 'GET') {
-    response.setHeader('Allow', 'GET');
-    return send(response, 405, { ok: false, admin: false, allowed: [] });
+
+export default async function handler(
+  request,
+  response
+) {
+
+  if (
+    request.method !== "GET"
+  ) {
+
+    response.setHeader(
+      "Allow",
+      "GET"
+    );
+
+    return send(
+      response,
+      405,
+      {
+        ok: false,
+        admin: false,
+        allowed: []
+      }
+    );
   }
 
-  const cookieHeader = request.headers.cookie;
-  const adminToken = readCookie(cookieHeader, ADMIN_COOKIE_NAME);
-  const admin = await verifyAdminSession(adminToken, process.env.PRIVATE_ACCESS_ADMIN_SESSION_SECRET);
+
+  const cookieHeader =
+    request.headers.cookie;
+
+
+  const adminToken =
+    readCookie(
+      cookieHeader,
+      ADMIN_COOKIE_NAME
+    );
+
+
+  const admin =
+    await verifyAdminSession(
+      adminToken,
+      process.env
+        .PRIVATE_ACCESS_ADMIN_SESSION_SECRET
+    );
+
 
   if (admin) {
-    return send(response, 200, { ok: true, admin: true, allowed: HUB_ADMIN_SCOPES });
+
+    return send(
+      response,
+      200,
+      {
+        ok: true,
+        admin: true,
+        allowed:
+          HUB_ADMIN_SCOPES
+      }
+    );
   }
-  /*
-   * Z7_NATIVE_CLIENT_STATUS
-   */
+
+
   try {
 
-    const nativeAuth =
-      await import(
-        "../../lib/portal-native-session.mjs"
-      );
-
-    const nativeClient =
-      await nativeAuth.getNativeClientSession(
+    const access =
+      await resolvePortalClientAccess(
         request
       );
 
-    if (nativeClient) {
+
+    if (!access.authenticated) {
 
       return send(
         response,
@@ -41,25 +113,50 @@ export default async function handler(request, response) {
         {
           ok: true,
           admin: false,
-          native: true,
           allowed: []
         }
       );
     }
 
+
+    const allowed =
+      await getAllowedLegacyResourceScopes(
+        access.clientKeys
+      );
+
+
+    return send(
+      response,
+      200,
+      {
+        ok: true,
+        admin: false,
+
+        native:
+          access.authType ===
+          "native",
+
+        allowed
+      }
+    );
+
+
   } catch (error) {
 
     console.error(
-      "Native client status:",
+      "Unified hub status:",
       error
     );
+
+
+    return send(
+      response,
+      500,
+      {
+        ok: false,
+        admin: false,
+        allowed: []
+      }
+    );
   }
-
-  const checks = await Promise.all(HUB_PUBLIC_SCOPES.map(async (scope) => {
-    const token = readCookie(cookieHeader, PRIVATE_RESOURCES[scope].cookieName);
-    const valid = await verifySession(token, scope, process.env.PRIVATE_ACCESS_SESSION_SECRET);
-    return valid ? scope : null;
-  }));
-
-  return send(response, 200, { ok: true, admin: false, allowed: checks.filter(Boolean) });
 }

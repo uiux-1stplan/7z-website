@@ -2,16 +2,20 @@
 
   "use strict";
 
-  const API =
-    "/api/admin/clients";
 
-  const LIST_API =
-    "/api/admin/all-clients";
+  const API =
+    "/api/admin/admin-accounts";
+
+
+  let currentAdminId =
+    null;
 
 
   function esc(value) {
 
-    return String(value ?? "")
+    return String(
+      value ?? ""
+    )
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -24,17 +28,11 @@
     options = {}
   ) {
 
-    let token = null;
-
-    try {
-
-      token =
-        await window
-          .Clerk
-          ?.session
-          ?.getToken?.();
-
-    } catch {}
+    const token =
+      await window
+        .Clerk
+        ?.session
+        ?.getToken?.();
 
 
     const headers = {
@@ -53,6 +51,7 @@
       url,
       {
         ...options,
+
         headers,
 
         credentials:
@@ -65,190 +64,205 @@
   }
 
 
-  function target() {
+  function findOldPanel() {
+
+    const heading =
+      [
+        ...document.querySelectorAll(
+          "h1,h2,h3,h4"
+        )
+      ]
+      .find(
+        node => {
+
+          const text =
+            node
+              .textContent
+              .trim()
+              .toLowerCase();
+
+
+          return (
+            text ===
+              "user management" ||
+            text ===
+              "administrator management"
+          );
+        }
+      );
+
+
+    if (!heading) {
+      return null;
+    }
+
 
     return (
-      document.querySelector(
-        "#z7-private-upload-panel"
-      )?.parentElement ||
+      heading.closest(
+        "section"
+      ) ||
+      heading.parentElement
+    );
+  }
 
-      document.querySelector(
-        "#legacy-file-access-panel"
-      )?.parentElement ||
 
+  function dashboardTarget() {
+
+    return (
       document.querySelector(
         "#app main"
       ) ||
 
       document.querySelector(
         "#app"
-      )
+      ) ||
+
+      document.body
     );
-  }
-
-
-  function removeOldCreateForm() {
-
-    const oldForm =
-      document.getElementById(
-        "create-form"
-      );
-
-    if (oldForm) {
-
-      oldForm.hidden = true;
-
-      oldForm.style.display =
-        "none";
-    }
   }
 
 
   function ensurePanel() {
 
-    removeOldCreateForm();
-
-
-    if (
+    let panel =
       document.getElementById(
-        "z7-native-clients"
-      )
-    ) {
-      return;
+        "z7-admin-accounts"
+      );
+
+
+    if (panel) {
+      return panel;
     }
 
 
-    const container =
-      target();
-
-
-    if (!container) {
-      return;
-    }
-
-
-    const panel =
+    panel =
       document.createElement(
         "section"
       );
 
 
     panel.id =
-      "z7-native-clients";
+      "z7-admin-accounts";
+
 
     panel.className =
-      "panel z7-native-clients";
+      "panel z7-admin-accounts";
 
 
     panel.innerHTML = `
-      <div class="z7nc-head">
+      <div class="z7aa-head">
 
         <div>
 
           <div class="page-kicker">
-            CLIENT ACCOUNTS
+            ADMINISTRATOR ACCESS
           </div>
 
           <h2>
-            Client Accounts
+            Administrator Management
           </h2>
 
           <p>
-            All legacy and native client
-            identities in one place.
+            Create and manage administrators
+            who have full access to this dashboard.
           </p>
 
         </div>
 
-        <span class="z7nc-badge">
-          UNIFIED
+
+        <span class="z7aa-badge">
+          FULL ACCESS
         </span>
 
       </div>
 
 
-      <div class="z7nc-create-caption">
-        CREATE NEW NATIVE CLIENT
-      </div>
-
-
-      <div class="z7nc-form">
+      <div class="z7aa-create">
 
         <input
-          id="z7nc-name"
           type="text"
+          id="z7aa-name"
           autocomplete="off"
-          placeholder="Display Name">
+          placeholder="Administrator Name">
+
 
         <input
-          id="z7nc-client-id"
-          type="text"
+          type="email"
+          id="z7aa-email"
           autocomplete="off"
-          placeholder="Client ID">
+          placeholder="Email Address">
+
 
         <input
-          id="z7nc-company"
           type="text"
+          id="z7aa-company"
           autocomplete="off"
           placeholder="Company">
 
+
         <input
-          id="z7nc-password"
           type="password"
+          id="z7aa-password"
           autocomplete="new-password"
           placeholder="Password — minimum 12 characters">
 
+
         <button
           type="button"
-          id="z7nc-create">
-          CREATE CLIENT
+          id="z7aa-create">
+          ADD ADMIN
         </button>
 
       </div>
 
 
       <div
-        id="z7nc-message"
-        class="z7nc-message">
+        id="z7aa-message"
+        class="z7aa-message">
       </div>
 
 
       <div
-        id="z7nc-list"
-        class="z7nc-list">
+        id="z7aa-list"
+        class="z7aa-list">
       </div>
 
 
       <div
-        id="z7nc-password-modal"
-        class="z7nc-modal"
+        id="z7aa-password-modal"
+        class="z7aa-modal"
         hidden>
 
-        <div class="z7nc-modal-backdrop"></div>
+        <div
+          class="z7aa-modal-backdrop">
+        </div>
 
-        <div class="z7nc-modal-card">
 
-          <div class="z7nc-modal-head">
+        <div
+          class="z7aa-modal-card">
+
+          <div class="z7aa-modal-head">
 
             <div>
 
               <div class="page-kicker">
-                SECURITY
+                ADMIN SECURITY
               </div>
 
               <h3>
-                Change Client Password
+                Change Password
               </h3>
 
-              <p id="z7nc-password-client">
+              <p
+                id="z7aa-password-name">
               </p>
 
             </div>
 
+
             <button
               type="button"
-              id="z7nc-modal-close"
-              class="z7nc-modal-close">
+              id="z7aa-modal-close">
               ×
             </button>
 
@@ -256,29 +270,29 @@
 
 
           <input
-            id="z7nc-new-password"
             type="password"
+            id="z7aa-new-password"
             autocomplete="new-password"
             placeholder="New password — minimum 12 characters">
 
 
           <input
-            id="z7nc-confirm-password"
             type="password"
+            id="z7aa-confirm-password"
             autocomplete="new-password"
-            placeholder="Confirm new password">
+            placeholder="Confirm password">
 
 
           <div
-            id="z7nc-modal-message"
-            class="z7nc-message">
+            id="z7aa-modal-message"
+            class="z7aa-message">
           </div>
 
 
           <button
             type="button"
-            id="z7nc-password-save"
-            class="z7nc-password-save">
+            id="z7aa-save-password"
+            class="z7aa-primary">
             UPDATE PASSWORD
           </button>
 
@@ -288,43 +302,35 @@
     `;
 
 
-    const upload =
-      document.getElementById(
-        "z7-private-upload-panel"
-      );
-
-
-    const access =
-      document.getElementById(
-        "legacy-file-access-panel"
-      );
+    /*
+     * Replace the old Clerk/User panel visually,
+     * but do not delete its source code.
+     */
+    const oldPanel =
+      findOldPanel();
 
 
     if (
-      upload &&
-      upload.parentElement ===
-      container
+      oldPanel &&
+      oldPanel !== panel
     ) {
 
-      container.insertBefore(
-        panel,
-        upload
-      );
+      oldPanel.style.display =
+        "none";
 
-    } else if (
-      access &&
-      access.parentElement ===
-      container
-    ) {
 
-      container.insertBefore(
-        panel,
-        access
+      oldPanel.insertAdjacentElement(
+        "afterend",
+        panel
       );
 
     } else {
 
-      container.appendChild(
+      const target =
+        dashboardTarget();
+
+
+      target.prepend(
         panel
       );
     }
@@ -332,17 +338,17 @@
 
     document
       .getElementById(
-        "z7nc-create"
+        "z7aa-create"
       )
       ?.addEventListener(
         "click",
-        createClient
+        createAdmin
       );
 
 
     document
       .getElementById(
-        "z7nc-modal-close"
+        "z7aa-modal-close"
       )
       ?.addEventListener(
         "click",
@@ -352,7 +358,7 @@
 
     document
       .querySelector(
-        "#z7nc-password-modal .z7nc-modal-backdrop"
+        ".z7aa-modal-backdrop"
       )
       ?.addEventListener(
         "click",
@@ -362,26 +368,52 @@
 
     document
       .getElementById(
-        "z7nc-password-save"
+        "z7aa-save-password"
       )
       ?.addEventListener(
         "click",
         savePassword
       );
+
+
+    return panel;
   }
 
 
-  async function createClient() {
-
-    const button =
-      document.getElementById(
-        "z7nc-create"
-      );
-
+  function setMessage(
+    text,
+    type = ""
+  ) {
 
     const message =
       document.getElementById(
-        "z7nc-message"
+        "z7aa-message"
+      );
+
+
+    if (!message) {
+      return;
+    }
+
+
+    message.textContent =
+      text || "";
+
+
+    message.className =
+      `z7aa-message ${
+        type
+          ? `is-${type}`
+          : ""
+      }`;
+  }
+
+
+  async function createAdmin() {
+
+    const button =
+      document.getElementById(
+        "z7aa-create"
       );
 
 
@@ -390,15 +422,15 @@
       displayName:
         document
           .getElementById(
-            "z7nc-name"
+            "z7aa-name"
           )
           ?.value
           .trim(),
 
-      username:
+      email:
         document
           .getElementById(
-            "z7nc-client-id"
+            "z7aa-email"
           )
           ?.value
           .trim(),
@@ -406,7 +438,7 @@
       company:
         document
           .getElementById(
-            "z7nc-company"
+            "z7aa-company"
           )
           ?.value
           .trim(),
@@ -414,7 +446,7 @@
       password:
         document
           .getElementById(
-            "z7nc-password"
+            "z7aa-password"
           )
           ?.value || ""
     };
@@ -422,21 +454,22 @@
 
     if (
       !payload.displayName ||
-      !payload.username ||
+      !payload.email ||
       payload.password.length < 12
     ) {
 
-      message.textContent =
-        "Display Name, Client ID and a 12+ character password are required.";
-
-      message.className =
-        "z7nc-message is-error";
+      setMessage(
+        "Name, valid email and a 12+ character password are required.",
+        "error"
+      );
 
       return;
     }
 
 
-    button.disabled = true;
+    button.disabled =
+      true;
+
 
     button.textContent =
       "CREATING...";
@@ -448,7 +481,8 @@
         await authFetch(
           API,
           {
-            method: "POST",
+            method:
+              "POST",
 
             headers: {
               "Content-Type":
@@ -471,23 +505,25 @@
 
         throw new Error(
           result.error ||
-          "Could not create client."
+          "Could not create administrator."
         );
       }
 
 
       [
-        "z7nc-name",
-        "z7nc-client-id",
-        "z7nc-company",
-        "z7nc-password"
-      ].forEach(
+        "z7aa-name",
+        "z7aa-email",
+        "z7aa-company",
+        "z7aa-password"
+      ]
+      .forEach(
         id => {
 
           const field =
             document.getElementById(
               id
             );
+
 
           if (field) {
             field.value = "";
@@ -496,50 +532,43 @@
       );
 
 
-      message.textContent =
-        "Client account created successfully.";
-
-      message.className =
-        "z7nc-message is-success";
-
-
-      await loadClients();
+      setMessage(
+        "Administrator created successfully.",
+        "success"
+      );
 
 
-      document
-        .getElementById(
-          "z7-cap-refresh"
-        )
-        ?.click();
+      await loadAdmins();
 
 
     } catch (error) {
 
-      message.textContent =
+      setMessage(
         error.message ||
-        "Could not create client.";
-
-      message.className =
-        "z7nc-message is-error";
+        "Could not create administrator.",
+        "error"
+      );
 
 
     } finally {
 
-      button.disabled = false;
+      button.disabled =
+        false;
+
 
       button.textContent =
-        "CREATE CLIENT";
+        "ADD ADMIN";
     }
   }
 
 
-  async function loadClients() {
+  async function loadAdmins() {
 
     try {
 
       const response =
         await authFetch(
-          LIST_API
+          API
         );
 
 
@@ -551,31 +580,38 @@
 
         throw new Error(
           payload.error ||
-          "Could not load clients."
+          "Could not load administrators."
         );
       }
 
 
-      render(
-        payload.clients || []
+      currentAdminId =
+        payload.currentAdminId;
+
+
+      renderAdmins(
+        payload.admins || []
       );
 
 
     } catch (error) {
 
-      console.warn(
-        "Unified client list:",
-        error
+      setMessage(
+        error.message ||
+        "Could not load administrators.",
+        "error"
       );
     }
   }
 
 
-  function render(clients) {
+  function renderAdmins(
+    admins
+  ) {
 
     const root =
       document.getElementById(
-        "z7nc-list"
+        "z7aa-list"
       );
 
 
@@ -584,11 +620,11 @@
     }
 
 
-    if (!clients.length) {
+    if (!admins.length) {
 
       root.innerHTML = `
-        <div class="z7nc-empty">
-          No client accounts found.
+        <div class="z7aa-empty">
+          No administrators found.
         </div>
       `;
 
@@ -597,118 +633,115 @@
 
 
     root.innerHTML =
-      clients.map(
-        client => {
-
-          const isNative =
-            client.auth_type ===
-            "native";
-
+      admins.map(
+        admin => {
 
           const active =
-            client.status ===
+            admin.status ===
             "active";
 
 
-          const identifier =
-            isNative
-              ? client.username
-              : client.legacy_scope;
+          const self =
+            admin.clerk_user_id ===
+            currentAdminId;
 
 
           return `
             <article
-              class="z7nc-client"
-              data-client-key="${esc(
-                client.client_key
-              )}">
+              class="z7aa-admin">
 
-              <div class="z7nc-client-info">
+              <div class="z7aa-info">
 
-                <div class="z7nc-client-title">
+                <div class="z7aa-title">
 
                   <strong>
                     ${esc(
-                      client.display_name
+                      admin.display_name ||
+                      admin.email
                     )}
                   </strong>
 
-                  <span class="z7nc-type ${
-                    isNative
-                      ? "is-native"
-                      : "is-legacy"
-                  }">
-                    ${
-                      isNative
-                        ? "NATIVE"
-                        : "LEGACY"
-                    }
-                  </span>
+                  ${
+                    self
+                      ? `
+                        <span class="z7aa-you">
+                          YOU
+                        </span>
+                      `
+                      : ""
+                  }
 
                 </div>
 
+
                 <span>
                   ${esc(
-                    identifier || "—"
+                    admin.email
                   )}
                 </span>
 
+
                 <small>
                   ${esc(
-                    client.company || "—"
+                    admin.company ||
+                    "7Z Magic"
                   )}
                 </small>
 
               </div>
 
 
-              <div class="z7nc-client-right">
+              <div class="z7aa-actions">
 
-                <div class="z7nc-status ${
+                <span class="z7aa-status ${
                   active
                     ? "is-active"
                     : "is-disabled"
                 }">
-
                   ${
                     active
                       ? "ACTIVE"
                       : "DISABLED"
                   }
+                </span>
 
-                </div>
+
+                <button
+                  type="button"
+                  data-password="${esc(
+                    admin.clerk_user_id
+                  )}"
+                  data-name="${esc(
+                    admin.display_name ||
+                    admin.email
+                  )}">
+                  CHANGE PASSWORD
+                </button>
 
 
                 ${
-                  isNative
+                  self
                     ? `
+                      <span class="z7aa-self-lock">
+                        CURRENT SESSION
+                      </span>
+                    `
+                    : `
                       <button
                         type="button"
-                        class="z7nc-action"
-                        data-action="password"
-                        data-client-key="${esc(
-                          client.client_key
-                        )}"
-                        data-username="${esc(
-                          client.username
-                        )}">
-                        CHANGE PASSWORD
-                      </button>
-
-                      <button
-                        type="button"
-                        class="z7nc-action ${
+                        class="${
                           active
                             ? "is-danger"
-                            : "is-success"
+                            : "is-enable"
                         }"
-                        data-action="status"
-                        data-client-key="${esc(
-                          client.client_key
+                        data-status="${esc(
+                          admin.clerk_user_id
                         )}"
-                        data-current-status="${esc(
-                          client.status
-                        )}">
+                        data-next="${
+                          active
+                            ? "disabled"
+                            : "active"
+                        }">
 
                         ${
                           active
@@ -718,11 +751,6 @@
 
                       </button>
                     `
-                    : `
-                      <span class="z7nc-legacy-note">
-                        LEGACY ACCESS
-                      </span>
-                    `
                 }
 
               </div>
@@ -730,12 +758,13 @@
             </article>
           `;
         }
-      ).join("");
+      )
+      .join("");
 
 
     root
       .querySelectorAll(
-        '[data-action="password"]'
+        "[data-password]"
       )
       .forEach(
         button => {
@@ -745,8 +774,8 @@
             () => {
 
               openPasswordModal(
-                button.dataset.clientKey,
-                button.dataset.username
+                button.dataset.password,
+                button.dataset.name
               );
             }
           );
@@ -756,7 +785,7 @@
 
     root
       .querySelectorAll(
-        '[data-action="status"]'
+        "[data-status]"
       )
       .forEach(
         button => {
@@ -765,9 +794,9 @@
             "click",
             () => {
 
-              toggleStatus(
-                button.dataset.clientKey,
-                button.dataset.currentStatus,
+              changeStatus(
+                button.dataset.status,
+                button.dataset.next,
                 button
               );
             }
@@ -778,50 +807,51 @@
 
 
   function openPasswordModal(
-    clientKey,
-    username
+    userId,
+    name
   ) {
 
     const modal =
       document.getElementById(
-        "z7nc-password-modal"
+        "z7aa-password-modal"
       );
 
 
-    modal.dataset.clientKey =
-      clientKey;
+    modal.dataset.userId =
+      userId;
 
 
     document
       .getElementById(
-        "z7nc-password-client"
+        "z7aa-password-name"
       )
       .textContent =
-        `Client ID: ${username || "—"}`;
+        name || "";
 
 
     document
       .getElementById(
-        "z7nc-new-password"
+        "z7aa-new-password"
       )
       .value = "";
 
 
     document
       .getElementById(
-        "z7nc-confirm-password"
+        "z7aa-confirm-password"
       )
       .value = "";
 
 
     document
       .getElementById(
-        "z7nc-modal-message"
+        "z7aa-modal-message"
       )
       .textContent = "";
 
 
-    modal.hidden = false;
+    modal.hidden =
+      false;
   }
 
 
@@ -829,12 +859,14 @@
 
     const modal =
       document.getElementById(
-        "z7nc-password-modal"
+        "z7aa-password-modal"
       );
 
 
     if (modal) {
-      modal.hidden = true;
+
+      modal.hidden =
+        true;
     }
   }
 
@@ -843,66 +875,69 @@
 
     const modal =
       document.getElementById(
-        "z7nc-password-modal"
-      );
-
-
-    const button =
-      document.getElementById(
-        "z7nc-password-save"
+        "z7aa-password-modal"
       );
 
 
     const message =
       document.getElementById(
-        "z7nc-modal-message"
+        "z7aa-modal-message"
+      );
+
+
+    const button =
+      document.getElementById(
+        "z7aa-save-password"
       );
 
 
     const password =
       document
         .getElementById(
-          "z7nc-new-password"
+          "z7aa-new-password"
         )
         ?.value || "";
 
 
-    const confirmPassword =
+    const confirm =
       document
         .getElementById(
-          "z7nc-confirm-password"
+          "z7aa-confirm-password"
         )
         ?.value || "";
 
 
-    if (password.length < 12) {
+    if (
+      password.length < 12
+    ) {
 
       message.textContent =
         "Password must contain at least 12 characters.";
 
       message.className =
-        "z7nc-message is-error";
+        "z7aa-message is-error";
 
       return;
     }
 
 
     if (
-      password !==
-      confirmPassword
+      password !== confirm
     ) {
 
       message.textContent =
         "Passwords do not match.";
 
       message.className =
-        "z7nc-message is-error";
+        "z7aa-message is-error";
 
       return;
     }
 
 
-    button.disabled = true;
+    button.disabled =
+      true;
+
 
     button.textContent =
       "UPDATING...";
@@ -927,8 +962,8 @@
                 action:
                   "password",
 
-                clientKey:
-                  modal.dataset.clientKey,
+                clerkUserId:
+                  modal.dataset.userId,
 
                 password
               })
@@ -936,14 +971,14 @@
         );
 
 
-      const payload =
+      const result =
         await response.json();
 
 
       if (!response.ok) {
 
         throw new Error(
-          payload.error ||
+          result.error ||
           "Password update failed."
         );
       }
@@ -953,12 +988,12 @@
         "Password updated successfully.";
 
       message.className =
-        "z7nc-message is-success";
+        "z7aa-message is-success";
 
 
       setTimeout(
         closePasswordModal,
-        650
+        700
       );
 
 
@@ -969,12 +1004,14 @@
         "Password update failed.";
 
       message.className =
-        "z7nc-message is-error";
+        "z7aa-message is-error";
 
 
     } finally {
 
-      button.disabled = false;
+      button.disabled =
+        false;
+
 
       button.textContent =
         "UPDATE PASSWORD";
@@ -982,30 +1019,25 @@
   }
 
 
-  async function toggleStatus(
-    clientKey,
-    currentStatus,
+  async function changeStatus(
+    userId,
+    status,
     button
   ) {
 
-    const nextStatus =
-      currentStatus ===
+    const verb =
+      status ===
       "active"
-        ? "disabled"
-        : "active";
+        ? "enable"
+        : "disable";
 
 
-    const approved =
-      window.confirm(
-        `Are you sure you want to ${
-          nextStatus === "active"
-            ? "enable"
-            : "disable"
-        } this client?`
-      );
+    if (
+      !window.confirm(
+        `Are you sure you want to ${verb} this administrator?`
+      )
+    ) {
 
-
-    if (!approved) {
       return;
     }
 
@@ -1014,7 +1046,9 @@
       button.textContent;
 
 
-    button.disabled = true;
+    button.disabled =
+      true;
+
 
     button.textContent =
       "UPDATING...";
@@ -1039,47 +1073,42 @@
                 action:
                   "status",
 
-                clientKey,
+                clerkUserId:
+                  userId,
 
-                status:
-                  nextStatus
+                status
               })
           }
         );
 
 
-      const payload =
+      const result =
         await response.json();
 
 
       if (!response.ok) {
 
         throw new Error(
-          payload.error ||
-          "Client status update failed."
+          result.error ||
+          "Administrator status update failed."
         );
       }
 
 
-      await loadClients();
-
-
-      document
-        .getElementById(
-          "z7-cap-refresh"
-        )
-        ?.click();
+      await loadAdmins();
 
 
     } catch (error) {
 
-      window.alert(
+      alert(
         error.message ||
-        "Client status update failed."
+        "Administrator status update failed."
       );
 
 
-      button.disabled = false;
+      button.disabled =
+        false;
+
 
       button.textContent =
         original;
@@ -1090,19 +1119,19 @@
   async function boot() {
 
     for (
-      let i = 0;
-      i < 60;
-      i++
+      let attempt = 0;
+      attempt < 80;
+      attempt++
     ) {
 
       if (
         window.Clerk?.user &&
-        target()
+        window.Clerk?.session
       ) {
 
         ensurePanel();
 
-        await loadClients();
+        await loadAdmins();
 
         return;
       }
@@ -1112,7 +1141,7 @@
         resolve =>
           setTimeout(
             resolve,
-            500
+            250
           )
       );
     }

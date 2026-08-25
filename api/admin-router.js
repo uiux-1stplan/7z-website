@@ -1,5 +1,23 @@
 ﻿const loaders = {
 
+  "admin-accounts":
+    () =>
+      import(
+        "../_handlers/admin/admin-accounts.js"
+      ),
+
+  "all-clients":
+    () =>
+      import(
+        "../_handlers/admin/all-clients.js"
+      ),
+
+  "files":
+    () =>
+      import(
+        "../_handlers/admin/files.js"
+      ),
+
   "blob-finalize":
     () =>
       import(
@@ -64,13 +82,18 @@ export default async function handler(
   const raw =
     req.query?.__z7route;
 
+
   const route =
     Array.isArray(raw)
       ? raw[0]
-      : String(raw || "");
+      : String(
+          raw || ""
+        );
+
 
   const load =
     loaders[route];
+
 
   if (!load) {
 
@@ -82,15 +105,18 @@ export default async function handler(
       });
   }
 
+
   try {
 
     const module =
       await load();
 
+
     return await module.default(
       req,
       res
     );
+
 
   } catch (error) {
 
@@ -99,7 +125,10 @@ export default async function handler(
       error
     );
 
-    if (!res.headersSent) {
+
+    if (
+      !res.headersSent
+    ) {
 
       return res
         .status(500)
@@ -108,6 +137,7 @@ export default async function handler(
             "Admin API temporarily unavailable."
         });
     }
+
 
     res.end();
   }

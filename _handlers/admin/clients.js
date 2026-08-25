@@ -6,7 +6,10 @@ import {
 } from "../../lib/portal-client-auth.mjs";
 
 
-export default async function handler(req, res) {
+export default async function handler(
+  req,
+  res
+) {
 
   const runtime =
     await import(
@@ -21,6 +24,7 @@ export default async function handler(req, res) {
   const { z } =
     await import("zod");
 
+
   try {
 
     const gate =
@@ -28,22 +32,27 @@ export default async function handler(req, res) {
         http.toWebRequest(req)
       );
 
+
     if (!gate.ok) {
+
       return http.sendWebResponse(
         res,
         gate.response
       );
     }
 
+
     const sql =
       runtime.getSql();
 
 
     // =====================================================
-    // LIST NATIVE CLIENTS
+    // LIST ALL CLIENTS
     // =====================================================
 
-    if (req.method === "GET") {
+    if (
+      req.method === "GET"
+    ) {
 
       const clients =
         await sql`
@@ -51,6 +60,8 @@ export default async function handler(req, res) {
             client_key,
             display_name,
             company,
+            auth_type,
+            legacy_scope,
             username,
             status,
             created_at,
@@ -58,17 +69,23 @@ export default async function handler(req, res) {
 
           FROM portal_clients
 
-          WHERE
-            auth_type = 'native'
-
           ORDER BY
-            created_at DESC
+            CASE
+              WHEN auth_type =
+                'legacy_scope'
+              THEN 0
+              ELSE 1
+            END,
+            LOWER(display_name)
         `;
+
 
       return http.sendJson(
         res,
         200,
-        { clients }
+        {
+          clients
+        }
       );
     }
 
@@ -77,7 +94,9 @@ export default async function handler(req, res) {
     // CREATE NATIVE CLIENT
     // =====================================================
 
-    if (req.method === "POST") {
+    if (
+      req.method === "POST"
+    ) {
 
       const schema =
         z.object({
@@ -111,35 +130,42 @@ export default async function handler(req, res) {
               .max(200)
         });
 
+
       const parsed =
         schema.safeParse(
           await http.readJson(req)
         );
 
+
       if (!parsed.success) {
+
         return http.validationError(
           res,
           parsed
         );
       }
 
+
       const username =
         normalizeClientId(
           parsed.data.username
         );
 
+
       const duplicate =
         await sql`
-          SELECT client_key
+          SELECT
+            client_key
 
           FROM portal_clients
 
           WHERE
             LOWER(username) =
-            ${username}
+              ${username}
 
           LIMIT 1
         `;
+
 
       if (duplicate.length) {
 
@@ -153,13 +179,16 @@ export default async function handler(req, res) {
         );
       }
 
+
       const passwordHash =
         await hashPortalPassword(
           parsed.data.password
         );
 
+
       const clientKey =
         `native:${crypto.randomUUID()}`;
+
 
       const inserted =
         await sql`
@@ -191,10 +220,12 @@ export default async function handler(req, res) {
             client_key,
             display_name,
             company,
+            auth_type,
             username,
             status,
             created_at
         `;
+
 
       await runtime.writeAudit({
 
@@ -213,11 +244,10 @@ export default async function handler(req, res) {
         details: {
           username,
           displayName:
-            parsed.data.displayName,
-          company:
-            parsed.data.company || null
+            parsed.data.displayName
         }
       });
+
 
       return http.sendJson(
         res,
@@ -231,10 +261,12 @@ export default async function handler(req, res) {
 
 
     // =====================================================
-    // PASSWORD / STATUS MANAGEMENT
+    // PASSWORD / ENABLE / DISABLE
     // =====================================================
 
-    if (req.method === "PATCH") {
+    if (
+      req.method === "PATCH"
+    ) {
 
       const schema =
         z.discriminatedUnion(
@@ -242,11 +274,15 @@ export default async function handler(req, res) {
           [
 
             z.object({
+
               action:
-                z.literal("password"),
+                z.literal(
+                  "password"
+                ),
 
               clientKey:
-                z.string().min(1),
+                z.string()
+                  .min(1),
 
               password:
                 z.string()
@@ -255,11 +291,15 @@ export default async function handler(req, res) {
             }),
 
             z.object({
+
               action:
-                z.literal("status"),
+                z.literal(
+                  "status"
+                ),
 
               clientKey:
-                z.string().min(1),
+                z.string()
+                  .min(1),
 
               status:
                 z.enum([
@@ -271,46 +311,53 @@ export default async function handler(req, res) {
           ]
         );
 
+
       const parsed =
         schema.safeParse(
           await http.readJson(req)
         );
 
+
       if (!parsed.success) {
+
         return http.validationError(
           res,
           parsed
         );
       }
 
-      const client =
+
+      const rows =
         await sql`
           SELECT
             client_key,
             username,
-            auth_type
+            legacy_scope,
+            auth_type,
+            status
 
           FROM portal_clients
 
           WHERE
             client_key =
-            ${parsed.data.clientKey}
+              ${parsed.data.clientKey}
 
           LIMIT 1
         `;
 
-      if (
-        !client.length ||
-        client[0].auth_type !==
-        "native"
-      ) {
+
+      const client =
+        rows[0];
+
+
+      if (!client) {
 
         return http.sendJson(
           res,
           404,
           {
             error:
-              "Native client not found."
+              "Client not found."
           }
         );
       }
@@ -321,10 +368,27 @@ export default async function handler(req, res) {
         "password"
       ) {
 
+        if (
+          client.auth_type !==
+          "native"
+        ) {
+
+          return http.sendJson(
+            res,
+            400,
+            {
+              error:
+                "Legacy credentials remain managed by the original Private Access system."
+            }
+          );
+        }
+
+
         const passwordHash =
           await hashPortalPassword(
             parsed.data.password
           );
+
 
         await sql`
           UPDATE portal_clients
@@ -332,6 +396,7 @@ export default async function handler(req, res) {
           SET
             password_hash =
               ${passwordHash},
+
             updated_at =
               NOW()
 
@@ -340,9 +405,7 @@ export default async function handler(req, res) {
               ${parsed.data.clientKey}
         `;
 
-        /*
-         * Force all existing sessions to end.
-         */
+
         await sql`
           DELETE FROM
             portal_client_sessions
@@ -352,13 +415,14 @@ export default async function handler(req, res) {
               ${parsed.data.clientKey}
         `;
 
+
         await runtime.writeAudit({
 
           actorUserId:
             gate.auth.userId,
 
           action:
-            "NATIVE_CLIENT_PASSWORD_CHANGED",
+            "CLIENT_PASSWORD_CHANGED",
 
           targetType:
             "client",
@@ -367,8 +431,8 @@ export default async function handler(req, res) {
             parsed.data.clientKey,
 
           details: {
-            username:
-              client[0].username
+            authType:
+              client.auth_type
           }
         });
       }
@@ -385,6 +449,7 @@ export default async function handler(req, res) {
           SET
             status =
               ${parsed.data.status},
+
             updated_at =
               NOW()
 
@@ -393,6 +458,11 @@ export default async function handler(req, res) {
               ${parsed.data.clientKey}
         `;
 
+
+        /*
+         * Session revocation is immediate
+         * for BOTH legacy and native clients.
+         */
         if (
           parsed.data.status ===
           "disabled"
@@ -408,13 +478,14 @@ export default async function handler(req, res) {
           `;
         }
 
+
         await runtime.writeAudit({
 
           actorUserId:
             gate.auth.userId,
 
           action:
-            "NATIVE_CLIENT_STATUS_CHANGED",
+            "CLIENT_STATUS_CHANGED",
 
           targetType:
             "client",
@@ -423,8 +494,8 @@ export default async function handler(req, res) {
             parsed.data.clientKey,
 
           details: {
-            username:
-              client[0].username,
+            authType:
+              client.auth_type,
 
             status:
               parsed.data.status
@@ -432,10 +503,13 @@ export default async function handler(req, res) {
         });
       }
 
+
       return http.sendJson(
         res,
         200,
-        { ok: true }
+        {
+          ok: true
+        }
       );
     }
 
@@ -453,16 +527,17 @@ export default async function handler(req, res) {
   } catch (error) {
 
     console.error(
-      "native clients API:",
+      "clients API:",
       error
     );
+
 
     return http.sendJson(
       res,
       500,
       {
         error:
-          "Native client operation failed."
+          "Client operation failed."
       }
     );
   }

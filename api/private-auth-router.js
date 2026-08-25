@@ -58,6 +58,12 @@
     () =>
       import(
         "../_handlers/private-auth/portal-files.js"
+      ),
+
+  "resource-check":
+    () =>
+      import(
+        "../_handlers/private-auth/resource-check.js"
       )
 };
 
@@ -70,13 +76,18 @@ export default async function handler(
   const raw =
     req.query?.__z7route;
 
+
   const route =
     Array.isArray(raw)
       ? raw[0]
-      : String(raw || "");
+      : String(
+          raw || ""
+        );
+
 
   const load =
     loaders[route];
+
 
   if (!load) {
 
@@ -88,15 +99,18 @@ export default async function handler(
       });
   }
 
+
   try {
 
     const module =
       await load();
 
+
     return await module.default(
       req,
       res
     );
+
 
   } catch (error) {
 
@@ -105,7 +119,10 @@ export default async function handler(
       error
     );
 
-    if (!res.headersSent) {
+
+    if (
+      !res.headersSent
+    ) {
 
       return res
         .status(500)
@@ -114,6 +131,7 @@ export default async function handler(
             "Private access temporarily unavailable."
         });
     }
+
 
     res.end();
   }
