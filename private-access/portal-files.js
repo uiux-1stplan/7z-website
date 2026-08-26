@@ -4,8 +4,8 @@
   const STATUS_API =
     "/api/private-auth/hub-status";
 
-  let requestSerial = 0;
-  let refreshTimer = null;
+  let serial = 0;
+  let timer = null;
 
 
   function escapeHtml(value) {
@@ -58,12 +58,11 @@
   }
 
 
-  function fileType(file) {
+  function typeLabel(file) {
     const type =
       String(
         file.contentType || ""
-      )
-      .toLowerCase();
+      ).toLowerCase();
 
     if (type.includes("html")) {
       return "HTML";
@@ -142,31 +141,19 @@
       );
 
     if (footer) {
-      footer.before(section);
+      footer.before(
+        section
+      );
     } else {
       (
         document.querySelector("main") ||
         document.body
-      ).appendChild(section);
+      ).appendChild(
+        section
+      );
     }
 
     return section;
-  }
-
-
-  function authenticatedFrom(payload) {
-    return Boolean(
-      payload &&
-      payload.ok !== false &&
-      (
-        payload.authenticated === true ||
-        payload.native === true ||
-        (
-          Array.isArray(payload.allowed) &&
-          payload.allowed.length > 0
-        )
-      )
-    );
   }
 
 
@@ -180,8 +167,20 @@
       );
 
     const authenticated =
-      authenticatedFrom(
-        payload
+      Boolean(
+        payload &&
+        payload.ok !== false &&
+        (
+          payload.native === true ||
+          payload.authType === "native" ||
+          payload.authType === "legacy" ||
+          (
+            Array.isArray(
+              payload.allowed
+            ) &&
+            payload.allowed.length > 0
+          )
+        )
       );
 
     if (
@@ -206,7 +205,9 @@
     }
 
     const files =
-      Array.isArray(payload?.files)
+      Array.isArray(
+        payload?.files
+      )
         ? payload.files
         : [];
 
@@ -217,7 +218,6 @@
           <span>Your secure delivery area is active.</span>
         </div>
       `;
-
       return;
     }
 
@@ -246,7 +246,7 @@
                   <div
                     class="z7cpf-file-icon"
                     aria-hidden="true">
-                    ${escapeHtml(fileType(file))}
+                    ${escapeHtml(typeLabel(file))}
                   </div>
 
                   <div class="z7cpf-file-copy">
@@ -299,12 +299,12 @@
 
   async function refresh(focus = false) {
     const current =
-      ++requestSerial;
+      ++serial;
 
     try {
       const response =
         await fetch(
-          `${STATUS_API}?files=1&t=${Date.now()}`,
+          `${STATUS_API}?delivery=1&t=${Date.now()}`,
           {
             method: "GET",
             credentials: "same-origin",
@@ -325,7 +325,7 @@
 
       if (
         current !==
-        requestSerial
+        serial
       ) {
         return;
       }
@@ -341,10 +341,9 @@
 
       if (
         focus &&
-        authenticatedFrom(payload) &&
-        payload.admin !== true
+        payload?.files?.length
       ) {
-        window.setTimeout(
+        setTimeout(
           () => {
             document
               .getElementById(
@@ -361,27 +360,10 @@
 
     } catch (error) {
       console.warn(
-        "7Z file delivery refresh:",
+        "Private files refresh:",
         error
       );
     }
-  }
-
-
-  function startRefresh() {
-    if (refreshTimer) {
-      return;
-    }
-
-    refreshTimer =
-      window.setInterval(
-        () => {
-          if (!document.hidden) {
-            refresh(false);
-          }
-        },
-        2000
-      );
   }
 
 
@@ -393,7 +375,7 @@
       ) {
         refresh(true);
       } else {
-        requestSerial++;
+        serial++;
         render(null);
       }
     }
@@ -404,13 +386,13 @@
     "submit",
     () => {
       [
-        250,
-        600,
-        1100,
-        1800
+        200,
+        500,
+        900,
+        1500
       ].forEach(
         delay => {
-          window.setTimeout(
+          setTimeout(
             () => refresh(true),
             delay
           );
@@ -445,5 +427,14 @@
 
   ensureSection();
   refresh(false);
-  startRefresh();
+
+  timer =
+    setInterval(
+      () => {
+        if (!document.hidden) {
+          refresh(false);
+        }
+      },
+      2000
+    );
 })();

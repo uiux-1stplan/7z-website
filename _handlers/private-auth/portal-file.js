@@ -7,26 +7,35 @@ import {
 } from "@vercel/blob";
 
 import {
+  getLegacyClientScopes
+} from "../../lib/portal-legacy-access.mjs";
+
+import {
   getNativeClientSession
 } from "../../lib/portal-native-session.mjs";
 
 import {
-  resolvePortalClientAccess
-} from "../../lib/portal-client-access.mjs";
-
-import {
-  applyPrivateNoStore
-} from "../../lib/portal-legacy-access.mjs";
+  getActiveClientByKey,
+  getLegacyClientKeys,
+  verifyClientIdentity
+} from "../../lib/portal-client-delivery.mjs";
 
 import {
   getSql
 } from "../../lib/portal-runtime.mjs";
 
+import {
+  applyPrivateNoStore
+} from "../../lib/portal-legacy-access.mjs";
 
-function safeFilename(name) {
+
+function safeFilename(
+  value
+) {
 
   return String(
-    name || "private-file"
+    value ||
+    "private-file"
   )
     .replace(
       /[\r\n"]/g,
@@ -39,33 +48,67 @@ function safeFilename(name) {
 }
 
 
-async function resolveKeys(req) {
+async function clientKeys(
+  request
+) {
 
-  const nativeClient =
-    await getNativeClientSession(req);
+  const identity =
+    verifyClientIdentity(
+      request
+    );
 
-  if (nativeClient?.client_key) {
 
-    return {
-      authenticated: true,
-      clientKeys: [
-        String(nativeClient.client_key)
-      ]
-    };
+  if (
+    identity?.clientKey
+  ) {
+
+    const client =
+      await getActiveClientByKey(
+        identity.clientKey
+      );
+
+
+    if (
+      client?.auth_type ===
+        "native"
+    ) {
+
+      return [
+        String(
+          client.client_key
+        )
+      ];
+    }
   }
 
-  const access =
-    await resolvePortalClientAccess(req);
 
-  return {
-    authenticated:
-      Boolean(access?.authenticated),
+  const nativeClient =
+    await getNativeClientSession(
+      request
+    );
 
-    clientKeys:
-      Array.isArray(access?.clientKeys)
-        ? access.clientKeys.map(String)
-        : []
-  };
+
+  if (
+    nativeClient?.client_key
+  ) {
+
+    return [
+      String(
+        nativeClient.client_key
+      )
+    ];
+  }
+
+
+  const legacyScopes =
+    await getLegacyClientScopes(
+      request
+    );
+
+
+  return getLegacyClientKeys(
+    legacyScopes
+  );
 }
 
 
@@ -74,14 +117,21 @@ export default async function handler(
   res
 ) {
 
-  applyPrivateNoStore(res);
+  applyPrivateNoStore(
+    res
+  );
+
 
   res.setHeader(
     "Vary",
     "Cookie"
   );
 
-  if (req.method !== "GET") {
+
+  if (
+    req.method !==
+    "GET"
+  ) {
 
     res.setHeader(
       "Allow",
@@ -93,14 +143,17 @@ export default async function handler(
       .end();
   }
 
+
   try {
 
-    const access =
-      await resolveKeys(req);
+    const keys =
+      await clientKeys(
+        req
+      );
+
 
     if (
-      !access.authenticated ||
-      !access.clientKeys.length
+      !keys.length
     ) {
 
       return res
@@ -110,25 +163,36 @@ export default async function handler(
         );
     }
 
+
     const rawId =
-      Array.isArray(req.query?.id)
+      Array.isArray(
+        req.query?.id
+      )
         ? req.query.id[0]
         : req.query?.id;
+
 
     const id =
       String(
         rawId || ""
-      ).trim();
+      )
+        .trim();
+
 
     const rawMode =
-      Array.isArray(req.query?.mode)
+      Array.isArray(
+        req.query?.mode
+      )
         ? req.query.mode[0]
         : req.query?.mode;
 
+
     const mode =
-      rawMode === "download"
+      rawMode ===
+        "download"
         ? "download"
         : "view";
+
 
     if (
       !id ||
@@ -142,13 +206,18 @@ export default async function handler(
         );
     }
 
+
     const keySet =
       new Set(
-        access.clientKeys
+        keys.map(
+          String
+        )
       );
+
 
     const sql =
       getSql();
+
 
     const rows =
       await sql`
@@ -162,23 +231,36 @@ export default async function handler(
           f.original_name,
           f.content_type
 
-        FROM portal_client_file_permissions p
+        FROM
+          portal_client_file_permissions p
 
-        INNER JOIN portal_files f
-          ON f.id = p.file_id
+        INNER JOIN
+          portal_files f
 
-        WHERE f.id::text = ${id}
+          ON
+            f.id =
+              p.file_id
+
+        WHERE
+          f.id::text =
+            ${id}
       `;
+
 
     const matching =
       rows.filter(
         row =>
           keySet.has(
-            String(row.client_key)
+            String(
+              row.client_key
+            )
           )
       );
 
-    if (!matching.length) {
+
+    if (
+      !matching.length
+    ) {
 
       return res
         .status(404)
@@ -186,6 +268,7 @@ export default async function handler(
           "File not available"
         );
     }
+
 
     const canView =
       matching.some(
@@ -195,6 +278,7 @@ export default async function handler(
           )
       );
 
+
     const canDownload =
       matching.some(
         row =>
@@ -202,6 +286,7 @@ export default async function handler(
             row.can_download
           )
       );
+
 
     if (
       mode === "view" &&
@@ -215,8 +300,10 @@ export default async function handler(
         );
     }
 
+
     if (
-      mode === "download" &&
+      mode ===
+        "download" &&
       !canDownload
     ) {
 
@@ -227,15 +314,20 @@ export default async function handler(
         );
     }
 
+
     const file =
       matching[0];
+
 
     const blob =
       await head(
         file.blob_pathname
       );
 
-    if (!blob?.url) {
+
+    if (
+      !blob?.url
+    ) {
 
       return res
         .status(404)
@@ -244,11 +336,15 @@ export default async function handler(
         );
     }
 
-    const blobToken =
+
+    const token =
       process.env
         .BLOB_READ_WRITE_TOKEN;
 
-    if (!blobToken) {
+
+    if (
+      !token
+    ) {
 
       return res
         .status(503)
@@ -257,32 +353,38 @@ export default async function handler(
         );
     }
 
+
     const headers = {
       Authorization:
-        `Bearer ${blobToken}`
+        `Bearer ${token}`
     };
+
 
     if (
       typeof req.headers.range ===
-      "string"
+        "string"
     ) {
 
       headers.Range =
         req.headers.range;
     }
 
+
     const upstream =
       await fetch(
         blob.url,
         {
           headers,
-          cache: "no-store"
+          cache:
+            "no-store"
         }
       );
 
+
     if (
       !upstream.ok &&
-      upstream.status !== 206
+      upstream.status !==
+        206
     ) {
 
       return res
@@ -294,8 +396,10 @@ export default async function handler(
         );
     }
 
+
     res.statusCode =
       upstream.status;
+
 
     for (
       const name
@@ -314,7 +418,10 @@ export default async function handler(
           name
         );
 
-      if (value) {
+
+      if (
+        value
+      ) {
 
         res.setHeader(
           name,
@@ -322,6 +429,7 @@ export default async function handler(
         );
       }
     }
+
 
     if (
       !upstream.headers.get(
@@ -336,15 +444,18 @@ export default async function handler(
       );
     }
 
+
     const filename =
       safeFilename(
         file.original_name
       );
 
+
     const encoded =
       encodeURIComponent(
         filename
       );
+
 
     res.setHeader(
       "Content-Disposition",
@@ -356,24 +467,35 @@ export default async function handler(
         : `inline; filename="${filename}"; filename*=UTF-8''${encoded}`
     );
 
-    if (!upstream.body) {
+
+    if (
+      !upstream.body
+    ) {
+
       return res.end();
     }
+
 
     Readable
       .fromWeb(
         upstream.body
       )
-      .pipe(res);
+      .pipe(
+        res
+      );
+
 
   } catch (error) {
 
     console.error(
-      "Final portal file:",
+      "Private file:",
       error
     );
 
-    if (!res.headersSent) {
+
+    if (
+      !res.headersSent
+    ) {
 
       return res
         .status(500)
@@ -381,6 +503,7 @@ export default async function handler(
           "Private file temporarily unavailable"
         );
     }
+
 
     res.end();
   }

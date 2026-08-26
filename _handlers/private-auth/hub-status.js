@@ -14,16 +14,41 @@ import {
 } from "../../lib/portal-native-session.mjs";
 
 import {
-  getSql
-} from "../../lib/portal-runtime.mjs";
+  getActiveClientByKey,
+  getFilesForClientKeys,
+  getLegacyClientKeys,
+  issueClientIdentityCookie,
+  verifyClientIdentity
+} from "../../lib/portal-client-delivery.mjs";
 
 
-function send(response, status, body) {
-  for (const [name, value] of Object.entries(noStoreHeaders)) {
-    response.setHeader(name, value);
+function send(
+  response,
+  status,
+  body,
+  extraHeaders = {}
+) {
+
+  for (
+    const [
+      name,
+      value
+    ]
+    of Object.entries({
+      ...noStoreHeaders,
+      ...extraHeaders
+    })
+  ) {
+    response.setHeader(
+      name,
+      value
+    );
   }
 
-  response.setHeader("Vary", "Cookie");
+  response.setHeader(
+    "Vary",
+    "Cookie"
+  );
 
   return response
     .status(status)
@@ -31,161 +56,85 @@ function send(response, status, body) {
 }
 
 
-async function liveFilesForKeys(clientKeys) {
-  const keys =
-    Array.isArray(clientKeys)
-      ? clientKeys.map(String).filter(Boolean)
-      : [];
+async function nativePayload(
+  request,
+  clientKey,
+  extraHeaders = {}
+) {
 
-  if (!keys.length) {
-    return [];
-  }
-
-  const keySet =
-    new Set(keys);
-
-  const sql =
-    getSql();
-
-  const rows =
-    await sql`
-      SELECT
-        p.client_key,
-        p.file_id,
-        p.can_view,
-        p.can_download,
-        f.id,
-        f.original_name,
-        f.size_bytes,
-        f.content_type,
-        f.created_at
-      FROM portal_client_file_permissions p
-      INNER JOIN portal_files f
-        ON f.id = p.file_id
-      WHERE p.can_view = TRUE
-      ORDER BY
-        f.created_at DESC,
-        f.original_name ASC
-    `;
-
-  const merged =
-    new Map();
-
-  for (const row of rows) {
-    if (!keySet.has(String(row.client_key))) {
-      continue;
-    }
-
-    const id =
-      String(row.id);
-
-    const existing =
-      merged.get(id);
-
-    if (!existing) {
-      merged.set(
-        id,
-        {
-          id,
-          name:
-            row.original_name,
-          sizeBytes:
-            Number(row.size_bytes || 0),
-          contentType:
-            row.content_type ||
-            "application/octet-stream",
-          canView:
-            true,
-          canDownload:
-            Boolean(row.can_download)
-        }
-      );
-    } else {
-      existing.canDownload =
-        existing.canDownload ||
-        Boolean(row.can_download);
-    }
-  }
-
-  return [...merged.values()];
-}
-
-
-async function legacyState(cookieHeader) {
-  const checks =
-    await Promise.all(
-      HUB_PUBLIC_SCOPES.map(
-        async scope => {
-          const resource =
-            PRIVATE_RESOURCES[scope];
-
-          const token =
-            readCookie(
-              cookieHeader,
-              resource.cookieName
-            );
-
-          if (!token) {
-            return null;
-          }
-
-          const valid =
-            await verifySession(
-              token,
-              scope,
-              process.env.PRIVATE_ACCESS_SESSION_SECRET
-            );
-
-          return valid
-            ? scope
-            : null;
-        }
-      )
+  const client =
+    await getActiveClientByKey(
+      clientKey
     );
 
-  return checks.filter(Boolean);
-}
 
-
-async function legacyClientKeys(scopes) {
-  if (!Array.isArray(scopes) || !scopes.length) {
-    return [];
+  if (
+    !client ||
+    client.auth_type !==
+      "native"
+  ) {
+    return null;
   }
 
-  const scopeSet =
-    new Set(scopes.map(String));
 
-  const sql =
-    getSql();
-
-  const rows =
-    await sql`
-      SELECT
-        client_key,
-        legacy_scope
-      FROM portal_clients
-      WHERE
-        auth_type = 'legacy_scope'
-        AND status = 'active'
-    `;
-
-  return rows
-    .filter(
-      row =>
-        scopeSet.has(
-          String(row.legacy_scope)
+  const files =
+    await getFilesForClientKeys(
+      [
+        String(
+          client.client_key
         )
-    )
-    .map(
-      row =>
-        String(row.client_key)
+      ]
     );
+
+
+  return {
+    body: {
+      ok: true,
+      authenticated: true,
+      authType:
+        "native",
+      admin: false,
+      native: true,
+      allowed: [],
+      files,
+      client: {
+        clientKey:
+          String(
+            client.client_key
+          ),
+
+        username:
+          client.username ||
+          null,
+
+        displayName:
+          client.display_name ||
+          null
+      },
+      source:
+        "signed-client-identity"
+    },
+
+    headers:
+      extraHeaders
+  };
 }
 
 
-export default async function handler(request, response) {
-  if (request.method !== "GET") {
-    response.setHeader("Allow", "GET");
+export default async function handler(
+  request,
+  response
+) {
+
+  if (
+    request.method !==
+    "GET"
+  ) {
+
+    response.setHeader(
+      "Allow",
+      "GET"
+    );
 
     return send(
       response,
@@ -201,78 +150,160 @@ export default async function handler(request, response) {
     );
   }
 
+
   try {
-    const cookieHeader =
-      request.headers.cookie || "";
 
     /*
-     * CRITICAL PRECEDENCE:
-     * A client session must win over an admin cookie on the same domain.
-     *
-     * Admin and client sessions can legitimately coexist in one browser.
-     * /private-access/ must show the logged-in client's own delivery,
-     * not collapse to the admin state with files: [].
+     * 1) SIGNED CLIENT IDENTITY — authoritative for native file delivery.
      */
+    const identity =
+      verifyClientIdentity(
+        request
+      );
 
-    // 1) NATIVE CLIENT FIRST
+
+    if (
+      identity?.clientKey
+    ) {
+
+      const payload =
+        await nativePayload(
+          request,
+          identity.clientKey
+        );
+
+
+      if (
+        payload
+      ) {
+
+        return send(
+          response,
+          200,
+          payload.body,
+          payload.headers
+        );
+      }
+    }
+
+
+    /*
+     * 2) EXISTING NATIVE SESSION — compatibility + automatic upgrade.
+     */
     const nativeClient =
       await getNativeClientSession(
         request
       );
 
-    if (nativeClient?.client_key) {
+
+    if (
+      nativeClient?.client_key
+    ) {
+
       const clientKey =
         String(
           nativeClient.client_key
         );
 
-      const files =
-        await liveFilesForKeys(
-          [clientKey]
+
+      const payload =
+        await nativePayload(
+          request,
+          clientKey,
+          {
+            "Set-Cookie":
+              issueClientIdentityCookie(
+                request,
+                clientKey
+              )
+          }
         );
 
-      return send(
-        response,
-        200,
-        {
-          ok: true,
-          authenticated: true,
-          authType: "native",
-          admin: false,
-          native: true,
-          allowed: [],
-          files,
-          client: {
-            clientKey,
-            username:
-              nativeClient.username ||
-              null,
-            displayName:
-              nativeClient.display_name ||
-              null
-          },
-          source:
-            "hub-status-client-first-v3"
-        }
-      );
+
+      if (
+        payload
+      ) {
+
+        return send(
+          response,
+          200,
+          payload.body,
+          payload.headers
+        );
+      }
     }
 
-    // 2) LEGACY CLIENT SESSION SECOND
-    const allowed =
-      await legacyState(
-        cookieHeader
+
+    const cookieHeader =
+      request.headers.cookie || "";
+
+
+    /*
+     * 3) LEGACY CLIENT
+     */
+    const checks =
+      await Promise.all(
+        HUB_PUBLIC_SCOPES.map(
+          async scope => {
+
+            const resource =
+              PRIVATE_RESOURCES[
+                scope
+              ];
+
+
+            const token =
+              readCookie(
+                cookieHeader,
+                resource.cookieName
+              );
+
+
+            if (
+              !token
+            ) {
+              return null;
+            }
+
+
+            const valid =
+              await verifySession(
+                token,
+                scope,
+                process.env
+                  .PRIVATE_ACCESS_SESSION_SECRET
+              );
+
+
+            return valid
+              ? scope
+              : null;
+          }
+        )
       );
 
-    if (allowed.length) {
-      const keys =
-        await legacyClientKeys(
+
+    const allowed =
+      checks.filter(
+        Boolean
+      );
+
+
+    if (
+      allowed.length
+    ) {
+
+      const clientKeys =
+        await getLegacyClientKeys(
           allowed
         );
 
+
       const files =
-        await liveFilesForKeys(
-          keys
+        await getFilesForClientKeys(
+          clientKeys
         );
+
 
       return send(
         response,
@@ -280,48 +311,60 @@ export default async function handler(request, response) {
         {
           ok: true,
           authenticated: true,
-          authType: "legacy",
+          authType:
+            "legacy",
           admin: false,
           native: false,
           allowed,
           files,
           source:
-            "hub-status-client-first-v3"
+            "legacy-client"
         }
       );
     }
 
-    // 3) ADMIN ONLY WHEN NO CLIENT SESSION EXISTS
+
+    /*
+     * 4) ADMIN FALLBACK
+     */
     const adminToken =
       readCookie(
         cookieHeader,
         ADMIN_COOKIE_NAME
       );
 
+
     const admin =
       await verifyAdminSession(
         adminToken,
-        process.env.PRIVATE_ACCESS_ADMIN_SESSION_SECRET
+        process.env
+          .PRIVATE_ACCESS_ADMIN_SESSION_SECRET
       );
 
-    if (admin) {
+
+    if (
+      admin
+    ) {
+
       return send(
         response,
         200,
         {
           ok: true,
           authenticated: true,
-          authType: "admin",
+          authType:
+            "admin",
           admin: true,
           native: false,
           allowed:
             HUB_ADMIN_SCOPES,
           files: [],
           source:
-            "hub-status-client-first-v3"
+            "admin"
         }
       );
     }
+
 
     return send(
       response,
@@ -335,15 +378,18 @@ export default async function handler(request, response) {
         allowed: [],
         files: [],
         source:
-          "hub-status-client-first-v3"
+          "anonymous"
       }
     );
 
+
   } catch (error) {
+
     console.error(
-      "Hub status client-first:",
+      "Hub status:",
       error
     );
+
 
     return send(
       response,

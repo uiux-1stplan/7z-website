@@ -1,30 +1,33 @@
-﻿import {
+import {
   HUB_ADMIN_SCOPES,
   HUB_PUBLIC_SCOPES,
   adminSessionCookie,
   issueAdminSession,
+  issueSession,
   noStoreHeaders,
+  sessionCookie,
   validAdminCredentials,
   validCredentials
 } from "../../lib/private-access.js";
 
 import {
-  createPortalClientSession,
   tryNativeClientLogin
 } from "../../lib/portal-native-session.mjs";
 
 import {
-  getAllowedLegacyResourceScopes
-} from "../../lib/portal-client-access.mjs";
-
-import {
-  getSql
-} from "../../lib/portal-runtime.mjs";
+  getFilesForClientKeys,
+  issueClientIdentityCookie
+} from "../../lib/portal-client-delivery.mjs";
 
 
-const MAX_BODY_BYTES = 2048;
-const MAX_FIELD_LENGTH = 256;
-const FAILURE_DELAY_MS = 450;
+const MAX_BODY_BYTES =
+  2048;
+
+const MAX_FIELD_LENGTH =
+  256;
+
+const FAILURE_DELAY_MS =
+  450;
 
 
 function send(
@@ -35,7 +38,10 @@ function send(
 ) {
 
   for (
-    const [name, value]
+    const [
+      name,
+      value
+    ]
     of Object.entries({
       ...noStoreHeaders,
       ...extraHeaders
@@ -53,17 +59,22 @@ function send(
 }
 
 
-function validText(value) {
+function validText(
+  value
+) {
 
   return (
     typeof value === "string" &&
     value.length > 0 &&
-    value.length <= MAX_FIELD_LENGTH
+    value.length <=
+      MAX_FIELD_LENGTH
   );
 }
 
 
-async function fail(response) {
+async function fail(
+  response
+) {
 
   await new Promise(
     resolve =>
@@ -78,9 +89,13 @@ async function fail(response) {
     401,
     {
       ok: false,
+      authenticated: false,
       admin: false,
+      native: false,
       allowed: [],
-      error: "Login To Explore"
+      files: [],
+      error:
+        "Login To Explore"
     }
   );
 }
@@ -91,7 +106,10 @@ export default async function handler(
   response
 ) {
 
-  if (request.method !== "POST") {
+  if (
+    request.method !==
+    "POST"
+  ) {
 
     response.setHeader(
       "Allow",
@@ -103,8 +121,10 @@ export default async function handler(
       405,
       {
         ok: false,
+        authenticated: false,
         admin: false,
-        allowed: []
+        allowed: [],
+        files: []
       }
     );
   }
@@ -112,11 +132,16 @@ export default async function handler(
 
   const mediaType =
     String(
-      request.headers["content-type"] || ""
+      request.headers[
+        "content-type"
+      ] || ""
     )
-    .split(";", 1)[0]
-    .trim()
-    .toLowerCase();
+      .split(
+        ";",
+        1
+      )[0]
+      .trim()
+      .toLowerCase();
 
 
   if (
@@ -129,8 +154,10 @@ export default async function handler(
       415,
       {
         ok: false,
+        authenticated: false,
         admin: false,
-        allowed: []
+        allowed: [],
+        files: []
       }
     );
   }
@@ -149,7 +176,8 @@ export default async function handler(
       declaredSize
     ) ||
     declaredSize < 0 ||
-    declaredSize > MAX_BODY_BYTES
+    declaredSize >
+      MAX_BODY_BYTES
   ) {
 
     return send(
@@ -157,8 +185,10 @@ export default async function handler(
       413,
       {
         ok: false,
+        authenticated: false,
         admin: false,
-        allowed: []
+        allowed: [],
+        files: []
       }
     );
   }
@@ -169,7 +199,8 @@ export default async function handler(
 
 
   if (
-    typeof body === "string"
+    typeof body ===
+    "string"
   ) {
 
     if (
@@ -185,12 +216,13 @@ export default async function handler(
         413,
         {
           ok: false,
+          authenticated: false,
           admin: false,
-          allowed: []
+          allowed: [],
+          files: []
         }
       );
     }
-
 
     try {
 
@@ -206,8 +238,10 @@ export default async function handler(
         400,
         {
           ok: false,
+          authenticated: false,
           admin: false,
-          allowed: []
+          allowed: [],
+          files: []
         }
       );
     }
@@ -216,8 +250,11 @@ export default async function handler(
 
   if (
     !body ||
-    typeof body !== "object" ||
-    Array.isArray(body)
+    typeof body !==
+      "object" ||
+    Array.isArray(
+      body
+    )
   ) {
 
     return send(
@@ -225,8 +262,10 @@ export default async function handler(
       400,
       {
         ok: false,
+        authenticated: false,
         admin: false,
-        allowed: []
+        allowed: [],
+        files: []
       }
     );
   }
@@ -235,19 +274,24 @@ export default async function handler(
   const clientId =
     String(
       body.clientId || ""
-    ).trim();
+    )
+      .trim();
 
 
   const accessKey =
     typeof body.accessKey ===
-    "string"
+      "string"
       ? body.accessKey
       : "";
 
 
   if (
-    !validText(clientId) ||
-    !validText(accessKey)
+    !validText(
+      clientId
+    ) ||
+    !validText(
+      accessKey
+    )
   ) {
 
     return fail(
@@ -257,11 +301,106 @@ export default async function handler(
 
 
   /*
-   * =====================================================
-   * 1. CLERK-UNRELATED PRIVATE ADMIN LOGIN
-   * =====================================================
+   * NATIVE CLIENT FIRST.
+   *
+   * Successful login creates:
+   * 1) existing database-backed native session
+   * 2) signed client identity cookie
+   *
+   * The second cookie removes all ambiguity when
+   * retrieving current file permissions.
    */
+  try {
 
+    const nativeLogin =
+      await tryNativeClientLogin(
+        request,
+        clientId,
+        accessKey
+      );
+
+
+    if (
+      nativeLogin.ok
+    ) {
+
+      const clientKey =
+        String(
+          nativeLogin.client
+            .clientKey
+        );
+
+
+      const files =
+        await getFilesForClientKeys(
+          [clientKey]
+        );
+
+
+      return send(
+        response,
+        200,
+        {
+          ok: true,
+          authenticated: true,
+          authType:
+            "native",
+          admin: false,
+          native: true,
+          allowed: [],
+          files,
+          client: {
+            clientKey,
+
+            username:
+              nativeLogin.client
+                .username,
+
+            displayName:
+              nativeLogin.client
+                .displayName
+          }
+        },
+        {
+          "Set-Cookie": [
+            nativeLogin.cookie,
+
+            issueClientIdentityCookie(
+              request,
+              clientKey
+            )
+          ]
+        }
+      );
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Native client login:",
+      error
+    );
+
+    return send(
+      response,
+      500,
+      {
+        ok: false,
+        authenticated: false,
+        admin: false,
+        native: false,
+        allowed: [],
+        files: [],
+        error:
+          "Private access temporarily unavailable."
+      }
+    );
+  }
+
+
+  /*
+   * ADMIN LOGIN
+   */
   const adminSecret =
     process.env
       .PRIVATE_ACCESS_ADMIN_SESSION_SECRET;
@@ -288,17 +427,19 @@ export default async function handler(
       );
 
 
-    if (!session) {
+    if (
+      !session
+    ) {
 
       return send(
         response,
         503,
         {
           ok: false,
+          authenticated: false,
           admin: false,
           allowed: [],
-          error:
-            "Private access temporarily unavailable."
+          files: []
         }
       );
     }
@@ -309,9 +450,14 @@ export default async function handler(
       200,
       {
         ok: true,
+        authenticated: true,
+        authType:
+          "admin",
         admin: true,
+        native: false,
         allowed:
-          HUB_ADMIN_SCOPES
+          HUB_ADMIN_SCOPES,
+        files: []
       },
       {
         "Set-Cookie":
@@ -324,98 +470,31 @@ export default async function handler(
 
 
   /*
-   * =====================================================
-   * 2. NATIVE CLIENT
-   *
-   * IMPORTANT:
-   * This runs BEFORE all Legacy environment logic.
-   * A new dashboard-created client therefore does NOT
-   * depend on PRIVATE_ACCESS_SESSION_SECRET or any
-   * PRIVATE_ACCESS_* legacy credentials.
-   * =====================================================
+   * LEGACY CLIENT LOGIN
    */
-
-  try {
-
-    const nativeLogin =
-      await tryNativeClientLogin(
-        request,
-        clientId,
-        accessKey
-      );
+  const secret =
+    process.env
+      .PRIVATE_ACCESS_SESSION_SECRET;
 
 
-    if (nativeLogin.ok) {
-
-      const clientKey =
-        nativeLogin
-          .client
-          .client_key ||
-        nativeLogin
-          .client
-          .clientKey;
-
-
-      const allowed =
-        clientKey
-          ? await getAllowedLegacyResourceScopes(
-              [clientKey]
-            )
-          : [];
-
-
-      console.log(
-        "Native client login success:",
-        clientId
-      );
-
-
-      return send(
-        response,
-        200,
-        {
-          ok: true,
-          admin: false,
-          native: true,
-          allowed
-        },
-        {
-          "Set-Cookie":
-            nativeLogin.cookie
-        }
-      );
-    }
-
-  } catch (error) {
-
-    console.error(
-      "Native client login failure:",
-      error
-    );
-
+  if (
+    typeof secret !==
+      "string" ||
+    secret.length < 32
+  ) {
 
     return send(
       response,
-      500,
+      503,
       {
         ok: false,
+        authenticated: false,
         admin: false,
         allowed: [],
-        error:
-          "Private access temporarily unavailable."
+        files: []
       }
     );
   }
-
-
-  /*
-   * =====================================================
-   * 3. LEGACY CLIENTS
-   * =====================================================
-   */
-
-  const sql =
-    getSql();
 
 
   for (
@@ -432,65 +511,36 @@ export default async function handler(
       );
 
 
-    if (!valid) {
+    if (
+      !valid
+    ) {
       continue;
     }
 
 
-    const clients =
-      await sql`
-        SELECT
-          client_key
-
-        FROM portal_clients
-
-        WHERE
-          auth_type =
-            'legacy_scope'
-
-          AND legacy_scope =
-            ${scope}
-
-          AND status =
-            'active'
-
-        LIMIT 1
-      `;
+    const session =
+      await issueSession(
+        scope,
+        secret
+      );
 
 
-    const client =
-      clients[0];
+    if (
+      !session
+    ) {
 
-
-    if (!client) {
-
-      return fail(
-        response
+      return send(
+        response,
+        503,
+        {
+          ok: false,
+          authenticated: false,
+          admin: false,
+          allowed: [],
+          files: []
+        }
       );
     }
-
-
-    const login =
-      await createPortalClientSession(
-        request,
-        client.client_key
-      );
-
-
-    if (!login.ok) {
-
-      return fail(
-        response
-      );
-    }
-
-
-    const allowed =
-      await getAllowedLegacyResourceScopes(
-        [
-          client.client_key
-        ]
-      );
 
 
     return send(
@@ -498,13 +548,21 @@ export default async function handler(
       200,
       {
         ok: true,
+        authenticated: true,
+        authType:
+          "legacy",
         admin: false,
         native: false,
-        allowed
+        allowed:
+          [scope],
+        files: []
       },
       {
         "Set-Cookie":
-          login.cookie
+          sessionCookie(
+            scope,
+            session
+          )
       }
     );
   }

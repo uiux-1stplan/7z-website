@@ -9,6 +9,10 @@ import {
   clearPortalClientCookie
 } from "../../lib/portal-native-session.mjs";
 
+import {
+  clearClientIdentityCookie
+} from "../../lib/portal-client-delivery.mjs";
+
 
 function send(
   response,
@@ -18,13 +22,15 @@ function send(
 ) {
 
   for (
-    const [name, value]
+    const [
+      name,
+      value
+    ]
     of Object.entries({
       ...noStoreHeaders,
       ...extraHeaders
     })
   ) {
-
     response.setHeader(
       name,
       value
@@ -43,7 +49,8 @@ export default async function handler(
 ) {
 
   if (
-    request.method !== "POST"
+    request.method !==
+    "POST"
   ) {
 
     response.setHeader(
@@ -62,14 +69,17 @@ export default async function handler(
 
 
   const expiredCookies = [
-
-    adminSessionCookie(
-      "",
-      0
+    clearClientIdentityCookie(
+      request
     ),
 
     clearPortalClientCookie(
       request
+    ),
+
+    adminSessionCookie(
+      "",
+      0
     ),
 
     ...Object
