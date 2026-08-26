@@ -1,306 +1,1029 @@
 (() => {
   "use strict";
 
-  const PUBLIC_SCOPES = [
-    "silla",
-    "elcon",
-    "tawjihi-quotation",
-    "oman-partnership"
-  ];
+  if (
+    window.__Z7_PRIVATE_ACCESS_FINAL_V1__
+  ) {
+    return;
+  }
 
-  const ADMIN_SCOPES = [
-    "silla",
-    "elcon",
-    "blueprint-html",
-    "blueprint-pdf",
-    "tawjihi-quotation",
-    "oman-partnership"
-  ];
+  window.__Z7_PRIVATE_ACCESS_FINAL_V1__ =
+    true;
 
-  const cards =
-    Array.from(
-      window.document.querySelectorAll(
-        "[data-z7pa-resource]"
-      )
-    );
 
-  const grid =
-    window.document.querySelector(
-      "[data-z7pa-grid]"
-    );
+  const D =
+    window.document;
 
-  const library =
-    window.document.querySelector(
-      ".z7pa-library"
-    );
 
-  const hero =
-    window.document.querySelector(
-      ".z7pa-hero"
-    );
+  const API =
+    Object.freeze({
 
-  const loginPanel =
-    window.document.querySelector(
+      status:
+        "/api/private-auth/hub-status",
+
+      login:
+        "/api/private-auth/hub-login",
+
+      logout:
+        "/api/private-auth/hub-logout",
+
+      files:
+        "/api/private-auth/portal-files",
+
+      file:
+        "/api/private-auth/portal-file"
+
+    });
+
+
+  const q =
+    (
+      selector,
+      root = D
+    ) =>
+      root.querySelector(
+        selector
+      );
+
+
+  const qa =
+    (
+      selector,
+      root = D
+    ) =>
+      Array.from(
+        root.querySelectorAll(
+          selector
+        )
+      );
+
+
+  const panel =
+    q(
       "[data-z7pa-login-panel]"
     );
 
+
   const form =
-    window.document.getElementById(
-      "z7PrivateAccessLoginForm"
+    q(
+      "#z7PrivateAccessLoginForm"
     );
+
 
   const clientId =
-    window.document.getElementById(
-      "z7HubClientId"
+    q(
+      "#z7HubClientId"
     );
+
 
   const accessKey =
-    window.document.getElementById(
-      "z7HubAccessKey"
+    q(
+      "#z7HubAccessKey"
     );
+
 
   const message =
-    window.document.getElementById(
-      "z7HubLoginMessage"
+    q(
+      "#z7HubLoginMessage"
     );
 
+
+  const seat =
+    q(
+      "#z7InnerCircleSeat"
+    );
+
+
+  const hero =
+    q(
+      ".z7pa-hero"
+    );
+
+
+  const library =
+    q(
+      ".z7pa-library"
+    );
+
+
+  const policy =
+    q(
+      ".z7pa-policy"
+    );
+
+
+  const grid =
+    q(
+      "[data-z7pa-grid]"
+    );
+
+
+  const cards =
+    qa(
+      "[data-z7pa-resource]"
+    );
+
+
   const count =
-    window.document.querySelector(
+    q(
       "[data-z7pa-count]"
     );
 
+
   const label =
-    window.document.querySelector(
+    q(
       "[data-z7pa-access-label]"
     );
 
+
   const siteHeader =
-    window.document.querySelector(
+    q(
       ".site-header"
     );
 
+
   const headerSocials =
-    window.document.querySelector(
+    q(
       ".header-socials"
     );
 
-  let currentAuthenticated = false;
+
+  let authenticated =
+    false;
 
 
-  /* --------------------------------------------------------
-     HEADER SESSION BUTTON
-  -------------------------------------------------------- */
+  let serial =
+    0;
 
-  let accessButton =
-    window.document.getElementById(
-      "z7paHeaderAccessButton"
-    );
 
-  if (!accessButton) {
+  /*
+   * HEADER LOGIN / LOGOUT
+   */
 
-    accessButton =
-      window.document.createElement(
+
+  function ensureHeaderButton() {
+
+    let button =
+      q(
+        "#z7paHeaderAccessButton"
+      );
+
+
+    if (button) {
+
+      return button;
+    }
+
+
+    if (!siteHeader) {
+
+      return null;
+    }
+
+
+    button =
+      D.createElement(
         "button"
       );
 
-    accessButton.type =
+
+    button.type =
       "button";
 
-    accessButton.className =
-      "z7pa-header-access magnetic";
 
-    accessButton.id =
+    button.id =
       "z7paHeaderAccessButton";
 
-    accessButton.innerHTML = `
-      <span>LOGIN</span>
-      <b aria-hidden="true">↗</b>
-    `;
 
-    if (siteHeader) {
-
-      siteHeader.insertBefore(
-        accessButton,
-        headerSocials || null
-      );
-    }
-  }
+    button.className =
+      "z7pa-header-access magnetic";
 
 
-  function normalizeAllowed(
-    payload
-  ) {
+    button.innerHTML =
+      '<span>LOGIN</span><b aria-hidden="true">↗</b>';
 
-    if (
-      !payload ||
-      typeof payload !== "object"
-    ) {
-      return [];
-    }
 
-    if (payload.admin) {
-      return [...ADMIN_SCOPES];
-    }
-
-    if (
-      !Array.isArray(
-        payload.allowed
-      )
-    ) {
-      return [];
-    }
-
-    return payload.allowed.filter(
-      scope =>
-        PUBLIC_SCOPES.includes(
-          scope
-        )
+    siteHeader.insertBefore(
+      button,
+      headerSocials ||
+      null
     );
+
+
+    return button;
   }
 
 
-  function authenticatedFrom(
-    payload,
-    allowed
+  const accessButton =
+    ensureHeaderButton();
+
+
+  function updateHeader(
+    active
   ) {
 
-    return Boolean(
-      payload &&
-      payload.ok !== false &&
-      (
-        payload.authenticated === true ||
-        payload.admin === true ||
-        payload.native === true ||
-        allowed.length > 0
-      )
-    );
-  }
+    if (!accessButton) {
 
+      return;
+    }
 
-  function updateHeaderButton(
-    authenticated
-  ) {
-
-    if (!accessButton) return;
 
     const text =
-      accessButton.querySelector(
-        "span"
+      q(
+        "span",
+        accessButton
       );
+
 
     if (text) {
 
       text.textContent =
-        authenticated
+        active
           ? "SIGN OUT"
           : "LOGIN";
     }
 
+
     accessButton.classList.toggle(
       "is-authenticated",
-      authenticated
+      active
     );
+
 
     accessButton.setAttribute(
       "aria-label",
-      authenticated
-        ? "Sign out of private access"
-        : "Login to private access"
+
+      active
+        ? "Sign out of Private Access"
+        : "Login to Private Access"
     );
   }
 
 
-  function applyAccess(
+  /*
+   * INNER CIRCLE
+   */
+
+
+  function openLogin() {
+
+    if (
+      authenticated ||
+      !panel
+    ) {
+
+      return;
+    }
+
+
+    if (hero) {
+
+      hero.hidden =
+        false;
+    }
+
+
+    if (library) {
+
+      library.hidden =
+        false;
+    }
+
+
+    if (policy) {
+
+      policy.hidden =
+        false;
+    }
+
+
+    panel.hidden =
+      false;
+
+
+    panel.removeAttribute(
+      "hidden"
+    );
+
+
+    panel.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+
+    panel.classList.remove(
+      "is-denied",
+      "is-authorized"
+    );
+
+
+    /*
+     * Current CSS requires is-open.
+     */
+    panel.classList.add(
+      "is-opening",
+      "is-open"
+    );
+
+
+    seat?.setAttribute(
+      "aria-expanded",
+      "true"
+    );
+
+
+    window.setTimeout(
+      () =>
+        panel.classList.remove(
+          "is-opening"
+        ),
+      1100
+    );
+
+
+    window.setTimeout(
+      () =>
+        clientId?.focus(),
+      350
+    );
+  }
+
+
+  function closeLogin() {
+
+    if (!panel) {
+
+      return;
+    }
+
+
+    panel.classList.remove(
+      "is-opening",
+      "is-open",
+      "is-denied",
+      "is-authorized"
+    );
+
+
+    panel.hidden =
+      true;
+
+
+    panel.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+
+    seat?.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+  }
+
+
+  /*
+   * FILE DELIVERY
+   */
+
+
+  function esc(
+    value
+  ) {
+
+    return String(
+      value ??
+      ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+  }
+
+
+  function formatBytes(
+    value
+  ) {
+
+    const number =
+      Number(
+        value ||
+        0
+      );
+
+
+    if (
+      !Number.isFinite(
+        number
+      ) ||
+      number <= 0
+    ) {
+
+      return "";
+    }
+
+
+    const units = [
+      "B",
+      "KB",
+      "MB",
+      "GB"
+    ];
+
+
+    const index =
+      Math.min(
+
+        Math.floor(
+          Math.log(
+            number
+          ) /
+          Math.log(
+            1024
+          )
+        ),
+
+        units.length -
+        1
+      );
+
+
+    return (
+      number /
+      Math.pow(
+        1024,
+        index
+      )
+    ).toFixed(
+      index
+        ? 1
+        : 0
+    ) +
+      " " +
+      units[index];
+  }
+
+
+  function fileType(
+    file
+  ) {
+
+    const type =
+      String(
+        file?.contentType ||
+        ""
+      )
+        .toLowerCase();
+
+
+    const name =
+      String(
+        file?.name ||
+        ""
+      )
+        .toLowerCase();
+
+
+    if (
+      type.includes(
+        "html"
+      ) ||
+      name.endsWith(
+        ".html"
+      ) ||
+      name.endsWith(
+        ".htm"
+      )
+    ) {
+
+      return "HTML";
+    }
+
+
+    if (
+      type.includes(
+        "pdf"
+      ) ||
+      name.endsWith(
+        ".pdf"
+      )
+    ) {
+
+      return "PDF";
+    }
+
+
+    if (
+      type.startsWith(
+        "image/"
+      )
+    ) {
+
+      return "IMG";
+    }
+
+
+    if (
+      type.startsWith(
+        "video/"
+      )
+    ) {
+
+      return "VIDEO";
+    }
+
+
+    const dot =
+      name.lastIndexOf(
+        "."
+      );
+
+
+    return dot >= 0
+
+      ? name
+          .slice(
+            dot + 1
+          )
+          .toUpperCase()
+          .slice(
+            0,
+            5
+          )
+
+      : "FILE";
+  }
+
+
+  function ensureFilesSection() {
+
+    let section =
+      q(
+        "#z7-client-private-files"
+      );
+
+
+    if (section) {
+
+      return section;
+    }
+
+
+    section =
+      D.createElement(
+        "section"
+      );
+
+
+    section.id =
+      "z7-client-private-files";
+
+
+    section.className =
+      "z7-client-private-files";
+
+
+    section.hidden =
+      true;
+
+
+    section.innerHTML =
+      '<div class="z7cpf-inner">' +
+      '<div class="z7cpf-heading">' +
+      '<div>' +
+      '<div class="z7cpf-kicker">PRIVATE DELIVERY</div>' +
+      '<h2>Your Files</h2>' +
+      '<p>Secure deliverables assigned specifically to your private 7Z access.</p>' +
+      '</div>' +
+      '<div class="z7cpf-session"><i></i>SECURE SESSION</div>' +
+      '</div>' +
+      '<div id="z7cpf-list" class="z7cpf-list"></div>' +
+      '</div>';
+
+
+    const footer =
+      q(
+        "footer"
+      );
+
+
+    if (footer) {
+
+      footer.before(
+        section
+      );
+
+    } else {
+
+      (
+        q(
+          "main"
+        ) ||
+        D.body
+      ).appendChild(
+        section
+      );
+    }
+
+
+    return section;
+  }
+
+
+  function renderFiles(
+    files,
+    active,
+    admin
+  ) {
+
+    const section =
+      ensureFilesSection();
+
+
+    const list =
+      q(
+        "#z7cpf-list",
+        section
+      );
+
+
+    if (
+      !active ||
+      admin
+    ) {
+
+      section.hidden =
+        true;
+
+
+      section.style.setProperty(
+        "display",
+        "none",
+        "important"
+      );
+
+
+      if (list) {
+
+        list.innerHTML =
+          "";
+      }
+
+
+      return;
+    }
+
+
+    section.hidden =
+      false;
+
+
+    section.removeAttribute(
+      "hidden"
+    );
+
+
+    /*
+     * Explicitly defeat stale display:none rules
+     * from the previous renderer architecture.
+     */
+    section.style.setProperty(
+      "display",
+      "block",
+      "important"
+    );
+
+
+    section.style.setProperty(
+      "visibility",
+      "visible",
+      "important"
+    );
+
+
+    section.style.setProperty(
+      "opacity",
+      "1",
+      "important"
+    );
+
+
+    if (!list) {
+
+      return;
+    }
+
+
+    const safeFiles =
+      Array.isArray(
+        files
+      )
+        ? files
+        : [];
+
+
+    if (
+      !safeFiles.length
+    ) {
+
+      list.innerHTML =
+        '<div class="z7cpf-empty">' +
+        'No files are currently assigned to this account.' +
+        '</div>';
+
+
+      return;
+    }
+
+
+    list.innerHTML =
+      safeFiles
+        .map(
+          file => {
+
+            const id =
+              encodeURIComponent(
+                String(
+                  file.id ||
+                  ""
+                )
+              );
+
+
+            const viewUrl =
+              API.file +
+              "?id=" +
+              id +
+              "&mode=view";
+
+
+            const downloadUrl =
+              API.file +
+              "?id=" +
+              id +
+              "&mode=download";
+
+
+            return (
+              '<article class="z7cpf-file" data-file-id="' +
+              esc(
+                file.id
+              ) +
+              '">' +
+
+              '<div class="z7cpf-file-main">' +
+
+              '<div class="z7cpf-file-icon">' +
+              esc(
+                fileType(
+                  file
+                )
+              ) +
+              '</div>' +
+
+              '<div class="z7cpf-file-copy">' +
+              '<strong>' +
+              esc(
+                file.name
+              ) +
+              '</strong>' +
+              '<span>' +
+              esc(
+                formatBytes(
+                  file.sizeBytes
+                )
+              ) +
+              '</span>' +
+              '</div>' +
+
+              '</div>' +
+
+              '<div class="z7cpf-actions">' +
+
+              (
+                file.canView !==
+                false
+
+                  ? '<a href="' +
+                    viewUrl +
+                    '" target="_blank" rel="noopener" class="z7cpf-open">' +
+                    '<span>OPEN</span>' +
+                    '<b aria-hidden="true">↗</b>' +
+                    '</a>'
+
+                  : ''
+              ) +
+
+              (
+                file.canDownload ===
+                true
+
+                  ? '<a href="' +
+                    downloadUrl +
+                    '" class="z7cpf-download">' +
+                    'DOWNLOAD' +
+                    '</a>'
+
+                  : ''
+              ) +
+
+              '</div>' +
+
+              '</article>'
+            );
+          }
+        )
+        .join(
+          ""
+        );
+  }
+
+
+  /*
+   * SESSION + PERMISSIONS
+   */
+
+
+  function allowedOf(
     payload
   ) {
 
+    if (
+      payload?.admin
+    ) {
+
+      return [
+        "silla",
+        "elcon",
+        "blueprint-html",
+        "blueprint-pdf",
+        "tawjihi-quotation",
+        "oman-partnership"
+      ];
+    }
+
+
+    return Array.isArray(
+      payload?.allowed
+    )
+      ? payload.allowed
+      : [];
+  }
+
+
+  function apply(
+    statusPayload,
+    filesPayload
+  ) {
+
     const allowed =
-      normalizeAllowed(
-        payload
+      allowedOf(
+        statusPayload
       );
+
 
     const admin =
       Boolean(
-        payload?.admin
+        statusPayload?.admin
       );
 
-    const authenticated =
-      authenticatedFrom(
-        payload,
-        allowed
+
+    /*
+     * File API is the authority for the
+     * client's current file grants.
+     */
+    const files =
+      Array.isArray(
+        filesPayload?.files
+      )
+
+        ? filesPayload.files
+
+        : Array.isArray(
+            statusPayload?.files
+          )
+
+          ? statusPayload.files
+
+          : [];
+
+
+    const statusAuthenticated =
+      Boolean(
+
+        statusPayload &&
+
+        statusPayload.ok !==
+        false &&
+
+        (
+          statusPayload.authenticated ===
+            true ||
+
+          statusPayload.native ===
+            true ||
+
+          admin ||
+
+          allowed.length >
+            0
+        )
       );
+
+
+    const fileAuthenticated =
+      Boolean(
+        filesPayload?.authenticated ===
+        true
+      );
+
+
+    /*
+     * Critical fix:
+     *
+     * A Native client who has only file access
+     * is STILL a valid authenticated client.
+     */
+    authenticated =
+      statusAuthenticated ||
+      fileAuthenticated;
+
 
     const hasResources =
-      allowed.length > 0;
+      allowed.length >
+      0;
+
 
     const fileOnly =
       authenticated &&
-      !hasResources &&
-      !admin;
-
-    currentAuthenticated =
-      authenticated;
+      !admin &&
+      !hasResources;
 
 
-    /* Z7_ROOT_AUTH_STATE_V1 */
-
-    window.document.documentElement
+    D.documentElement
       .classList.toggle(
         "z7icx-preauth",
         !authenticated
       );
 
 
+    D.body
+      .classList.toggle(
+        "z7pa-is-authenticated",
+        authenticated
+      );
+
+
+    D.body
+      .classList.toggle(
+        "z7pa-is-locked",
+        !authenticated
+      );
+
+
+    D.body
+      .classList.toggle(
+        "z7pa-is-admin",
+        admin
+      );
+
+
+    D.body
+      .classList.toggle(
+        "z7pa-file-only",
+        fileOnly
+      );
+
+
     if (
-      loginPanel &&
       authenticated
     ) {
 
-      loginPanel.classList.remove(
-        "is-opening",
-        "is-open",
-        "is-denied",
-        "is-authorized"
-      );
-    }
-
-
-    window.document.body.classList.toggle(
-      "z7pa-is-authenticated",
-      authenticated
-    );
-
-    window.document.body.classList.toggle(
-      "z7pa-is-locked",
-      !authenticated
-    );
-
-    window.document.body.classList.toggle(
-      "z7pa-is-admin",
-      admin
-    );
-
-    window.document.body.classList.toggle(
-      "z7pa-file-only",
-      fileOnly
-    );
-
-
-    /*
-     * Login is controlled ONLY here.
-     * No second script is allowed to fight it.
-     */
-    if (loginPanel) {
-
-      loginPanel.hidden =
-        authenticated;
+      closeLogin();
     }
 
 
     /*
-     * File-only users should see a clean
-     * client workspace, not an empty legacy
-     * resource selector.
+     * File-only client gets the delivery workspace,
+     * not the empty Legacy Access Policy screen.
      */
     if (hero) {
 
@@ -308,9 +1031,17 @@
         fileOnly;
     }
 
+
     if (library) {
 
       library.hidden =
+        fileOnly;
+    }
+
+
+    if (policy) {
+
+      policy.hidden =
         fileOnly;
     }
 
@@ -322,61 +1053,54 @@
     }
 
 
-    cards.forEach(
-      card => {
+    for (
+      const card
+      of cards
+    ) {
 
-        const scope =
-          card.getAttribute(
-            "data-z7pa-resource"
-          );
+      const scope =
+        card.getAttribute(
+          "data-z7pa-resource"
+        );
 
-        card.hidden =
-          !allowed.includes(
-            scope
-          );
-      }
-    );
+
+      card.hidden =
+        !allowed.includes(
+          scope
+        );
+    }
 
 
     if (count) {
 
       count.textContent =
         String(
-          allowed.length
-        ).padStart(
-          2,
-          "0"
-        );
+          fileOnly
+            ? files.length
+            : allowed.length
+        )
+          .padStart(
+            2,
+            "0"
+          );
     }
 
 
     if (label) {
 
-      if (admin) {
+      label.textContent =
 
-        label.textContent =
-          "ADMIN ACCESS";
+        admin
+          ? "ADMIN ACCESS"
 
-      } else if (
-        authenticated &&
-        hasResources
-      ) {
+          : fileOnly
+            ? "PRIVATE DELIVERY"
 
-        label.textContent =
-          "AUTHORIZED RESOURCES";
+            : authenticated &&
+              hasResources
+              ? "AUTHORIZED RESOURCES"
 
-      } else if (
-        authenticated
-      ) {
-
-        label.textContent =
-          "PRIVATE FILE ACCESS";
-
-      } else {
-
-        label.textContent =
-          "LOGIN REQUIRED";
-      }
+              : "LOGIN REQUIRED";
     }
 
 
@@ -385,215 +1109,130 @@
       authenticated
     ) {
 
-      message.textContent = "";
+      message.textContent =
+        "";
     }
 
 
-    updateHeaderButton(
+    updateHeader(
       authenticated
     );
+
+
+    renderFiles(
+      files,
+      authenticated,
+      admin
+    );
   }
 
 
-  function broadcastAuth(
-    authenticated
+  /*
+   * NETWORK
+   */
+
+
+  async function fetchJson(
+    url,
+    options = {}
   ) {
 
-    window.dispatchEvent(
-      new CustomEvent(
-        "z7pa:auth-changed",
+    const response =
+      await window.fetch(
+        url,
         {
-          detail: {
-            authenticated
-          }
+          credentials:
+            "same-origin",
+
+          cache:
+            "no-store",
+
+          ...options
         }
-      )
-    );
-  }
-
-
-  function focusLogin() {
-
-    if (
-      currentAuthenticated
-    ) {
-      return;
-    }
-
-
-    if (hero) {
-      hero.hidden = false;
-    }
-
-
-    if (library) {
-      library.hidden = false;
-    }
-
-
-    if (loginPanel) {
-
-      loginPanel.hidden =
-        false;
-
-      loginPanel.removeAttribute(
-        "hidden"
-      );
-
-      loginPanel.setAttribute(
-        "aria-hidden",
-        "false"
-      );
-
-      loginPanel.classList.remove(
-        "is-authorized",
-        "is-denied"
-      );
-
-      loginPanel.classList.add(
-        "is-opening",
-        "is-open"
       );
 
 
-      window.setTimeout(
-        () =>
-          loginPanel.classList.remove(
-            "is-opening"
-          ),
-        1100
-      );
-    }
+    let payload =
+      null;
 
-
-    window.setTimeout(
-      () =>
-        clientId?.focus(),
-      450
-    );
-  }
-
-
-  async function loadStatus() {
 
     try {
 
-      const response =
-        await fetch(
-          "/api/private-auth/hub-status",
-          {
-            method:
-              "GET",
-
-            credentials:
-              "same-origin",
-
-            cache:
-              "no-store"
-          }
-        );
-
-      const payload =
+      payload =
         await response.json();
 
-      applyAccess(
-        response.ok
-          ? payload
+    } catch {}
+
+
+    return {
+      response,
+      payload
+    };
+  }
+
+
+  async function sync() {
+
+    const requestId =
+      ++serial;
+
+
+    try {
+
+      const [
+        statusResult,
+        filesResult
+      ] =
+        await Promise.all([
+
+          fetchJson(
+            API.status +
+            "?t=" +
+            Date.now()
+          ),
+
+          fetchJson(
+            API.files +
+            "?t=" +
+            Date.now()
+          )
+        ]);
+
+
+      if (
+        requestId !==
+        serial
+      ) {
+
+        return;
+      }
+
+
+      apply(
+
+        statusResult.response.ok
+          ? statusResult.payload
+          : null,
+
+        filesResult.response.ok
+          ? filesResult.payload
           : null
       );
 
-    } catch {
 
-      applyAccess(
-        null
+    } catch (error) {
+
+      console.error(
+        "7Z Private Access sync:",
+        error
       );
     }
   }
 
 
-  async function signOut() {
-
-    if (!accessButton) return;
-
-    accessButton.disabled =
-      true;
-
-    const text =
-      accessButton.querySelector(
-        "span"
-      );
-
-    if (text) {
-      text.textContent =
-        "SIGNING OUT";
-    }
-
-    try {
-
-      const response =
-        await fetch(
-          "/api/private-auth/hub-logout",
-          {
-            method:
-              "POST",
-
-            credentials:
-              "same-origin",
-
-            cache:
-              "no-store",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body:
-              "{}"
-          }
-        );
-
-      if (!response.ok) {
-        throw new Error(
-          "Logout failed"
-        );
-      }
-
-      if (clientId) {
-        clientId.value = "";
-      }
-
-      if (accessKey) {
-        accessKey.value = "";
-      }
-
-      applyAccess(
-        null
-      );
-
-      broadcastAuth(
-        false
-      );
-
-      window.setTimeout(
-        focusLogin,
-        80
-      );
-
-    } catch {
-
-      await loadStatus();
-
-    } finally {
-
-      accessButton.disabled =
-        false;
-
-      updateHeaderButton(
-        currentAuthenticated
-      );
-    }
-  }
+  /*
+   * LOGIN
+   */
 
 
   form?.addEventListener(
@@ -602,14 +1241,20 @@
 
       event.preventDefault();
 
+
       const submit =
-        form.querySelector(
-          'button[type="submit"]'
+        q(
+          'button[type="submit"]',
+          form
         );
 
+
       if (submit) {
-        submit.disabled = true;
+
+        submit.disabled =
+          true;
       }
+
 
       if (message) {
 
@@ -617,20 +1262,15 @@
           "VERIFYING ACCESS…";
       }
 
+
       try {
 
-        const response =
-          await fetch(
-            "/api/private-auth/hub-login",
+        const result =
+          await fetchJson(
+            API.login,
             {
               method:
                 "POST",
-
-              credentials:
-                "same-origin",
-
-              cache:
-                "no-store",
 
               headers: {
                 "Content-Type":
@@ -639,22 +1279,22 @@
 
               body:
                 JSON.stringify({
+
                   clientId:
-                    clientId?.value || "",
+                    clientId?.value ||
+                    "",
 
                   accessKey:
-                    accessKey?.value || ""
+                    accessKey?.value ||
+                    ""
                 })
             }
           );
 
-        const payload =
-          await response.json();
-
 
         if (
-          !response.ok ||
-          !payload.ok
+          !result.response.ok ||
+          !result.payload?.ok
         ) {
 
           if (message) {
@@ -662,6 +1302,7 @@
             message.textContent =
               "ACCESS NOT RECOGNIZED";
           }
+
 
           if (accessKey) {
 
@@ -671,9 +1312,6 @@
             accessKey.focus();
           }
 
-          applyAccess(
-            null
-          );
 
           return;
         }
@@ -687,31 +1325,19 @@
 
 
         /*
-         * Login API succeeded.
-         * That IS authentication even when
-         * allowed[] is empty.
+         * Cookies are stored by hub-login.
+         * Immediately reread BOTH current authorities.
          */
-        applyAccess({
-          ...payload,
-          authenticated:
-            true
-        });
+        await sync();
 
 
-        broadcastAuth(
-          true
+      } catch (error) {
+
+        console.error(
+          "7Z login:",
+          error
         );
 
-
-        /* Z7_ROOT_LOGIN_REFRESH_V1 */
-
-        window.setTimeout(
-          loadStatus,
-          80
-        );
-
-
-      } catch {
 
         if (message) {
 
@@ -719,12 +1345,88 @@
             "ACCESS TEMPORARILY UNAVAILABLE";
         }
 
+
       } finally {
 
         if (submit) {
-          submit.disabled = false;
+
+          submit.disabled =
+            false;
         }
       }
+    }
+  );
+
+
+  /*
+   * LOGOUT
+   */
+
+
+  async function logout() {
+
+    if (accessButton) {
+
+      accessButton.disabled =
+        true;
+    }
+
+
+    try {
+
+      await fetchJson(
+        API.logout,
+        {
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            "{}"
+        }
+      );
+
+
+      authenticated =
+        false;
+
+
+      apply(
+        null,
+        null
+      );
+
+
+      openLogin();
+
+
+    } finally {
+
+      if (accessButton) {
+
+        accessButton.disabled =
+          false;
+      }
+    }
+  }
+
+
+  /*
+   * EVENTS
+   */
+
+
+  seat?.addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+      openLogin();
     }
   );
 
@@ -733,41 +1435,60 @@
     "click",
     () => {
 
-      if (
-        currentAuthenticated
-      ) {
+      if (authenticated) {
 
-        signOut();
+        logout();
 
       } else {
 
-        focusLogin();
+        openLogin();
       }
     }
   );
-
-
-  window.addEventListener(
-    "z7pa:focus-login",
-    focusLogin
-  );
-
-
-  /*
-   * One status request on boot.
-   * No recursive session-change loop.
-   */
-  loadStatus();
 
 
   window.addEventListener(
     "pageshow",
-    event => {
+    sync
+  );
 
-      if (event.persisted) {
-        loadStatus();
+
+  window.addEventListener(
+    "focus",
+    sync
+  );
+
+
+  D.addEventListener(
+    "visibilitychange",
+    () => {
+
+      if (!D.hidden) {
+
+        sync();
       }
     }
+  );
+
+
+  /*
+   * Immediate session read.
+   */
+  sync();
+
+
+  /*
+   * Live Admin Grant / Revoke.
+   */
+  window.setInterval(
+    () => {
+
+      if (!D.hidden) {
+
+        sync();
+      }
+    },
+    2000
   );
 
 })();
