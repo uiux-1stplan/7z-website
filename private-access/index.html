@@ -660,130 +660,66 @@ html.z7icx-preauth .z7pa-library {
   <script src="/assets/js/private-access-control.js?v=20260822-global-access"></script>
 <script src="/private-access/session-button-bridge.js"></script>
 
-  <!-- Z7_CLIENT_DELIVERY_INLINE_START -->
-  <script id="z7-client-delivery-inline">
+  <!-- Z7_PREBUILT_DELIVERY_START -->
+  <script id="z7-prebuilt-client-delivery-script">
 (() => {
   "use strict";
 
-  const VERSION =
-    "Z7_CLIENT_DELIVERY_INLINE_V1";
+  const VERSION = "Z7_PREBUILT_CLIENT_DELIVERY_FINAL_V1";
+  window.__Z7_CLIENT_DELIVERY_VERSION__ = VERSION;
 
-  window.__Z7_CLIENT_DELIVERY_INLINE_VERSION =
-    VERSION;
-
-  const STATUS_API =
-    "/api/private-auth/hub-status";
-
+  const STATUS_API = "/api/private-auth/hub-status";
   let serial = 0;
   let timer = null;
 
-
-  function esc(value) {
-    return String(value ?? "")
+  const esc = (value) =>
+    String(value ?? "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;");
-  }
-
 
   function formatBytes(bytes) {
-    const value =
-      Number(bytes || 0);
+    const value = Number(bytes || 0);
+    if (!value) return "";
 
-    if (!value) {
-      return "";
-    }
+    const units = ["B", "KB", "MB", "GB"];
+    const index = Math.min(
+      Math.floor(Math.log(value) / Math.log(1024)),
+      units.length - 1
+    );
 
-    const units = [
-      "B",
-      "KB",
-      "MB",
-      "GB"
-    ];
-
-    const index =
-      Math.min(
-        Math.floor(
-          Math.log(value) /
-          Math.log(1024)
-        ),
-        units.length - 1
-      );
-
-    const amount =
-      value /
-      Math.pow(
-        1024,
-        index
-      );
-
-    return `${
-      amount.toFixed(
-        index === 0
-          ? 0
-          : 1
-      )
-    } ${units[index]}`;
+    const amount = value / Math.pow(1024, index);
+    return `${amount.toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
   }
 
-
   function typeLabel(file) {
-    const type =
-      String(
-        file?.contentType || ""
-      ).toLowerCase();
-
-    if (type.includes("html")) {
-      return "HTML";
-    }
-
-    if (type.includes("pdf")) {
-      return "PDF";
-    }
-
-    if (type.startsWith("image/")) {
-      return "IMG";
-    }
-
-    if (type.startsWith("video/")) {
-      return "VIDEO";
-    }
-
+    const type = String(file?.contentType || "").toLowerCase();
+    if (type.includes("html")) return "HTML";
+    if (type.includes("pdf")) return "PDF";
+    if (type.startsWith("image/")) return "IMG";
+    if (type.startsWith("video/")) return "VIDEO";
     return "FILE";
   }
 
-
   function ensureStyle() {
-    if (
-      document.getElementById(
-        "z7-client-delivery-inline-style"
-      )
-    ) {
-      return;
-    }
+    if (document.getElementById("z7-prebuilt-delivery-style")) return;
 
-    const style =
-      document.createElement(
-        "style"
-      );
-
-    style.id =
-      "z7-client-delivery-inline-style";
-
+    const style = document.createElement("style");
+    style.id = "z7-prebuilt-delivery-style";
     style.textContent = `
-      #z7-client-delivery-inline-root {
+      #z7-prebuilt-client-delivery {
         width: min(1180px, calc(100% - 40px));
-        margin: 28px auto 74px;
+        margin: 30px auto 74px;
         position: relative;
-        z-index: 20;
+        z-index: 50;
       }
 
-      #z7-client-delivery-inline-root[hidden] {
+      #z7-prebuilt-client-delivery[hidden] {
         display: none !important;
       }
 
-      .z7cdi-shell {
+      .z7pbd-shell {
         border: 1px solid rgba(255,255,255,.10);
         border-radius: 28px;
         padding: clamp(24px, 4vw, 46px);
@@ -793,7 +729,7 @@ html.z7icx-preauth .z7pa-library {
         backdrop-filter: blur(12px);
       }
 
-      .z7cdi-head {
+      .z7pbd-head {
         display: flex;
         align-items: end;
         justify-content: space-between;
@@ -801,7 +737,7 @@ html.z7icx-preauth .z7pa-library {
         margin-bottom: 24px;
       }
 
-      .z7cdi-kicker {
+      .z7pbd-kicker {
         color: #c9a652;
         font-size: 11px;
         font-weight: 800;
@@ -809,21 +745,21 @@ html.z7icx-preauth .z7pa-library {
         text-transform: uppercase;
       }
 
-      .z7cdi-title {
-        margin: 8px 0 8px;
+      .z7pbd-title {
+        margin: 8px 0;
         color: #fff;
         font-size: clamp(34px, 5vw, 62px);
         line-height: .95;
         letter-spacing: -.045em;
       }
 
-      .z7cdi-copy {
+      .z7pbd-copy {
         margin: 0;
         color: rgba(255,255,255,.48);
         font-size: 14px;
       }
 
-      .z7cdi-session {
+      .z7pbd-session {
         display: inline-flex;
         align-items: center;
         gap: 9px;
@@ -837,7 +773,7 @@ html.z7icx-preauth .z7pa-library {
         letter-spacing: .11em;
       }
 
-      .z7cdi-session::before {
+      .z7pbd-session::before {
         content: "";
         width: 7px;
         height: 7px;
@@ -846,12 +782,12 @@ html.z7icx-preauth .z7pa-library {
         box-shadow: 0 0 16px rgba(111,224,146,.55);
       }
 
-      .z7cdi-list {
+      .z7pbd-list {
         display: grid;
         gap: 10px;
       }
 
-      .z7cdi-file {
+      .z7pbd-file {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -863,14 +799,14 @@ html.z7icx-preauth .z7pa-library {
         background: rgba(255,255,255,.018);
       }
 
-      .z7cdi-main {
+      .z7pbd-main {
         display: flex;
         align-items: center;
         gap: 14px;
         min-width: 0;
       }
 
-      .z7cdi-icon {
+      .z7pbd-icon {
         display: grid;
         place-items: center;
         width: 48px;
@@ -885,11 +821,11 @@ html.z7icx-preauth .z7pa-library {
         letter-spacing: .07em;
       }
 
-      .z7cdi-meta {
+      .z7pbd-meta {
         min-width: 0;
       }
 
-      .z7cdi-name {
+      .z7pbd-name {
         display: block;
         overflow: hidden;
         color: rgba(255,255,255,.94);
@@ -899,21 +835,21 @@ html.z7icx-preauth .z7pa-library {
         white-space: nowrap;
       }
 
-      .z7cdi-size {
+      .z7pbd-size {
         display: block;
         margin-top: 5px;
         color: rgba(255,255,255,.36);
         font-size: 11px;
       }
 
-      .z7cdi-actions {
+      .z7pbd-actions {
         display: flex;
         align-items: center;
         gap: 8px;
         flex: 0 0 auto;
       }
 
-      .z7cdi-action {
+      .z7pbd-action {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -926,18 +862,18 @@ html.z7icx-preauth .z7pa-library {
         letter-spacing: .08em;
       }
 
-      .z7cdi-open {
+      .z7pbd-open {
         border: 1px solid rgba(201,166,82,.34);
         background: rgba(201,166,82,.06);
         color: #e0c378;
       }
 
-      .z7cdi-download {
+      .z7pbd-download {
         border: 1px solid rgba(255,255,255,.10);
         color: rgba(255,255,255,.66);
       }
 
-      .z7cdi-empty {
+      .z7pbd-empty {
         padding: 28px;
         border: 1px solid rgba(255,255,255,.08);
         border-radius: 18px;
@@ -945,87 +881,57 @@ html.z7icx-preauth .z7pa-library {
       }
 
       @media (max-width: 720px) {
-        #z7-client-delivery-inline-root {
+        #z7-prebuilt-client-delivery {
           width: min(100% - 24px, 1180px);
-          margin-top: 20px;
         }
 
-        .z7cdi-head,
-        .z7cdi-file {
+        .z7pbd-head,
+        .z7pbd-file {
           align-items: flex-start;
           flex-direction: column;
         }
 
-        .z7cdi-actions {
+        .z7pbd-actions {
           width: 100%;
         }
 
-        .z7cdi-action {
+        .z7pbd-action {
           flex: 1;
         }
       }
     `;
 
-    document.head.appendChild(
-      style
-    );
+    document.head.appendChild(style);
   }
 
-
   function ensureRoot() {
-    let root =
-      document.getElementById(
-        "z7-client-delivery-inline-root"
-      );
-
-    if (root) {
-      return root;
-    }
+    let root = document.getElementById("z7-prebuilt-client-delivery");
+    if (root) return root;
 
     ensureStyle();
 
-    root =
-      document.createElement(
-        "section"
-      );
-
-    root.id =
-      "z7-client-delivery-inline-root";
-
-    root.hidden =
-      true;
-
+    root = document.createElement("section");
+    root.id = "z7-prebuilt-client-delivery";
+    root.hidden = true;
     root.innerHTML = `
-      <div class="z7cdi-shell">
-        <div class="z7cdi-head">
+      <div class="z7pbd-shell">
+        <div class="z7pbd-head">
           <div>
-            <div class="z7cdi-kicker">
-              PRIVATE DELIVERY
-            </div>
-            <h2 class="z7cdi-title">
-              Your Files
-            </h2>
-            <p class="z7cdi-copy">
+            <div class="z7pbd-kicker">PRIVATE DELIVERY</div>
+            <h2 class="z7pbd-title">Your Files</h2>
+            <p class="z7pbd-copy">
               Secure deliverables assigned specifically to your 7Z access.
             </p>
           </div>
 
-          <div class="z7cdi-session">
-            SECURE SESSION
-          </div>
+          <div class="z7pbd-session">SECURE SESSION</div>
         </div>
 
-        <div
-          id="z7-client-delivery-inline-list"
-          class="z7cdi-list">
-        </div>
+        <div id="z7-prebuilt-client-delivery-list" class="z7pbd-list"></div>
       </div>
     `;
 
-    const footer =
-      document.querySelector(
-        "footer"
-      );
+    const footer = document.querySelector("footer");
 
     if (footer) {
       footer.before(root);
@@ -1036,227 +942,153 @@ html.z7icx-preauth .z7pa-library {
     return root;
   }
 
+  function hideCompetingClientAreas() {
+    [
+      "#z7-client-private-files",
+      "#z7-client-delivery-final",
+      "#z7-client-delivery-inline-root",
+      "[data-z7pa-login-panel]"
+    ].forEach((selector) => {
+      document.querySelectorAll(selector).forEach((element) => {
+        element.hidden = true;
+        element.style.setProperty("display", "none", "important");
+      });
+    });
+  }
 
   function render(payload) {
-    const root =
-      ensureRoot();
+    const root = ensureRoot();
+    const list = document.getElementById("z7-prebuilt-client-delivery-list");
 
-    const list =
-      document.getElementById(
-        "z7-client-delivery-inline-list"
-      );
-
-    const isClient =
-      Boolean(
-        payload &&
-        payload.ok === true &&
-        payload.authenticated === true &&
-        payload.admin !== true &&
-        (
-          payload.native === true ||
-          payload.authType === "native" ||
-          payload.authType === "legacy"
-        )
-      );
+    const isClient = Boolean(
+      payload &&
+      payload.ok === true &&
+      payload.authenticated === true &&
+      payload.admin !== true &&
+      (
+        payload.native === true ||
+        payload.authType === "native" ||
+        payload.authType === "legacy"
+      )
+    );
 
     if (!isClient) {
-      root.hidden =
-        true;
-
+      root.hidden = true;
       return;
     }
 
-    const files =
-      Array.isArray(
-        payload.files
-      )
-        ? payload.files
-        : [];
+    hideCompetingClientAreas();
+    root.hidden = false;
 
-    root.hidden =
-      false;
+    const files = Array.isArray(payload.files) ? payload.files : [];
 
-    if (!list) {
-      return;
-    }
+    if (!list) return;
 
     if (!files.length) {
       list.innerHTML = `
-        <div class="z7cdi-empty">
+        <div class="z7pbd-empty">
           No files assigned to this account yet.
         </div>
       `;
-
       return;
     }
 
-    list.innerHTML =
-      files
-        .map(
-          file => {
-            const id =
-              encodeURIComponent(
-                file.id
-              );
+    list.innerHTML = files.map((file) => {
+      const id = encodeURIComponent(file.id);
+      const viewUrl = `/api/private-auth/portal-file?id=${id}&mode=view`;
+      const downloadUrl = `/api/private-auth/portal-file?id=${id}&mode=download`;
 
-            const viewUrl =
-              `/api/private-auth/portal-file?id=${id}&mode=view`;
+      return `
+        <article class="z7pbd-file">
+          <div class="z7pbd-main">
+            <div class="z7pbd-icon">${esc(typeLabel(file))}</div>
 
-            const downloadUrl =
-              `/api/private-auth/portal-file?id=${id}&mode=download`;
+            <div class="z7pbd-meta">
+              <strong class="z7pbd-name">${esc(file.name)}</strong>
+              <span class="z7pbd-size">${esc(formatBytes(file.sizeBytes))}</span>
+            </div>
+          </div>
 
-            return `
-              <article class="z7cdi-file">
-                <div class="z7cdi-main">
-                  <div class="z7cdi-icon">
-                    ${esc(typeLabel(file))}
-                  </div>
+          <div class="z7pbd-actions">
+            <a
+              class="z7pbd-action z7pbd-open"
+              href="${viewUrl}"
+              target="_blank"
+              rel="noopener">
+              OPEN ↗
+            </a>
 
-                  <div class="z7cdi-meta">
-                    <strong class="z7cdi-name">
-                      ${esc(file.name)}
-                    </strong>
-                    <span class="z7cdi-size">
-                      ${esc(
-                        formatBytes(
-                          file.sizeBytes
-                        )
-                      )}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="z7cdi-actions">
+            ${
+              file.canDownload
+                ? `
                   <a
-                    class="z7cdi-action z7cdi-open"
-                    href="${viewUrl}"
-                    target="_blank"
-                    rel="noopener">
-                    OPEN ↗
+                    class="z7pbd-action z7pbd-download"
+                    href="${downloadUrl}">
+                    DOWNLOAD
                   </a>
-
-                  ${
-                    file.canDownload
-                      ? `
-                        <a
-                          class="z7cdi-action z7cdi-download"
-                          href="${downloadUrl}">
-                          DOWNLOAD
-                        </a>
-                      `
-                      : ""
-                  }
-                </div>
-              </article>
-            `;
-          }
-        )
-        .join("");
+                `
+                : ""
+            }
+          </div>
+        </article>
+      `;
+    }).join("");
   }
-
 
   async function refresh() {
-    const current =
-      ++serial;
+    const current = ++serial;
 
     try {
-      const response =
-        await fetch(
-          `${STATUS_API}?delivery=${Date.now()}`,
-          {
-            method: "GET",
-            credentials: "same-origin",
-            cache: "no-store",
-            headers: {
-              "Cache-Control":
-                "no-cache"
-            }
+      const response = await fetch(
+        `${STATUS_API}?delivery=${Date.now()}`,
+        {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache"
           }
-        );
+        }
+      );
 
-      const payload =
-        await response.json();
+      const payload = await response.json();
 
-      if (
-        current !== serial
-      ) {
-        return;
-      }
-
-      if (
-        !response.ok
-      ) {
-        return;
-      }
+      if (current !== serial) return;
+      if (!response.ok) return;
 
       render(payload);
-
     } catch (error) {
-      console.error(
-        VERSION,
-        error
-      );
+      console.error(VERSION, error);
     }
   }
-
 
   function boot() {
     ensureRoot();
     refresh();
 
     if (!timer) {
-      timer =
-        window.setInterval(
-          () => {
-            if (!document.hidden) {
-              refresh();
-            }
-          },
-          1500
-        );
+      timer = window.setInterval(() => {
+        if (!document.hidden) refresh();
+      }, 1500);
     }
   }
 
-
-  if (
-    document.readyState ===
-    "loading"
-  ) {
-    document.addEventListener(
-      "DOMContentLoaded",
-      boot,
-      {
-        once: true
-      }
-    );
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
   } else {
     boot();
   }
 
+  window.addEventListener("z7pa:auth-changed", () => {
+    setTimeout(refresh, 50);
+  });
 
-  window.addEventListener(
-    "z7pa:auth-changed",
-    () => {
-      setTimeout(
-        refresh,
-        50
-      );
-    }
-  );
-
-  window.addEventListener(
-    "pageshow",
-    refresh
-  );
-
-  window.addEventListener(
-    "focus",
-    refresh
-  );
+  window.addEventListener("pageshow", refresh);
+  window.addEventListener("focus", refresh);
 })();
 
   </script>
-  <!-- Z7_CLIENT_DELIVERY_INLINE_END -->
+  <!-- Z7_PREBUILT_DELIVERY_END -->
 </body>
 </html>
 
