@@ -336,7 +336,7 @@ html.z7icx-preauth .z7pa-library {
       <button
         type="button"
         class="z7icx__seat"
-        id="z7InnerCircleSeat" onclick="window.location.href='/private-access/?login=1'; return false;">
+        id="z7InnerCircleSeat" data-z7-seat-fix="v4" onclick="event.preventDefault();const p=window.document.querySelector('[data-z7pa-login-panel]');if(!p){return false;}p.hidden=false;p.removeAttribute('hidden');p.setAttribute('aria-hidden','false');p.style.removeProperty('display');p.classList.add('open');this.setAttribute('aria-expanded','true');p.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>{const f=p.querySelector('input:not([type=hidden])');if(f)f.focus();},650);return false;" >
 
         <span>
           TAKE YOUR SEAT
