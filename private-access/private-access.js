@@ -714,3 +714,69 @@
   );
 
 })();
+
+/* Z7_SEAT_EXTERNAL_BRIDGE_V5 */
+(() => {
+  "use strict";
+
+  const wire = () => {
+    const btn = window.document.querySelector("#z7InnerCircleSeat");
+    const panel = window.document.querySelector("[data-z7pa-login-panel]");
+
+    if (!btn || !panel) return;
+    if (btn.dataset.z7ExternalSeatWired === "1") return;
+
+    btn.dataset.z7ExternalSeatWired = "1";
+    btn.disabled = false;
+    btn.style.pointerEvents = "auto";
+    btn.style.cursor = "pointer";
+
+    const open = (event) => {
+      event?.preventDefault();
+      event?.stopPropagation();
+
+      panel.hidden = false;
+      panel.removeAttribute("hidden");
+      panel.setAttribute("aria-hidden", "false");
+      panel.style.removeProperty("display");
+      panel.classList.add("open");
+
+      btn.setAttribute("aria-expanded", "true");
+
+      try {
+        window.dispatchEvent(new CustomEvent("z7pa:focus-login"));
+      } catch {}
+
+      panel.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      window.setTimeout(() => {
+        const field =
+          panel.querySelector("input:not([type='hidden'])") ||
+          window.document.querySelector("#z7bubClientId") ||
+          window.document.querySelector("#z7PrivateAccessLoginForm input");
+
+        field?.focus();
+      }, 650);
+    };
+
+    btn.addEventListener("click", open, false);
+
+    btn.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        open(event);
+      }
+    });
+  };
+
+  if (window.document.readyState === "loading") {
+    window.document.addEventListener("DOMContentLoaded", wire, { once: true });
+  } else {
+    wire();
+  }
+
+  window.addEventListener("pageshow", wire);
+  window.setTimeout(wire, 0);
+})();
