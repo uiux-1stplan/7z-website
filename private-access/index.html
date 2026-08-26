@@ -336,7 +336,7 @@ html.z7icx-preauth .z7pa-library {
       <button
         type="button"
         class="z7icx__seat"
-        id="z7InnerCircleSeat">
+        id="z7InnerCircleSeat" onclick="window.location.href='/private-access/?login=1'; return false;">
 
         <span>
           TAKE YOUR SEAT
@@ -1089,139 +1089,6 @@ html.z7icx-preauth .z7pa-library {
 
   </script>
   <!-- Z7_PREBUILT_DELIVERY_END -->
-
-<!-- Z7_SEAT_ENTRY_FIX_V3_START -->
-<script id="z7-seat-entry-fix-v3">
-(() => {
-  "use strict";
-
-  const MARK = "Z7_SEAT_ENTRY_FIX_V3";
-
-  function armButton() {
-    const button =
-      document.getElementById("z7InnerCircleSeat");
-
-    if (!button) return;
-
-    button.disabled = false;
-    button.style.pointerEvents = "auto";
-    button.style.cursor = "pointer";
-    button.style.position = "relative";
-    button.style.zIndex = "20";
-  }
-
-  function openPrivateAccess(event) {
-    const button =
-      event.target?.closest?.("#z7InnerCircleSeat");
-
-    if (!button) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    const auth =
-      document.querySelector(".z7ic__auth") ||
-      document.querySelector("[data-z7pa-login-panel]");
-
-    const loginPanel =
-      document.querySelector("[data-z7pa-login-panel]");
-
-    const page =
-      document.getElementById("page") ||
-      document.querySelector(".z7ic");
-
-    button.setAttribute(
-      "aria-expanded",
-      "true"
-    );
-
-    page?.classList.add("open");
-    document.body.classList.add(
-      "z7ic-seat-open"
-    );
-
-    if (loginPanel) {
-      loginPanel.hidden = false;
-    }
-
-    if (auth) {
-      auth.hidden = false;
-
-      auth.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }
-
-    try {
-      window.dispatchEvent(
-        new CustomEvent(
-          "z7pa:focus-login"
-        )
-      );
-    } catch {}
-
-    window.setTimeout(() => {
-      const first =
-        document.querySelector(
-          "[data-z7pa-login-panel] input:not([type='hidden'])"
-        ) ||
-        document.querySelector(
-          "#z7PrivateAccessLoginForm input:not([type='hidden'])"
-        ) ||
-        document.querySelector(
-          "#loginForm input:not([type='hidden'])"
-        );
-
-      first?.focus();
-    }, 650);
-  }
-
-  if (
-    document.readyState ===
-    "loading"
-  ) {
-    document.addEventListener(
-      "DOMContentLoaded",
-      armButton,
-      {
-        once: true
-      }
-    );
-  } else {
-    armButton();
-  }
-
-  document.addEventListener(
-    "click",
-    openPrivateAccess,
-    true
-  );
-
-  document.addEventListener(
-    "keydown",
-    (event) => {
-      const button =
-        event.target?.closest?.(
-          "#z7InnerCircleSeat"
-        );
-
-      if (!button) return;
-
-      if (
-        event.key === "Enter" ||
-        event.key === " "
-      ) {
-        openPrivateAccess(event);
-      }
-    },
-    true
-  );
-
-  window[MARK] = true;
-})();
-</script>
-<!-- Z7_SEAT_ENTRY_FIX_V3_END -->
 </body>
 </html>
 
