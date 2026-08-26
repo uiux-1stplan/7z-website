@@ -1,386 +1,424 @@
 (() => {
   "use strict";
 
-  if (window.__Z7_CLIENT_FILES_RENDERER_V1__) {
+  if (window.__Z7_ISOLATED_FILES_V1__) {
     return;
   }
 
-  window.__Z7_CLIENT_FILES_RENDERER_V1__ = true;
+  window.__Z7_ISOLATED_FILES_V1__ = true;
 
-  const DOC = window.document;
-  const LIST_API = "/api/private-auth/portal-files";
+  const D = window.document;
 
-  let requestSerial = 0;
-  let timer = null;
+  const section =
+    D.querySelector("#z7-client-private-files");
 
-  function esc(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+  const list =
+    D.querySelector("#z7cpf-list");
 
-  function formatBytes(bytes) {
-    const value = Number(bytes || 0);
+  const policy =
+    D.querySelector(".z7pa-policy");
 
-    if (!Number.isFinite(value) || value <= 0) {
-      return "";
-    }
+  let serial = 0;
 
-    const units = ["B", "KB", "MB", "GB"];
-    const index = Math.min(
-      Math.floor(Math.log(value) / Math.log(1024)),
-      units.length - 1
+
+  function hideFiles() {
+
+    if (!section) return;
+
+    section.hidden = true;
+
+    section.setAttribute(
+      "aria-hidden",
+      "true"
     );
 
-    const result =
-      value / Math.pow(1024, index);
-
-    return `${
-      result.toFixed(index === 0 ? 0 : 1)
-    } ${units[index]}`;
+    section.style.setProperty(
+      "display",
+      "none",
+      "important"
+    );
   }
 
-  function fileType(file) {
-    const name = String(file?.name || "");
-    const dot = name.lastIndexOf(".");
 
-    if (dot > -1 && dot < name.length - 1) {
-      return name.slice(dot + 1).toUpperCase().slice(0, 5);
-    }
+  function showFiles() {
+
+    if (!section) return;
+
+    section.hidden = false;
+
+    section.removeAttribute(
+      "hidden"
+    );
+
+    section.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    section.style.setProperty(
+      "display",
+      "block",
+      "important"
+    );
+
+    section.style.setProperty(
+      "visibility",
+      "visible",
+      "important"
+    );
+
+    section.style.setProperty(
+      "opacity",
+      "1",
+      "important"
+    );
+  }
+
+
+  function formatBytes(value) {
+
+    const bytes = Number(value || 0);
+
+    if (!bytes) return "";
+
+    const units = ["B", "KB", "MB", "GB"];
+
+    const index =
+      Math.min(
+        Math.floor(
+          Math.log(bytes) /
+          Math.log(1024)
+        ),
+        units.length - 1
+      );
+
+    return (
+      bytes /
+      Math.pow(1024, index)
+    ).toFixed(index ? 1 : 0) +
+      " " +
+      units[index];
+  }
+
+
+  function typeOf(file) {
+
+    const name =
+      String(file?.name || "")
+        .toLowerCase();
+
+    const type =
+      String(file?.contentType || "")
+        .toLowerCase();
+
+    if (
+      type.includes("html") ||
+      name.endsWith(".html") ||
+      name.endsWith(".htm")
+    ) return "HTML";
+
+    if (
+      type.includes("pdf") ||
+      name.endsWith(".pdf")
+    ) return "PDF";
+
+    if (type.startsWith("image/")) return "IMG";
+    if (type.startsWith("video/")) return "VIDEO";
 
     return "FILE";
   }
 
-  function ensureSection() {
-    let section =
-      DOC.querySelector("#z7-client-private-files");
 
-    if (!section) {
-      section = DOC.createElement("section");
+  function makeFile(file) {
 
-      section.id = "z7-client-private-files";
-      section.className = "z7-client-private-files";
+    const article =
+      D.createElement("article");
 
-      section.innerHTML = `
-        <div class="z7cpf-inner">
+    article.className =
+      "z7cpf-file";
 
-          <div class="z7cpf-heading">
 
-            <div class="z7cpf-kicker">
-              PRIVATE DELIVERY
-            </div>
+    const main =
+      D.createElement("div");
 
-            <h2>
-              Your Files
-            </h2>
+    main.className =
+      "z7cpf-file-main";
 
-            <p>
-              Secure files assigned specifically
-              to your private 7Z access.
-            </p>
 
-          </div>
+    const icon =
+      D.createElement("div");
 
-          <div
-            id="z7cpf-list"
-            class="z7cpf-list">
-          </div>
+    icon.className =
+      "z7cpf-file-icon";
 
-        </div>
-      `;
+    icon.textContent =
+      typeOf(file);
 
-      const footer =
-        DOC.querySelector("footer");
 
-      if (footer) {
-        footer.before(section);
-      } else {
-        (
-          DOC.querySelector("main") ||
-          DOC.body
-        ).appendChild(section);
-      }
-    }
+    const copy =
+      D.createElement("div");
 
-    section.hidden = false;
-    section.removeAttribute("hidden");
-    section.style.removeProperty("display");
+    copy.className =
+      "z7cpf-file-copy";
 
-    return section;
-  }
 
-  function hideSection() {
-    const section =
-      DOC.querySelector("#z7-client-private-files");
+    const title =
+      D.createElement("strong");
 
-    if (section) {
-      section.hidden = true;
-    }
-  }
+    title.textContent =
+      String(file.name || "File");
 
-  function render(payload) {
-    if (
-      !payload ||
-      payload.authenticated !== true
-    ) {
-      hideSection();
-      return;
-    }
 
-    const section = ensureSection();
+    const size =
+      D.createElement("span");
 
-    let list =
-      section.querySelector("#z7cpf-list");
+    size.textContent =
+      formatBytes(file.sizeBytes);
 
-    if (!list) {
-      list = DOC.createElement("div");
-      list.id = "z7cpf-list";
-      list.className = "z7cpf-list";
-      section.appendChild(list);
-    }
 
-    const files =
-      Array.isArray(payload.files)
-        ? payload.files
-        : [];
+    copy.append(
+      title,
+      size
+    );
 
-    if (!files.length) {
-      list.innerHTML = `
-        <div class="z7cpf-empty">
-          No files are currently assigned
-          to this account.
-        </div>
-      `;
 
-      return;
-    }
+    main.append(
+      icon,
+      copy
+    );
 
-    list.innerHTML = files.map(file => {
-      const id =
-        encodeURIComponent(
-          String(file.id || "")
-        );
 
-      const viewUrl =
+    const actions =
+      D.createElement("div");
+
+    actions.className =
+      "z7cpf-actions";
+
+
+    const id =
+      encodeURIComponent(
+        String(file.id || "")
+      );
+
+
+    if (file.canView !== false) {
+
+      const open =
+        D.createElement("a");
+
+      open.className =
+        "z7cpf-open";
+
+      open.href =
         `/api/private-auth/portal-file?id=${id}&mode=view`;
 
-      const downloadUrl =
+      open.target =
+        "_blank";
+
+      open.rel =
+        "noopener";
+
+      open.textContent =
+        "OPEN ↗";
+
+      actions.appendChild(open);
+    }
+
+
+    if (file.canDownload === true) {
+
+      const download =
+        D.createElement("a");
+
+      download.className =
+        "z7cpf-download";
+
+      download.href =
         `/api/private-auth/portal-file?id=${id}&mode=download`;
 
-      return `
-        <article
-          class="z7cpf-file"
-          data-file-id="${esc(file.id)}">
+      download.textContent =
+        "DOWNLOAD";
 
-          <div class="z7cpf-file-main">
+      actions.appendChild(download);
+    }
 
-            <div
-              class="z7cpf-file-icon"
-              aria-hidden="true">
-              ${esc(fileType(file))}
-            </div>
 
-            <div class="z7cpf-file-copy">
+    article.append(
+      main,
+      actions
+    );
 
-              <strong>
-                ${esc(file.name)}
-              </strong>
 
-              <span>
-                ${esc(
-                  formatBytes(
-                    file.sizeBytes
-                  )
-                )}
-              </span>
-
-            </div>
-
-          </div>
-
-          <div class="z7cpf-actions">
-
-            ${
-              file.canView !== false
-                ? `
-                  <a
-                    href="${viewUrl}"
-                    target="_blank"
-                    rel="noopener"
-                    class="z7cpf-open">
-                    <span>OPEN</span>
-                    <b aria-hidden="true">↗</b>
-                  </a>
-                `
-                : ""
-            }
-
-            ${
-              file.canDownload === true
-                ? `
-                  <a
-                    href="${downloadUrl}"
-                    class="z7cpf-download">
-                    DOWNLOAD
-                  </a>
-                `
-                : ""
-            }
-
-          </div>
-
-        </article>
-      `;
-    }).join("");
-
-    section.hidden = false;
-    section.removeAttribute("hidden");
-    section.style.removeProperty("display");
+    return article;
   }
 
-  async function refresh(focus = false) {
-    const serial = ++requestSerial;
+
+  function render(files) {
+
+    if (
+      !section ||
+      !list
+    ) return;
+
+
+    list.replaceChildren();
+
+
+    for (const file of files) {
+
+      list.appendChild(
+        makeFile(file)
+      );
+    }
+
+
+    showFiles();
+
+
+    /*
+     * Only when actual assigned files exist,
+     * hide the irrelevant Access Policy section.
+     *
+     * Nothing else on the page is touched.
+     */
+    if (policy) {
+      policy.hidden = true;
+    }
+  }
+
+
+  async function refresh() {
+
+    const requestId =
+      ++serial;
+
 
     try {
+
       const response =
         await window.fetch(
-          `${LIST_API}?t=${Date.now()}`,
+          `/api/private-auth/portal-files?t=${Date.now()}`,
           {
-            method: "GET",
-            credentials: "same-origin",
-            cache: "no-store",
+            credentials:
+              "same-origin",
+
+            cache:
+              "no-store",
+
             headers: {
-              "Cache-Control": "no-cache"
+              "Cache-Control":
+                "no-cache, no-store"
             }
           }
         );
 
-      let payload = null;
 
-      try {
-        payload =
-          await response.json();
-      } catch {}
-
-      if (serial !== requestSerial) {
+      if (requestId !== serial) {
         return;
       }
+
 
       if (
         response.status === 401 ||
         response.status === 403
       ) {
-        hideSection();
+
+        hideFiles();
+
+        if (policy) {
+          policy.hidden = false;
+        }
+
         return;
       }
 
-      if (
-        !response.ok ||
-        !payload
-      ) {
+
+      if (!response.ok) {
+
+        console.error(
+          "7Z file API HTTP",
+          response.status
+        );
+
         return;
       }
 
-      render(payload);
+
+      const payload =
+        await response.json();
+
+
+      const files =
+        Array.isArray(payload?.files)
+          ? payload.files
+          : [];
+
 
       if (
-        focus &&
-        payload.authenticated === true &&
-        Array.isArray(payload.files) &&
-        payload.files.length
+        payload?.authenticated === true &&
+        files.length > 0
       ) {
-        window.setTimeout(() => {
-          DOC
-            .querySelector("#z7-client-private-files")
-            ?.scrollIntoView({
-              behavior: "smooth",
-              block: "start"
-            });
-        }, 100);
+
+        render(files);
+
+      } else {
+
+        hideFiles();
+
+        if (policy) {
+          policy.hidden = false;
+        }
       }
+
 
     } catch (error) {
+
       console.error(
-        "7Z client file renderer:",
+        "7Z isolated file delivery:",
         error
       );
     }
   }
 
-  function startPolling() {
-    if (timer) {
-      return;
-    }
 
-    timer =
-      window.setInterval(
-        () => {
-          if (!DOC.hidden) {
-            refresh(false);
-          }
-        },
-        2000
-      );
-  }
+  refresh();
 
-  window.addEventListener(
-    "z7pa:auth-changed",
-    event => {
-      if (
-        event.detail?.authenticated
-      ) {
-        refresh(true);
-      } else {
-        hideSection();
-      }
-    }
-  );
-
-  window.addEventListener(
-    "z7pa:session-change",
-    () => refresh(true)
-  );
-
-  DOC.addEventListener(
-    "submit",
-    () => {
-      [
-        250,
-        600,
-        1100,
-        1800
-      ].forEach(delay => {
-        window.setTimeout(
-          () => refresh(true),
-          delay
-        );
-      });
-    },
-    true
-  );
 
   window.addEventListener(
     "pageshow",
-    () => refresh(false)
+    refresh
   );
+
 
   window.addEventListener(
     "focus",
-    () => refresh(false)
+    refresh
   );
 
-  DOC.addEventListener(
+
+  D.addEventListener(
     "visibilitychange",
     () => {
-      if (!DOC.hidden) {
-        refresh(false);
+
+      if (!D.hidden) {
+        refresh();
       }
     }
   );
 
-  refresh(false);
-  startPolling();
+
+  window.setInterval(
+    () => {
+
+      if (!D.hidden) {
+        refresh();
+      }
+    },
+    2000
+  );
+
+
+  window.__Z7_REFRESH_FILES__ =
+    refresh;
+
 })();

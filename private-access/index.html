@@ -336,7 +336,7 @@ html.z7icx-preauth .z7pa-library {
       <button
         type="button"
         class="z7icx__seat"
-        id="z7InnerCircleSeat" aria-expanded="false">
+        id="z7InnerCircleSeat" onclick="event.preventDefault();event.stopPropagation();const p=window.document.querySelector('[data-z7pa-login-panel]');if(!p)return false;p.hidden=false;p.removeAttribute('hidden');p.setAttribute('aria-hidden','false');p.classList.remove('is-authorized','is-denied');p.classList.add('is-opening','is-open');this.setAttribute('aria-expanded','true');window.setTimeout(()=>p.classList.remove('is-opening'),1100);window.setTimeout(()=>window.document.querySelector('#z7HubClientId')?.focus(),450);return false;" aria-expanded="false">
 
         <span>
           TAKE YOUR SEAT
@@ -559,7 +559,60 @@ html.z7icx-preauth .z7pa-library {
     </div>
   </section>
 
-  <section class="z7pa-policy">
+
+<!-- Z7_FILES_STATIC_START -->
+
+<section
+  id="z7-client-private-files"
+  class="z7-client-private-files"
+  hidden
+  aria-hidden="true">
+
+  <div class="z7cpf-inner">
+
+    <div class="z7cpf-heading">
+
+      <div>
+
+        <div class="z7cpf-kicker">
+          PRIVATE DELIVERY
+        </div>
+
+        <h2>
+          Your Files
+        </h2>
+
+        <p>
+          Secure deliverables assigned specifically
+          to your private 7Z access.
+        </p>
+
+      </div>
+
+      <div
+        class="z7cpf-session"
+        aria-label="Secure private session">
+
+        <i></i>
+
+        SECURE SESSION
+
+      </div>
+
+    </div>
+
+    <div
+      id="z7cpf-list"
+      class="z7cpf-list">
+    </div>
+
+  </div>
+
+</section>
+
+<!-- Z7_FILES_STATIC_END -->
+
+<section class="z7pa-policy">
     <div class="z7pa-shell z7pa-policy__layout" data-z7-reveal>
       <div>
         <p class="section-kicker">Access Policy</p>
@@ -655,8 +708,11 @@ html.z7icx-preauth .z7pa-library {
 <script src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
 <script defer src="/assets/js/premium-refinement.js?v=20260811-premium1"></script>
 
+<script src="/private-access/private-access.js?v=1787773580108"></script>
 
+  <script src="/assets/js/private-access-control.js?v=20260822-global-access"></script>
+<script src="/private-access/session-button-bridge.js?v=1787773580108"></script>
 
-<script src="/private-access/private-access.js?v=1787782154393"></script>
+<script src="/private-access/portal-files.js?v=1787783247962"></script>
 </body>
 </html>
