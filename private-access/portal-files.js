@@ -2,7 +2,7 @@
   "use strict";
 
   const LIST_API =
-    "/api/private-auth/hub-status";
+    "/api/private-auth/portal-files";
 
   let serial = 0;
 
