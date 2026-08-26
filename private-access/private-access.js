@@ -19,68 +19,68 @@
 
   const cards =
     Array.from(
-      document.querySelectorAll(
+      window.document.querySelectorAll(
         "[data-z7pa-resource]"
       )
     );
 
   const grid =
-    document.querySelector(
+    window.document.querySelector(
       "[data-z7pa-grid]"
     );
 
   const library =
-    document.querySelector(
+    window.document.querySelector(
       ".z7pa-library"
     );
 
   const hero =
-    document.querySelector(
+    window.document.querySelector(
       ".z7pa-hero"
     );
 
   const loginPanel =
-    document.querySelector(
+    window.document.querySelector(
       "[data-z7pa-login-panel]"
     );
 
   const form =
-    document.getElementById(
+    window.document.getElementById(
       "z7PrivateAccessLoginForm"
     );
 
   const clientId =
-    document.getElementById(
+    window.document.getElementById(
       "z7HubClientId"
     );
 
   const accessKey =
-    document.getElementById(
+    window.document.getElementById(
       "z7HubAccessKey"
     );
 
   const message =
-    document.getElementById(
+    window.document.getElementById(
       "z7HubLoginMessage"
     );
 
   const count =
-    document.querySelector(
+    window.document.querySelector(
       "[data-z7pa-count]"
     );
 
   const label =
-    document.querySelector(
+    window.document.querySelector(
       "[data-z7pa-access-label]"
     );
 
   const siteHeader =
-    document.querySelector(
+    window.document.querySelector(
       ".site-header"
     );
 
   const headerSocials =
-    document.querySelector(
+    window.document.querySelector(
       ".header-socials"
     );
 
@@ -92,14 +92,14 @@
   -------------------------------------------------------- */
 
   let accessButton =
-    document.getElementById(
+    window.document.getElementById(
       "z7paHeaderAccessButton"
     );
 
   if (!accessButton) {
 
     accessButton =
-      document.createElement(
+      window.document.createElement(
         "button"
       );
 
@@ -242,22 +242,45 @@
       authenticated;
 
 
-    document.body.classList.toggle(
+    /* Z7_ROOT_AUTH_STATE_V1 */
+
+    window.document.documentElement
+      .classList.toggle(
+        "z7icx-preauth",
+        !authenticated
+      );
+
+
+    if (
+      loginPanel &&
+      authenticated
+    ) {
+
+      loginPanel.classList.remove(
+        "is-opening",
+        "is-open",
+        "is-denied",
+        "is-authorized"
+      );
+    }
+
+
+    window.document.body.classList.toggle(
       "z7pa-is-authenticated",
       authenticated
     );
 
-    document.body.classList.toggle(
+    window.document.body.classList.toggle(
       "z7pa-is-locked",
       !authenticated
     );
 
-    document.body.classList.toggle(
+    window.document.body.classList.toggle(
       "z7pa-is-admin",
       admin
     );
 
-    document.body.classList.toggle(
+    window.document.body.classList.toggle(
       "z7pa-file-only",
       fileOnly
     );
@@ -391,36 +414,62 @@
 
   function focusLogin() {
 
-    if (currentAuthenticated) {
+    if (
+      currentAuthenticated
+    ) {
       return;
     }
+
 
     if (hero) {
       hero.hidden = false;
     }
 
+
     if (library) {
       library.hidden = false;
     }
+
 
     if (loginPanel) {
 
       loginPanel.hidden =
         false;
 
-      loginPanel.scrollIntoView({
-        behavior:
-          "smooth",
+      loginPanel.removeAttribute(
+        "hidden"
+      );
 
-        block:
-          "center"
-      });
+      loginPanel.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+      loginPanel.classList.remove(
+        "is-authorized",
+        "is-denied"
+      );
+
+      loginPanel.classList.add(
+        "is-opening",
+        "is-open"
+      );
+
+
+      window.setTimeout(
+        () =>
+          loginPanel.classList.remove(
+            "is-opening"
+          ),
+        1100
+      );
     }
+
 
     window.setTimeout(
       () =>
         clientId?.focus(),
-      300
+      450
     );
   }
 
@@ -654,6 +703,14 @@
         );
 
 
+        /* Z7_ROOT_LOGIN_REFRESH_V1 */
+
+        window.setTimeout(
+          loadStatus,
+          80
+        );
+
+
       } catch {
 
         if (message) {
@@ -713,70 +770,4 @@
     }
   );
 
-})();
-
-/* Z7_SEAT_EXTERNAL_BRIDGE_V5 */
-(() => {
-  "use strict";
-
-  const wire = () => {
-    const btn = window.document.querySelector("#z7InnerCircleSeat");
-    const panel = window.document.querySelector("[data-z7pa-login-panel]");
-
-    if (!btn || !panel) return;
-    if (btn.dataset.z7ExternalSeatWired === "1") return;
-
-    btn.dataset.z7ExternalSeatWired = "1";
-    btn.disabled = false;
-    btn.style.pointerEvents = "auto";
-    btn.style.cursor = "pointer";
-
-    const open = (event) => {
-      event?.preventDefault();
-      event?.stopPropagation();
-
-      panel.hidden = false;
-      panel.removeAttribute("hidden");
-      panel.setAttribute("aria-hidden", "false");
-      panel.style.removeProperty("display");
-      panel.classList.add("open");
-
-      btn.setAttribute("aria-expanded", "true");
-
-      try {
-        window.dispatchEvent(new CustomEvent("z7pa:focus-login"));
-      } catch {}
-
-      panel.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-
-      window.setTimeout(() => {
-        const field =
-          panel.querySelector("input:not([type='hidden'])") ||
-          window.document.querySelector("#z7bubClientId") ||
-          window.document.querySelector("#z7PrivateAccessLoginForm input");
-
-        field?.focus();
-      }, 650);
-    };
-
-    btn.addEventListener("click", open, false);
-
-    btn.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        open(event);
-      }
-    });
-  };
-
-  if (window.document.readyState === "loading") {
-    window.document.addEventListener("DOMContentLoaded", wire, { once: true });
-  } else {
-    wire();
-  }
-
-  window.addEventListener("pageshow", wire);
-  window.setTimeout(wire, 0);
 })();

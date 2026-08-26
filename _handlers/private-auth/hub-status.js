@@ -14,6 +14,10 @@ import {
 } from "../../lib/portal-native-session.mjs";
 
 import {
+  getAllowedLegacyResourceScopes
+} from "../../lib/portal-client-access.mjs";
+
+import {
   getActiveClientByKey,
   getFilesForClientKeys,
   getLegacyClientKeys,
@@ -77,14 +81,26 @@ async function nativePayload(
   }
 
 
-  const files =
-    await getFilesForClientKeys(
-      [
-        String(
-          client.client_key
-        )
-      ]
-    );
+  const clientKeys = [
+    String(
+      client.client_key
+    )
+  ];
+
+
+  const [
+    files,
+    allowed
+  ] =
+    await Promise.all([
+      getFilesForClientKeys(
+        clientKeys
+      ),
+
+      getAllowedLegacyResourceScopes(
+        clientKeys
+      )
+    ]);
 
 
   return {
@@ -95,7 +111,7 @@ async function nativePayload(
         "native",
       admin: false,
       native: true,
-      allowed: [],
+      allowed,
       files,
       client: {
         clientKey:
@@ -283,26 +299,35 @@ export default async function handler(
       );
 
 
-    const allowed =
+    const sessionScopes =
       checks.filter(
         Boolean
       );
 
 
     if (
-      allowed.length
+      sessionScopes.length
     ) {
 
       const clientKeys =
         await getLegacyClientKeys(
-          allowed
+          sessionScopes
         );
 
 
-      const files =
-        await getFilesForClientKeys(
-          clientKeys
-        );
+      const [
+        files,
+        allowed
+      ] =
+        await Promise.all([
+          getFilesForClientKeys(
+            clientKeys
+          ),
+
+          getAllowedLegacyResourceScopes(
+            clientKeys
+          )
+        ]);
 
 
       return send(

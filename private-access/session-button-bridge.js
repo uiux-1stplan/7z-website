@@ -79,7 +79,7 @@
 
     const candidates =
       Array.from(
-        document.querySelectorAll(
+        window.document.querySelectorAll(
           [
             "#z7paHeaderAccessButton",
             ".site-header a",
@@ -112,7 +112,7 @@
   ) {
 
     const walker =
-      document.createTreeWalker(
+      window.document.createTreeWalker(
         element,
         NodeFilter.SHOW_TEXT
       );
@@ -288,7 +288,7 @@
   function focusLogin() {
 
     const panel =
-      document.querySelector(
+      window.document.querySelector(
         "[data-z7pa-login-panel]"
       );
 
@@ -460,7 +460,7 @@
    * It wins over the old site's LOGIN link handler
    * without changing its design or markup.
    */
-  document.addEventListener(
+  window.document.addEventListener(
     "click",
     event => {
 

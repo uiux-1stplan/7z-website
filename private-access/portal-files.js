@@ -2,7 +2,7 @@
   "use strict";
 
   const LIST_API =
-    "/api/private-auth/portal-files";
+    "/api/private-auth/hub-status";
 
   let serial = 0;
 
@@ -78,7 +78,7 @@
   function ensureSection() {
 
     let section =
-      document.getElementById(
+      window.document.getElementById(
         "z7-client-private-files"
       );
 
@@ -87,7 +87,7 @@
     }
 
     section =
-      document.createElement(
+      window.document.createElement(
         "section"
       );
 
@@ -138,7 +138,7 @@
     `;
 
     const footer =
-      document.querySelector(
+      window.document.querySelector(
         "footer"
       );
 
@@ -151,10 +151,10 @@
     } else {
 
       (
-        document.querySelector(
+        window.document.querySelector(
           "main"
         ) ||
-        document.body
+        window.document.body
       ).appendChild(
         section
       );
@@ -173,7 +173,7 @@
       ensureSection();
 
     const list =
-      document.getElementById(
+      window.document.getElementById(
         "z7cpf-list"
       );
 
@@ -401,7 +401,8 @@
       render(
         payload.files || [],
         Boolean(
-          payload.authenticated
+          payload.authenticated &&
+          !payload.admin
         )
       );
 
@@ -412,7 +413,7 @@
       ) {
 
         const section =
-          document.getElementById(
+          window.document.getElementById(
             "z7-client-private-files"
           );
 
@@ -471,13 +472,13 @@
   );
 
 
-  document.addEventListener(
+  window.document.addEventListener(
     "visibilitychange",
     () => {
 
       if (
-        !document.hidden &&
-        document.body.classList.contains(
+        !window.document.hidden &&
+        window.document.body.classList.contains(
           "z7pa-is-authenticated"
         )
       ) {
@@ -491,11 +492,11 @@
 
 
   if (
-    document.readyState ===
+    window.document.readyState ===
     "loading"
   ) {
 
-    document.addEventListener(
+    window.document.addEventListener(
       "DOMContentLoaded",
       () => {
 
@@ -515,5 +516,26 @@
       false
     );
   }
+
+  /* Z7_ROOT_LIVE_PERMISSION_POLL */
+
+  window.setInterval(
+    () => {
+
+      if (
+        !window.document.hidden &&
+        window.document.body.classList.contains(
+          "z7pa-is-authenticated"
+        )
+      ) {
+
+        loadFiles(
+          false
+        );
+      }
+    },
+    2000
+  );
+
 
 })();
