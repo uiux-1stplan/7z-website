@@ -1,4 +1,4 @@
-﻿import {
+import {
   Readable
 } from "node:stream";
 
@@ -7,12 +7,20 @@ import {
 } from "@vercel/blob";
 
 import {
+  getNativeClientSession
+} from "../../lib/portal-native-session.mjs";
+
+import {
   resolvePortalClientAccess
 } from "../../lib/portal-client-access.mjs";
 
 import {
   applyPrivateNoStore
 } from "../../lib/portal-legacy-access.mjs";
+
+import {
+  getSql
+} from "../../lib/portal-runtime.mjs";
 
 
 function safeFilename(name) {
@@ -31,6 +39,36 @@ function safeFilename(name) {
 }
 
 
+async function resolveKeys(req) {
+
+  const nativeClient =
+    await getNativeClientSession(req);
+
+  if (nativeClient?.client_key) {
+
+    return {
+      authenticated: true,
+      clientKeys: [
+        String(nativeClient.client_key)
+      ]
+    };
+  }
+
+  const access =
+    await resolvePortalClientAccess(req);
+
+  return {
+    authenticated:
+      Boolean(access?.authenticated),
+
+    clientKeys:
+      Array.isArray(access?.clientKeys)
+        ? access.clientKeys.map(String)
+        : []
+  };
+}
+
+
 export default async function handler(
   req,
   res
@@ -38,6 +76,10 @@ export default async function handler(
 
   applyPrivateNoStore(res);
 
+  res.setHeader(
+    "Vary",
+    "Cookie"
+  );
 
   if (req.method !== "GET") {
 
@@ -51,16 +93,15 @@ export default async function handler(
       .end();
   }
 
-
   try {
 
     const access =
-      await resolvePortalClientAccess(
-        req
-      );
+      await resolveKeys(req);
 
-
-    if (!access.authenticated) {
+    if (
+      !access.authenticated ||
+      !access.clientKeys.length
+    ) {
 
       return res
         .status(401)
@@ -69,19 +110,25 @@ export default async function handler(
         );
     }
 
+    const rawId =
+      Array.isArray(req.query?.id)
+        ? req.query.id[0]
+        : req.query?.id;
 
     const id =
       String(
-        req.query?.id || ""
-      );
+        rawId || ""
+      ).trim();
 
+    const rawMode =
+      Array.isArray(req.query?.mode)
+        ? req.query.mode[0]
+        : req.query?.mode;
 
     const mode =
-      req.query?.mode ===
-      "download"
+      rawMode === "download"
         ? "download"
         : "view";
-
 
     if (
       !id ||
@@ -95,15 +142,13 @@ export default async function handler(
         );
     }
 
-
-    const runtime =
-      await import(
-        "../../lib/portal-runtime.mjs"
+    const keySet =
+      new Set(
+        access.clientKeys
       );
 
     const sql =
-      runtime.getSql();
-
+      getSql();
 
     const rows =
       await sql`
@@ -115,35 +160,23 @@ export default async function handler(
           f.id,
           f.blob_pathname,
           f.original_name,
-          f.content_type,
-          f.is_active
+          f.content_type
 
-        FROM
-          portal_client_file_permissions p
+        FROM portal_client_file_permissions p
 
-        JOIN portal_files f
-          ON f.id =
-             p.file_id
+        INNER JOIN portal_files f
+          ON f.id = p.file_id
 
-        WHERE TRUE
+        WHERE f.id::text = ${id}
       `;
-
-
-    const allowedKeys =
-      new Set(
-        access.clientKeys
-      );
-
 
     const matching =
       rows.filter(
         row =>
-          String(row.id) === id &&
-          allowedKeys.has(
-            row.client_key
+          keySet.has(
+            String(row.client_key)
           )
       );
-
 
     if (!matching.length) {
 
@@ -154,7 +187,6 @@ export default async function handler(
         );
     }
 
-
     const canView =
       matching.some(
         row =>
@@ -163,7 +195,6 @@ export default async function handler(
           )
       );
 
-
     const canDownload =
       matching.some(
         row =>
@@ -171,7 +202,6 @@ export default async function handler(
             row.can_download
           )
       );
-
 
     if (
       mode === "view" &&
@@ -185,7 +215,6 @@ export default async function handler(
         );
     }
 
-
     if (
       mode === "download" &&
       !canDownload
@@ -198,16 +227,13 @@ export default async function handler(
         );
     }
 
-
     const file =
       matching[0];
-
 
     const blob =
       await head(
         file.blob_pathname
       );
-
 
     if (!blob?.url) {
 
@@ -218,11 +244,9 @@ export default async function handler(
         );
     }
 
-
     const blobToken =
       process.env
         .BLOB_READ_WRITE_TOKEN;
-
 
     if (!blobToken) {
 
@@ -233,12 +257,10 @@ export default async function handler(
         );
     }
 
-
     const headers = {
       Authorization:
         `Bearer ${blobToken}`
     };
-
 
     if (
       typeof req.headers.range ===
@@ -249,15 +271,14 @@ export default async function handler(
         req.headers.range;
     }
 
-
     const upstream =
       await fetch(
         blob.url,
         {
-          headers
+          headers,
+          cache: "no-store"
         }
       );
-
 
     if (
       !upstream.ok &&
@@ -273,10 +294,8 @@ export default async function handler(
         );
     }
 
-
     res.statusCode =
       upstream.status;
-
 
     for (
       const name
@@ -296,13 +315,13 @@ export default async function handler(
         );
 
       if (value) {
+
         res.setHeader(
           name,
           value
         );
       }
     }
-
 
     if (
       !upstream.headers.get(
@@ -317,18 +336,15 @@ export default async function handler(
       );
     }
 
-
     const filename =
       safeFilename(
         file.original_name
       );
 
-
     const encoded =
       encodeURIComponent(
         filename
       );
-
 
     res.setHeader(
       "Content-Disposition",
@@ -340,11 +356,9 @@ export default async function handler(
         : `inline; filename="${filename}"; filename*=UTF-8''${encoded}`
     );
 
-
     if (!upstream.body) {
       return res.end();
     }
-
 
     Readable
       .fromWeb(
@@ -352,14 +366,12 @@ export default async function handler(
       )
       .pipe(res);
 
-
   } catch (error) {
 
     console.error(
-      "Unified portal file:",
+      "Final portal file:",
       error
     );
-
 
     if (!res.headersSent) {
 
@@ -369,7 +381,6 @@ export default async function handler(
           "Private file temporarily unavailable"
         );
     }
-
 
     res.end();
   }

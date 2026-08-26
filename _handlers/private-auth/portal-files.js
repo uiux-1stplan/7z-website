@@ -1,10 +1,52 @@
-﻿import {
+import {
+  getNativeClientSession
+} from "../../lib/portal-native-session.mjs";
+
+import {
   resolvePortalClientAccess
 } from "../../lib/portal-client-access.mjs";
 
 import {
   applyPrivateNoStore
 } from "../../lib/portal-legacy-access.mjs";
+
+import {
+  getSql
+} from "../../lib/portal-runtime.mjs";
+
+
+async function resolveKeys(req) {
+
+  const nativeClient =
+    await getNativeClientSession(req);
+
+  if (nativeClient?.client_key) {
+
+    return {
+      authenticated: true,
+      authType: "native",
+      clientKeys: [
+        String(nativeClient.client_key)
+      ]
+    };
+  }
+
+  const access =
+    await resolvePortalClientAccess(req);
+
+  return {
+    authenticated:
+      Boolean(access?.authenticated),
+
+    authType:
+      access?.authType || null,
+
+    clientKeys:
+      Array.isArray(access?.clientKeys)
+        ? access.clientKeys.map(String)
+        : []
+  };
+}
 
 
 export default async function handler(
@@ -14,6 +56,10 @@ export default async function handler(
 
   applyPrivateNoStore(res);
 
+  res.setHeader(
+    "Vary",
+    "Cookie"
+  );
 
   if (req.method !== "GET") {
 
@@ -31,20 +77,13 @@ export default async function handler(
       });
   }
 
-
   try {
 
     const access =
-      await resolvePortalClientAccess(
-        req
-      );
-
+      await resolveKeys(req);
 
     if (
       !access.authenticated ||
-      !Array.isArray(
-        access.clientKeys
-      ) ||
       !access.clientKeys.length
     ) {
 
@@ -57,34 +96,18 @@ export default async function handler(
         });
     }
 
-
-    const runtime =
-      await import(
-        "../../lib/portal-runtime.mjs"
+    const keySet =
+      new Set(
+        access.clientKeys
       );
-
 
     const sql =
-      runtime.getSql();
-
-
-    /*
-     * Normalize keys defensively.
-     * Permission source of truth = Neon.
-     */
-    const allowedKeys =
-      new Set(
-        access.clientKeys.map(
-          value =>
-            String(value)
-        )
-      );
-
+      getSql();
 
     /*
      * IMPORTANT:
-     * No cached permission snapshot.
-     * Every request reads current DB permissions.
+     * portal_client_file_permissions is the source of truth.
+     * If can_view = TRUE, the client sees the file.
      */
     const rows =
       await sql`
@@ -105,47 +128,31 @@ export default async function handler(
         INNER JOIN portal_files f
           ON f.id = p.file_id
 
-        WHERE
-          p.can_view = TRUE
+        WHERE p.can_view = TRUE
 
         ORDER BY
-          f.created_at DESC
+          f.created_at DESC,
+          f.original_name ASC
       `;
-
 
     const files =
       new Map();
 
-
-    for (
-      const row
-      of rows
-    ) {
-
-      const rowClientKey =
-        String(
-          row.client_key
-        );
-
+    for (const row of rows) {
 
       if (
-        !allowedKeys.has(
-          rowClientKey
+        !keySet.has(
+          String(row.client_key)
         )
       ) {
         continue;
       }
 
-
       const id =
-        String(
-          row.id
-        );
-
+        String(row.id);
 
       const existing =
         files.get(id);
-
 
       if (!existing) {
 
@@ -167,9 +174,7 @@ export default async function handler(
               "application/octet-stream",
 
             canView:
-              Boolean(
-                row.can_view
-              ),
+              true,
 
             canDownload:
               Boolean(
@@ -180,13 +185,6 @@ export default async function handler(
 
       } else {
 
-        existing.canView =
-          existing.canView ||
-          Boolean(
-            row.can_view
-          );
-
-
         existing.canDownload =
           existing.canDownload ||
           Boolean(
@@ -195,32 +193,22 @@ export default async function handler(
       }
     }
 
-
     return res
       .status(200)
       .json({
         ok: true,
-
         authenticated: true,
-
-        authType:
-          access.authType,
-
-        files:
-          [...files.values()],
-
-        refreshedAt:
-          Date.now()
+        authType: access.authType,
+        files: [...files.values()],
+        version: "20260825-final-client-files"
       });
-
 
   } catch (error) {
 
     console.error(
-      "Live portal files:",
+      "Final portal files:",
       error
     );
-
 
     return res
       .status(500)
