@@ -1,0 +1,243 @@
+/* =========================================================
+   Z7 FOUNDERS HERO PHOTO V1
+   Scope: Founders hero only.
+   Nothing outside .z7-founders-photo-hero is affected.
+========================================================= */
+
+
+.z7-founders-photo-hero {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+}
+
+
+/*
+ * New photographic layer.
+ * It never participates in layout.
+ */
+.z7-founders-photo-hero .z7-founders-hero-media {
+    position: absolute !important;
+    inset: 0 !important;
+
+    z-index: 0 !important;
+
+    overflow: hidden !important;
+
+    pointer-events: none !important;
+
+    background: #080808;
+}
+
+
+.z7-founders-photo-hero .z7-founders-hero-media > img {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    display: block !important;
+
+    object-fit: cover !important;
+
+    /*
+     * Source is already almost exactly 16:9.
+     * Preserve both founders naturally.
+     */
+    object-position: center 45% !important;
+
+    filter:
+        saturate(.92)
+        contrast(1.025)
+        brightness(.88);
+
+    transform: scale(1.012);
+
+    animation:
+        z7FoundersHeroBreath
+        18s
+        ease-in-out
+        infinite alternate;
+
+    pointer-events: none !important;
+}
+
+
+/*
+ * Very light readability veil.
+ */
+.z7-founders-photo-hero .z7-founders-hero-media::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(5, 5, 5, .34) 0%,
+            rgba(5, 5, 5, .16) 46%,
+            rgba(5, 5, 5, .08) 100%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, .12) 0%,
+            rgba(0, 0, 0, .04) 55%,
+            rgba(0, 0, 0, .22) 100%
+        );
+}
+
+
+/*
+ * Subtle cinematic motion overlay.
+ *
+ * Low opacity by design.
+ */
+.z7-founders-photo-hero .z7-founders-hero-motion {
+    position: absolute;
+    inset: -12%;
+
+    z-index: 3;
+
+    pointer-events: none !important;
+
+    opacity: .14;
+
+    background:
+        radial-gradient(
+            circle at 18% 34%,
+            rgba(255,255,255,.20),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 80% 68%,
+            rgba(216,182,90,.16),
+            transparent 25%
+        ),
+        linear-gradient(
+            118deg,
+            transparent 31%,
+            rgba(255,255,255,.09) 48%,
+            transparent 64%
+        );
+
+    mix-blend-mode: soft-light;
+
+    animation:
+        z7FoundersOverlayDrift
+        15s
+        ease-in-out
+        infinite alternate;
+
+    will-change:
+        transform,
+        opacity;
+}
+
+
+/*
+ * Preserve every piece of existing Hero content
+ * above the new image.
+ */
+.z7-founders-photo-hero
+> *:not(.z7-founders-hero-media) {
+    position: relative;
+    z-index: 4;
+}
+
+
+/*
+ * Existing large Hero imagery stays in the DOM
+ * so the original layout cannot collapse or jump.
+ */
+.z7-founders-photo-hero
+.z7-founders-old-hero-media {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+
+/* ---------- MOTION ---------- */
+
+@keyframes z7FoundersHeroBreath {
+
+    0% {
+        transform:
+            scale(1.012)
+            translate3d(0,0,0);
+    }
+
+    100% {
+        transform:
+            scale(1.035)
+            translate3d(-.35%, -.18%, 0);
+    }
+}
+
+
+@keyframes z7FoundersOverlayDrift {
+
+    0% {
+        transform:
+            translate3d(-1.4%, -.7%, 0)
+            rotate(-.35deg);
+
+        opacity:
+            .105;
+    }
+
+    100% {
+        transform:
+            translate3d(1.4%, .8%, 0)
+            rotate(.35deg);
+
+        opacity:
+            .16;
+    }
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 760px) {
+
+    .z7-founders-photo-hero
+    .z7-founders-hero-media > img {
+
+        object-position:
+            center center !important;
+    }
+
+
+    .z7-founders-photo-hero
+    .z7-founders-hero-motion {
+
+        opacity:
+            .11;
+    }
+}
+
+
+/* ---------- ACCESSIBILITY ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .z7-founders-photo-hero
+    .z7-founders-hero-media > img,
+
+    .z7-founders-photo-hero
+    .z7-founders-hero-motion {
+
+        animation:
+            none !important;
+
+        transform:
+            none !important;
+    }
+}
