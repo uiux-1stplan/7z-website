@@ -388,3 +388,25 @@
 }
 
 /* END Z7_FOUNDERS_HERO_TOP_FADE_V11 */
+/* Z7_FOUNDERS_HERO_TONE_V12
+   Photo tone adjustment only.
+   Current V11 geometry, fades and motion remain untouched.
+*/
+
+.z7-founders-photo-hero .z7-founders-hero-photo__image{
+  filter:
+    saturate(.93)
+    contrast(1.035)
+    brightness(.88)!important;
+}
+
+@media(max-width:760px){
+  .z7-founders-photo-hero .z7-founders-hero-photo__image{
+    filter:
+      saturate(.92)
+      contrast(1.03)
+      brightness(.80)!important;
+  }
+}
+
+/* END Z7_FOUNDERS_HERO_TONE_V12 */
