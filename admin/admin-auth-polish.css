@@ -30,14 +30,14 @@
 .cl-rootBox{
   width:min(390px,100%)!important;
   position:relative!important;
-  z-index:10000!important;
+  z-index:20!important;
   isolation:isolate!important;
   pointer-events:auto!important;
 }
 
 .cl-card{
   position:relative!important;
-  z-index:10001!important;
+  z-index:21!important;
   isolation:isolate!important;
   pointer-events:auto!important;
 
@@ -446,4 +446,22 @@
     font-size:
       24px;
   }
+}
+
+/* Z7_ADMIN_HEADER_STACK_FIX
+   Admin auth remains interactive,
+   but the site navigation always stays above it.
+*/
+
+.site-header,
+.main-header{
+  z-index:500!important;
+}
+
+.cl-rootBox{
+  z-index:20!important;
+}
+
+.cl-card{
+  z-index:21!important;
 }

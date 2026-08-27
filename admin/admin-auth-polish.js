@@ -159,6 +159,18 @@
         of stack
       ) {
 
+        /*
+         * Site navigation is intentionally allowed
+         * to sit above scrolled Admin content.
+         */
+        if (
+          element.closest?.(
+            ".site-header, .main-header, header, nav"
+          )
+        ) {
+          continue;
+        }
+
         if (
           element === control ||
           root.contains(element) ||
@@ -214,7 +226,7 @@
 
     root.style.setProperty(
       "z-index",
-      "10000",
+      "20",
       "important"
     );
 
@@ -265,13 +277,7 @@
       }
 
 
-      parent.style.setProperty(
-        "z-index",
-        String(
-          1000 - depth
-        ),
-        "important"
-      );
+      parent.style.removeProperty("z-index");
 
 
       parent =
