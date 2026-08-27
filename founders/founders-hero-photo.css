@@ -293,3 +293,98 @@
     transform:none!important;
   }
 }
+/* Z7_FOUNDERS_HERO_TOP_FADE_V11
+   Surgical visual override only:
+   - creates a small black headroom band above the photo
+   - blends the photo into it with a top fade
+   - preserves left fade + motion + current layout
+*/
+
+.z7-founders-photo-hero{
+  --z7-photo-top-gap:28px;
+}
+
+/* Keep the photo zone on the right, but start its actual image lower. */
+.z7-founders-photo-hero .z7-founders-hero-photo__image{
+  top:var(--z7-photo-top-gap)!important;
+  right:0!important;
+  bottom:0!important;
+  left:0!important;
+
+  width:100%!important;
+  height:calc(100% - var(--z7-photo-top-gap))!important;
+}
+
+/* Add the new TOP black fade while preserving the existing
+   pointer-reactive cinematic glow underneath it. */
+.z7-founders-photo-hero .z7-founders-hero-photo-layer::before{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5,5,5,1) 0px,
+      rgba(5,5,5,.96) 18px,
+      rgba(5,5,5,.76) 38px,
+      rgba(5,5,5,.42) 58px,
+      rgba(5,5,5,.16) 78px,
+      rgba(5,5,5,0) 108px
+    ),
+    radial-gradient(
+      circle at var(--z7mx) var(--z7my),
+      rgba(255,255,255,.18) 0%,
+      rgba(255,255,255,.075) 12%,
+      rgba(216,182,90,.05) 23%,
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 78% 18%,
+      rgba(255,255,255,.06),
+      transparent 26%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.02) 0%,
+      transparent 42%,
+      rgba(0,0,0,.10) 100%
+    )!important;
+}
+
+/* Keep motion sweep fully inside the visible photo region. */
+.z7-founders-photo-hero .z7-founders-hero-photo-layer::after{
+  top:calc(var(--z7-photo-top-gap) - 24%)!important;
+}
+
+@media(max-width:1100px){
+  .z7-founders-photo-hero{
+    --z7-photo-top-gap:24px;
+  }
+}
+
+@media(max-width:760px){
+  .z7-founders-photo-hero{
+    --z7-photo-top-gap:18px;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-photo-layer::before{
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5,5,5,.92) 0px,
+        rgba(5,5,5,.62) 28px,
+        rgba(5,5,5,.18) 62px,
+        transparent 92px
+      ),
+      radial-gradient(
+        circle at var(--z7mx) var(--z7my),
+        rgba(255,255,255,.10),
+        transparent 36%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(0,0,0,.05) 0%,
+        rgba(0,0,0,.08) 46%,
+        rgba(5,5,5,.74) 100%
+      )!important;
+  }
+}
+
+/* END Z7_FOUNDERS_HERO_TOP_FADE_V11 */
