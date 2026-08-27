@@ -1,7 +1,19 @@
-/* Z7_ADMIN_LOGIN_FINAL */
+/* Z7_ADMIN_AUTH_FINAL_V4 */
+
+/*
+ * This stylesheet loads ONLY on /admin/.
+ *
+ * Clerk authentication is untouched.
+ */
+
+/* ---------------------------------------------------------
+   REMOVE UNWANTED CLERK UI
+--------------------------------------------------------- */
 
 .cl-socialButtons,
 .cl-socialButtonsBlockButton,
+.cl-socialButtonsBlockButtonText,
+.cl-socialButtonsBlockButtonArrow,
 .cl-dividerRow,
 .cl-footer,
 .cl-footerPages,
@@ -10,67 +22,428 @@
   display:none!important;
 }
 
+
+/* ---------------------------------------------------------
+   INTERACTION / GLASS-BLOCK FIX
+--------------------------------------------------------- */
+
 .cl-rootBox{
-  width:min(430px,calc(100vw - 30px))!important;
+  width:min(390px,100%)!important;
+  position:relative!important;
+  z-index:10000!important;
+  isolation:isolate!important;
+  pointer-events:auto!important;
 }
 
 .cl-card{
   position:relative!important;
-  padding:32px 28px 28px!important;
-  overflow:hidden!important;
-  border:1px solid rgba(216,182,90,.20)!important;
-  border-radius:22px!important;
+  z-index:10001!important;
+  isolation:isolate!important;
+  pointer-events:auto!important;
+
+  width:100%!important;
+  overflow:visible!important;
+
+  padding:34px 30px 30px!important;
+
+  border:
+    1px solid
+    rgba(216,182,90,.22)!important;
+
+  border-radius:
+    22px!important;
+
   background:
     radial-gradient(
-      circle at 82% 0%,
-      rgba(216,182,90,.075),
-      transparent 34%
+      circle at 85% 0%,
+      rgba(216,182,90,.085),
+      transparent 35%
     ),
-    linear-gradient(
-      180deg,
-      rgba(17,17,16,.99),
-      rgba(5,5,5,.99)
-    )!important;
-  box-shadow:0 30px 90px rgba(0,0,0,.48)!important;
+    rgba(8,8,8,.96)!important;
+
+  box-shadow:
+    0 34px 90px rgba(0,0,0,.48)!important;
+}
+
+
+/*
+ * Decorative layers MUST NEVER intercept mouse/touch.
+ */
+.cl-card::before,
+.cl-card::after{
+  pointer-events:none!important;
 }
 
 .cl-card::before{
-  content:"7Z MAGIC / SECURE ADMIN";
+  content:"7Z MAGIC  /  ADMIN CONTROL";
+
   display:block;
-  margin-bottom:22px;
-  color:#d8b65a;
-  font-size:10px;
-  font-weight:900;
-  letter-spacing:.19em;
-  text-transform:uppercase;
+
+  margin-bottom:
+    27px;
+
+  color:
+    #d8b65a;
+
+  font-size:
+    10px;
+
+  line-height:
+    1;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    .19em;
+
+  text-transform:
+    uppercase;
 }
 
+
+/*
+ * Every actual Clerk control sits above decoration.
+ */
+.cl-card > *,
+.cl-main,
+.cl-form,
+.cl-formFieldRow,
+.cl-formField,
+.cl-formFieldInput,
+.cl-formButtonPrimary,
+.cl-identityPreview,
+.cl-formFieldAction{
+  position:relative!important;
+  z-index:10005!important;
+  pointer-events:auto!important;
+}
+
+
+/* ---------------------------------------------------------
+   REMOVE CLERK PROJECT NAME WITHOUT RELYING ON DOM TEXT
+--------------------------------------------------------- */
+
+.cl-header{
+  display:block!important;
+  padding:0!important;
+  margin:0 0 26px!important;
+  text-align:left!important;
+  pointer-events:none!important;
+}
+
+
+/*
+ * Hide Clerk's dynamically generated title text:
+ * "Continue to clerk-claret-mirror"
+ */
 .cl-headerTitle{
-  color:#fff!important;
-  font-size:30px!important;
-  line-height:1.06!important;
+  margin:0!important;
+  color:transparent!important;
+  font-size:0!important;
+  line-height:0!important;
+  pointer-events:none!important;
 }
 
+.cl-headerTitle::after{
+  content:"Administrator Access";
+
+  display:block;
+
+  color:#fff;
+
+  font-size:
+    28px;
+
+  line-height:
+    1.08;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    -.035em;
+}
+
+
+/*
+ * Replace Clerk subtitle visually too.
+ */
 .cl-headerSubtitle{
-  color:rgba(255,255,255,.48)!important;
-  font-size:13px!important;
-  line-height:1.6!important;
+  margin:
+    11px 0 0!important;
+
+  color:
+    transparent!important;
+
+  font-size:
+    0!important;
+
+  line-height:
+    0!important;
+
+  pointer-events:none!important;
+}
+
+.cl-headerSubtitle::after{
+  content:
+    "Secure access for authorized 7Z Magic administrators.";
+
+  display:block;
+
+  max-width:
+    300px;
+
+  color:
+    rgba(255,255,255,.50);
+
+  font-size:
+    12px;
+
+  line-height:
+    1.65;
+
+  font-weight:
+    400;
+}
+
+
+/* ---------------------------------------------------------
+   FORM
+--------------------------------------------------------- */
+
+.cl-main{
+  gap:
+    18px!important;
+}
+
+.cl-form{
+  gap:
+    17px!important;
+}
+
+.cl-formFieldLabel{
+  margin-bottom:
+    8px!important;
+
+  color:
+    rgba(255,255,255,.58)!important;
+
+  font-size:
+    9px!important;
+
+  line-height:
+    1!important;
+
+  font-weight:
+    900!important;
+
+  letter-spacing:
+    .12em!important;
+
+  text-transform:
+    uppercase!important;
 }
 
 .cl-formFieldInput{
-  min-height:52px!important;
-  border:1px solid rgba(255,255,255,.12)!important;
-  border-radius:12px!important;
-  background:rgba(255,255,255,.025)!important;
-  color:#fff!important;
-  box-shadow:none!important;
+  display:block!important;
+
+  width:
+    100%!important;
+
+  min-height:
+    54px!important;
+
+  padding:
+    0 16px!important;
+
+  border:
+    1px solid
+    rgba(255,255,255,.13)!important;
+
+  border-radius:
+    12px!important;
+
+  outline:
+    none!important;
+
+  background:
+    rgba(255,255,255,.035)!important;
+
+  color:
+    #fff!important;
+
+  caret-color:
+    #d8b65a!important;
+
+  box-shadow:
+    none!important;
+
+  cursor:
+    text!important;
+
+  user-select:
+    text!important;
+
+  -webkit-user-select:
+    text!important;
 }
 
+.cl-formFieldInput:hover{
+  border-color:
+    rgba(255,255,255,.23)!important;
+}
+
+.cl-formFieldInput:focus,
+.cl-formFieldInput:focus-visible{
+  border-color:
+    rgba(216,182,90,.70)!important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(216,182,90,.09)!important;
+}
+
+
+/* ---------------------------------------------------------
+   PRIMARY ACTION
+--------------------------------------------------------- */
+
 .cl-formButtonPrimary{
-  min-height:52px!important;
-  border-radius:12px!important;
-  background:linear-gradient(135deg,#e4c66f,#cda64b)!important;
-  color:#080808!important;
-  font-weight:900!important;
-  box-shadow:none!important;
+  width:
+    100%!important;
+
+  min-height:
+    54px!important;
+
+  margin-top:
+    2px!important;
+
+  border:
+    1px solid
+    rgba(228,198,111,.56)!important;
+
+  border-radius:
+    12px!important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #e4c66f,
+      #cda64b
+    )!important;
+
+  color:
+    #090909!important;
+
+  font-size:
+    10px!important;
+
+  font-weight:
+    900!important;
+
+  letter-spacing:
+    .10em!important;
+
+  text-transform:
+    uppercase!important;
+
+  box-shadow:
+    none!important;
+
+  cursor:
+    pointer!important;
+
+  user-select:
+    none!important;
+
+  -webkit-user-select:
+    none!important;
+}
+
+.cl-formButtonPrimary:hover{
+  transform:
+    translateY(-1px)!important;
+
+  filter:
+    brightness(1.04)!important;
+}
+
+.cl-formButtonPrimary:active{
+  transform:
+    translateY(0)!important;
+}
+
+.cl-formButtonPrimary:disabled{
+  cursor:
+    wait!important;
+
+  opacity:
+    .68!important;
+}
+
+
+/* ---------------------------------------------------------
+   SECOND STEP / IDENTITY
+--------------------------------------------------------- */
+
+.cl-identityPreview{
+  border:
+    1px solid
+    rgba(255,255,255,.10)!important;
+
+  border-radius:
+    12px!important;
+
+  background:
+    rgba(255,255,255,.035)!important;
+}
+
+.cl-formFieldAction,
+.cl-formResendCodeLink,
+.cl-backLink{
+  color:
+    #d8b65a!important;
+}
+
+
+/* ---------------------------------------------------------
+   FORCE CLICKABILITY
+--------------------------------------------------------- */
+
+.cl-rootBox input,
+.cl-rootBox button,
+.cl-rootBox a,
+.cl-rootBox [role="button"]{
+  pointer-events:
+    auto!important;
+
+  touch-action:
+    manipulation!important;
+}
+
+
+/* ---------------------------------------------------------
+   SMALL SCREEN
+--------------------------------------------------------- */
+
+@media(max-width:520px){
+
+  .cl-rootBox{
+    width:
+      100%!important;
+  }
+
+  .cl-card{
+    padding:
+      27px 21px 24px!important;
+
+    border-radius:
+      18px!important;
+  }
+
+  .cl-headerTitle::after{
+    font-size:
+      24px;
+  }
 }
