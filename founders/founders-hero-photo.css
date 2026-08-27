@@ -1,32 +1,31 @@
-/* Z7_FOUNDERS_HERO_POLISH_V8
-   Founders hero only.
-   Shorter, cleaner, more premium composition.
+/* Z7_FOUNDERS_HERO_COMPACT_PREMIUM_V9
+   Scope: marked Founders hero only.
 */
 
 .z7-founders-photo-hero{
-  --z7-photo-width:75%;
-  --z7-copy-width:min(30vw, 410px);
-  --z7mx:68%;
-  --z7my:42%;
+  --z7-photo-width:74%;
+  --z7-copy-width:min(29vw, 390px);
+  --z7mx:70%;
+  --z7my:40%;
 
   position:relative!important;
   isolation:isolate!important;
   overflow:hidden!important;
   background:#050505!important;
 
-  /* Reduced hero height */
-  min-height:560px!important;
-  height:min(64vh,620px)!important;
-  max-height:620px!important;
+  /* noticeably shorter and more premium */
+  min-height:470px!important;
+  height:min(54vh,520px)!important;
+  max-height:520px!important;
 }
 
-/* All normal hero content above photo */
+/* keep all real content above media */
 .z7-founders-photo-hero > :not(.z7-founders-hero-photo-layer){
   position:relative!important;
   z-index:5!important;
 }
 
-/* Right-side photo zone */
+/* right-side image zone */
 .z7-founders-photo-hero > .z7-founders-hero-photo-layer{
   position:absolute!important;
   top:0!important;
@@ -44,10 +43,10 @@
     linear-gradient(
       90deg,
       rgba(0,0,0,0) 0%,
-      rgba(0,0,0,.15) 2.2%,
-      rgba(0,0,0,.46) 4.8%,
-      rgba(0,0,0,.78) 7.6%,
-      #000 11%,
+      rgba(0,0,0,.18) 2.5%,
+      rgba(0,0,0,.48) 5%,
+      rgba(0,0,0,.82) 7.8%,
+      #000 10.8%,
       #000 100%
     )!important;
 
@@ -55,10 +54,10 @@
     linear-gradient(
       90deg,
       rgba(0,0,0,0) 0%,
-      rgba(0,0,0,.15) 2.2%,
-      rgba(0,0,0,.46) 4.8%,
-      rgba(0,0,0,.78) 7.6%,
-      #000 11%,
+      rgba(0,0,0,.18) 2.5%,
+      rgba(0,0,0,.48) 5%,
+      rgba(0,0,0,.82) 7.8%,
+      #000 10.8%,
       #000 100%
     )!important;
 }
@@ -70,91 +69,107 @@
   height:100%!important;
   display:block!important;
   object-fit:cover!important;
-  object-position:50% 43%!important;
-  transform:scale(1.006)!important;
-  filter:saturate(.96) contrast(1.018) brightness(.95)!important;
+  object-position:50% 42%!important;
+  transform:translate3d(0,0,0) scale(1.008)!important;
+  filter:saturate(.97) contrast(1.025) brightness(.96)!important;
+  will-change:transform;
 }
 
-/* Interactive cinematic light field — image only */
+/* stronger interactive cinematic glow, still tasteful */
 .z7-founders-hero-photo-layer::before{
   content:"";
   position:absolute;
   inset:0;
   z-index:1;
   pointer-events:none;
-  opacity:.84;
 
   background:
     radial-gradient(
       circle at var(--z7mx) var(--z7my),
-      rgba(255,255,255,.12) 0%,
-      rgba(255,255,255,.045) 13%,
-      rgba(216,182,90,.025) 23%,
-      transparent 39%
+      rgba(255,255,255,.18) 0%,
+      rgba(255,255,255,.075) 12%,
+      rgba(216,182,90,.05) 23%,
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 78% 18%,
+      rgba(255,255,255,.06),
+      transparent 26%
     ),
     linear-gradient(
       180deg,
-      rgba(0,0,0,.035) 0%,
+      rgba(0,0,0,.02) 0%,
       transparent 42%,
-      rgba(0,0,0,.09) 100%
+      rgba(0,0,0,.10) 100%
     );
 
-  transition:opacity .25s ease;
+  opacity:.98;
+  transition:opacity .18s ease;
 }
 
-/* Moving anamorphic sweep + subtle scan texture */
+/* more visible anamorphic sweep + cinematic data texture */
 .z7-founders-hero-photo-layer::after{
   content:"";
   position:absolute;
-  top:-22%;
-  right:-15%;
-  bottom:-22%;
-  width:82%;
+  top:-24%;
+  right:-14%;
+  bottom:-24%;
+  width:86%;
   z-index:2;
   pointer-events:none;
-  opacity:.075;
+
+  opacity:.14;
 
   background:
     linear-gradient(
       112deg,
-      transparent 18%,
-      rgba(255,255,255,.018) 34%,
-      rgba(255,255,255,.10) 49%,
-      rgba(216,182,90,.048) 55%,
-      transparent 72%
+      transparent 17%,
+      rgba(255,255,255,.028) 31%,
+      rgba(255,255,255,.16) 47%,
+      rgba(216,182,90,.08) 54%,
+      rgba(255,255,255,.03) 61%,
+      transparent 75%
     ),
     repeating-linear-gradient(
       90deg,
       transparent 0,
-      transparent 96px,
-      rgba(255,255,255,.012) 97px,
-      transparent 98px
+      transparent 82px,
+      rgba(255,255,255,.02) 83px,
+      transparent 84px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 52px,
+      rgba(255,255,255,.012) 53px,
+      transparent 54px
     );
 
   mix-blend-mode:screen;
-  transform:translate3d(-7%,0,0);
+  transform:translate3d(-9%,0,0);
   will-change:transform,opacity;
-  animation:z7FoundersSweepV8 12.5s cubic-bezier(.42,0,.28,1) infinite alternate;
+  animation:z7FoundersSweepV9 9.5s cubic-bezier(.42,0,.25,1) infinite alternate;
 }
 
-@keyframes z7FoundersSweepV8{
+@keyframes z7FoundersSweepV9{
   0%{
-    transform:translate3d(-8%,0,0);
-    opacity:.04;
+    transform:translate3d(-10%,0,0);
+    opacity:.08;
   }
-  45%{
-    opacity:.085;
+  42%{
+    opacity:.16;
   }
   100%{
-    transform:translate3d(10%,0,0);
-    opacity:.055;
+    transform:translate3d(11%,0,0);
+    opacity:.11;
   }
 }
 
-/* Clean left copy zone */
+/* cleaner left copy zone */
 .z7-founders-photo-hero .z7-founders-hero-copy-clean{
   position:relative!important;
   z-index:6!important;
+
   width:var(--z7-copy-width)!important;
   max-width:var(--z7-copy-width)!important;
 
@@ -166,6 +181,8 @@
   border-radius:0!important;
   -webkit-backdrop-filter:none!important;
   backdrop-filter:none!important;
+
+  transform:translateY(-4px)!important;
 }
 
 .z7-founders-photo-hero .z7-founders-hero-copy-clean::before,
@@ -174,31 +191,33 @@
   display:none!important;
 }
 
+/* tighter premium typography */
 .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
 .z7-founders-photo-hero .z7-founders-hero-copy-clean h2{
   max-width:100%!important;
-  font-size:clamp(3.15rem,4.55vw,4.95rem)!important;
-  line-height:.92!important;
-  letter-spacing:-.052em!important;
-  margin-bottom:.9rem!important;
-  text-shadow:0 2px 15px rgba(0,0,0,.18)!important;
+  font-size:clamp(2.9rem,4.1vw,4.35rem)!important;
+  line-height:.91!important;
+  letter-spacing:-.05em!important;
+  margin-bottom:.75rem!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.16)!important;
 }
 
 .z7-founders-photo-hero .z7-founders-hero-copy-clean p{
-  max-width:29rem!important;
-  font-size:clamp(.95rem,1.15vw,1.12rem)!important;
-  line-height:1.65!important;
-  color:rgba(255,255,255,.72)!important;
-  margin-top:1.15rem!important;
+  max-width:27rem!important;
+  font-size:clamp(.9rem,1.05vw,1.02rem)!important;
+  line-height:1.6!important;
+  color:rgba(255,255,255,.70)!important;
+  margin-top:.9rem!important;
   text-shadow:none!important;
 }
 
 .z7-founders-photo-hero .z7-founders-hero-copy-clean
 :is([class*="kicker" i],[class*="eyebrow" i],small){
-  letter-spacing:.19em!important;
+  letter-spacing:.20em!important;
+  margin-bottom:.7rem!important;
 }
 
-/* Preserve hidden legacy visuals */
+/* keep old cards hidden if tagged */
 .z7-founders-photo-hero [data-z7-old-founder-hero="hidden"]{
   display:none!important;
   visibility:hidden!important;
@@ -206,21 +225,28 @@
   pointer-events:none!important;
 }
 
+/* medium screens */
 @media(max-width:1100px){
   .z7-founders-photo-hero{
     --z7-photo-width:72%;
-    --z7-copy-width:min(33vw,380px);
-    min-height:530px!important;
-    height:min(62vh,580px)!important;
-    max-height:580px!important;
+    --z7-copy-width:min(31vw,360px);
+    min-height:450px!important;
+    height:min(52vh,500px)!important;
+    max-height:500px!important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h2{
+    font-size:clamp(2.7rem,4.5vw,4rem)!important;
   }
 }
 
+/* mobile */
 @media(max-width:760px){
   .z7-founders-photo-hero{
     --z7-photo-width:100%;
-    --z7-copy-width:min(88vw,34rem);
-    min-height:620px!important;
+    --z7-copy-width:min(88vw,32rem);
+    min-height:560px!important;
     height:auto!important;
     max-height:none!important;
   }
@@ -233,15 +259,15 @@
 
   .z7-founders-hero-photo__image{
     object-position:52% center!important;
-    filter:saturate(.94) contrast(1.018) brightness(.82)!important;
+    filter:saturate(.95) contrast(1.02) brightness(.84)!important;
   }
 
   .z7-founders-hero-photo-layer::before{
     background:
       radial-gradient(
         circle at var(--z7mx) var(--z7my),
-        rgba(255,255,255,.06),
-        transparent 34%
+        rgba(255,255,255,.10),
+        transparent 36%
       ),
       linear-gradient(
         180deg,
@@ -251,9 +277,13 @@
       );
   }
 
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean{
+    transform:none!important;
+  }
+
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h2{
-    font-size:clamp(2.9rem,12vw,4.4rem)!important;
+    font-size:clamp(2.7rem,11.5vw,4.1rem)!important;
   }
 }
 
