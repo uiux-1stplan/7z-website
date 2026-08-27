@@ -1,157 +1,226 @@
-/* Z7_FOUNDERS_HERO_DIRECTIONAL_FADE_V6
-   Founders hero only.
-   Goal:
-   - keep supplied photo
-   - photo visually dominates the right side
-   - left side fades smoothly into black
-   - no black box behind text
-   - subtle cinematic motion overlay on image zone only
-   - do not affect the rest of the site
+/* Z7_FOUNDERS_HERO_RIGHT_COMPOSITION_V7
+   Scope: marked Founders hero only.
 */
 
 .z7-founders-photo-hero{
+  --z7-photo-width:76%;
+  --z7-copy-width:min(31vw, 430px);
+  --z7mx:64%;
+  --z7my:44%;
+
   position:relative!important;
   isolation:isolate!important;
   overflow:hidden!important;
   background:#050505!important;
 }
 
-/* keep hero children above media */
+/* Keep all real hero copy/navigation content above media. */
 .z7-founders-photo-hero > :not(.z7-founders-hero-photo-layer){
   position:relative!important;
-  z-index:4!important;
+  z-index:5!important;
 }
 
-/* photo layer remains hero-scoped only */
+/* PHOTO ZONE:
+   It is no longer full-width.
+   It physically occupies the RIGHT side only. */
 .z7-founders-photo-hero > .z7-founders-hero-photo-layer{
   position:absolute!important;
-  inset:0!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  left:auto!important;
+
+  width:var(--z7-photo-width)!important;
+  height:100%!important;
+
   z-index:0!important;
   overflow:hidden!important;
   pointer-events:none!important;
   background:#050505!important;
+
+  /* Critical: fade only the LEFT EDGE of the photo zone into black.
+     After ~11% of the photo width, the image is fully visible. */
+  -webkit-mask-image:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,.18) 2.5%,
+      rgba(0,0,0,.55) 5.5%,
+      rgba(0,0,0,.86) 8.5%,
+      #000 12%,
+      #000 100%
+    )!important;
+
+  mask-image:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,.18) 2.5%,
+      rgba(0,0,0,.55) 5.5%,
+      rgba(0,0,0,.86) 8.5%,
+      #000 12%,
+      #000 100%
+    )!important;
 }
 
-/* keep the real supplied image, full height, leaning visually to the right */
+/* Preserve both people:
+   76% photo width + moderate cover crop.
+   The photo itself is not darkened by a giant left overlay anymore. */
 .z7-founders-hero-photo__image{
   position:absolute!important;
   inset:0!important;
   width:100%!important;
   height:100%!important;
   display:block!important;
+
   object-fit:cover!important;
-  object-position:center 44%!important;
-  transform:scale(1.015)!important;
-  filter:saturate(.95) contrast(1.02) brightness(.90)!important;
+  object-position:50% 44%!important;
+
+  transform:scale(1.008)!important;
+  filter:
+    saturate(.96)
+    contrast(1.018)
+    brightness(.94)!important;
 }
 
-/* left-to-right black fade so text sits on black, not inside a card */
+/* Very light cinematic vignette INSIDE the photo only. */
 .z7-founders-hero-photo-layer::before{
   content:"";
   position:absolute;
   inset:0;
   z-index:1;
   pointer-events:none;
+
   background:
-    linear-gradient(
-      90deg,
-      rgba(5,5,5,1) 0%,
-      rgba(5,5,5,.985) 16%,
-      rgba(5,5,5,.93) 28%,
-      rgba(5,5,5,.78) 39%,
-      rgba(5,5,5,.50) 49%,
-      rgba(5,5,5,.22) 58%,
-      rgba(5,5,5,.06) 67%,
-      rgba(5,5,5,.03) 76%,
-      rgba(5,5,5,.10) 100%
+    radial-gradient(
+      circle at var(--z7mx) var(--z7my),
+      rgba(255,255,255,.085) 0%,
+      rgba(255,255,255,.025) 18%,
+      transparent 38%
     ),
     linear-gradient(
       180deg,
-      rgba(0,0,0,.08) 0%,
-      rgba(0,0,0,.01) 52%,
-      rgba(0,0,0,.16) 100%
+      rgba(0,0,0,.055) 0%,
+      transparent 38%,
+      rgba(0,0,0,.10) 100%
     );
+
+  opacity:.9;
+  transition:
+    background-position .18s ease-out,
+    opacity .25s ease;
 }
 
-/* subtle cinematic moving overlay only on the image zone */
+/* Creative moving light sweep, strictly clipped to the photo zone. */
 .z7-founders-hero-photo-layer::after{
   content:"";
   position:absolute;
-  top:-8%;
-  right:-2%;
-  bottom:-8%;
-  width:72%;
+  top:-18%;
+  right:-12%;
+  bottom:-18%;
+  width:78%;
   z-index:2;
   pointer-events:none;
-  opacity:.085;
+
+  opacity:.075;
+
   background:
-    radial-gradient(circle at 24% 24%, rgba(255,255,255,.14), transparent 24%),
-    radial-gradient(circle at 72% 68%, rgba(206,168,86,.10), transparent 26%),
-    linear-gradient(116deg, transparent 18%, rgba(255,255,255,.09) 48%, transparent 78%);
+    linear-gradient(
+      113deg,
+      transparent 20%,
+      rgba(255,255,255,.025) 36%,
+      rgba(255,255,255,.11) 49%,
+      rgba(216,182,90,.055) 55%,
+      transparent 73%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 72px,
+      rgba(255,255,255,.018) 73px,
+      transparent 74px
+    );
+
   mix-blend-mode:screen;
-  transform:translate3d(-1.5%, -1%, 0) scale(1.03);
-  will-change:transform, opacity;
-  animation:z7FoundersHeroSweepV6 14s ease-in-out infinite alternate;
+  transform:
+    translate3d(-5%,0,0)
+    rotate(.001deg);
+
+  will-change:transform,opacity;
+
+  animation:
+    z7FoundersPhotoSweepV7
+    11.5s
+    cubic-bezier(.42,0,.28,1)
+    infinite
+    alternate;
 }
 
-@keyframes z7FoundersHeroSweepV6{
+@keyframes z7FoundersPhotoSweepV7{
   0%{
-    transform:translate3d(-1.5%, -1%, 0) scale(1.03);
-    opacity:.06;
+    transform:translate3d(-8%,0,0);
+    opacity:.045;
   }
-  45%{
+
+  48%{
     opacity:.09;
   }
+
   100%{
-    transform:translate3d(1.8%, 1.1%, 0) scale(1.06);
-    opacity:.08;
+    transform:translate3d(9%,0,0);
+    opacity:.06;
   }
 }
 
-/* copy area: no box, sits cleanly in the black zone */
+/* ----------------------------------------------------------
+   COPY:
+   Black comes from the HERO BACKGROUND itself.
+   There is NO panel/card behind the text.
+---------------------------------------------------------- */
+
 .z7-founders-photo-hero .z7-founders-hero-copy-clean{
   position:relative!important;
-  z-index:5!important;
+  z-index:6!important;
+
+  width:var(--z7-copy-width)!important;
+  max-width:var(--z7-copy-width)!important;
+
   background:transparent!important;
   background-color:transparent!important;
   border:0!important;
   outline:0!important;
   box-shadow:none!important;
+  border-radius:0!important;
   -webkit-backdrop-filter:none!important;
   backdrop-filter:none!important;
-  border-radius:0!important;
-  max-width:min(40rem, 40vw)!important;
-  width:min(40rem, 40vw)!important;
 }
 
 .z7-founders-photo-hero .z7-founders-hero-copy-clean::before,
 .z7-founders-photo-hero .z7-founders-hero-copy-clean::after{
-  display:none!important;
   content:none!important;
+  display:none!important;
 }
 
+/* Keep headline INSIDE the black copy zone instead of covering faces. */
 .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
 .z7-founders-photo-hero .z7-founders-hero-copy-clean h2{
+  max-width:100%!important;
+  font-size:clamp(3.65rem,5.2vw,5.7rem)!important;
+  line-height:.91!important;
+  letter-spacing:-.055em!important;
+
   text-shadow:
-    0 2px 16px rgba(0,0,0,.24),
-    0 1px 2px rgba(0,0,0,.35)!important;
+    0 2px 18px rgba(0,0,0,.18),
+    0 1px 2px rgba(0,0,0,.28)!important;
 }
 
 .z7-founders-photo-hero .z7-founders-hero-copy-clean p{
-  color:rgba(255,255,255,.78)!important;
-  text-shadow:0 1px 10px rgba(0,0,0,.28)!important;
+  max-width:31rem!important;
+  color:rgba(255,255,255,.73)!important;
+  text-shadow:none!important;
 }
 
-.z7-founders-photo-hero .z7-founders-hero-copy-clean
-:is(
-  [class*="kicker" i],
-  [class*="eyebrow" i],
-  small
-){
-  text-shadow:0 1px 8px rgba(0,0,0,.24)!important;
-}
-
-/* preserve hidden legacy hero visuals if runtime cleaner tagged them */
+/* Keep old hero cards suppressed if the existing cleanup tagged them. */
 .z7-founders-photo-hero [data-z7-old-founder-hero="hidden"]{
   display:none!important;
   visibility:hidden!important;
@@ -159,38 +228,61 @@
   pointer-events:none!important;
 }
 
-/* mobile fallback */
-@media(max-width:980px){
+/* Tablet */
+@media(max-width:1100px){
+  .z7-founders-photo-hero{
+    --z7-photo-width:72%;
+    --z7-copy-width:min(34vw, 390px);
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h2{
+    font-size:clamp(3.25rem,5.7vw,5rem)!important;
+  }
+}
+
+/* Mobile:
+   preserve current responsive concept safely.
+   Image remains visual background, copy gets natural lower vignette. */
+@media(max-width:760px){
+  .z7-founders-photo-hero{
+    --z7-photo-width:100%;
+    --z7-copy-width:min(88vw, 34rem);
+  }
+
+  .z7-founders-photo-hero > .z7-founders-hero-photo-layer{
+    width:100%!important;
+
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+  }
+
   .z7-founders-hero-photo__image{
-    object-position:58% center!important;
+    object-position:52% center!important;
+    filter:
+      saturate(.94)
+      contrast(1.018)
+      brightness(.82)!important;
   }
 
   .z7-founders-hero-photo-layer::before{
     background:
-      linear-gradient(
-        180deg,
-        rgba(5,5,5,.20) 0%,
-        rgba(5,5,5,.08) 28%,
-        rgba(5,5,5,.35) 68%,
-        rgba(5,5,5,.64) 100%
+      radial-gradient(
+        circle at var(--z7mx) var(--z7my),
+        rgba(255,255,255,.055),
+        transparent 36%
       ),
       linear-gradient(
-        90deg,
-        rgba(5,5,5,.48) 0%,
-        rgba(5,5,5,.16) 36%,
-        rgba(5,5,5,.08) 100%
+        180deg,
+        rgba(0,0,0,.06) 0%,
+        rgba(0,0,0,.08) 48%,
+        rgba(5,5,5,.72) 100%
       );
   }
 
-  .z7-founders-hero-photo-layer::after{
-    width:100%;
-    right:0;
-    opacity:.06;
-  }
-
-  .z7-founders-photo-hero .z7-founders-hero-copy-clean{
-    max-width:min(90vw, 34rem)!important;
-    width:min(90vw, 34rem)!important;
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h2{
+    font-size:clamp(3rem,13vw,4.6rem)!important;
   }
 }
 
