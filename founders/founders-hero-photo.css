@@ -69,8 +69,8 @@
   height:100%!important;
   display:block!important;
   object-fit:cover!important;
-  object-position:50% 42%!important;
-  transform:translate3d(0,0,0) scale(1.008)!important;
+  object-position:50% 18%!important;
+  transform:translate3d(0,0,0) scale(1.001)!important;
   filter:saturate(.97) contrast(1.025) brightness(.96)!important;
   will-change:transform;
 }
@@ -258,7 +258,7 @@
   }
 
   .z7-founders-hero-photo__image{
-    object-position:52% center!important;
+    object-position:52% 24%!important;
     filter:saturate(.95) contrast(1.02) brightness(.84)!important;
   }
 

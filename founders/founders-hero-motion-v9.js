@@ -28,7 +28,7 @@
       currentY += (targetY - currentY) * .08;
 
       image.style.transform =
-        `translate3d(${currentX.toFixed(2)}px,${currentY.toFixed(2)}px,0) scale(1.012)`;
+        `translate3d(${currentX.toFixed(2)}px,${currentY.toFixed(2)}px,0) scale(1.002)`;
 
       raf = requestAnimationFrame(render);
     };
@@ -47,7 +47,7 @@
       hero.style.setProperty("--z7my", `${(y * 100).toFixed(2)}%`);
 
       targetX = (x - .5) * 7;
-      targetY = (y - .5) * 4;
+      targetY = (y - .5) * 2.2;
     }, { passive:true });
 
     hero.addEventListener("pointerleave", () => {
