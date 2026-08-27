@@ -1,0 +1,76 @@
+/* Z7_ADMIN_LOGIN_FINAL */
+
+.cl-socialButtons,
+.cl-socialButtonsBlockButton,
+.cl-dividerRow,
+.cl-footer,
+.cl-footerPages,
+.cl-footerAction,
+.cl-developmentModeBadge{
+  display:none!important;
+}
+
+.cl-rootBox{
+  width:min(430px,calc(100vw - 30px))!important;
+}
+
+.cl-card{
+  position:relative!important;
+  padding:32px 28px 28px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(216,182,90,.20)!important;
+  border-radius:22px!important;
+  background:
+    radial-gradient(
+      circle at 82% 0%,
+      rgba(216,182,90,.075),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(17,17,16,.99),
+      rgba(5,5,5,.99)
+    )!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.48)!important;
+}
+
+.cl-card::before{
+  content:"7Z MAGIC / SECURE ADMIN";
+  display:block;
+  margin-bottom:22px;
+  color:#d8b65a;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.19em;
+  text-transform:uppercase;
+}
+
+.cl-headerTitle{
+  color:#fff!important;
+  font-size:30px!important;
+  line-height:1.06!important;
+}
+
+.cl-headerSubtitle{
+  color:rgba(255,255,255,.48)!important;
+  font-size:13px!important;
+  line-height:1.6!important;
+}
+
+.cl-formFieldInput{
+  min-height:52px!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+
+.cl-formButtonPrimary{
+  min-height:52px!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#e4c66f,#cda64b)!important;
+  color:#080808!important;
+  font-weight:900!important;
+  box-shadow:none!important;
+}
