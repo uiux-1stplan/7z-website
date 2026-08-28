@@ -175,3 +175,86 @@ img[data-z7-founder-profile-photo] {
 }
 
 /* Z7_FOUNDERS_PROFILE_NATIVE_RATIO_V21_1_END */
+/* Z7_FOUNDERS_PROFILE_SIZE_BALANCE_V21_2_START
+   Keep the exact current profile design and the original 1529x2048
+   portrait ratio, but stop the portrait card from becoming oversized.
+*/
+
+/* Desktop: elegant portrait scale, no stretching to the full grid column. */
+@media (min-width: 1101px) {
+  .z7x-founder-profile__media {
+    width: min(100%, 455px) !important;
+    max-width: 455px !important;
+  }
+
+  .z7x-founder-profile:not(.z7x-founder-profile--reverse)
+  .z7x-founder-profile__media {
+    justify-self: start !important;
+  }
+
+  .z7x-founder-profile--reverse
+  .z7x-founder-profile__media {
+    justify-self: end !important;
+  }
+}
+
+/* Tablet: slightly smaller so image and copy remain balanced. */
+@media (min-width: 861px) and (max-width: 1100px) {
+  .z7x-founder-profile__media {
+    width: min(100%, 410px) !important;
+    max-width: 410px !important;
+  }
+
+  .z7x-founder-profile:not(.z7x-founder-profile--reverse)
+  .z7x-founder-profile__media {
+    justify-self: start !important;
+  }
+
+  .z7x-founder-profile--reverse
+  .z7x-founder-profile__media {
+    justify-self: end !important;
+  }
+}
+
+/* One-column layouts: center the portrait instead of letting it span the page. */
+@media (max-width: 860px) {
+  .z7x-founder-profile__media,
+  .z7x-founder-profile--reverse .z7x-founder-profile__media {
+    width: min(78vw, 390px) !important;
+    max-width: 390px !important;
+    justify-self: center !important;
+  }
+}
+
+/* Phone: compact portrait card, still using full untouched image ratio. */
+@media (max-width: 560px) {
+  .z7x-founder-profile__media,
+  .z7x-founder-profile--reverse .z7x-founder-profile__media {
+    width: min(82vw, 330px) !important;
+    max-width: 330px !important;
+  }
+}
+
+/* Extra-small phones. */
+@media (max-width: 390px) {
+  .z7x-founder-profile__media,
+  .z7x-founder-profile--reverse .z7x-founder-profile__media {
+    width: min(84vw, 305px) !important;
+    max-width: 305px !important;
+  }
+}
+
+/* Ensure the image itself keeps its real proportions at every size. */
+.z7x-founder-profile__media
+img[data-z7-founder-profile-photo] {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+
+  transform: none !important;
+}
+
+/* Z7_FOUNDERS_PROFILE_SIZE_BALANCE_V21_2_END */
