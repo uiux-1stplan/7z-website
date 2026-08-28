@@ -410,3 +410,185 @@
 }
 
 /* END Z7_FOUNDERS_HERO_TONE_V12 */
+/* Z7_FOUNDERS_HERO_FRAMING_FIX_V13_START
+   SURGICAL SCOPE: Founders photo hero only.
+
+   Desktop:
+   - reserves real clearance below the floating header
+   - anchors the source image to its top edge so heads are never cropped
+   - keeps current left fade, tone and V9 cinematic motion
+
+   Mobile:
+   - stops using a portrait cover crop on a landscape founders photo
+   - displays the complete source image with object-fit: contain
+   - places the copy below the photo instead of over the founders' faces
+   - preserves the existing header, typography system and motion layer
+*/
+
+/* DESKTOP + TABLET */
+@media (min-width: 761px) {
+  .z7-founders-photo-hero {
+    --z7-photo-width: 70%;
+    --z7-v13-header-clearance: clamp(76px, 6vw, 92px);
+  }
+
+  .z7-founders-photo-hero > .z7-founders-hero-photo-layer {
+    top: var(--z7-v13-header-clearance) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+    width: var(--z7-photo-width) !important;
+    height: auto !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-photo__image {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+
+    /* Critical fix:
+       preserve the real top of the source instead of center-cropping it. */
+    object-position: 50% 0% !important;
+
+    transform: translate3d(0,0,0) scale(1.001) !important;
+    transform-origin: 50% 0% !important;
+  }
+
+  /* V11 used the old photo top-gap math.
+     V13 now gives the entire media layer proper header clearance. */
+  .z7-founders-photo-hero .z7-founders-hero-photo-layer::after {
+    top: -24% !important;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 760px) {
+  .z7-founders-photo-hero {
+    --z7-v13-mobile-header-clearance: 72px;
+    --z7-v13-mobile-photo-height: clamp(210px, 68vw, 278px);
+
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+
+    /* Remove the generic hero top padding.
+       V13 controls exact photo/copy spacing itself. */
+    padding-top: 0 !important;
+    padding-bottom: 46px !important;
+
+    background: #050505 !important;
+  }
+
+  .z7-founders-photo-hero > .z7-founders-hero-photo-layer {
+    top: var(--z7-v13-mobile-header-clearance) !important;
+    right: 0 !important;
+    bottom: auto !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    height: var(--z7-v13-mobile-photo-height) !important;
+
+    background: #050505 !important;
+
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-photo__image {
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    /* Critical mobile fix:
+       a landscape group portrait must never be forced into portrait cover. */
+    object-fit: contain !important;
+    object-position: 50% 50% !important;
+
+    transform: none !important;
+
+    filter:
+      saturate(.92)
+      contrast(1.03)
+      brightness(.84) !important;
+  }
+
+  /* Keep the cinematic treatment inside the visible photo strip,
+     with a clean fade into the copy zone below. */
+  .z7-founders-photo-hero .z7-founders-hero-photo-layer::before {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5,5,5,.10) 0%,
+        rgba(5,5,5,.02) 58%,
+        rgba(5,5,5,.28) 78%,
+        rgba(5,5,5,.88) 100%
+      ),
+      radial-gradient(
+        circle at var(--z7mx) var(--z7my),
+        rgba(255,255,255,.09),
+        transparent 38%
+      ) !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-photo-layer::after {
+    top: -18% !important;
+    right: -10% !important;
+    bottom: -18% !important;
+    width: 118% !important;
+    opacity: .11 !important;
+  }
+
+  /* Put all hero copy AFTER the complete photo.
+     No text is allowed to hide either founder's face. */
+  .z7-founders-photo-hero .z7x-hero__layout {
+    display: block !important;
+    width: calc(100% - 32px) !important;
+
+    padding-top:
+      calc(
+        var(--z7-v13-mobile-header-clearance) +
+        var(--z7-v13-mobile-photo-height) +
+        26px
+      ) !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean {
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h2 {
+    max-width: 100% !important;
+    font-size: clamp(2.55rem, 12vw, 3.55rem) !important;
+    line-height: .92 !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean p {
+    max-width: 30rem !important;
+    font-size: .92rem !important;
+    line-height: 1.6 !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .z7-founders-photo-hero {
+    --z7-v13-mobile-header-clearance: 68px;
+    --z7-v13-mobile-photo-height: clamp(200px, 66vw, 250px);
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h2 {
+    font-size: clamp(2.35rem, 11.8vw, 3.2rem) !important;
+  }
+}
+
+/* Z7_FOUNDERS_HERO_FRAMING_FIX_V13_END */
