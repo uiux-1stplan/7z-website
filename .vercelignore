@@ -1,4 +1,4 @@
-﻿_backup-*
+_backup-*
 *.zip
 local-server.backup-*.mjs
 server*.log
@@ -27,3 +27,13 @@ _video_backup/
 /_portal-theme-backup-*/
 /_admin-before-*/
 /_hub-login-before-native-fix-*.js
+
+_LOCAL_ONLY/
+# 7Z local-only safety
+PRIVATE-CREDENTIALS/
+7z-website/
+_video_work/
+_BACKUPS/
+_7Z_ROOT_CAUSE_PACKAGE/
+media/private-access/
+video-optimization-report.csv

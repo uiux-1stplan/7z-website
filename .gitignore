@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 .next/
 out/
 dist/
@@ -22,3 +22,10 @@ _video_work/
 /_portal-theme-backup-*/
 /_admin-before-*/
 /_hub-login-before-native-fix-*.js
+# 7Z local-only safety
+/_LOCAL_ONLY/
+/PRIVATE-CREDENTIALS/
+/7z-website/
+/_video_work/
+/media/private-access/
+/video-optimization-report.csv
