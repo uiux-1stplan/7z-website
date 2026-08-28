@@ -114,3 +114,64 @@ img[data-z7-founder-profile-photo] {
     transform: none !important;
   }
 }
+/* Z7_FOUNDERS_PROFILE_NATIVE_RATIO_V21_1_START
+   Keep the existing founder-profile layout/design.
+   ONLY change photo geometry:
+   - preserve uploaded image's intrinsic 1529x2048 portrait ratio
+   - no cover crop
+   - no forced landscape/square aspect
+   - no hover/scroll zoom
+   - grayscale/color interaction stays exactly as V21
+*/
+
+.z7x-founder-profile__media
+img[data-z7-founder-profile-photo] {
+  width: 100% !important;
+  height: auto !important;
+
+  aspect-ratio: auto !important;
+
+  object-fit: contain !important;
+  object-position: center top !important;
+
+  max-width: 100% !important;
+  max-height: none !important;
+
+  transform: none !important;
+  transform-origin: center center !important;
+}
+
+/* Keep image fully visible when color is revealed — no scale/crop. */
+@media (hover: hover) and (pointer: fine) {
+  .z7x-founder-profile__media:hover
+  img[data-z7-founder-profile-photo],
+  .z7x-founder-profile__media:focus-within
+  img[data-z7-founder-profile-photo] {
+    transform: none !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 760px) {
+  .z7x-founder-profile__media.z7-profile-in-view
+  img[data-z7-founder-profile-photo] {
+    transform: none !important;
+  }
+}
+
+/* Mobile also keeps the exact same intrinsic portrait proportions. */
+@media (max-width: 760px) {
+  .z7x-founder-profile__media
+  img[data-z7-founder-profile-photo] {
+    width: 100% !important;
+    height: auto !important;
+
+    aspect-ratio: auto !important;
+
+    object-fit: contain !important;
+    object-position: center top !important;
+
+    transform: none !important;
+  }
+}
+
+/* Z7_FOUNDERS_PROFILE_NATIVE_RATIO_V21_1_END */
