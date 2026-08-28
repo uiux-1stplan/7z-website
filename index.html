@@ -130,28 +130,24 @@
   filter: none !important;
 }
 </style>
-<!-- Z7_HEADER_LOGO_VISUAL_LOCK_V22_8_START -->
-<style id="z7-header-logo-visual-lock-v22-8">
+
+<!-- Z7_HEADER_LOGO_FINAL_V24_START -->
+<style id="z7-header-logo-final-v24">
   /*
-    Final visual lock for the real header brand IMG.
-    This is deliberately page-local and last-in-head so page-specific
-    styles cannot crop, hide, filter or replace its visual treatment.
+    FINAL header-logo presentation.
+    Scope is ONLY the real clickable brand inside the fixed site header.
+    No pseudo-element logo. No runtime. No content-image selector.
   */
   header.site-header > a.brand {
-    position: relative !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 
-    width: 76px !important;
-    height: 44px !important;
-    min-width: 76px !important;
-    min-height: 44px !important;
-    max-width: 76px !important;
-    max-height: 44px !important;
+    width: 78px !important;
+    height: 46px !important;
+    min-width: 78px !important;
 
     padding: 0 !important;
-    margin: 0 !important;
 
     overflow: visible !important;
 
@@ -177,15 +173,16 @@
     visibility: visible !important;
     opacity: 1 !important;
 
-    width: 76px !important;
-    height: 44px !important;
-    min-width: 76px !important;
-    min-height: 44px !important;
-    max-width: 76px !important;
-    max-height: 44px !important;
+    width: 100% !important;
+    height: 100% !important;
 
-    padding: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+
     margin: 0 !important;
+    padding: 0 !important;
 
     object-fit: contain !important;
     object-position: center center !important;
@@ -207,35 +204,19 @@
     filter: none !important;
     transform: none !important;
 
-    /*
-      The supplied artwork has black around the white mark.
-      On the dark header, Screen removes that black visually
-      without putting the artwork in a box.
-    */
+    /* Makes the supplied black canvas disappear naturally on the dark header. */
     mix-blend-mode: screen !important;
   }
 
   @media (max-width: 760px) {
     header.site-header > a.brand {
-      width: 64px !important;
-      height: 38px !important;
-      min-width: 64px !important;
-      min-height: 38px !important;
-      max-width: 64px !important;
-      max-height: 38px !important;
-    }
-
-    header.site-header > a.brand > img {
-      width: 64px !important;
-      height: 38px !important;
-      min-width: 64px !important;
-      min-height: 38px !important;
-      max-width: 64px !important;
-      max-height: 38px !important;
+      width: 66px !important;
+      height: 40px !important;
+      min-width: 66px !important;
     }
   }
 </style>
-<!-- Z7_HEADER_LOGO_VISUAL_LOCK_V22_8_END -->
+<!-- Z7_HEADER_LOGO_FINAL_V24_END -->
 </head>
   <body data-static-background="true">
     <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
@@ -267,7 +248,7 @@
 
     <header class="site-header" aria-label="Primary">
       <a class="brand magnetic" href="#intro" aria-label="7Z Magic home">
-        <img src="/media/main_logo/7ZMagic-header-transparent.png?v=20260828-signature-final-v23" alt="" />
+        <img src="/media/main_logo/7ZMagic-HEADER-FINAL-20260828.png?v=20260828-final-header-v24" alt="" />
       </a>
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#intro">Home</a>
@@ -356,7 +337,7 @@
         <div class="manifest__media manifest__media--cinema">
           <div class="manifest__film-header" aria-hidden="true">
             <span class="manifest__film-kicker">Featured Film</span>
-            <span class="manifest__film-type">Architecture × AI</span>
+            <span class="manifest__film-type">Architecture ├ù AI</span>
           </div>
           <video muted playsinline preload="none" data-src="media/arch_projects/9-16H/1.mp4" poster="media/posters/arch_projects/9-16H/1.jpg"></video>
                     <div class="manifest__film-caption" aria-hidden="true">
