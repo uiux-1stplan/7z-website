@@ -5019,3 +5019,80 @@ img[src*="7ZMagic-signature-logo-20260828.png"] {
 }
 
 /* Z7_HEADER_LOGO_DIRECT_V22_5_END */
+/* Z7_FINAL_HEADER_LOGO_V22_7_START
+   FINAL HEADER LOGO RULE.
+   Scope is intentionally ONLY:
+   header.site-header > a.brand > img
+
+   No pseudo-logo.
+   No hidden IMG.
+   No background card.
+   No blend trick.
+*/
+
+header.site-header > a.brand {
+  position: relative !important;
+
+  width: 76px !important;
+  height: 42px !important;
+
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+header.site-header > a.brand::before,
+header.site-header > a.brand::after {
+  display: none !important;
+  content: none !important;
+}
+
+header.site-header > a.brand > img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  filter: none !important;
+  transform: none !important;
+  mix-blend-mode: normal !important;
+}
+
+@media (max-width: 980px) {
+  header.site-header > a.brand {
+    width: 68px !important;
+    height: 39px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  header.site-header > a.brand {
+    width: 62px !important;
+    height: 36px !important;
+  }
+}
+
+/* Z7_FINAL_HEADER_LOGO_V22_7_END */
