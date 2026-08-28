@@ -246,12 +246,13 @@
 </style>
 
 
-<!-- Z7_HEADER_LOGO_FINAL_V24_START -->
-<style id="z7-header-logo-final-v24">
+
+<!-- Z7_HEADER_LOGO_V25_START -->
+<style id="z7-header-logo-v25">
   /*
-    FINAL header-logo presentation.
-    Scope is ONLY the real clickable brand inside the fixed site header.
-    No pseudo-element logo. No runtime. No content-image selector.
+    V25 FINAL:
+    affects ONE element only:
+    header.site-header > a.brand > img[data-z7-header-logo-v25]
   */
   header.site-header > a.brand {
     display: flex !important;
@@ -265,14 +266,11 @@
     padding: 0 !important;
 
     overflow: visible !important;
-
     border: 0 !important;
     border-radius: 0 !important;
     outline: 0 !important;
-
     background: transparent !important;
     box-shadow: none !important;
-    backdrop-filter: none !important;
   }
 
   header.site-header > a.brand::before,
@@ -281,20 +279,19 @@
     content: none !important;
   }
 
-  header.site-header > a.brand > img {
+  header.site-header > a.brand > img[data-z7-header-logo-v25="true"] {
     position: static !important;
 
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
 
-    width: 100% !important;
-    height: 100% !important;
-
+    width: 78px !important;
+    height: 46px !important;
     min-width: 0 !important;
     min-height: 0 !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
+    max-width: 78px !important;
+    max-height: 46px !important;
 
     margin: 0 !important;
     padding: 0 !important;
@@ -307,7 +304,6 @@
     border: 0 !important;
     border-radius: 0 !important;
     outline: 0 !important;
-
     background: transparent !important;
     box-shadow: none !important;
 
@@ -319,7 +315,7 @@
     filter: none !important;
     transform: none !important;
 
-    /* Makes the supplied black canvas disappear naturally on the dark header. */
+    /* Removes the black canvas visually without creating a card/frame. */
     mix-blend-mode: screen !important;
   }
 
@@ -329,9 +325,45 @@
       height: 40px !important;
       min-width: 66px !important;
     }
+
+    header.site-header > a.brand > img[data-z7-header-logo-v25="true"] {
+      width: 66px !important;
+      height: 40px !important;
+      max-width: 66px !important;
+      max-height: 40px !important;
+    }
   }
 </style>
-<!-- Z7_HEADER_LOGO_FINAL_V24_END -->
+
+<script id="z7-header-logo-v25-proof">
+(() => {
+  const src = "/media/main_logo/7ZMagic-HEADER-V25.png?v=20260829-v25-final";
+
+  function enforce() {
+    const img = document.querySelector(
+      'header.site-header > a.brand > img[data-z7-header-logo-v25="true"]'
+    );
+
+    if (!img) return;
+
+    if (img.getAttribute("src") !== src) {
+      img.setAttribute("src", src);
+    }
+
+    img.removeAttribute("srcset");
+    img.removeAttribute("sizes");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", enforce, { once: true });
+  } else {
+    enforce();
+  }
+
+  window.addEventListener("load", enforce, { once: true });
+})();
+</script>
+<!-- Z7_HEADER_LOGO_V25_END -->
 </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -350,7 +382,7 @@
 <div aria-hidden="true" class="grain"></div>
 <header aria-label="Primary" class="site-header">
 <a aria-label="7Z Magic home" class="brand magnetic" href="/">
-<img alt="" src="/media/main_logo/7ZMagic-HEADER-FINAL-20260828.png?v=20260828-final-header-v24"/>
+<img alt="" src="/media/main_logo/7ZMagic-HEADER-V25.png?v=20260829-v25-final"/ data-z7-header-logo-v25="true">
 </a>
 <nav aria-label="Main navigation" class="main-nav">
 <a href="/">Home</a>
