@@ -893,3 +893,295 @@
     animation: none !important;
   }
 }
+/* Z7_FOUNDERS_V20_1_FRAMELESS_FADE_START
+   Surgical visual polish for approved V20:
+   - remove the image card/frame completely
+   - preserve the ENTIRE uploaded portrait with object-fit: contain
+   - blend photo into black with feathered left/bottom fades
+   - keep grayscale -> color hover/touch behavior unchanged
+*/
+
+/* =========================================================
+   DESKTOP / TABLET — FULL IMAGE, NO FRAME
+========================================================= */
+@media (min-width: 761px) {
+  .z7f20__visual {
+    top: clamp(82px, 8.6vh, 100px) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: min(61vw, 900px) !important;
+
+    overflow: visible !important;
+
+    border-radius: 0 !important;
+    border: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+  }
+
+  .z7f20__portrait {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+
+    /*
+      The portrait now fits by HEIGHT, so the entire original image is visible.
+      No cover-crop. No head/body clipping.
+    */
+    width: auto !important;
+    max-width: 100% !important;
+    height: 100% !important;
+
+    object-fit: contain !important;
+    object-position: 100% 100% !important;
+
+    z-index: 2 !important;
+
+    /* Feather the studio background into the website black. */
+    -webkit-mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0,0,0,.08) 7%,
+        rgba(0,0,0,.42) 16%,
+        rgba(0,0,0,.86) 27%,
+        #000 38%,
+        #000 100%
+      ) !important;
+
+    mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0,0,0,.08) 7%,
+        rgba(0,0,0,.42) 16%,
+        rgba(0,0,0,.86) 27%,
+        #000 38%,
+        #000 100%
+      ) !important;
+  }
+
+  /*
+    No rectangular overlay.
+    Just a cinematic black feather from the left and lower edge.
+  */
+  .z7f20__visual::after {
+    inset: -1px !important;
+
+    background:
+      linear-gradient(
+        90deg,
+        #020203 0%,
+        rgba(2,2,3,.92) 7%,
+        rgba(2,2,3,.56) 17%,
+        rgba(2,2,3,.17) 29%,
+        transparent 43%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,.08) 0%,
+        transparent 23%,
+        transparent 71%,
+        rgba(2,2,3,.20) 84%,
+        rgba(2,2,3,.74) 100%
+      ) !important;
+
+    opacity: 1 !important;
+  }
+
+  .z7f20__monogram {
+    top: 7% !important;
+    right: -4% !important;
+
+    width: 59% !important;
+
+    opacity: .20 !important;
+  }
+
+  .z7f20__visual-glow {
+    opacity: .42 !important;
+  }
+
+  /* Cleaner premium presentation: the interaction remains intuitive. */
+  .z7f20__reveal-hint {
+    display: none !important;
+  }
+}
+
+/* Extra-wide screens: give the complete portrait a little more breathing room. */
+@media (min-width: 1500px) {
+  .z7f20__visual {
+    width: min(58vw, 940px) !important;
+  }
+}
+
+/* =========================================================
+   MOBILE — FULL-BLEED PORTRAIT, NO CARD
+========================================================= */
+@media (max-width: 760px) {
+  .z7f20__visual {
+    top: 72px !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: auto !important;
+
+    width: 100% !important;
+
+    /*
+      Matches the source portrait aspect closely.
+      This lets object-fit:contain display the complete uploaded photo.
+    */
+    height: clamp(470px, 136vw, 545px) !important;
+
+    overflow: visible !important;
+
+    border-radius: 0 !important;
+    border: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+  }
+
+  .z7f20__portrait {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: contain !important;
+    object-position: 50% 0% !important;
+
+    z-index: 2 !important;
+
+    transform: scale(1.001) !important;
+
+    /*
+      Full image remains visible.
+      Only its lower edge dissolves naturally into the black copy area.
+    */
+    -webkit-mask-image:
+      linear-gradient(
+        180deg,
+        #000 0%,
+        #000 73%,
+        rgba(0,0,0,.94) 79%,
+        rgba(0,0,0,.65) 87%,
+        rgba(0,0,0,.20) 95%,
+        transparent 100%
+      ) !important;
+
+    mask-image:
+      linear-gradient(
+        180deg,
+        #000 0%,
+        #000 73%,
+        rgba(0,0,0,.94) 79%,
+        rgba(0,0,0,.65) 87%,
+        rgba(0,0,0,.20) 95%,
+        transparent 100%
+      ) !important;
+  }
+
+  .z7f20__visual.is-color .z7f20__portrait {
+    transform: scale(1.006) !important;
+  }
+
+  .z7f20__visual::after {
+    inset: 0 !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,.06) 0%,
+        transparent 52%,
+        rgba(2,2,3,.12) 68%,
+        rgba(2,2,3,.52) 83%,
+        rgba(2,2,3,.93) 96%,
+        #020203 100%
+      ) !important;
+
+    opacity: 1 !important;
+  }
+
+  .z7f20__monogram {
+    top: 4% !important;
+    right: -8% !important;
+
+    width: 73% !important;
+
+    opacity: .18 !important;
+  }
+
+  .z7f20__visual-glow {
+    opacity: .34 !important;
+  }
+
+  .z7f20__reveal-hint {
+    display: none !important;
+  }
+
+  /*
+    Let the copy rise into the black fade instead of beginning
+    after a visibly separate image block.
+  */
+  .z7f20__content {
+    padding-top: clamp(468px, 130vw, 526px) !important;
+  }
+
+  .z7f20__copy {
+    padding-top: 12px !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,0) 0,
+        rgba(2,2,3,.58) 30px,
+        rgba(2,2,3,.95) 76px,
+        #020203 112px
+      ) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .z7f20__visual {
+    height: 515px !important;
+  }
+
+  .z7f20__content {
+    padding-top: 492px !important;
+  }
+}
+
+/* Landscape phone: frameless image remains on the right. */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  .z7f20__visual {
+    top: 62px !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+
+    width: 53vw !important;
+    height: auto !important;
+  }
+
+  .z7f20__portrait {
+    width: auto !important;
+    height: 100% !important;
+
+    object-position: 100% 100% !important;
+
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 16%, #000 33%, #000 100%) !important;
+
+    mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 16%, #000 33%, #000 100%) !important;
+  }
+}
+
+/* Z7_FOUNDERS_V20_1_FRAMELESS_FADE_END */
