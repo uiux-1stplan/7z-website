@@ -4948,15 +4948,9 @@ img[src*="7ZMagic-signature-logo-20260828.png"] {
 }
 
 /* Z7_FRAMELESS_LOGO_V22_2_END */
-/* Z7_HEADER_LOGO_HARDLOCK_V22_4_START
-   VISUAL SOURCE OF TRUTH FOR THE SHARED HEADER LOGO.
-
-   Why:
-   Some pages/runtime paths still carry different <img src> values.
-   Instead of chasing each source, the shared header now renders ONE
-   exact brand artwork from CSS and hides the internal img visually.
-
-   The <a class="brand"> remains clickable and accessible.
+/* Z7_HEADER_LOGO_DIRECT_V22_5_START
+   Header logo source of truth = the actual IMG itself.
+   No pseudo-elements. No hidden image. No visual card.
 */
 
 .site-header .brand {
@@ -4973,60 +4967,43 @@ img[src*="7ZMagic-signature-logo-20260828.png"] {
   outline: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+  backdrop-filter: none !important;
 }
 
-/* Hide whichever old/new image a page or runtime tries to inject.
-   It stays in DOM for accessibility, but it is no longer the visual source. */
-.site-header .brand > img,
-.site-header .brand img {
-  opacity: 0 !important;
-  visibility: hidden !important;
-
-  width: 100% !important;
-  height: 100% !important;
-
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-/* ONE exact logo in every shared header. */
-.site-header .brand::before {
-  content: "" !important;
-
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 2 !important;
-
-  display: block !important;
-
-  width: 100% !important;
-  height: 100% !important;
-
-  pointer-events: none !important;
-
-  background-image: url("/media/main_logo/7ZMagic-signature-logo-20260828.png") !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: contain !important;
-
-  border: 0 !important;
-  border-radius: 0 !important;
-
-  box-shadow: none !important;
-
-  /* The supplied artwork has a black canvas.
-     Screen blend removes that black visually on the dark site header. */
-  mix-blend-mode: screen !important;
-}
-
-/* Prevent any legacy pseudo-card from appearing around .brand. */
+.site-header .brand::before,
 .site-header .brand::after {
   display: none !important;
   content: none !important;
 }
 
-/* Tablet */
+.site-header .brand > img,
+.site-header .brand img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  max-width: 100% !important;
+  max-height: 100% !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  transform: none !important;
+
+  /* Uploaded artwork has a black canvas; screen removes black on dark header. */
+  mix-blend-mode: screen !important;
+}
+
 @media (max-width: 980px) {
   .site-header .brand {
     width: 68px !important;
@@ -5034,7 +5011,6 @@ img[src*="7ZMagic-signature-logo-20260828.png"] {
   }
 }
 
-/* Mobile */
 @media (max-width: 760px) {
   .site-header .brand {
     width: 62px !important;
@@ -5042,4 +5018,4 @@ img[src*="7ZMagic-signature-logo-20260828.png"] {
   }
 }
 
-/* Z7_HEADER_LOGO_HARDLOCK_V22_4_END */
+/* Z7_HEADER_LOGO_DIRECT_V22_5_END */
