@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
     "use strict";
 
     const headerSlot =
@@ -268,7 +268,7 @@
 
                     <div class="z7-admin-footer-brand">
                       <img
-                        src="/media/main_logo/7ZMagic-official-logo-20260822.png"
+                        src="/media/main_logo/7ZMagic-signature-logo-20260828.png"
                         alt="7Z Magic"
                       >
 
