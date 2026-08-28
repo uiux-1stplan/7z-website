@@ -1,0 +1,605 @@
+/* =========================================================
+   7Z MAGIC — FOUNDERS GLOBAL ART-DIRECTION V17
+   Scope: .z7f17 only.
+
+   Inspired by the restraint of global design-studio team pages:
+   photography first, decisive typography, art-directed breakpoints,
+   and almost no decorative UI inside the hero.
+========================================================= */
+
+.z7f17 {
+  --z7f17-x: 0px;
+  --z7f17-y: 0px;
+  --z7f17-glow-x: 72%;
+  --z7f17-glow-y: 34%;
+
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+
+  min-height: 640px !important;
+  height: min(78svh, 760px) !important;
+  max-height: 760px !important;
+
+  padding: 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,.09) !important;
+
+  background: #030304 !important;
+}
+
+.z7f17.z7x-hero::before,
+.z7f17.z7x-hero::after {
+  display: none !important;
+  content: none !important;
+}
+
+.z7f17__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.z7f17__media--mobile {
+  display: none;
+}
+
+/* -------------------- DESKTOP GROUP PHOTO -------------------- */
+
+.z7f17__group {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: 61% 43%;
+
+  transform:
+    translate3d(var(--z7f17-x), var(--z7f17-y), 0)
+    scale(1.018);
+
+  transform-origin: 61% 42%;
+
+  filter:
+    saturate(.91)
+    contrast(1.045)
+    brightness(.82);
+
+  will-change: transform;
+}
+
+/* Dark editorial negative space for the statement. */
+.z7f17__media--desktop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(3,3,4,.99) 0%,
+      rgba(3,3,4,.94) 19%,
+      rgba(3,3,4,.76) 34%,
+      rgba(3,3,4,.38) 51%,
+      rgba(3,3,4,.08) 73%,
+      rgba(3,3,4,.03) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(3,3,4,.62) 0%,
+      rgba(3,3,4,.12) 22%,
+      rgba(3,3,4,.02) 54%,
+      rgba(3,3,4,.30) 100%
+    );
+}
+
+/* Filmic light, deliberately subtle. */
+.z7f17__atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at var(--z7f17-glow-x) var(--z7f17-glow-y),
+      rgba(255,255,255,.13) 0%,
+      rgba(255,255,255,.045) 12%,
+      rgba(218,187,103,.025) 24%,
+      transparent 43%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 34%,
+      rgba(255,255,255,.028) 47%,
+      transparent 61%
+    );
+
+  mix-blend-mode: screen;
+  opacity: .75;
+}
+
+/* -------------------- CONTENT -------------------- */
+
+.z7f17__inner {
+  position: relative;
+  z-index: 5;
+
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: clamp(30px, 5vw, 80px) !important;
+
+  min-height: 100% !important;
+
+  padding-top: clamp(112px, 12vh, 136px) !important;
+  padding-bottom: clamp(48px, 6.5vh, 74px) !important;
+
+  box-sizing: border-box !important;
+}
+
+.z7f17__copy {
+  width: min(48vw, 640px);
+  max-width: 640px;
+}
+
+.z7f17__eyebrow {
+  margin: 0 0 18px;
+
+  color: rgba(255,255,255,.68);
+
+  font-size: .68rem;
+  font-weight: 850;
+  letter-spacing: .29em;
+  text-transform: uppercase;
+}
+
+.z7f17__title {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: clamp(4.5rem, 7.15vw, 7.65rem);
+  font-weight: 900;
+  line-height: .82;
+  letter-spacing: -.071em;
+
+  text-wrap: balance;
+}
+
+.z7f17__title span {
+  display: block;
+}
+
+.z7f17__title span:last-child {
+  color: rgba(255,255,255,.38);
+}
+
+.z7f17__dek {
+  max-width: 34rem;
+  margin: 25px 0 0;
+
+  color: rgba(255,255,255,.70);
+
+  font-size: clamp(.95rem, 1.08vw, 1.08rem);
+  line-height: 1.65;
+}
+
+/* Founder details live like editorial folio notes, not cards. */
+.z7f17__names {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 28px;
+
+  width: min(38vw, 480px);
+  margin-bottom: 2px;
+}
+
+.z7f17__names > div {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  column-gap: 12px;
+  align-items: baseline;
+
+  padding-top: 13px;
+
+  border-top: 1px solid rgba(255,255,255,.24);
+}
+
+.z7f17__names span {
+  grid-row: 1 / span 2;
+
+  color: rgba(255,255,255,.38);
+
+  font-size: .56rem;
+  font-weight: 850;
+  letter-spacing: .15em;
+}
+
+.z7f17__names strong,
+.z7f17__names em {
+  min-width: 0;
+}
+
+.z7f17__names strong {
+  color: rgba(255,255,255,.91);
+
+  font-size: .72rem;
+  font-style: normal;
+  font-weight: 850;
+  letter-spacing: .02em;
+}
+
+.z7f17__names em {
+  margin-top: 4px;
+
+  color: rgba(255,255,255,.48);
+
+  font-size: .56rem;
+  font-style: normal;
+  font-weight: 650;
+  letter-spacing: .04em;
+}
+
+/* -------------------- TABLET -------------------- */
+
+@media (max-width: 1080px) and (min-width: 761px) {
+  .z7f17 {
+    min-height: 590px !important;
+    height: min(76svh, 690px) !important;
+  }
+
+  .z7f17__group {
+    object-position: 64% 43%;
+  }
+
+  .z7f17__copy {
+    width: min(54vw, 560px);
+  }
+
+  .z7f17__title {
+    font-size: clamp(3.9rem, 7.8vw, 6.2rem);
+  }
+
+  .z7f17__names {
+    width: min(34vw, 350px);
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+/* =========================================================
+   MOBILE ART DIRECTION
+   Do NOT force the horizontal group photograph into portrait.
+   Use the existing founder portraits as a deliberate diptych.
+========================================================= */
+
+@media (max-width: 760px) {
+  .z7f17 {
+    --z7f17-mobile-media-h: clamp(350px, 104vw, 430px);
+
+    min-height: clamp(700px, 184vw, 790px) !important;
+    height: auto !important;
+    max-height: none !important;
+
+    background:
+      linear-gradient(180deg, #09090a 0%, #030304 68%, #030304 100%) !important;
+  }
+
+  .z7f17__media--desktop {
+    display: none;
+  }
+
+  .z7f17__media--mobile {
+    top: 72px;
+    right: 0;
+    bottom: auto;
+    left: 0;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    height: var(--z7f17-mobile-media-h);
+
+    background: #060607;
+  }
+
+  .z7f17__portrait {
+    position: relative;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+
+    background: #0a0a0b;
+  }
+
+  .z7f17__portrait + .z7f17__portrait {
+    border-left: 1px solid rgba(255,255,255,.11);
+  }
+
+  .z7f17__portrait img {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
+
+    filter:
+      saturate(.88)
+      contrast(1.055)
+      brightness(.79);
+
+    transform: scale(1.012);
+  }
+
+  .z7f17__portrait--hasan img {
+    object-position: 50% 22%;
+  }
+
+  .z7f17__portrait--khaled img {
+    object-position: 50% 38%;
+  }
+
+  .z7f17__portrait::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(0,0,0,.04) 0%,
+        transparent 52%,
+        rgba(0,0,0,.24) 72%,
+        rgba(3,3,4,.88) 100%
+      );
+  }
+
+  .z7f17__portrait figcaption {
+    position: absolute;
+    right: 12px;
+    bottom: 15px;
+    left: 12px;
+    z-index: 2;
+
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    column-gap: 8px;
+  }
+
+  .z7f17__portrait figcaption span {
+    grid-row: 1 / span 2;
+
+    color: rgba(255,255,255,.42);
+
+    font-size: .48rem;
+    font-weight: 850;
+    letter-spacing: .12em;
+  }
+
+  .z7f17__portrait figcaption strong {
+    color: rgba(255,255,255,.92);
+
+    font-size: .64rem;
+    line-height: 1.1;
+  }
+
+  .z7f17__portrait figcaption em {
+    margin-top: 3px;
+
+    color: rgba(255,255,255,.50);
+
+    font-size: .48rem;
+    font-style: normal;
+  }
+
+  /* One continuous scene: the portraits dissolve into the typography. */
+  .z7f17__media--mobile::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -2px;
+    left: 0;
+    z-index: 4;
+
+    height: 42%;
+
+    background:
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(3,3,4,.13) 26%,
+        rgba(3,3,4,.68) 70%,
+        #030304 100%
+      );
+
+    pointer-events: none;
+  }
+
+  .z7f17__atmosphere {
+    opacity: .42;
+
+    background:
+      radial-gradient(
+        circle at 72% 28%,
+        rgba(255,255,255,.10),
+        transparent 30%
+      ),
+      linear-gradient(
+        116deg,
+        transparent 33%,
+        rgba(255,255,255,.025) 49%,
+        transparent 63%
+      );
+  }
+
+  .z7f17__inner {
+    display: flex !important;
+    align-items: flex-end !important;
+
+    min-height: inherit !important;
+
+    width: calc(100% - 34px) !important;
+
+    padding-top:
+      calc(
+        72px +
+        var(--z7f17-mobile-media-h) -
+        66px
+      ) !important;
+
+    padding-bottom: 38px !important;
+  }
+
+  .z7f17__copy {
+    position: relative;
+    z-index: 6;
+
+    width: 100%;
+    max-width: 100%;
+
+    padding-top: 54px;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(3,3,4,0) 0,
+        rgba(3,3,4,.46) 38px,
+        rgba(3,3,4,.93) 92px,
+        #030304 148px
+      );
+  }
+
+  .z7f17__eyebrow {
+    margin-bottom: 14px;
+
+    font-size: .63rem;
+    letter-spacing: .25em;
+  }
+
+  .z7f17__title {
+    font-size: clamp(3rem, 13.4vw, 4rem);
+    line-height: .86;
+    letter-spacing: -.061em;
+  }
+
+  .z7f17__dek {
+    max-width: 31rem;
+    margin-top: 19px;
+
+    font-size: .91rem;
+    line-height: 1.58;
+  }
+
+  .z7f17__names {
+    display: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .z7f17 {
+    --z7f17-mobile-media-h: 342px;
+
+    min-height: 675px !important;
+  }
+
+  .z7f17__inner {
+    width: calc(100% - 30px) !important;
+    padding-bottom: 34px !important;
+  }
+
+  .z7f17__title {
+    font-size: clamp(2.72rem, 13vw, 3.55rem);
+  }
+
+  .z7f17__dek {
+    font-size: .86rem;
+  }
+}
+
+/* Phone landscape gets a compact desktop-style composition. */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  .z7f17 {
+    min-height: 430px !important;
+    height: 100svh !important;
+    max-height: 500px !important;
+  }
+
+  .z7f17__media--mobile {
+    display: none;
+  }
+
+  .z7f17__media--desktop {
+    display: block;
+  }
+
+  .z7f17__group {
+    object-position: 65% 44%;
+  }
+
+  .z7f17__media--desktop::after {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(3,3,4,.98) 0%,
+        rgba(3,3,4,.88) 27%,
+        rgba(3,3,4,.38) 52%,
+        rgba(3,3,4,.06) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(3,3,4,.46) 0%,
+        transparent 34%,
+        rgba(3,3,4,.28) 100%
+      );
+  }
+
+  .z7f17__inner {
+    align-items: center !important;
+
+    width: calc(100% - 42px) !important;
+
+    padding-top: 74px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .z7f17__copy {
+    width: 43%;
+    max-width: 380px;
+    padding: 0;
+    background: none;
+  }
+
+  .z7f17__title {
+    font-size: clamp(2.3rem, 5.8vw, 3.4rem);
+  }
+
+  .z7f17__dek {
+    margin-top: 14px;
+    font-size: .78rem;
+  }
+
+  .z7f17__names {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7f17__group {
+    transform: scale(1.018) !important;
+  }
+
+  .z7f17__atmosphere {
+    transition: none !important;
+  }
+}
