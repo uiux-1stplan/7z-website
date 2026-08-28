@@ -410,22 +410,25 @@
 }
 
 /* END Z7_FOUNDERS_HERO_TONE_V12 */
-/* Z7_FOUNDERS_HERO_CINEMATIC_V15_START
+/* Z7_FOUNDERS_HERO_EDITORIAL_V16_START
    FOUNDERS HERO ONLY.
 
-   Design model:
-   - One continuous cinematic scene, never "image block + text block".
-   - A dark atmospheric full-bleed copy of the founders photo fills the hero.
-   - A sharp foreground copy carries the founders with protected face framing.
-   - Copy lives inside the same scene over controlled negative space / bottom fade.
-   - The existing V9 interactive sweep remains active.
+   Visual system:
+   - editorial typography
+   - photography-first composition
+   - atmospheric full-bleed plate
+   - sharp portrait layer with feathered edges
+   - no cards, no split-panel look, no detached mobile banner
+   - responsive focal treatment for desktop / tablet / mobile / landscape
 */
 
-/* =========================================================
-   GLOBAL HERO RESET FOR V15
-========================================================= */
+/* -----------------------------
+   SHARED CINEMATIC CANVAS
+----------------------------- */
 .z7-founders-photo-hero {
   --z7-photo-top-gap: 0px;
+  --z7mx: 72%;
+  --z7my: 36%;
 
   position: relative !important;
   isolation: isolate !important;
@@ -433,10 +436,20 @@
 
   padding: 0 !important;
 
-  background: #050505 !important;
+  border-bottom: 1px solid rgba(255,255,255,.09) !important;
+
+  background: #030304 !important;
 }
 
-/* The media layer becomes the atmospheric full-bleed scene. */
+/* Remove the generic decorative orb/grid from the base subpage hero.
+   The photo is the art direction now. */
+.z7-founders-photo-hero.z7x-hero::before,
+.z7-founders-photo-hero.z7x-hero::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Full-bleed atmospheric plate from the SAME approved founders photo. */
 .z7-founders-photo-hero > .z7-founders-hero-photo-layer {
   position: absolute !important;
   inset: 0 !important;
@@ -453,93 +466,132 @@
   background:
     linear-gradient(
       90deg,
-      rgba(5,5,5,.98) 0%,
-      rgba(5,5,5,.91) 24%,
-      rgba(5,5,5,.62) 47%,
-      rgba(5,5,5,.28) 100%
+      rgba(3,3,4,.99) 0%,
+      rgba(3,3,4,.95) 20%,
+      rgba(3,3,4,.74) 39%,
+      rgba(3,3,4,.34) 62%,
+      rgba(3,3,4,.08) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(5,5,5,.24) 0%,
-      rgba(5,5,5,.05) 42%,
-      rgba(5,5,5,.30) 100%
+      rgba(0,0,0,.26) 0%,
+      rgba(0,0,0,.04) 38%,
+      rgba(0,0,0,.18) 70%,
+      rgba(0,0,0,.52) 100%
     ),
     url("/media/founders/7z-founders-hero-20260828.jpeg")
-    center 28% / cover no-repeat !important;
+    58% 33% / cover no-repeat !important;
 }
 
-/* Existing motion/readability overlay, rebalanced for the new scene. */
+/* Clean glassless vignette / pointer light. */
 .z7-founders-photo-hero .z7-founders-hero-photo-layer::before {
+  content: "" !important;
+  display: block !important;
+
+  position: absolute !important;
+  inset: 0 !important;
+
   z-index: 3 !important;
+  pointer-events: none !important;
 
   background:
     radial-gradient(
       circle at var(--z7mx) var(--z7my),
-      rgba(255,255,255,.13) 0%,
-      rgba(255,255,255,.052) 12%,
-      rgba(216,182,90,.035) 24%,
+      rgba(255,255,255,.12) 0%,
+      rgba(255,255,255,.045) 12%,
+      rgba(214,181,92,.028) 23%,
       transparent 43%
-    ),
-    radial-gradient(
-      circle at 82% 19%,
-      rgba(255,255,255,.055),
-      transparent 28%
     ),
     linear-gradient(
       180deg,
-      rgba(0,0,0,.02) 0%,
-      transparent 48%,
-      rgba(0,0,0,.16) 100%
+      rgba(0,0,0,.04) 0%,
+      transparent 38%,
+      rgba(0,0,0,.12) 70%,
+      rgba(0,0,0,.34) 100%
     ) !important;
+
+  opacity: .95 !important;
 }
 
+/* Existing cinematic sweep becomes subtler and wider. */
 .z7-founders-photo-hero .z7-founders-hero-photo-layer::after {
+  content: "" !important;
+  display: block !important;
+
+  position: absolute !important;
+  top: -28% !important;
+  right: -16% !important;
+  bottom: -28% !important;
+  width: 94% !important;
+
   z-index: 4 !important;
-  top: -24% !important;
-  right: -14% !important;
-  bottom: -24% !important;
-  width: 88% !important;
+  pointer-events: none !important;
+
+  opacity: .10 !important;
+
+  background:
+    linear-gradient(
+      111deg,
+      transparent 17%,
+      rgba(255,255,255,.02) 32%,
+      rgba(255,255,255,.12) 48%,
+      rgba(213,181,92,.055) 54%,
+      rgba(255,255,255,.02) 61%,
+      transparent 76%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 108px,
+      rgba(255,255,255,.014) 109px,
+      transparent 110px
+    ) !important;
+
+  mix-blend-mode: screen !important;
+
+  animation: z7FoundersEditorialSweepV16 12s cubic-bezier(.42,0,.24,1) infinite alternate !important;
 }
 
-/* =========================================================
-   DESKTOP / LARGE TABLET
-========================================================= */
-@media (min-width: 761px) {
-  .z7-founders-photo-hero {
-    --z7-v15-header-clearance: clamp(74px, 5.6vw, 88px);
-    --z7-copy-width: min(30vw, 420px);
+@keyframes z7FoundersEditorialSweepV16 {
+  0%   { transform: translate3d(-8%,0,0); opacity:.065; }
+  48%  { opacity:.13; }
+  100% { transform: translate3d(9%,0,0); opacity:.09; }
+}
 
-    min-height: 490px !important;
-    height: min(58vh, 540px) !important;
-    max-height: 540px !important;
+/* -----------------------------
+   DESKTOP: FULL-BLEED EDITORIAL
+----------------------------- */
+@media (min-width: 901px) {
+  .z7-founders-photo-hero {
+    --z7-v16-header-safe: clamp(82px, 6.3vw, 96px);
+
+    min-height: 570px !important;
+    height: min(72svh, 680px) !important;
+    max-height: 680px !important;
   }
 
   /*
-    Sharp foreground photo.
-    The atmospheric background remains behind the header,
-    but the sharp faces begin safely below it.
+    The sharp photo fills the hero, not a right-side rectangle.
+    Header-safe framing is achieved through focal position + top feather,
+    which is how editorial / fashion sites avoid the "image pushed down" look.
   */
   .z7-founders-photo-hero .z7-founders-hero-photo__image {
     position: absolute !important;
+    inset: 0 !important;
 
-    top: var(--z7-v15-header-clearance) !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    left: auto !important;
-
-    width: 72% !important;
-    height: auto !important;
+    width: 100% !important;
+    height: 100% !important;
 
     object-fit: cover !important;
-    object-position: 50% 4% !important;
+    object-position: 59% 36% !important;
 
-    transform: translate3d(0,0,0) scale(1.001) !important;
-    transform-origin: 50% 0% !important;
+    transform: translate3d(0,0,0) scale(1.004) !important;
+    transform-origin: 58% 34% !important;
 
     filter:
-      saturate(.94)
-      contrast(1.035)
-      brightness(.90) !important;
+      saturate(.92)
+      contrast(1.045)
+      brightness(.87) !important;
 
     z-index: 2 !important;
 
@@ -547,9 +599,9 @@
       linear-gradient(
         90deg,
         transparent 0%,
-        rgba(0,0,0,.18) 4%,
-        rgba(0,0,0,.72) 11%,
-        #000 18%,
+        rgba(0,0,0,.16) 14%,
+        rgba(0,0,0,.72) 31%,
+        #000 45%,
         #000 100%
       ) !important;
 
@@ -557,150 +609,237 @@
       linear-gradient(
         90deg,
         transparent 0%,
-        rgba(0,0,0,.18) 4%,
-        rgba(0,0,0,.72) 11%,
-        #000 18%,
+        rgba(0,0,0,.16) 14%,
+        rgba(0,0,0,.72) 31%,
+        #000 45%,
         #000 100%
       ) !important;
   }
 
   .z7-founders-photo-hero .z7x-hero__layout {
     position: relative !important;
-    z-index: 7 !important;
+    z-index: 8 !important;
+
+    display: flex !important;
+    align-items: flex-end !important;
 
     min-height: 100% !important;
 
-    display: grid !important;
-    grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr) !important;
-    align-items: center !important;
+    width: min(1280px, calc(100% - clamp(46px, 7vw, 108px))) !important;
 
-    width: min(1280px, calc(100% - clamp(40px, 7vw, 104px))) !important;
+    padding-top: var(--z7-v16-header-safe) !important;
+    padding-bottom: clamp(46px, 6vh, 72px) !important;
 
-    padding-top: var(--z7-v15-header-clearance) !important;
-    padding-bottom: 28px !important;
     box-sizing: border-box !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean {
-    width: var(--z7-copy-width) !important;
-    max-width: var(--z7-copy-width) !important;
+    width: min(44vw, 590px) !important;
+    max-width: min(44vw, 590px) !important;
 
     margin: 0 !important;
     padding: 0 !important;
 
-    transform: translateY(4px) !important;
+    transform: none !important;
 
     background: transparent !important;
   }
 
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean
+  :is([class*="kicker" i],[class*="eyebrow" i],small) {
+    margin-bottom: .95rem !important;
+    color: rgba(255,255,255,.72) !important;
+    font-size: .70rem !important;
+    letter-spacing: .28em !important;
+  }
+
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h2 {
-    font-size: clamp(3rem, 4.2vw, 4.45rem) !important;
-    line-height: .90 !important;
-    letter-spacing: -.052em !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+
+    font-size: clamp(4.4rem, 6.7vw, 7rem) !important;
+    line-height: .84 !important;
+    letter-spacing: -.066em !important;
+
+    text-wrap: balance !important;
+    text-shadow: 0 10px 34px rgba(0,0,0,.28) !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean p {
-    max-width: 25rem !important;
-    color: rgba(255,255,255,.72) !important;
+    max-width: 31rem !important;
+
+    margin-top: 1.35rem !important;
+
+    color: rgba(255,255,255,.70) !important;
+    font-size: clamp(.94rem, 1.05vw, 1.05rem) !important;
+    line-height: 1.62 !important;
+  }
+
+  /* Editorial founder index — decorative, no layout impact. */
+  .z7-founders-photo-hero .z7x-hero__layout::after {
+    content: "01 / HASAN RAYAN     02 / KHALED BUSHNAQ" !important;
+
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 26px !important;
+
+    z-index: 9 !important;
+
+    color: rgba(255,255,255,.48) !important;
+    font-size: .58rem !important;
+    font-weight: 800 !important;
+    letter-spacing: .17em !important;
+    white-space: pre !important;
+
+    text-shadow: 0 2px 12px rgba(0,0,0,.55) !important;
   }
 }
 
-@media (min-width: 1180px) {
+/* -----------------------------
+   TABLET: SAME LANGUAGE, TIGHTER
+----------------------------- */
+@media (min-width: 761px) and (max-width: 900px) {
+  .z7-founders-photo-hero {
+    min-height: 560px !important;
+    height: min(72svh, 620px) !important;
+    max-height: 620px !important;
+  }
+
   .z7-founders-photo-hero .z7-founders-hero-photo__image {
-    width: 70% !important;
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+    object-position: 63% 36% !important;
+
+    transform: translate3d(0,0,0) scale(1.004) !important;
+
+    filter:
+      saturate(.92)
+      contrast(1.04)
+      brightness(.84) !important;
+
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.3) 20%, #000 43%, #000 100%) !important;
+    mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.3) 20%, #000 43%, #000 100%) !important;
+  }
+
+  .z7-founders-photo-hero .z7x-hero__layout {
+    position: relative !important;
+    z-index: 8 !important;
+
+    display: flex !important;
+    align-items: flex-end !important;
+
+    min-height: 100% !important;
+
+    padding-top: 90px !important;
+    padding-bottom: 50px !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean {
+    width: min(56vw, 480px) !important;
+    max-width: min(56vw, 480px) !important;
+
+    transform: none !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean h2 {
+    font-size: clamp(3.7rem, 8.5vw, 5.3rem) !important;
   }
 }
 
-/* =========================================================
-   MOBILE — ONE CINEMATIC SCENE
-========================================================= */
+/* -----------------------------
+   MOBILE: CINEMATIC POSTER, NOT BANNER
+----------------------------- */
 @media (max-width: 760px) {
   .z7-founders-photo-hero {
-    --z7-v15-header-clearance: 74px;
-    --z7-v15-foreground-height: clamp(280px, 76vw, 332px);
+    --z7-v16-mobile-header: 76px;
+    --z7-v16-photo-y: clamp(72px, 18vw, 86px);
+    --z7-v16-photo-h: clamp(305px, 82vw, 360px);
 
-    min-height: clamp(630px, 168vw, 710px) !important;
+    min-height: clamp(690px, 176vw, 790px) !important;
     height: auto !important;
     max-height: none !important;
-
-    /*
-      Same photo fills the whole hero as a dark atmospheric plate.
-      This removes the detached "banner" feeling.
-    */
-    background: #050505 !important;
   }
 
+  /*
+    Full hero remains photographic, so there is no black "second section".
+    Background is blurred/dark ambient image; sharp photo floats into it
+    with feathered edges.
+  */
   .z7-founders-photo-hero > .z7-founders-hero-photo-layer {
     background:
       linear-gradient(
         180deg,
-        rgba(5,5,5,.08) 0%,
-        rgba(5,5,5,.06) 33%,
-        rgba(5,5,5,.26) 52%,
-        rgba(5,5,5,.80) 69%,
-        #050505 84%,
-        #050505 100%
+        rgba(3,3,4,.24) 0%,
+        rgba(3,3,4,.08) 30%,
+        rgba(3,3,4,.26) 48%,
+        rgba(3,3,4,.80) 68%,
+        #030304 86%,
+        #030304 100%
       ),
       linear-gradient(
         90deg,
-        rgba(5,5,5,.16) 0%,
-        rgba(5,5,5,.03) 50%,
-        rgba(5,5,5,.18) 100%
+        rgba(3,3,4,.26) 0%,
+        rgba(3,3,4,.04) 50%,
+        rgba(3,3,4,.24) 100%
       ),
       url("/media/founders/7z-founders-hero-20260828.jpeg")
-      58% 24% / cover no-repeat !important;
+      58% 25% / cover no-repeat !important;
+
+    filter: none !important;
   }
 
-  /*
-    Sharp foreground image floats inside the same scene.
-    Width slightly exceeds viewport so the image feels immersive,
-    while object-fit:contain protects BOTH founders.
-  */
   .z7-founders-photo-hero .z7-founders-hero-photo__image {
     position: absolute !important;
 
-    top: var(--z7-v15-header-clearance) !important;
-    left: -7% !important;
+    top: var(--z7-v16-photo-y) !important;
+    left: 50% !important;
     right: auto !important;
     bottom: auto !important;
 
-    width: 114% !important;
-    height: var(--z7-v15-foreground-height) !important;
+    width: 118% !important;
+    height: var(--z7-v16-photo-h) !important;
 
     object-fit: contain !important;
     object-position: 50% 50% !important;
 
-    transform: none !important;
+    transform: translate3d(-50%,0,0) scale(1.002) !important;
+    transform-origin: 50% 50% !important;
 
     filter:
-      saturate(.95)
-      contrast(1.035)
-      brightness(.90) !important;
+      saturate(.94)
+      contrast(1.04)
+      brightness(.89) !important;
 
     z-index: 2 !important;
 
-    /*
-      Fade only the table/lower edge into the copy area.
-      Faces remain untouched.
-    */
+    /* Feather ALL edges so it becomes part of the ambient scene. */
     -webkit-mask-image:
-      linear-gradient(
-        180deg,
+      radial-gradient(
+        ellipse 72% 78% at 50% 46%,
         #000 0%,
-        #000 76%,
-        rgba(0,0,0,.84) 84%,
-        rgba(0,0,0,.28) 94%,
+        #000 69%,
+        rgba(0,0,0,.88) 78%,
+        rgba(0,0,0,.34) 90%,
         transparent 100%
       ) !important;
 
     mask-image:
-      linear-gradient(
-        180deg,
+      radial-gradient(
+        ellipse 72% 78% at 50% 46%,
         #000 0%,
-        #000 76%,
-        rgba(0,0,0,.84) 84%,
-        rgba(0,0,0,.28) 94%,
+        #000 69%,
+        rgba(0,0,0,.88) 78%,
+        rgba(0,0,0,.34) 90%,
         transparent 100%
       ) !important;
   }
@@ -708,36 +847,32 @@
   .z7-founders-photo-hero .z7-founders-hero-photo-layer::before {
     background:
       radial-gradient(
-        circle at var(--z7mx) var(--z7my),
-        rgba(255,255,255,.075),
-        transparent 38%
+        circle at 66% 31%,
+        rgba(255,255,255,.07),
+        transparent 33%
       ),
       linear-gradient(
         180deg,
-        rgba(5,5,5,.01) 0%,
-        rgba(5,5,5,.02) 42%,
-        rgba(5,5,5,.20) 56%,
-        rgba(5,5,5,.70) 72%,
-        rgba(5,5,5,.96) 84%,
-        #050505 100%
+        rgba(3,3,4,.02) 0%,
+        rgba(3,3,4,.03) 40%,
+        rgba(3,3,4,.20) 55%,
+        rgba(3,3,4,.68) 70%,
+        rgba(3,3,4,.94) 82%,
+        #030304 100%
       ) !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-photo-layer::after {
-    top: -12% !important;
-    right: -24% !important;
-    bottom: 32% !important;
-    width: 142% !important;
-    opacity: .10 !important;
+    top: -8% !important;
+    right: -35% !important;
+    bottom: 38% !important;
+    width: 166% !important;
+    opacity: .075 !important;
   }
 
-  /*
-    Copy is anchored to the bottom of the SAME hero.
-    It overlaps only the faded lower edge of the photograph.
-  */
   .z7-founders-photo-hero .z7x-hero__layout {
     position: relative !important;
-    z-index: 7 !important;
+    z-index: 8 !important;
 
     display: flex !important;
     align-items: flex-end !important;
@@ -749,9 +884,9 @@
 
     padding-top:
       calc(
-        var(--z7-v15-header-clearance) +
-        var(--z7-v15-foreground-height) -
-        40px
+        var(--z7-v16-photo-y) +
+        var(--z7-v16-photo-h) -
+        90px
       ) !important;
 
     padding-bottom: 42px !important;
@@ -761,124 +896,164 @@
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean {
     position: relative !important;
-    z-index: 8 !important;
+    z-index: 9 !important;
 
     width: 100% !important;
     max-width: 100% !important;
 
     margin: 0 !important;
-    padding: 28px 0 0 !important;
+    padding: 46px 0 0 !important;
 
     transform: none !important;
 
+    /*
+      Transparent-to-dark feather, not a rectangular text block.
+    */
     background:
       linear-gradient(
         180deg,
-        rgba(5,5,5,0) 0px,
-        rgba(5,5,5,.62) 34px,
-        rgba(5,5,5,.94) 82px,
-        #050505 132px
+        rgba(3,3,4,0) 0px,
+        rgba(3,3,4,.28) 26px,
+        rgba(3,3,4,.76) 70px,
+        rgba(3,3,4,.97) 122px,
+        #030304 170px
       ) !important;
+  }
+
+  .z7-founders-photo-hero .z7-founders-hero-copy-clean
+  :is([class*="kicker" i],[class*="eyebrow" i],small) {
+    margin-bottom: .82rem !important;
+
+    color: rgba(255,255,255,.68) !important;
+
+    font-size: .66rem !important;
+    letter-spacing: .25em !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h2 {
     max-width: 100% !important;
 
-    font-size: clamp(2.55rem, 12vw, 3.55rem) !important;
-    line-height: .91 !important;
-    letter-spacing: -.052em !important;
+    margin: 0 !important;
 
-    margin-bottom: .72rem !important;
+    font-size: clamp(2.85rem, 13.4vw, 4.05rem) !important;
+    line-height: .87 !important;
+    letter-spacing: -.058em !important;
+
+    text-wrap: balance !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean p {
     max-width: 31rem !important;
 
-    margin-top: .82rem !important;
+    margin-top: 1rem !important;
+
+    color: rgba(255,255,255,.70) !important;
 
     font-size: .92rem !important;
-    line-height: 1.58 !important;
-
-    color: rgba(255,255,255,.72) !important;
+    line-height: 1.6 !important;
   }
 
-  .z7-founders-photo-hero .z7-founders-hero-copy-clean
-  :is([class*="kicker" i],[class*="eyebrow" i],small) {
-    margin-bottom: .78rem !important;
+  /* Tiny editorial index in negative space below copy. */
+  .z7-founders-photo-hero .z7x-hero__layout::after {
+    content: "01 / HR     02 / KB" !important;
+
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 18px !important;
+
+    color: rgba(255,255,255,.34) !important;
+
+    font-size: .52rem !important;
+    font-weight: 800 !important;
+    letter-spacing: .18em !important;
   }
 }
 
 /* Small phones */
 @media (max-width: 390px) {
   .z7-founders-photo-hero {
-    --z7-v15-header-clearance: 70px;
-    --z7-v15-foreground-height: 266px;
+    --z7-v16-photo-y: 70px;
+    --z7-v16-photo-h: 292px;
 
-    min-height: 610px !important;
+    min-height: 660px !important;
   }
 
   .z7-founders-photo-hero .z7x-hero__layout {
     width: calc(100% - 30px) !important;
-    padding-bottom: 36px !important;
+    padding-bottom: 38px !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h2 {
-    font-size: clamp(2.3rem, 11.6vw, 3.08rem) !important;
+    font-size: clamp(2.55rem, 12.8vw, 3.45rem) !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean p {
-    font-size: .88rem !important;
+    font-size: .87rem !important;
   }
 }
 
-/* Wide / short phones in landscape */
+/* Landscape phone: editorial split inside ONE scene */
 @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
   .z7-founders-photo-hero {
-    --z7-v15-header-clearance: 64px;
-    min-height: 440px !important;
+    min-height: 430px !important;
+    height: 100svh !important;
+    max-height: 500px !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-photo__image {
-    top: var(--z7-v15-header-clearance) !important;
+    top: 64px !important;
     left: auto !important;
-    right: 0 !important;
+    right: -3% !important;
 
-    width: 62% !important;
-    height: calc(100% - var(--z7-v15-header-clearance)) !important;
+    width: 64% !important;
+    height: calc(100% - 64px) !important;
 
     object-fit: cover !important;
-    object-position: 50% 8% !important;
+    object-position: 50% 12% !important;
+
+    transform: none !important;
 
     -webkit-mask-image:
-      linear-gradient(90deg, transparent 0%, #000 18%, #000 100%) !important;
-
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.65) 14%, #000 27%, #000 100%) !important;
     mask-image:
-      linear-gradient(90deg, transparent 0%, #000 18%, #000 100%) !important;
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.65) 14%, #000 27%, #000 100%) !important;
   }
 
   .z7-founders-photo-hero .z7x-hero__layout {
     display: flex !important;
     align-items: center !important;
 
-    min-height: 440px !important;
+    min-height: 100% !important;
 
-    padding-top: var(--z7-v15-header-clearance) !important;
+    padding-top: 72px !important;
     padding-bottom: 20px !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean {
-    width: 40% !important;
-    max-width: 360px !important;
+    width: 43% !important;
+    max-width: 380px !important;
+
     padding: 0 !important;
     background: transparent !important;
   }
 
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h1,
   .z7-founders-photo-hero .z7-founders-hero-copy-clean h2 {
-    font-size: clamp(2.15rem, 5.5vw, 3.1rem) !important;
+    font-size: clamp(2.2rem, 5.6vw, 3.25rem) !important;
+  }
+
+  .z7-founders-photo-hero .z7x-hero__layout::after {
+    display: none !important;
   }
 }
 
-/* Z7_FOUNDERS_HERO_CINEMATIC_V15_END */
+@media (prefers-reduced-motion: reduce) {
+  .z7-founders-photo-hero .z7-founders-hero-photo-layer::after {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Z7_FOUNDERS_HERO_EDITORIAL_V16_END */
