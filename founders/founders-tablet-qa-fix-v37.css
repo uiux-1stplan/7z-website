@@ -1,9 +1,60 @@
-/* 7Z Magic QA hotfix V37 - FOUNDERS ONLY */
+/* 7Z Magic FOUNDERS landscape tablet root fix. */
 @media (min-width: 901px) and (max-width: 1100px) and (orientation: landscape) {
-  .z7f20__visual,
+  .z7f20__visual {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    top: 68px !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+    width: 58vw !important;
+    height: auto !important;
+    overflow: visible !important;
+    z-index: 6 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
   .z7f20__portrait {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+    width: auto !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: 100% 100% !important;
+    z-index: 2 !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+
+  .z7f20__visual::after {
+    display: block !important;
+    opacity: 1 !important;
+    background:
+      linear-gradient(
+        90deg,
+        #020203 0%,
+        rgba(2,2,3,.90) 8%,
+        rgba(2,2,3,.52) 18%,
+        rgba(2,2,3,.16) 30%,
+        transparent 44%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,.05) 0%,
+        transparent 60%,
+        rgba(2,2,3,.58) 100%
+      ) !important;
   }
 }

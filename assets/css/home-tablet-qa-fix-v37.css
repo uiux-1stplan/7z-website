@@ -1,9 +1,33 @@
-/* 7Z Magic QA hotfix V37 - HOME ONLY */
+/* 7Z Magic HOME tablet root fix. Scope: 761px to 1100px only. */
 @media (min-width: 761px) and (max-width: 1100px) {
   .hero-title,
   .hero-copy {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+  }
+
+  .hero-title {
+    width: min(86vw, 780px) !important;
+    max-width: 780px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-size: clamp(2.8rem, 4.8vw, 4.2rem) !important;
+    line-height: .93 !important;
+    letter-spacing: -.035em !important;
+    text-wrap: balance;
+  }
+
+  .hero-copy {
+    width: min(76vw, 640px) !important;
+    max-width: 640px !important;
+    margin: clamp(14px, 2vh, 20px) auto 0 !important;
+    font-size: clamp(.94rem, 1.25vw, 1.06rem) !important;
+    line-height: 1.55 !important;
+    text-wrap: balance;
+  }
+
+  #loader {
+    transition: opacity .20s ease, visibility .20s ease !important;
   }
 }
