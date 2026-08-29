@@ -237,7 +237,7 @@
 
     if (!logoImg) return;
 
-    logoImg.src = "/media/main_logo/7ZMagic-signature-logo-20260828.png";
+    logoImg.src = "/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source";
     logoImg.classList.add("z7-clean-header-logo__img");
 
     let node = logoImg.parentElement;
@@ -275,7 +275,7 @@
 
     if (!logoImg) return;
 
-    logoImg.src = "/media/main_logo/7ZMagic-signature-logo-20260828.png";
+    logoImg.src = "/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source";
     logoImg.classList.add("z7-arabic-header-logo__img");
 
     let node = logoImg.parentElement;

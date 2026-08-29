@@ -268,7 +268,7 @@
 
                     <div class="z7-admin-footer-brand">
                       <img
-                        src="/media/main_logo/7ZMagic-signature-logo-20260828.png"
+                        src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source"
                         alt="7Z Magic"
                       >
 
