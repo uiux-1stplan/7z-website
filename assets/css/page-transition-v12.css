@@ -1,0 +1,237 @@
+/* 7Z Magic — Route Transition V12
+   Frameless logo, lighter mobile motion, no square card.
+*/
+html.z7-route-pending,
+html.z7-route-running {
+  background: #030303;
+}
+
+html.z7-route-running,
+html.z7-route-running body {
+  overflow: hidden !important;
+}
+
+.z7-route-transition {
+  --z7-route-ease: cubic-bezier(.76,0,.24,1);
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  color: #fff;
+  background: transparent;
+  isolation: isolate;
+  transition: opacity .1s linear, visibility .1s linear;
+}
+
+.z7-route-transition.is-active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.z7-route-transition__panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(50% + 2px);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.025), transparent 42%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.016) 0 1px, transparent 1px 56px),
+    #030303;
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform .64s var(--z7-route-ease);
+}
+
+.z7-route-transition__panel--left {
+  left: 0;
+  transform: translate3d(-102%,0,0);
+}
+
+.z7-route-transition__panel--right {
+  right: 0;
+  transform: translate3d(102%,0,0);
+}
+
+.z7-route-transition.is-covering .z7-route-transition__panel,
+.z7-route-transition.is-covered .z7-route-transition__panel {
+  transform: translate3d(0,0,0);
+}
+
+.z7-route-transition.is-revealing .z7-route-transition__panel--left {
+  transform: translate3d(-102%,0,0);
+}
+
+.z7-route-transition.is-revealing .z7-route-transition__panel--right {
+  transform: translate3d(102%,0,0);
+}
+
+.z7-route-transition__stage {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  width: min(84vw, 430px);
+  place-items: center;
+  gap: 14px;
+  opacity: 0;
+  transform: translate3d(0,10px,0) scale(.94);
+  filter: blur(8px);
+  transition:
+    opacity .24s ease,
+    transform .46s var(--z7-route-ease),
+    filter .34s ease;
+}
+
+.z7-route-transition.is-covering .z7-route-transition__stage,
+.z7-route-transition.is-covered .z7-route-transition__stage {
+  opacity: 1;
+  transform: translate3d(0,0,0) scale(1);
+  filter: blur(0);
+  transition-delay: .14s;
+}
+
+.z7-route-transition.is-revealing .z7-route-transition__stage {
+  opacity: 0;
+  transform: translate3d(0,-8px,0) scale(1.035);
+  filter: blur(7px);
+  transition-delay: 0s;
+}
+
+.z7-route-transition__eyebrow,
+.z7-route-transition__micro {
+  margin: 0;
+  color: rgba(255,255,255,.42);
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .28em;
+  text-indent: .28em;
+  text-transform: uppercase;
+}
+
+.z7-route-transition__mark {
+  position: relative;
+  display: grid;
+  width: 104px;
+  height: 78px;
+  place-items: center;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.z7-route-transition__mark::before,
+.z7-route-transition__mark::after {
+  display: none;
+  content: none;
+}
+
+.z7-route-transition__mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: none;
+  transform: translateZ(0);
+}
+
+.z7-route-transition__line {
+  position: relative;
+  width: min(64vw, 250px);
+  height: 1px;
+  overflow: hidden;
+  background: rgba(255,255,255,.12);
+}
+
+.z7-route-transition__line::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.92), transparent);
+  transform: translateX(-105%);
+}
+
+.z7-route-transition.is-covering .z7-route-transition__line::after,
+.z7-route-transition.is-covered .z7-route-transition__line::after {
+  animation: z7RouteLineV12 .62s .1s var(--z7-route-ease) both;
+}
+
+.z7-route-transition__label {
+  min-height: 1.2em;
+  margin: 0;
+  color: rgba(255,255,255,.8);
+  font-size: clamp(.66rem,1vw,.76rem);
+  font-weight: 900;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+@keyframes z7RouteLineV12 {
+  0% { transform: translateX(-105%); }
+  52% { transform: translateX(0); }
+  100% { transform: translateX(105%); }
+}
+
+@media (max-width: 680px), (hover: none), (pointer: coarse) {
+  .z7-route-transition__panel {
+    transition-duration: .48s;
+  }
+
+  .z7-route-transition__stage {
+    width: min(86vw, 330px);
+    gap: 11px;
+    transform: translate3d(0,8px,0) scale(.96);
+    filter: blur(5px);
+  }
+
+  .z7-route-transition__mark {
+    width: 82px;
+    height: 60px;
+  }
+
+  .z7-route-transition__line {
+    width: min(58vw, 210px);
+  }
+
+  .z7-route-transition__eyebrow,
+  .z7-route-transition__micro {
+    font-size: .52rem;
+    letter-spacing: .22em;
+    text-indent: .22em;
+  }
+
+  .z7-route-transition__label {
+    max-width: 82vw;
+    font-size: .64rem;
+    letter-spacing: .22em;
+    text-indent: .22em;
+  }
+
+  .z7-route-transition.is-covering .z7-route-transition__stage,
+  .z7-route-transition.is-covered .z7-route-transition__stage {
+    transition-delay: .08s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7-route-transition__panel,
+  .z7-route-transition__stage {
+    transition-duration: .16s !important;
+    transition-delay: 0s !important;
+  }
+
+  .z7-route-transition__line::after {
+    animation: none !important;
+  }
+}
