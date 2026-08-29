@@ -4479,7 +4479,7 @@ img[src*="7ZMagic-official-logo-20260822.png"] {
   display: inline-block !important;
   opacity: 1 !important;
   visibility: visible !important;
-  background-image: url("/media/main_logo/7ZMagic-official-logo-20260822.png") !important;
+  background-image: url("/media/main_logo/7ZMagic-signature-logo-20260828.png") !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
@@ -4685,181 +4685,414 @@ header img.logo-mask,
 }
 
 /* End 7Z full header logo contained */
+/* Z7_FRAMELESS_LOGO_V22_2_START
+   Brand rule: the 7Z Magic artwork floats by itself.
+   No box. No border. No card. No fake background. No clipping.
+*/
 
-/* =========================================================
-   Z7 HEADER LOGO — FINAL CORRECT VERSION
-   Logo stays INSIDE header.
-   No independent box behind logo.
-   ========================================================= */
+/* The actual new logo artwork */
+img[src*="7ZMagic-signature-logo-20260828.png"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
 
-.site-header {
-  position: fixed !important;
+  object-fit: contain !important;
 
-  /* restore the approved full header capsule */
-  border: 1px solid rgba(255,255,255,.14) !important;
-  border-radius: 999px !important;
+  /*
+    The supplied artwork has a black canvas.
+    Screen blending makes that black canvas visually disappear
+    against the site's dark environments while keeping the white mark.
+  */
+  mix-blend-mode: screen !important;
+}
 
-  background: rgba(3,4,6,.64) !important;
+/* ----------------------------------------------------------
+   HEADER BRAND
+   Keep the floating header itself exactly as-is.
+   Remove only the little square/card around the logo.
+---------------------------------------------------------- */
+.brand {
+  width: 76px !important;
+  height: 42px !important;
 
-  box-shadow:
-    0 18px 70px rgba(0,0,0,.24) !important;
+  overflow: visible !important;
 
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.brand img {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: contain !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  transform: none !important;
+}
+
+/* ----------------------------------------------------------
+   HOME PRELOADER
+   Logo floats above the progress bar. No tile/card.
+---------------------------------------------------------- */
+.loader__logo,
+.loader--desktop-fast .loader__logo {
+  width: clamp(132px, 11vw, 188px) !important;
+  height: auto !important;
+
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
 
   overflow: visible !important;
 }
 
-/* kill the fake cutout layer completely */
-.site-header::before {
+/* Retain subtle motion but never recreate a framed card. */
+.loader--desktop-fast .loader__logo {
+  filter: drop-shadow(0 0 30px rgba(255,255,255,.12)) !important;
+}
+
+/* ----------------------------------------------------------
+   PAGE / ROUTE TRANSITION
+   Remove the square tile, orbit ring and scan-card effect.
+   Keep only the clean logo + transition line.
+---------------------------------------------------------- */
+.z7-route-transition__mark {
+  width: clamp(118px, 11vw, 164px) !important;
+  max-width: 38vw !important;
+  height: auto !important;
+
+  aspect-ratio: auto !important;
+
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  transform: none !important;
+}
+
+.z7-route-transition__mark::before,
+.z7-route-transition__mark::after {
   display: none !important;
   content: none !important;
 }
 
-/* logo remains a normal item INSIDE the header grid */
-.site-header .brand {
-  position: relative !important;
-  z-index: 2 !important;
+.z7-route-transition__mark img {
+  width: 100% !important;
+  height: auto !important;
 
-  display: grid !important;
-  place-items: center !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
 
-  width: 46px !important;
-  height: 46px !important;
-
-  flex: 0 0 46px !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
-
-  /* THIS is the box we do not want */
   border: 0 !important;
-  outline: 0 !important;
   border-radius: 0 !important;
 
   background: transparent !important;
-
   box-shadow: none !important;
-  filter: none !important;
 
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+  transform: none !important;
+
+  mix-blend-mode: screen !important;
+}
+
+/* Critical inline route-transition CSS also used overflow:hidden / cover.
+   These important rules intentionally override it. */
+
+/* ----------------------------------------------------------
+   HOME HERO LOGO
+---------------------------------------------------------- */
+.hero-logo {
+  width: clamp(128px, 11vw, 178px) !important;
+  height: auto !important;
+
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  mix-blend-mode: screen !important;
+}
+
+/* ----------------------------------------------------------
+   ABOUT / STUDIO IDENTITY
+   Remove the large "Studio Profile" card completely.
+   Leave the new logo floating in the existing composition.
+---------------------------------------------------------- */
+.z7x-emblem {
+  width: min(100%, 420px) !important;
+  height: auto !important;
+
+  aspect-ratio: auto !important;
+
+  margin-left: auto !important;
 
   overflow: visible !important;
 
-  transform: none;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  transform: none !important;
 }
 
-/* no decorative layer behind logo */
+.z7x-emblem::before,
+.z7x-emblem::after {
+  display: none !important;
+  content: none !important;
+}
+
+.z7x-emblem img {
+  position: relative !important;
+
+  width: 100% !important;
+  height: auto !important;
+
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+
+  opacity: .92 !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  filter: none !important;
+  transform: none !important;
+
+  mix-blend-mode: screen !important;
+}
+
+/* These elements existed only to make the logo look like a framed card. */
+.z7x-emblem__orbit,
+.z7x-emblem__meta {
+  display: none !important;
+}
+
+/* ----------------------------------------------------------
+   FOOTER + ANY OTHER SEMANTIC LOGO WRAPPER
+   Do not change layout/padding; just kill visual framing.
+---------------------------------------------------------- */
+:where(
+  .footer__brand,
+  [class*="logo"],
+  [class*="brand"],
+  [class*="mark"],
+  [class*="emblem"]
+):has(> img[src*="7ZMagic-signature-logo-20260828.png"]) {
+  border-color: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.footer__brand img[src*="7ZMagic-signature-logo-20260828.png"] {
+  object-fit: contain !important;
+  mix-blend-mode: screen !important;
+}
+
+/* ----------------------------------------------------------
+   MOBILE
+---------------------------------------------------------- */
+@media (max-width: 760px) {
+  .brand {
+    width: 62px !important;
+    height: 36px !important;
+  }
+
+  .loader__logo,
+  .loader--desktop-fast .loader__logo {
+    width: clamp(118px, 34vw, 154px) !important;
+  }
+
+  .z7-route-transition__mark {
+    width: clamp(108px, 32vw, 142px) !important;
+    max-width: 42vw !important;
+  }
+
+  .hero-logo {
+    width: clamp(116px, 31vw, 148px) !important;
+  }
+
+  .z7x-emblem {
+    width: min(76vw, 330px) !important;
+    margin-inline: auto !important;
+  }
+}
+
+/* Z7_FRAMELESS_LOGO_V22_2_END */
+/* Z7_HEADER_LOGO_DIRECT_V22_5_START
+   Header logo source of truth = the actual IMG itself.
+   No pseudo-elements. No hidden image. No visual card.
+*/
+
+.site-header .brand {
+  position: relative !important;
+
+  width: 76px !important;
+  height: 42px !important;
+
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
 .site-header .brand::before,
 .site-header .brand::after {
   display: none !important;
   content: none !important;
 }
 
-/* full logo, no cropping */
+.site-header .brand > img,
 .site-header .brand img {
   display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 
-  width: 46px !important;
-  height: 46px !important;
+  width: 100% !important;
+  height: 100% !important;
 
-  max-width: 46px !important;
-  max-height: 46px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
 
   object-fit: contain !important;
   object-position: center !important;
 
-  margin: 0 !important;
-  padding: 0 !important;
-
   border: 0 !important;
-  outline: 0 !important;
   border-radius: 0 !important;
 
+  outline: 0 !important;
   background: transparent !important;
-
   box-shadow: none !important;
-  filter: none !important;
 
-  opacity: 1 !important;
+  transform: none !important;
+
+  /* Uploaded artwork has a black canvas; screen removes black on dark header. */
+  mix-blend-mode: screen !important;
 }
 
-/* =========================================================
-   END Z7 HEADER LOGO — FINAL CORRECT VERSION
-   ========================================================= */
-/* Z7 HEADER LOGO SIZE — FINAL 54PX */
+@media (max-width: 980px) {
+  .site-header .brand {
+    width: 68px !important;
+    height: 39px !important;
+  }
+}
 
-/*
-  Bigger logo while keeping almost the exact
-  approved header height.
+@media (max-width: 760px) {
+  .site-header .brand {
+    width: 62px !important;
+    height: 36px !important;
+  }
+}
+
+/* Z7_HEADER_LOGO_DIRECT_V22_5_END */
+/* Z7_FINAL_HEADER_LOGO_V22_7_START
+   FINAL HEADER LOGO RULE.
+   Scope is intentionally ONLY:
+   header.site-header > a.brand > img
+
+   No pseudo-logo.
+   No hidden IMG.
+   No background card.
+   No blend trick.
 */
-.site-header {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-}
 
-.site-header .brand {
-  width: 54px !important;
-  height: 54px !important;
-  flex: 0 0 54px !important;
+header.site-header > a.brand {
+  position: relative !important;
 
-  background: transparent !important;
+  width: 76px !important;
+  height: 42px !important;
+
+  overflow: visible !important;
+
   border: 0 !important;
+  border-radius: 0 !important;
+
+  outline: 0 !important;
+  background: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
 }
 
-.site-header .brand img {
-  width: 54px !important;
-  height: 54px !important;
+header.site-header > a.brand::before,
+header.site-header > a.brand::after {
+  display: none !important;
+  content: none !important;
+}
 
-  max-width: 54px !important;
-  max-height: 54px !important;
+header.site-header > a.brand > img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
 
   object-fit: contain !important;
   object-position: center !important;
 
-  background: transparent !important;
   border: 0 !important;
+  border-radius: 0 !important;
+
+  outline: 0 !important;
+  background: transparent !important;
   box-shadow: none !important;
+
   filter: none !important;
+  transform: none !important;
+  mix-blend-mode: normal !important;
 }
 
-/* END Z7 HEADER LOGO SIZE — FINAL 54PX */
-/* Z7 UNIVERSE FULL BLEED */
-
-/*
-   Extend ONLY the visual background to viewport edges.
-   Existing image/text/grid dimensions remain unchanged.
-*/
-.z7-universe-fullbleed {
-  position: relative !important;
-  isolation: isolate;
+@media (max-width: 980px) {
+  header.site-header > a.brand {
+    width: 68px !important;
+    height: 39px !important;
+  }
 }
 
-.z7-universe-fullbleed::before {
-  content: "";
-
-  position: absolute;
-  z-index: -1;
-
-  top: 0;
-  bottom: 0;
-
-  left: 50%;
-
-  width: 100vw;
-  max-width: none;
-
-  transform: translateX(-50%);
-
-  /* inherit the section's existing visual treatment */
-  background: inherit;
-  background-color: #050607;
-
-  pointer-events: none;
+@media (max-width: 760px) {
+  header.site-header > a.brand {
+    width: 62px !important;
+    height: 36px !important;
+  }
 }
 
-/* END Z7 UNIVERSE FULL BLEED */
+/* Z7_FINAL_HEADER_LOGO_V22_7_END */

@@ -1,0 +1,260 @@
+/* =========================================================
+   7Z MAGIC — INDIVIDUAL FOUNDER PROFILE COLOR REVEAL V21
+
+   Scope:
+   .z7x-founder-profile__media images carrying
+   [data-z7-founder-profile-photo]
+
+   Desktop:
+   grayscale by default -> color ONLY on hover/focus.
+
+   Touch/mobile:
+   grayscale by default -> color ONLY while the profile
+   is in the active scroll zone.
+========================================================= */
+
+.z7x-founder-profile__media {
+  isolation: isolate;
+}
+
+.z7x-founder-profile__media
+img[data-z7-founder-profile-photo] {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block !important;
+
+  object-fit: cover !important;
+
+  /* Both supplied sources are 1529 × 2048 portrait images.
+     Focus high enough to protect face/upper body inside the current landscape media box. */
+  object-position: 50% 27% !important;
+
+  filter:
+    grayscale(1)
+    saturate(0)
+    contrast(1.07)
+    brightness(.82) !important;
+
+  transform: scale(1.008) !important;
+  transform-origin: 50% 34% !important;
+
+  transition:
+    filter 720ms cubic-bezier(.2,.78,.2,1),
+    transform 950ms cubic-bezier(.2,.78,.2,1) !important;
+
+  will-change: filter, transform;
+}
+
+/* A very soft cinematic shade preserves text/image hierarchy
+   without changing the existing profile card design. */
+.z7x-founder-profile__media:has(
+  img[data-z7-founder-profile-photo]
+)::after {
+  transition: opacity 650ms ease !important;
+}
+
+/* ---------------------------------------------------------
+   DESKTOP / LAPTOP — ONLY MOUSE HOVER OR KEYBOARD FOCUS
+--------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .z7x-founder-profile__media:hover
+  img[data-z7-founder-profile-photo],
+  .z7x-founder-profile__media:focus-within
+  img[data-z7-founder-profile-photo] {
+    filter:
+      grayscale(0)
+      saturate(.96)
+      contrast(1.035)
+      brightness(.94) !important;
+
+    transform: scale(1.018) !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   TOUCH / MOBILE — SCROLL ACTIVATES COLOR
+   No tap-to-color behavior is used here.
+--------------------------------------------------------- */
+@media (hover: none), (pointer: coarse), (max-width: 760px) {
+  .z7x-founder-profile__media.z7-profile-in-view
+  img[data-z7-founder-profile-photo] {
+    filter:
+      grayscale(0)
+      saturate(.96)
+      contrast(1.035)
+      brightness(.94) !important;
+
+    transform: scale(1.014) !important;
+  }
+}
+
+/* Small mobile tuning: keep faces balanced in the existing media viewport. */
+@media (max-width: 760px) {
+  .z7x-founder-profile__media
+  img[data-z7-founder-profile-photo] {
+    object-position: 50% 24% !important;
+  }
+}
+
+/* Reduced motion keeps the color behavior but removes scale animation. */
+@media (prefers-reduced-motion: reduce) {
+  .z7x-founder-profile__media
+  img[data-z7-founder-profile-photo] {
+    transform: none !important;
+    transition: filter 280ms linear !important;
+  }
+
+  .z7x-founder-profile__media:hover
+  img[data-z7-founder-profile-photo],
+  .z7x-founder-profile__media:focus-within
+  img[data-z7-founder-profile-photo],
+  .z7x-founder-profile__media.z7-profile-in-view
+  img[data-z7-founder-profile-photo] {
+    transform: none !important;
+  }
+}
+/* Z7_FOUNDERS_PROFILE_NATIVE_RATIO_V21_1_START
+   Keep the existing founder-profile layout/design.
+   ONLY change photo geometry:
+   - preserve uploaded image's intrinsic 1529x2048 portrait ratio
+   - no cover crop
+   - no forced landscape/square aspect
+   - no hover/scroll zoom
+   - grayscale/color interaction stays exactly as V21
+*/
+
+.z7x-founder-profile__media
+img[data-z7-founder-profile-photo] {
+  width: 100% !important;
+  height: auto !important;
+
+  aspect-ratio: auto !important;
+
+  object-fit: contain !important;
+  object-position: center top !important;
+
+  max-width: 100% !important;
+  max-height: none !important;
+
+  transform: none !important;
+  transform-origin: center center !important;
+}
+
+/* Keep image fully visible when color is revealed — no scale/crop. */
+@media (hover: hover) and (pointer: fine) {
+  .z7x-founder-profile__media:hover
+  img[data-z7-founder-profile-photo],
+  .z7x-founder-profile__media:focus-within
+  img[data-z7-founder-profile-photo] {
+    transform: none !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 760px) {
+  .z7x-founder-profile__media.z7-profile-in-view
+  img[data-z7-founder-profile-photo] {
+    transform: none !important;
+  }
+}
+
+/* Mobile also keeps the exact same intrinsic portrait proportions. */
+@media (max-width: 760px) {
+  .z7x-founder-profile__media
+  img[data-z7-founder-profile-photo] {
+    width: 100% !important;
+    height: auto !important;
+
+    aspect-ratio: auto !important;
+
+    object-fit: contain !important;
+    object-position: center top !important;
+
+    transform: none !important;
+  }
+}
+
+/* Z7_FOUNDERS_PROFILE_NATIVE_RATIO_V21_1_END */
+/* Z7_FOUNDERS_PROFILE_SIZE_BALANCE_V21_2_START
+   Keep the exact current profile design and the original 1529x2048
+   portrait ratio, but stop the portrait card from becoming oversized.
+*/
+
+/* Desktop: elegant portrait scale, no stretching to the full grid column. */
+@media (min-width: 1101px) {
+  .z7x-founder-profile__media {
+    width: min(100%, 455px) !important;
+    max-width: 455px !important;
+  }
+
+  .z7x-founder-profile:not(.z7x-founder-profile--reverse)
+  .z7x-founder-profile__media {
+    justify-self: start !important;
+  }
+
+  .z7x-founder-profile--reverse
+  .z7x-founder-profile__media {
+    justify-self: end !important;
+  }
+}
+
+/* Tablet: slightly smaller so image and copy remain balanced. */
+@media (min-width: 861px) and (max-width: 1100px) {
+  .z7x-founder-profile__media {
+    width: min(100%, 410px) !important;
+    max-width: 410px !important;
+  }
+
+  .z7x-founder-profile:not(.z7x-founder-profile--reverse)
+  .z7x-founder-profile__media {
+    justify-self: start !important;
+  }
+
+  .z7x-founder-profile--reverse
+  .z7x-founder-profile__media {
+    justify-self: end !important;
+  }
+}
+
+/* One-column layouts: center the portrait instead of letting it span the page. */
+@media (max-width: 860px) {
+  .z7x-founder-profile__media,
+  .z7x-founder-profile--reverse .z7x-founder-profile__media {
+    width: min(78vw, 390px) !important;
+    max-width: 390px !important;
+    justify-self: center !important;
+  }
+}
+
+/* Phone: compact portrait card, still using full untouched image ratio. */
+@media (max-width: 560px) {
+  .z7x-founder-profile__media,
+  .z7x-founder-profile--reverse .z7x-founder-profile__media {
+    width: min(82vw, 330px) !important;
+    max-width: 330px !important;
+  }
+}
+
+/* Extra-small phones. */
+@media (max-width: 390px) {
+  .z7x-founder-profile__media,
+  .z7x-founder-profile--reverse .z7x-founder-profile__media {
+    width: min(84vw, 305px) !important;
+    max-width: 305px !important;
+  }
+}
+
+/* Ensure the image itself keeps its real proportions at every size. */
+.z7x-founder-profile__media
+img[data-z7-founder-profile-photo] {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+
+  transform: none !important;
+}
+
+/* Z7_FOUNDERS_PROFILE_SIZE_BALANCE_V21_2_END */

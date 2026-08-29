@@ -535,3 +535,2294 @@ body.z7pa-is-locked .z7pa-section-head {
   z-index: 2 !important;
 }
 /* End 7Z private login watermark opacity force */
+/* Z7_CLIENT_SESSION_UX_START */
+
+/*
+ * One visual state for authentication.
+ * Prevents Login + Client Files from
+ * ever appearing together.
+ */
+
+[data-z7pa-login-panel][hidden],
+[data-z7pa-grid][hidden],
+.z7pa-library[hidden],
+.z7pa-hero[hidden],
+#z7-client-private-files[hidden] {
+  display: none !important;
+}
+
+body.z7pa-is-authenticated
+[data-z7pa-login-panel] {
+  display: none !important;
+}
+
+/*
+ * File-only native client:
+ * remove the generic legacy-resource UI.
+ */
+body.z7pa-file-only
+.z7pa-hero,
+body.z7pa-file-only
+.z7pa-library {
+  display: none !important;
+}
+
+body.z7pa-file-only
+.z7pa-page {
+  min-height: 0 !important;
+}
+
+/*
+ * Authenticated header state.
+ */
+.z7pa-header-access.is-authenticated {
+  border-color:
+    rgba(202, 167, 88, .42) !important;
+
+  background:
+    rgba(202, 167, 88, .06) !important;
+
+  color:
+    rgba(255, 255, 255, .88) !important;
+}
+
+/*
+ * Client delivery workspace.
+ */
+.z7-client-private-files {
+  position: relative;
+  padding:
+    clamp(40px, 5vw, 72px)
+    clamp(22px, 7vw, 118px)
+    clamp(56px, 7vw, 96px);
+}
+
+.z7-client-private-files::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 78% 12%,
+      rgba(202, 167, 88, .045),
+      transparent 28%
+    );
+}
+
+.z7cpf-inner {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.z7cpf-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+.z7cpf-heading h2 {
+  margin: 7px 0 7px;
+  font-size:
+    clamp(2.3rem, 5vw, 4.7rem);
+  line-height: .93;
+  letter-spacing: -.055em;
+}
+
+.z7cpf-heading p {
+  max-width: 620px;
+  margin: 0;
+  color:
+    rgba(255,255,255,.48);
+}
+
+.z7cpf-kicker {
+  color:
+    #caa758;
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+
+.z7cpf-session {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  padding: 10px 13px;
+  border:
+    1px solid rgba(255,255,255,.09);
+  border-radius: 999px;
+  color:
+    rgba(255,255,255,.48);
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.z7cpf-session i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #79d99a;
+  box-shadow:
+    0 0 18px
+    rgba(121,217,154,.45);
+}
+
+.z7cpf-list {
+  display: grid;
+  gap: 10px;
+}
+
+.z7cpf-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 88px;
+  padding: 15px 16px;
+  border:
+    1px solid rgba(255,255,255,.09);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.026),
+      rgba(255,255,255,.01)
+    );
+  transition:
+    transform .25s ease,
+    border-color .25s ease,
+    background .25s ease;
+}
+
+.z7cpf-file:hover {
+  transform:
+    translateY(-2px);
+  border-color:
+    rgba(202,167,88,.28);
+  background:
+    rgba(255,255,255,.03);
+}
+
+.z7cpf-file-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.z7cpf-file-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border:
+    1px solid rgba(202,167,88,.22);
+  border-radius: 13px;
+  background:
+    rgba(202,167,88,.055);
+  color: #caa758;
+  font-size: .53rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.z7cpf-file-copy {
+  min-width: 0;
+}
+
+.z7cpf-file-copy strong {
+  display: block;
+  overflow: hidden;
+  color:
+    rgba(255,255,255,.92);
+  font-size: .86rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.z7cpf-file-copy span {
+  display: block;
+  margin-top: 5px;
+  color:
+    rgba(255,255,255,.35);
+  font-size: .62rem;
+}
+
+.z7cpf-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.z7cpf-open,
+.z7cpf-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 15px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: .6rem;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.z7cpf-open {
+  border:
+    1px solid rgba(202,167,88,.3);
+  background:
+    rgba(202,167,88,.055);
+  color:
+    #e6ca86;
+}
+
+.z7cpf-download {
+  border:
+    1px solid rgba(255,255,255,.1);
+  color:
+    rgba(255,255,255,.64);
+}
+
+.z7cpf-empty {
+  display: grid;
+  gap: 5px;
+  padding: 28px;
+  border:
+    1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  color:
+    rgba(255,255,255,.7);
+}
+
+.z7cpf-empty span {
+  color:
+    rgba(255,255,255,.38);
+  font-size: .76rem;
+}
+
+body.z7pa-is-authenticated
+#z7-client-private-files:not([hidden]) {
+  animation:
+    z7ClientWorkspaceIn
+    .46s
+    cubic-bezier(.22,1,.36,1)
+    both;
+}
+
+@keyframes z7ClientWorkspaceIn {
+  from {
+    opacity: 0;
+    transform:
+      translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+
+  .z7cpf-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .z7cpf-file {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .z7cpf-actions {
+    width: 100%;
+  }
+
+  .z7cpf-open,
+  .z7cpf-download {
+    flex: 1;
+  }
+}
+
+/* Z7_CLIENT_SESSION_UX_END */
+
+/* === 7Z INNER CIRCLE LIVE START === */
+
+
+/* ==========================================================
+   THE INNER CIRCLE — SITE-INTEGRATED POLISH
+
+   SAME IDEA.
+   The site header is now part of the experience.
+========================================================== */
+
+
+:root {
+
+  --z7icx-ivory:
+    #eee9df;
+
+  --z7icx-muted:
+    rgba(238,233,223,.48);
+
+  --z7icx-gold:
+    #b79962;
+
+  --z7icx-gold-hi:
+    #e0c68d;
+
+  --z7icx-oxblood:
+    #4a1717;
+
+  --z7icx-ease:
+    cubic-bezier(.22,.78,.18,1);
+
+}
+
+
+/* ==========================================================
+   WHILE LOGGED OUT:
+   remove the OLD Private Access content,
+   but KEEP the real 7Z website header.
+========================================================== */
+
+
+body.z7pa-is-locked
+.z7pa-hero {
+
+  display:
+    none !important;
+
+}
+
+
+body.z7pa-is-locked
+.z7pa-section-head {
+
+  display:
+    none !important;
+
+}
+
+
+body.z7pa-is-locked
+.z7pa-grid {
+
+  display:
+    none !important;
+
+}
+
+
+/*
+   Let the existing website be the page.
+   No fixed overlay.
+*/
+
+body.z7pa-is-locked
+.z7pa-library {
+
+  position:
+    relative;
+
+  min-height:
+    100svh;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  overflow:
+    hidden;
+
+}
+
+
+/* ==========================================================
+   INNER CIRCLE ROOT
+
+   NOT FIXED.
+   NOT A SECOND WEBSITE.
+========================================================== */
+
+
+.z7icx {
+
+  position:
+    relative !important;
+
+  inset:
+    auto !important;
+
+  z-index:
+    1 !important;
+
+  display:
+    block;
+
+  width:
+    100% !important;
+
+  min-height:
+    100svh;
+
+  margin:
+    0 !important;
+
+  padding:
+
+    clamp(126px, 12vh, 154px)
+    clamp(28px, 4.4vw, 72px)
+    clamp(42px, 5vh, 64px);
+
+  overflow:
+    hidden;
+
+  isolation:
+    isolate;
+
+  color:
+    var(--z7icx-ivory);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  /*
+    Transparent enough that the real site's
+    own black texture still belongs to it.
+  */
+
+  background:
+
+    radial-gradient(
+      740px 470px
+      at 26% 45%,
+      rgba(183,153,98,.055),
+      transparent 68%
+    ),
+
+    radial-gradient(
+      440px 270px
+      at 83% 80%,
+      rgba(74,23,23,.045),
+      transparent 74%
+    );
+
+}
+
+
+/*
+   No fake Inner Circle topbar.
+   The site's real navigation IS the topbar.
+*/
+
+.z7icx__topbar {
+
+  display:
+    none !important;
+
+}
+
+
+/* ==========================================================
+   BACKGROUND CONTINUITY
+========================================================== */
+
+
+.z7icx::before {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  z-index:
+    -3;
+
+  pointer-events:
+    none;
+
+  opacity:
+    .13;
+
+  background-image:
+
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.01) 1px,
+      transparent 1px
+    ),
+
+    linear-gradient(
+      rgba(255,255,255,.008) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    52px 52px;
+
+  -webkit-mask-image:
+
+    radial-gradient(
+      circle at 45% 48%,
+      black 0,
+      transparent 72%
+    );
+
+  mask-image:
+
+    radial-gradient(
+      circle at 45% 48%,
+      black 0,
+      transparent 72%
+    );
+
+}
+
+
+.z7icx::after {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  left:
+    5%;
+
+  right:
+    5%;
+
+  bottom:
+    26px;
+
+  height:
+    1px;
+
+  z-index:
+    -1;
+
+  pointer-events:
+    none;
+
+  background:
+
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.045),
+      rgba(183,153,98,.06),
+      rgba(255,255,255,.045),
+      transparent
+    );
+
+}
+
+
+
+/* ==========================================================
+   AMBIENT LIGHT
+========================================================== */
+
+
+.z7icx__ambient {
+
+  position:
+    absolute;
+
+  left:
+    8%;
+
+  top:
+    18%;
+
+  width:
+    560px;
+
+  max-width:
+    48vw;
+
+  aspect-ratio:
+    1;
+
+  border-radius:
+    50%;
+
+  z-index:
+    -2;
+
+  pointer-events:
+    none;
+
+  opacity:
+    .27;
+
+  filter:
+    blur(32px);
+
+  background:
+
+    radial-gradient(
+      circle,
+
+      rgba(183,153,98,.10),
+
+      rgba(183,153,98,.025)
+      42%,
+
+      transparent 72%
+    );
+
+}
+
+
+.z7icx__light-pass {
+
+  position:
+    absolute;
+
+  inset:
+    -20% -25%;
+
+  z-index:
+    4;
+
+  pointer-events:
+    none;
+
+  opacity:
+    0;
+
+  transform:
+    translateX(-120%);
+
+  background:
+
+    linear-gradient(
+      105deg,
+
+      transparent 37%,
+
+      rgba(183,153,98,.018)
+      44%,
+
+      rgba(230,207,161,.10)
+      50%,
+
+      rgba(183,153,98,.018)
+      56%,
+
+      transparent 63%
+    );
+
+}
+
+
+.z7icx.is-opening
+.z7icx__light-pass {
+
+  animation:
+
+    z7icxRoomPass
+    1.05s
+    var(--z7icx-ease)
+    both;
+
+}
+
+
+@keyframes z7icxRoomPass {
+
+  0% {
+
+    opacity:
+      0;
+
+    transform:
+      translateX(-120%);
+
+  }
+
+
+  25% {
+
+    opacity:
+      1;
+
+  }
+
+
+  100% {
+
+    opacity:
+      0;
+
+    transform:
+      translateX(120%);
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   SCENE
+
+   balanced under the REAL website header.
+========================================================== */
+
+
+.z7icx__scene {
+
+  position:
+    relative;
+
+  width:
+    min(1180px, 100%);
+
+  min-height:
+    calc(100svh - 205px);
+
+  margin:
+    0 auto;
+
+  display:
+    grid;
+
+  grid-template-columns:
+
+    minmax(0, 1.03fr)
+    minmax(360px, .77fr);
+
+  gap:
+    clamp(66px, 8vw, 128px);
+
+  align-items:
+    center;
+
+}
+
+
+/* ==========================================================
+   DIVIDER
+========================================================== */
+
+
+.z7icx__divider {
+
+  position:
+    absolute;
+
+  left:
+    56%;
+
+  top:
+    11%;
+
+  bottom:
+    11%;
+
+  width:
+    1px;
+
+  pointer-events:
+    none;
+
+  opacity:
+    .50;
+
+  background:
+
+    linear-gradient(
+      to bottom,
+
+      transparent,
+
+      rgba(255,255,255,.05)
+      16%,
+
+      rgba(183,153,98,.11)
+      50%,
+
+      rgba(255,255,255,.05)
+      84%,
+
+      transparent
+    );
+
+}
+
+
+
+/* ==========================================================
+   BRAND
+========================================================== */
+
+
+.z7icx__brand {
+
+  position:
+    relative;
+
+  min-height:
+    500px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  align-items:
+    flex-start;
+
+}
+
+
+/*
+  Remove duplicate aura from previous pass.
+*/
+
+.z7icx__brand-aura {
+
+  display:
+    none;
+
+}
+
+
+
+/* ==========================================================
+   HIGH QUALITY LOGO
+
+   Deliberately NOT huge.
+   A premium logo should not be stretched.
+========================================================== */
+
+
+.z7icx__logo-shell {
+
+  position:
+    relative;
+
+  width:
+    clamp(180px, 17vw, 235px);
+
+  max-height:
+    190px;
+
+  margin-bottom:
+    28px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    flex-start;
+
+}
+
+
+.z7icx__logo {
+
+  position:
+    relative;
+
+  z-index:
+    2;
+
+  display:
+    block;
+
+  width:
+    auto;
+
+  max-width:
+    100%;
+
+  max-height:
+    180px;
+
+  object-fit:
+    contain;
+
+  object-position:
+    left center;
+
+  opacity:
+    .72;
+
+  image-rendering:
+    auto;
+
+  transform:
+    translateZ(0);
+
+  filter:
+
+    saturate(.88)
+    brightness(.88)
+    contrast(1.04);
+
+  transition:
+
+    opacity
+    .8s
+    var(--z7icx-ease),
+
+    filter
+    .8s
+    var(--z7icx-ease),
+
+    transform
+    .8s
+    var(--z7icx-ease);
+
+}
+
+
+.z7icx.is-open
+.z7icx__logo {
+
+  opacity:
+    1;
+
+  filter:
+
+    saturate(1)
+    brightness(1)
+    contrast(1.03);
+
+  transform:
+    translateY(-2px);
+
+}
+
+
+.z7icx__logo-reflection {
+
+  position:
+    absolute;
+
+  inset:
+    -30% -60%;
+
+  z-index:
+    3;
+
+  pointer-events:
+    none;
+
+  opacity:
+    0;
+
+  mix-blend-mode:
+    screen;
+
+  background:
+
+    linear-gradient(
+      108deg,
+
+      transparent 38%,
+
+      rgba(255,255,255,0)
+      44%,
+
+      rgba(229,203,151,.56)
+      50%,
+
+      rgba(255,255,255,0)
+      56%,
+
+      transparent 62%
+    );
+
+  transform:
+
+    translateX(-120%)
+    rotate(6deg);
+
+}
+
+
+.z7icx__logo-shell:hover
+.z7icx__logo-reflection,
+
+.z7icx.is-open
+.z7icx__logo-reflection {
+
+  animation:
+
+    z7icxLogoReflection
+    .95s
+    var(--z7icx-ease)
+    both;
+
+}
+
+
+@keyframes z7icxLogoReflection {
+
+  0% {
+
+    opacity:
+      0;
+
+    transform:
+
+      translateX(-120%)
+      rotate(6deg);
+
+  }
+
+
+  20% {
+
+    opacity:
+      .68;
+
+  }
+
+
+  100% {
+
+    opacity:
+      0;
+
+    transform:
+
+      translateX(120%)
+      rotate(6deg);
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   BRAND TEXT
+========================================================== */
+
+
+.z7icx__kicker {
+
+  margin-bottom:
+    12px;
+
+  color:
+    var(--z7icx-gold);
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .34em;
+
+}
+
+
+.z7icx h1 {
+
+  margin:
+    0 !important;
+
+  color:
+    var(--z7icx-ivory) !important;
+
+  font-family:
+
+    Georgia,
+    "Times New Roman",
+    serif !important;
+
+  font-size:
+
+    clamp(
+      58px,
+      5.8vw,
+      84px
+    ) !important;
+
+  font-weight:
+    500 !important;
+
+  line-height:
+    .90 !important;
+
+  letter-spacing:
+    -.043em !important;
+
+  text-transform:
+    none !important;
+
+}
+
+
+.z7icx__brand-copy {
+
+  max-width:
+    410px;
+
+  margin:
+    22px 0 0 !important;
+
+  color:
+    var(--z7icx-muted) !important;
+
+  font-size:
+    12px !important;
+
+  line-height:
+    1.7 !important;
+
+}
+
+
+
+/* ==========================================================
+   TAKE YOUR SEAT
+
+   Must be visible inside the first viewport.
+========================================================== */
+
+
+.z7icx__seat {
+
+  position:
+    relative;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    18px;
+
+  margin-top:
+    28px;
+
+  padding:
+    12px 0;
+
+  border:
+    0 !important;
+
+  border-radius:
+    0 !important;
+
+  background:
+    transparent !important;
+
+  color:
+    rgba(255,255,255,.78) !important;
+
+  cursor:
+    pointer;
+
+  font-size:
+    9px !important;
+
+  font-weight:
+    800 !important;
+
+  letter-spacing:
+    .23em !important;
+
+  box-shadow:
+    none !important;
+
+  transition:
+    opacity .5s var(--z7icx-ease);
+
+}
+
+
+.z7icx__seat::after {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  left:
+    0;
+
+  right:
+    0;
+
+  bottom:
+    4px;
+
+  height:
+    1px;
+
+  opacity:
+    .48;
+
+  transform:
+    scaleX(.25);
+
+  transform-origin:
+    left;
+
+  background:
+
+    linear-gradient(
+      90deg,
+
+      var(--z7icx-gold),
+
+      transparent 78%
+    );
+
+  transition:
+
+    transform
+    .5s
+    var(--z7icx-ease),
+
+    opacity
+    .5s
+    var(--z7icx-ease);
+
+}
+
+
+.z7icx__seat:hover::after {
+
+  transform:
+    scaleX(1);
+
+  opacity:
+    1;
+
+}
+
+
+.z7icx__seat b {
+
+  color:
+    var(--z7icx-gold-hi);
+
+  font-size:
+    17px;
+
+  font-weight:
+    400;
+
+}
+
+
+.z7icx.is-open
+.z7icx__seat {
+
+  opacity:
+    .20;
+
+  pointer-events:
+    none;
+
+}
+
+
+
+/* ==========================================================
+   RIGHT SIDE
+
+   CLOSED = present as atmosphere,
+   but NOT already "logged-in form".
+========================================================== */
+
+
+.z7icx__auth {
+
+  position:
+    relative;
+
+  min-height:
+    475px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    flex-start;
+
+}
+
+
+.z7icx__auth-inner {
+
+  width:
+    min(400px, 100%);
+
+  opacity:
+    .045;
+
+  filter:
+    blur(10px);
+
+  transform:
+    translateX(25px);
+
+  pointer-events:
+    none;
+
+  user-select:
+    none;
+
+  transition:
+
+    opacity
+    .85s
+    var(--z7icx-ease),
+
+    filter
+    .85s
+    var(--z7icx-ease),
+
+    transform
+    .85s
+    var(--z7icx-ease);
+
+}
+
+
+.z7icx.is-open
+.z7icx__auth-inner {
+
+  opacity:
+    1;
+
+  filter:
+    none;
+
+  transform:
+    translateX(0);
+
+  pointer-events:
+    auto;
+
+  user-select:
+    auto;
+
+}
+
+
+
+/* ==========================================================
+   FORM TYPOGRAPHY
+========================================================== */
+
+
+.z7icx__form-kicker {
+
+  margin-bottom:
+    13px;
+
+  color:
+    var(--z7icx-gold);
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .31em;
+
+}
+
+
+.z7icx h2 {
+
+  margin:
+    0 0 16px !important;
+
+  color:
+    var(--z7icx-ivory) !important;
+
+  font-family:
+
+    Georgia,
+    "Times New Roman",
+    serif !important;
+
+  font-size:
+
+    clamp(
+      42px,
+      4vw,
+      58px
+    ) !important;
+
+  font-weight:
+    500 !important;
+
+  line-height:
+    .96 !important;
+
+  letter-spacing:
+    -.035em !important;
+
+  text-transform:
+    none !important;
+
+}
+
+
+.z7icx__intro {
+
+  max-width:
+    340px;
+
+  margin:
+    0 0 27px !important;
+
+  color:
+    var(--z7icx-muted) !important;
+
+  font-size:
+    12px !important;
+
+  line-height:
+    1.7 !important;
+
+}
+
+
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+
+.z7icx__form {
+
+  display:
+    block !important;
+
+  margin:
+    0 !important;
+
+}
+
+
+.z7icx__field {
+
+  display:
+    block !important;
+
+  margin:
+    19px 0 !important;
+
+}
+
+
+.z7icx__field > span {
+
+  display:
+    block;
+
+  margin-bottom:
+    9px;
+
+  color:
+    rgba(255,255,255,.36);
+
+  font-size:
+    8px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .23em;
+
+}
+
+
+.z7icx__field input {
+
+  width:
+    100% !important;
+
+  height:
+    47px !important;
+
+  min-height:
+    47px !important;
+
+  padding:
+    0 1px !important;
+
+  border:
+    0 !important;
+
+  border-bottom:
+
+    1px solid
+    rgba(255,255,255,.13)
+    !important;
+
+  border-radius:
+    0 !important;
+
+  outline:
+    0 !important;
+
+  background:
+    transparent !important;
+
+  color:
+    #fff !important;
+
+  box-shadow:
+    none !important;
+
+  font-size:
+    14px !important;
+
+}
+
+
+.z7icx__field input::placeholder {
+
+  color:
+    rgba(255,255,255,.16) !important;
+
+}
+
+
+.z7icx__field input:focus {
+
+  border-bottom-color:
+
+    rgba(183,153,98,.74)
+    !important;
+
+  box-shadow:
+
+    0 11px 18px -21px
+    rgba(183,153,98,.9)
+    !important;
+
+}
+
+
+
+/* ==========================================================
+   ENTER THE CIRCLE
+========================================================== */
+
+
+.z7icx__submit {
+
+  position:
+    relative;
+
+  width:
+    100% !important;
+
+  height:
+    52px !important;
+
+  min-height:
+    52px !important;
+
+  margin-top:
+    15px !important;
+
+  padding:
+    0 1px !important;
+
+  display:
+    flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    space-between !important;
+
+  border:
+    0 !important;
+
+  border-bottom:
+
+    1px solid
+    rgba(183,153,98,.45)
+    !important;
+
+  border-radius:
+    0 !important;
+
+  background:
+    transparent !important;
+
+  color:
+    #fff !important;
+
+  cursor:
+    pointer;
+
+  box-shadow:
+    none !important;
+
+  font-size:
+    9px !important;
+
+  font-weight:
+    800 !important;
+
+  letter-spacing:
+    .18em !important;
+
+}
+
+
+.z7icx__submit b {
+
+  color:
+    var(--z7icx-gold-hi);
+
+  font-size:
+    17px;
+
+  font-weight:
+    400;
+
+}
+
+
+
+/* ==========================================================
+   MESSAGE / META
+========================================================== */
+
+
+.z7icx__message {
+
+  min-height:
+    17px;
+
+  margin:
+    12px 0 0 !important;
+
+  color:
+    rgba(255,255,255,.44) !important;
+
+  font-size:
+    10px !important;
+
+}
+
+
+.z7icx__meta {
+
+  margin-top:
+    17px;
+
+  color:
+    rgba(255,255,255,.17);
+
+  font-size:
+    8px;
+
+  letter-spacing:
+    .18em;
+
+}
+
+
+.z7icx__meta i {
+
+  display:
+    inline-block;
+
+  width:
+    3px;
+
+  height:
+    3px;
+
+  margin:
+    0 8px 2px;
+
+  border-radius:
+    50%;
+
+  background:
+    rgba(183,153,98,.55);
+
+}
+
+
+
+/* ==========================================================
+   FAILED AUTH
+========================================================== */
+
+
+.z7icx.is-denied
+.z7icx__auth-inner {
+
+  animation:
+    z7icxDenied
+    .38s ease
+    both;
+
+}
+
+
+@keyframes z7icxDenied {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  35% {
+    transform: translateX(-4px);
+  }
+
+  70% {
+    transform: translateX(4px);
+  }
+
+}
+
+
+
+/* ==========================================================
+   SUCCESS
+========================================================== */
+
+
+.z7icx__welcome {
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  z-index:
+    50;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  pointer-events:
+    none;
+
+  opacity:
+    0;
+
+  background:
+
+    radial-gradient(
+      circle at center,
+      rgba(183,153,98,.055),
+      transparent 58%
+    );
+
+}
+
+
+.z7icx__welcome span {
+
+  color:
+    var(--z7icx-ivory);
+
+  font-family:
+
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+
+    clamp(
+      52px,
+      7vw,
+      90px
+    );
+
+  font-weight:
+    500;
+
+  letter-spacing:
+    -.035em;
+
+}
+
+
+.z7icx.is-authorized
+.z7icx__scene,
+
+.z7icx.is-authorized
+.z7icx__signature {
+
+  opacity:
+    .08;
+
+  filter:
+    blur(4px);
+
+  transition:
+
+    opacity
+    .55s
+    var(--z7icx-ease),
+
+    filter
+    .55s
+    var(--z7icx-ease);
+
+}
+
+
+.z7icx.is-authorized
+.z7icx__welcome {
+
+  animation:
+
+    z7icxWelcome
+    1.05s
+    var(--z7icx-ease)
+    both;
+
+}
+
+
+@keyframes z7icxWelcome {
+
+  0% {
+
+    opacity:
+      0;
+
+    transform:
+      translateY(8px);
+
+  }
+
+
+  28% {
+
+    opacity:
+      1;
+
+    transform:
+      none;
+
+  }
+
+
+  74% {
+
+    opacity:
+      1;
+
+  }
+
+
+  100% {
+
+    opacity:
+      0;
+
+    transform:
+      translateY(-8px);
+
+  }
+
+}
+
+
+.z7icx.is-leaving {
+
+  opacity:
+    0;
+
+  transform:
+    translateY(-8px);
+
+  transition:
+
+    opacity .38s ease,
+    transform .38s ease;
+
+}
+
+
+
+/* ==========================================================
+   SIGNATURE
+========================================================== */
+
+
+.z7icx__signature {
+
+  position:
+    absolute;
+
+  right:
+    clamp(28px,4.4vw,72px);
+
+  bottom:
+    34px;
+
+  color:
+    rgba(255,255,255,.15);
+
+  font-size:
+    8px;
+
+  font-weight:
+    600;
+
+  letter-spacing:
+    .17em;
+
+}
+
+
+.z7icx__signature i {
+
+  margin:
+    0 7px;
+
+  color:
+    rgba(183,153,98,.48);
+
+  font-style:
+    normal;
+
+}
+
+
+.z7icx__signature b {
+
+  color:
+    rgba(183,153,98,.62);
+
+  font-weight:
+    700;
+
+}
+
+
+
+/* ==========================================================
+   AUTHENTICATED RESOURCE GRID
+========================================================== */
+
+
+.z7pa-grid {
+
+  scroll-margin-top:
+    126px;
+
+}
+
+
+
+/* ==========================================================
+   TABLET / MOBILE
+========================================================== */
+
+
+@media
+(max-width: 900px) {
+
+
+  .z7icx {
+
+    min-height:
+      auto;
+
+    padding:
+
+      108px
+      22px
+      42px;
+
+    overflow:
+      visible;
+
+  }
+
+
+  .z7icx__scene {
+
+    min-height:
+      auto;
+
+    grid-template-columns:
+      1fr;
+
+    gap:
+      26px;
+
+  }
+
+
+  .z7icx__divider {
+
+    display:
+      none;
+
+  }
+
+
+  .z7icx__brand {
+
+    min-height:
+      390px;
+
+    align-items:
+      center;
+
+    text-align:
+      center;
+
+  }
+
+
+  .z7icx__logo-shell {
+
+    width:
+      min(210px,54vw);
+
+    justify-content:
+      center;
+
+  }
+
+
+  .z7icx__logo {
+
+    object-position:
+      center;
+
+  }
+
+
+  .z7icx h1 {
+
+    font-size:
+
+      clamp(
+        54px,
+        15vw,
+        76px
+      ) !important;
+
+  }
+
+
+  .z7icx__brand-copy {
+
+    max-width:
+      360px;
+
+  }
+
+
+  .z7icx__auth {
+
+    min-height:
+      380px;
+
+    justify-content:
+      center;
+
+  }
+
+
+  .z7icx__auth-inner {
+
+    width:
+      min(430px,100%);
+
+  }
+
+
+  .z7icx__signature {
+
+    position:
+      relative;
+
+    right:
+      auto;
+
+    bottom:
+      auto;
+
+    margin-top:
+      30px;
+
+    text-align:
+      center;
+
+    line-height:
+      1.7;
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   SHORT DESKTOPS
+========================================================== */
+
+
+@media
+(min-width: 901px)
+and
+(max-height: 760px) {
+
+
+  .z7icx {
+
+    padding-top:
+      112px;
+
+    padding-bottom:
+      32px;
+
+  }
+
+
+  .z7icx__scene {
+
+    min-height:
+      calc(100svh - 160px);
+
+  }
+
+
+  .z7icx__brand {
+
+    min-height:
+      440px;
+
+  }
+
+
+  .z7icx__logo-shell {
+
+    width:
+      180px;
+
+    margin-bottom:
+      20px;
+
+  }
+
+
+  .z7icx h1 {
+
+    font-size:
+
+      clamp(
+        54px,
+        5vw,
+        72px
+      ) !important;
+
+  }
+
+
+  .z7icx__seat {
+
+    margin-top:
+      22px;
+
+  }
+
+
+  .z7icx__auth {
+
+    min-height:
+      430px;
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+
+@media
+(prefers-reduced-motion: reduce) {
+
+
+  .z7icx,
+  .z7icx *,
+  .z7icx *::before,
+  .z7icx *::after {
+
+    animation:
+      none !important;
+
+    transition:
+      none !important;
+
+  }
+
+}
+
+
+/* === 7Z INNER CIRCLE LIVE END === */

@@ -1,0 +1,667 @@
+/* =========================================================
+   7Z MAGIC — FOUNDERS IMMERSIVE AGENCY V18
+   Selected direction: Option 3 / Immersive Agency
+   Scope: .z7f18 only
+========================================================= */
+
+.z7f18 {
+  --z7f18-px: 0px;
+  --z7f18-py: 0px;
+  --z7f18-gx: 74%;
+  --z7f18-gy: 38%;
+
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+
+  min-height: 610px !important;
+  height: min(76svh, 720px) !important;
+  max-height: 720px !important;
+
+  padding: 0 !important;
+  border-bottom: 1px solid rgba(220,184,95,.14) !important;
+
+  background: #030304 !important;
+}
+
+.z7f18.z7x-hero::before,
+.z7f18.z7x-hero::after {
+  display: none !important;
+  content: none !important;
+}
+
+.z7f18__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.z7f18__photo {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+  object-fit: cover;
+  object-position: 61% 43%;
+
+  transform:
+    translate3d(var(--z7f18-px), var(--z7f18-py), 0)
+    scale(1.024);
+
+  transform-origin: 61% 43%;
+
+  filter:
+    saturate(.91)
+    contrast(1.055)
+    brightness(.80);
+
+  will-change: transform;
+}
+
+/* Deep luxury veil: text side stays clean, founders stay luminous. */
+.z7f18__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(3,3,4,.995) 0%,
+      rgba(3,3,4,.95) 21%,
+      rgba(3,3,4,.76) 38%,
+      rgba(3,3,4,.31) 57%,
+      rgba(3,3,4,.06) 78%,
+      rgba(3,3,4,.03) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(3,3,4,.66) 0%,
+      rgba(3,3,4,.10) 23%,
+      rgba(3,3,4,.02) 58%,
+      rgba(3,3,4,.38) 100%
+    );
+}
+
+/* Gold halo behind founders, based on chosen mockup. */
+.z7f18__halo {
+  position: absolute;
+  top: 50%;
+  right: 7.5%;
+  z-index: 3;
+
+  width: min(41vw, 610px);
+  aspect-ratio: 1;
+
+  border: 1px solid rgba(222,184,93,.20);
+  border-radius: 50%;
+
+  transform: translateY(-48%);
+
+  box-shadow:
+    0 0 0 44px rgba(222,184,93,.018),
+    0 0 0 88px rgba(222,184,93,.010),
+    inset 0 0 95px rgba(222,184,93,.035);
+
+  opacity: .92;
+}
+
+.z7f18__halo::before,
+.z7f18__halo::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.z7f18__halo::before {
+  inset: 14%;
+  border: 1px solid rgba(222,184,93,.11);
+}
+
+.z7f18__halo::after {
+  inset: 30%;
+  border: 1px solid rgba(255,255,255,.055);
+}
+
+/* Architectural gold 7Z-inspired line geometry. */
+.z7f18__lines {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+
+  opacity: .68;
+  mix-blend-mode: screen;
+}
+
+.z7f18__lines i {
+  position: absolute;
+  display: block;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(224,185,91,.18) 16%,
+      rgba(243,202,103,.82) 48%,
+      rgba(224,185,91,.16) 82%,
+      transparent
+    );
+
+  box-shadow: 0 0 22px rgba(224,185,91,.18);
+
+  transform-origin: left center;
+}
+
+.z7f18__lines i:nth-child(1) {
+  top: 23%;
+  left: 66%;
+  width: 37%;
+  transform: rotate(-18deg);
+}
+
+.z7f18__lines i:nth-child(2) {
+  top: 39%;
+  left: 72%;
+  width: 31%;
+  transform: rotate(-42deg);
+}
+
+.z7f18__lines i:nth-child(3) {
+  right: -3%;
+  bottom: 18%;
+  width: 38%;
+  transform: rotate(-10deg);
+}
+
+.z7f18__lines i:nth-child(4) {
+  right: 8%;
+  bottom: 7%;
+  width: 25%;
+  transform: rotate(-37deg);
+}
+
+.z7f18__spark {
+  position: absolute;
+  z-index: 5;
+
+  width: 4px;
+  aspect-ratio: 1;
+
+  border-radius: 50%;
+
+  background: #f0c66b;
+
+  box-shadow:
+    0 0 10px rgba(240,198,107,.90),
+    0 0 28px rgba(240,198,107,.52);
+}
+
+.z7f18__spark--a {
+  top: 18%;
+  right: 12%;
+}
+
+.z7f18__spark--b {
+  right: 4%;
+  bottom: 22%;
+}
+
+/* ---------------- CONTENT ---------------- */
+
+.z7f18__inner {
+  position: relative;
+  z-index: 7;
+
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: clamp(28px, 5vw, 76px) !important;
+
+  min-height: 100% !important;
+
+  padding-top: clamp(112px, 12vh, 136px) !important;
+  padding-bottom: clamp(48px, 6vh, 70px) !important;
+
+  box-sizing: border-box !important;
+}
+
+.z7f18__copy {
+  width: min(45vw, 620px);
+  max-width: 620px;
+}
+
+.z7f18__eyebrow {
+  margin: 0 0 17px;
+
+  color: rgba(255,255,255,.68);
+
+  font-size: .67rem;
+  font-weight: 850;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+}
+
+.z7f18__title {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: clamp(4rem, 6.2vw, 6.8rem);
+  font-weight: 850;
+  line-height: .86;
+  letter-spacing: -.062em;
+
+  text-wrap: balance;
+}
+
+.z7f18__title span,
+.z7f18__title em {
+  display: block;
+}
+
+.z7f18__title em {
+  margin-top: .08em;
+
+  color: #e8bf67;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: .87em;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -.048em;
+
+  text-shadow:
+    0 0 22px rgba(232,191,103,.08),
+    0 14px 42px rgba(0,0,0,.24);
+}
+
+.z7f18__dek {
+  max-width: 31rem;
+  margin: 24px 0 0;
+
+  color: rgba(255,255,255,.69);
+
+  font-size: clamp(.94rem, 1.05vw, 1.05rem);
+  line-height: 1.62;
+}
+
+.z7f18__founders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(138px, 1fr));
+  gap: 24px;
+
+  width: min(36vw, 430px);
+  margin-bottom: 1px;
+}
+
+.z7f18__founder {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  column-gap: 10px;
+
+  padding-top: 12px;
+
+  border-top: 1px solid rgba(232,191,103,.30);
+}
+
+.z7f18__founder span {
+  grid-row: 1 / span 2;
+
+  color: rgba(232,191,103,.60);
+
+  font-size: .54rem;
+  font-weight: 850;
+  letter-spacing: .13em;
+}
+
+.z7f18__founder strong {
+  color: rgba(255,255,255,.92);
+
+  font-size: .70rem;
+  line-height: 1.15;
+}
+
+.z7f18__founder em {
+  margin-top: 4px;
+
+  color: rgba(255,255,255,.46);
+
+  font-size: .54rem;
+  font-style: normal;
+  font-weight: 650;
+}
+
+/* Right-side editorial rail from selected concept. */
+.z7f18__rail {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  z-index: 8;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  transform: translateY(-50%);
+
+  color: rgba(255,255,255,.40);
+}
+
+.z7f18__rail span {
+  writing-mode: vertical-rl;
+
+  font-size: .50rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+
+.z7f18__rail b {
+  display: block;
+
+  width: 1px;
+  height: 78px;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(232,191,103,.48),
+      transparent
+    );
+}
+
+.z7f18__rail i {
+  color: rgba(232,191,103,.75);
+
+  font-size: .54rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+/* ---------------- TABLET ---------------- */
+
+@media (max-width: 1080px) and (min-width: 761px) {
+  .z7f18 {
+    min-height: 580px !important;
+    height: min(74svh, 670px) !important;
+  }
+
+  .z7f18__photo {
+    object-position: 65% 43%;
+  }
+
+  .z7f18__copy {
+    width: min(52vw, 550px);
+  }
+
+  .z7f18__title {
+    font-size: clamp(3.55rem, 7.2vw, 5.8rem);
+  }
+
+  .z7f18__founders {
+    width: min(34vw, 330px);
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .z7f18__rail {
+    display: none;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   Same art direction, re-composed for portrait viewport.
+========================================================= */
+
+@media (max-width: 760px) {
+  .z7f18 {
+    min-height: clamp(690px, 180vw, 790px) !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .z7f18__photo {
+    inset: 72px 0 auto 0;
+
+    width: 100%;
+    height: clamp(360px, 104vw, 430px);
+
+    object-fit: cover;
+    object-position: 60% 41%;
+
+    transform:
+      translate3d(var(--z7f18-px), var(--z7f18-py), 0)
+      scale(1.025);
+  }
+
+  .z7f18__veil {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(3,3,4,.10) 0%,
+        rgba(3,3,4,.02) 33%,
+        rgba(3,3,4,.15) 52%,
+        rgba(3,3,4,.74) 72%,
+        rgba(3,3,4,.98) 88%,
+        #030304 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(3,3,4,.18) 0%,
+        rgba(3,3,4,.01) 50%,
+        rgba(3,3,4,.18) 100%
+      );
+  }
+
+  .z7f18__halo {
+    top: 255px;
+    right: -23%;
+
+    width: 94vw;
+
+    transform: translateY(-50%);
+
+    opacity: .70;
+  }
+
+  .z7f18__lines {
+    opacity: .48;
+  }
+
+  .z7f18__lines i:nth-child(1) {
+    top: 16%;
+    left: 42%;
+    width: 74%;
+  }
+
+  .z7f18__lines i:nth-child(2) {
+    top: 27%;
+    left: 55%;
+    width: 60%;
+  }
+
+  .z7f18__lines i:nth-child(3) {
+    right: -20%;
+    bottom: 48%;
+    width: 78%;
+  }
+
+  .z7f18__lines i:nth-child(4) {
+    right: -4%;
+    bottom: 39%;
+    width: 52%;
+  }
+
+  .z7f18__spark--a {
+    top: 13%;
+    right: 7%;
+  }
+
+  .z7f18__spark--b {
+    right: 6%;
+    bottom: 42%;
+  }
+
+  .z7f18__inner {
+    display: flex !important;
+    align-items: flex-end !important;
+
+    min-height: inherit !important;
+
+    width: calc(100% - 34px) !important;
+
+    padding-top: 408px !important;
+    padding-bottom: 36px !important;
+  }
+
+  .z7f18__copy {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .z7f18__eyebrow {
+    margin-bottom: 13px;
+
+    font-size: .62rem;
+    letter-spacing: .25em;
+  }
+
+  .z7f18__title {
+    font-size: clamp(2.95rem, 13.4vw, 4rem);
+    line-height: .86;
+    letter-spacing: -.060em;
+  }
+
+  .z7f18__title em {
+    font-size: .90em;
+  }
+
+  .z7f18__dek {
+    max-width: 31rem;
+    margin-top: 18px;
+
+    font-size: .90rem;
+    line-height: 1.56;
+  }
+
+  .z7f18__founders {
+    display: none;
+  }
+
+  .z7f18__rail {
+    display: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .z7f18 {
+    min-height: 660px !important;
+  }
+
+  .z7f18__photo {
+    height: 350px;
+    object-position: 60% 41%;
+  }
+
+  .z7f18__inner {
+    width: calc(100% - 30px) !important;
+    padding-top: 382px !important;
+    padding-bottom: 32px !important;
+  }
+
+  .z7f18__title {
+    font-size: clamp(2.60rem, 12.8vw, 3.45rem);
+  }
+
+  .z7f18__dek {
+    font-size: .85rem;
+  }
+}
+
+/* Phone landscape */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  .z7f18 {
+    min-height: 430px !important;
+    height: 100svh !important;
+    max-height: 500px !important;
+  }
+
+  .z7f18__photo {
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-position: 65% 44%;
+  }
+
+  .z7f18__veil {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(3,3,4,.98) 0%,
+        rgba(3,3,4,.89) 29%,
+        rgba(3,3,4,.41) 54%,
+        rgba(3,3,4,.05) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(3,3,4,.45) 0%,
+        transparent 35%,
+        rgba(3,3,4,.28) 100%
+      );
+  }
+
+  .z7f18__inner {
+    align-items: center !important;
+
+    width: calc(100% - 42px) !important;
+
+    padding-top: 72px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .z7f18__copy {
+    width: 44%;
+    max-width: 390px;
+  }
+
+  .z7f18__title {
+    font-size: clamp(2.3rem, 5.6vw, 3.35rem);
+  }
+
+  .z7f18__dek {
+    margin-top: 13px;
+    font-size: .76rem;
+  }
+
+  .z7f18__halo {
+    top: 50%;
+    right: 5%;
+    width: 48vw;
+  }
+
+  .z7f18__founders,
+  .z7f18__rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7f18__photo {
+    transform: scale(1.024) !important;
+  }
+
+  .z7f18__lines,
+  .z7f18__halo {
+    animation: none !important;
+  }
+}

@@ -1,4 +1,4 @@
-﻿_backup-*
+_backup-*
 *.zip
 local-server.backup-*.mjs
 server*.log
@@ -7,3 +7,33 @@ vercel-deployment-url.txt
 7z-current-*.zip
 7z-magic-*.zip
 *.ps1
+# 7Z local safety files - never deploy
+.env.local
+.env.local.*
+_admin-before-*
+_admin-before-rollback-*
+_portal-ui-backup-*
+_portal-theme-backup-*
+_admin-before-native-private-access-*
+_before-*
+_private-access-before-*
+_hub-login-before-*
+_legacy-file-access-before-*
+_video_backup/
+/7Z_ACCESS_CONTROL_SOURCE_AUDIT.txt
+/_admin-accounts-before-fix-*.js
+/_before-*/
+/_portal-ui-backup-*/
+/_portal-theme-backup-*/
+/_admin-before-*/
+/_hub-login-before-native-fix-*.js
+
+_LOCAL_ONLY/
+# 7Z local-only safety
+PRIVATE-CREDENTIALS/
+7z-website/
+_video_work/
+_BACKUPS/
+_7Z_ROOT_CAUSE_PACKAGE/
+media/private-access/
+video-optimization-report.csv

@@ -1,0 +1,1187 @@
+/* =========================================================
+   7Z MAGIC — FOUNDERS STUDIO POLISH V20
+   Scope: .z7f20 only
+
+   Design goals:
+   - Use the newly approved two-founder studio portrait.
+   - Image is monochrome by default.
+   - Desktop: full color only while hovering/focusing the portrait.
+   - Touch devices: full color on tap/touch, then gracefully returns.
+   - One cinematic composition; no "image block + text block" split.
+   - Faces protected on every breakpoint.
+========================================================= */
+
+.z7f20 {
+  --z7f20-mx: 72%;
+  --z7f20-my: 35%;
+  --z7f20-shift-x: 0px;
+  --z7f20-shift-y: 0px;
+
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+
+  min-height: max(700px, 100svh) !important;
+  height: max(700px, 100svh) !important;
+  max-height: 930px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: #020203 !important;
+  border-bottom: 1px solid rgba(226,188,98,.12) !important;
+}
+
+.z7f20.z7x-hero::before,
+.z7f20.z7x-hero::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* ---------------- AMBIENT PLATE ---------------- */
+
+.z7f20__ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  overflow: hidden;
+  pointer-events: none;
+
+  background: #020203;
+}
+
+.z7f20__ambient img {
+  position: absolute;
+  inset: -7%;
+
+  width: 114%;
+  height: 114%;
+
+  object-fit: cover;
+  object-position: 64% 34%;
+
+  filter:
+    grayscale(1)
+    saturate(0)
+    blur(26px)
+    brightness(.21)
+    contrast(1.18);
+
+  transform: scale(1.03);
+}
+
+.z7f20__ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2,2,3,1) 0%,
+      rgba(2,2,3,.96) 21%,
+      rgba(2,2,3,.75) 41%,
+      rgba(2,2,3,.38) 62%,
+      rgba(2,2,3,.18) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(2,2,3,.56) 0%,
+      rgba(2,2,3,.10) 25%,
+      rgba(2,2,3,.04) 62%,
+      rgba(2,2,3,.62) 100%
+    );
+}
+
+/* ---------------- HERO PORTRAIT ---------------- */
+
+.z7f20__visual {
+  position: absolute;
+  top: clamp(92px, 10vh, 118px);
+  right: clamp(18px, 4.2vw, 72px);
+  bottom: clamp(42px, 5vh, 58px);
+  z-index: 2;
+
+  width: min(48vw, 690px);
+
+  overflow: hidden;
+
+  border-radius: clamp(18px, 1.65vw, 26px);
+
+  outline: none;
+
+  background: #09090a;
+
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.40),
+    0 0 0 1px rgba(255,255,255,.055),
+    0 0 80px rgba(223,185,91,.025);
+
+  cursor: default;
+}
+
+.z7f20__portrait {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: 50% 36%;
+
+  transform:
+    translate3d(var(--z7f20-shift-x), var(--z7f20-shift-y), 0)
+    scale(1.012);
+
+  transform-origin: 50% 35%;
+
+  /* DEFAULT STATE — elegant monochrome */
+  filter:
+    grayscale(1)
+    saturate(0)
+    contrast(1.09)
+    brightness(.78);
+
+  transition:
+    filter 700ms cubic-bezier(.2,.78,.2,1),
+    transform 1100ms cubic-bezier(.2,.78,.2,1);
+
+  will-change: transform, filter;
+}
+
+/* Dark editorial veil on the image itself. */
+.z7f20__visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.08) 0%,
+      transparent 33%,
+      rgba(0,0,0,.06) 62%,
+      rgba(0,0,0,.44) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.10) 0%,
+      transparent 24%,
+      transparent 76%,
+      rgba(0,0,0,.12) 100%
+    );
+
+  transition: opacity 650ms ease;
+}
+
+/* DESKTOP COLOR REVEAL */
+@media (hover: hover) and (pointer: fine) {
+  .z7f20__visual:hover .z7f20__portrait,
+  .z7f20__visual:focus-visible .z7f20__portrait {
+    filter:
+      grayscale(0)
+      saturate(.96)
+      contrast(1.045)
+      brightness(.91);
+
+    transform:
+      translate3d(var(--z7f20-shift-x), var(--z7f20-shift-y), 0)
+      scale(1.024);
+  }
+
+  .z7f20__visual:hover::after,
+  .z7f20__visual:focus-visible::after {
+    opacity: .46;
+  }
+
+  .z7f20__visual:hover .z7f20__reveal-hint,
+  .z7f20__visual:focus-visible .z7f20__reveal-hint {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* TOUCH COLOR REVEAL */
+.z7f20__visual.is-color .z7f20__portrait {
+  filter:
+    grayscale(0)
+    saturate(.96)
+    contrast(1.045)
+    brightness(.91);
+
+  transform:
+    translate3d(var(--z7f20-shift-x), var(--z7f20-shift-y), 0)
+    scale(1.024);
+}
+
+.z7f20__visual.is-color::after {
+  opacity: .46;
+}
+
+.z7f20__visual.is-color .z7f20__reveal-hint {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* ---------------- SUBTLE 7Z GEOMETRY ---------------- */
+
+.z7f20__monogram {
+  position: absolute;
+  top: 7%;
+  right: 3%;
+  z-index: 3;
+
+  width: 63%;
+  height: 41%;
+
+  opacity: .43;
+
+  pointer-events: none;
+}
+
+.z7f20__monogram i {
+  position: absolute;
+
+  display: block;
+
+  border: 1px solid rgba(229,189,91,.60);
+
+  box-shadow:
+    0 0 20px rgba(229,189,91,.12),
+    inset 0 0 16px rgba(229,189,91,.025);
+
+  transform: skewX(-22deg);
+}
+
+.z7f20__monogram i:nth-child(1) {
+  top: 0;
+  right: 4%;
+
+  width: 76%;
+  height: 23%;
+}
+
+.z7f20__monogram i:nth-child(2) {
+  top: 22%;
+  right: 23%;
+
+  width: 46%;
+  height: 54%;
+
+  border-top: 0;
+  border-left: 0;
+}
+
+.z7f20__monogram i:nth-child(3) {
+  right: 0;
+  bottom: 0;
+
+  width: 61%;
+  height: 19%;
+}
+
+.z7f20__visual-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at var(--z7f20-mx) var(--z7f20-my),
+      rgba(255,225,153,.16) 0%,
+      rgba(231,190,93,.055) 16%,
+      transparent 42%
+    );
+
+  mix-blend-mode: screen;
+  opacity: .72;
+}
+
+.z7f20__reveal-hint {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  z-index: 7;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 10px;
+
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 999px;
+
+  background: rgba(3,3,4,.58);
+  backdrop-filter: blur(8px);
+
+  color: rgba(255,255,255,.56);
+
+  font-size: .46rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+
+  opacity: .82;
+
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+
+  pointer-events: none;
+}
+
+.z7f20__hint-mobile {
+  display: none;
+}
+
+/* ---------------- COPY ---------------- */
+
+.z7f20__content {
+  position: relative;
+  z-index: 8;
+
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+
+  min-height: 100% !important;
+
+  padding-top: clamp(118px, 13vh, 150px) !important;
+  padding-bottom: clamp(54px, 6vh, 72px) !important;
+
+  box-sizing: border-box !important;
+}
+
+.z7f20__copy {
+  width: min(43vw, 575px);
+  max-width: 575px;
+
+  transform: translateY(-2vh);
+}
+
+.z7f20__eyebrow {
+  margin: 0 0 19px;
+
+  color: #e7bd62;
+
+  font-size: .66rem;
+  font-weight: 900;
+  letter-spacing: .29em;
+  text-transform: uppercase;
+}
+
+.z7f20__title {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: clamp(4rem, 6.15vw, 6.75rem);
+  font-weight: 830;
+  line-height: .85;
+  letter-spacing: -.062em;
+}
+
+.z7f20__title span,
+.z7f20__title em {
+  display: block;
+}
+
+.z7f20__title em {
+  margin-top: .075em;
+
+  color: #e7bd62;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: .90em;
+  font-style: italic;
+  font-weight: 500;
+  line-height: .94;
+  letter-spacing: -.047em;
+}
+
+.z7f20__description {
+  max-width: 30rem;
+
+  margin: 24px 0 0;
+
+  color: rgba(255,255,255,.68);
+
+  font-size: clamp(.92rem, 1.02vw, 1.02rem);
+  line-height: 1.64;
+}
+
+/* ---------------- FOUNDERS SIGNATURE ---------------- */
+
+.z7f20__signature {
+  position: absolute;
+  left: 0;
+  bottom: clamp(64px, 7vh, 86px);
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 28px;
+
+  width: min(42vw, 480px);
+}
+
+.z7f20__signature > div {
+  display: grid;
+  grid-template-columns: 27px 1fr;
+  column-gap: 10px;
+
+  padding-top: 12px;
+
+  border-top: 1px solid rgba(231,189,98,.23);
+}
+
+.z7f20__signature span {
+  grid-row: 1 / span 2;
+
+  color: rgba(231,189,98,.59);
+
+  font-size: .52rem;
+  font-weight: 850;
+  letter-spacing: .13em;
+}
+
+.z7f20__signature strong {
+  color: rgba(255,255,255,.88);
+
+  font-size: .69rem;
+  line-height: 1.15;
+}
+
+.z7f20__signature em {
+  margin-top: 4px;
+
+  color: rgba(255,255,255,.43);
+
+  font-size: .53rem;
+  font-style: normal;
+}
+
+/* ---------------- SCROLL ---------------- */
+
+.z7f20__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  transform: translateX(-50%);
+
+  color: rgba(255,255,255,.38);
+  white-space: nowrap;
+}
+
+.z7f20__scroll b {
+  position: relative;
+
+  width: 14px;
+  height: 23px;
+
+  border: 1px solid rgba(255,255,255,.66);
+  border-radius: 10px;
+}
+
+.z7f20__scroll b::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 50%;
+
+  width: 2px;
+  height: 4px;
+
+  border-radius: 2px;
+
+  background: #e7bd62;
+
+  transform: translateX(-50%);
+
+  animation: z7f20Wheel 1.7s ease-in-out infinite;
+}
+
+.z7f20__scroll span {
+  font-size: .48rem;
+  font-weight: 700;
+  letter-spacing: .26em;
+}
+
+@keyframes z7f20Wheel {
+  0%,100% { transform:translate(-50%,0); opacity:.30; }
+  45%     { transform:translate(-50%,6px); opacity:1; }
+}
+
+.z7f20__edge-line {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+
+  width: 30%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(231,189,98,.72),
+      transparent
+    );
+
+  opacity: .48;
+}
+
+/* =========================================================
+   LARGE DESKTOP
+========================================================= */
+
+@media (min-width: 1500px) {
+  .z7f20__visual {
+    width: min(46vw, 720px);
+  }
+
+  .z7f20__copy {
+    width: min(40vw, 610px);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  .z7f20 {
+    min-height: max(650px, 100svh) !important;
+  }
+
+  .z7f20__visual {
+    right: 22px;
+
+    width: 48vw;
+  }
+
+  .z7f20__portrait {
+    object-position: 52% 35%;
+  }
+
+  .z7f20__copy {
+    width: 47vw;
+  }
+
+  .z7f20__title {
+    font-size: clamp(3.55rem, 7vw, 5.7rem);
+  }
+
+  .z7f20__signature {
+    width: 45vw;
+  }
+}
+
+/* =========================================================
+   MOBILE — SAME IMAGE, PORTRAIT-FIRST ART DIRECTION
+========================================================= */
+
+@media (max-width: 760px) {
+  .z7f20 {
+    min-height: max(780px, 100svh) !important;
+    height: auto !important;
+    max-height: none !important;
+
+    background: #020203 !important;
+  }
+
+  .z7f20__ambient img {
+    inset: -8%;
+
+    width: 116%;
+    height: 116%;
+
+    object-position: 50% 28%;
+
+    filter:
+      grayscale(1)
+      saturate(0)
+      blur(22px)
+      brightness(.18)
+      contrast(1.20);
+  }
+
+  .z7f20__ambient::after {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,.18) 0%,
+        rgba(2,2,3,.02) 30%,
+        rgba(2,2,3,.12) 51%,
+        rgba(2,2,3,.72) 71%,
+        rgba(2,2,3,.98) 86%,
+        #020203 100%
+      );
+  }
+
+  .z7f20__visual {
+    top: 76px;
+    right: 12px;
+    bottom: auto;
+    left: 12px;
+
+    width: auto;
+    height: clamp(420px, 118vw, 510px);
+
+    border-radius: 16px;
+
+    box-shadow:
+      0 22px 55px rgba(0,0,0,.42),
+      0 0 0 1px rgba(255,255,255,.055);
+  }
+
+  .z7f20__portrait {
+    object-fit: cover;
+
+    /* Portrait source now fits the phone naturally.
+       Faces remain fully clear with no side clipping. */
+    object-position: 50% 27%;
+
+    transform: scale(1.008);
+  }
+
+  .z7f20__visual.is-color .z7f20__portrait {
+    transform: scale(1.018);
+  }
+
+  .z7f20__visual::after {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(0,0,0,.04) 0%,
+        transparent 47%,
+        rgba(0,0,0,.14) 67%,
+        rgba(0,0,0,.74) 100%
+      );
+  }
+
+  .z7f20__monogram {
+    top: 5%;
+    right: -5%;
+
+    width: 79%;
+    height: 43%;
+
+    opacity: .39;
+  }
+
+  .z7f20__reveal-hint {
+    right: 12px;
+    bottom: 12px;
+
+    font-size: .42rem;
+  }
+
+  .z7f20__hint-desktop {
+    display: none;
+  }
+
+  .z7f20__hint-mobile {
+    display: inline;
+  }
+
+  .z7f20__content {
+    justify-content: flex-start !important;
+
+    min-height: max(780px, 100svh) !important;
+
+    width: calc(100% - 30px) !important;
+
+    padding-top: clamp(462px, 128vw, 552px) !important;
+    padding-bottom: 34px !important;
+  }
+
+  .z7f20__copy {
+    width: 100%;
+    max-width: 100%;
+
+    transform: none;
+
+    padding-top: 28px;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,0) 0,
+        rgba(2,2,3,.55) 34px,
+        rgba(2,2,3,.94) 84px,
+        #020203 126px
+      );
+  }
+
+  .z7f20__eyebrow {
+    margin-bottom: 13px;
+
+    font-size: .59rem;
+    letter-spacing: .24em;
+  }
+
+  .z7f20__title {
+    font-size: clamp(2.72rem, 12.9vw, 3.85rem);
+    line-height: .87;
+    letter-spacing: -.058em;
+  }
+
+  .z7f20__title em {
+    font-size: .91em;
+  }
+
+  .z7f20__description {
+    margin-top: 17px;
+
+    font-size: .85rem;
+    line-height: 1.55;
+  }
+
+  .z7f20__signature {
+    position: relative;
+    left: auto;
+    bottom: auto;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    width: 100%;
+
+    margin-top: 27px;
+  }
+
+  .z7f20__signature > div {
+    grid-template-columns: 22px 1fr;
+    column-gap: 8px;
+  }
+
+  .z7f20__signature strong {
+    font-size: .61rem;
+  }
+
+  .z7f20__signature em {
+    font-size: .48rem;
+  }
+
+  .z7f20__scroll {
+    position: relative;
+    left: auto;
+    bottom: auto;
+
+    justify-content: center;
+
+    margin-top: 25px;
+
+    transform: none;
+  }
+
+  .z7f20__scroll span {
+    font-size: .43rem;
+  }
+
+  .z7f20__edge-line {
+    width: 55%;
+  }
+}
+
+@media (max-width: 390px) {
+  .z7f20 {
+    min-height: 750px !important;
+  }
+
+  .z7f20__visual {
+    height: 398px;
+  }
+
+  .z7f20__content {
+    min-height: 750px !important;
+
+    width: calc(100% - 28px) !important;
+
+    padding-top: 438px !important;
+  }
+
+  .z7f20__title {
+    font-size: clamp(2.46rem, 12.5vw, 3.35rem);
+  }
+
+  .z7f20__description {
+    font-size: .81rem;
+  }
+}
+
+/* =========================================================
+   PHONE LANDSCAPE
+========================================================= */
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  .z7f20 {
+    min-height: 430px !important;
+    height: 100svh !important;
+  }
+
+  .z7f20__visual {
+    top: 66px;
+    right: 18px;
+    bottom: 18px;
+    left: auto;
+
+    width: 47vw;
+    height: auto;
+  }
+
+  .z7f20__portrait {
+    object-position: 50% 34%;
+  }
+
+  .z7f20__content {
+    justify-content: center !important;
+
+    min-height: 100% !important;
+
+    width: calc(100% - 42px) !important;
+
+    padding-top: 70px !important;
+    padding-bottom: 18px !important;
+  }
+
+  .z7f20__copy {
+    width: 45%;
+    max-width: 390px;
+
+    padding: 0;
+    background: none;
+  }
+
+  .z7f20__title {
+    font-size: clamp(2.15rem, 5.3vw, 3.15rem);
+  }
+
+  .z7f20__description {
+    margin-top: 12px;
+    font-size: .72rem;
+  }
+
+  .z7f20__signature,
+  .z7f20__scroll {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7f20__portrait {
+    transform: scale(1.012) !important;
+    transition: filter 300ms linear !important;
+  }
+
+  .z7f20__scroll b::after {
+    animation: none !important;
+  }
+}
+/* Z7_FOUNDERS_V20_1_FRAMELESS_FADE_START
+   Surgical visual polish for approved V20:
+   - remove the image card/frame completely
+   - preserve the ENTIRE uploaded portrait with object-fit: contain
+   - blend photo into black with feathered left/bottom fades
+   - keep grayscale -> color hover/touch behavior unchanged
+*/
+
+/* =========================================================
+   DESKTOP / TABLET — FULL IMAGE, NO FRAME
+========================================================= */
+@media (min-width: 761px) {
+  .z7f20__visual {
+    top: clamp(82px, 8.6vh, 100px) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: min(61vw, 900px) !important;
+
+    overflow: visible !important;
+
+    border-radius: 0 !important;
+    border: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+  }
+
+  .z7f20__portrait {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+
+    /*
+      The portrait now fits by HEIGHT, so the entire original image is visible.
+      No cover-crop. No head/body clipping.
+    */
+    width: auto !important;
+    max-width: 100% !important;
+    height: 100% !important;
+
+    object-fit: contain !important;
+    object-position: 100% 100% !important;
+
+    z-index: 2 !important;
+
+    /* Feather the studio background into the website black. */
+    -webkit-mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0,0,0,.08) 7%,
+        rgba(0,0,0,.42) 16%,
+        rgba(0,0,0,.86) 27%,
+        #000 38%,
+        #000 100%
+      ) !important;
+
+    mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0,0,0,.08) 7%,
+        rgba(0,0,0,.42) 16%,
+        rgba(0,0,0,.86) 27%,
+        #000 38%,
+        #000 100%
+      ) !important;
+  }
+
+  /*
+    No rectangular overlay.
+    Just a cinematic black feather from the left and lower edge.
+  */
+  .z7f20__visual::after {
+    inset: -1px !important;
+
+    background:
+      linear-gradient(
+        90deg,
+        #020203 0%,
+        rgba(2,2,3,.92) 7%,
+        rgba(2,2,3,.56) 17%,
+        rgba(2,2,3,.17) 29%,
+        transparent 43%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,.08) 0%,
+        transparent 23%,
+        transparent 71%,
+        rgba(2,2,3,.20) 84%,
+        rgba(2,2,3,.74) 100%
+      ) !important;
+
+    opacity: 1 !important;
+  }
+
+  .z7f20__monogram {
+    top: 7% !important;
+    right: -4% !important;
+
+    width: 59% !important;
+
+    opacity: .20 !important;
+  }
+
+  .z7f20__visual-glow {
+    opacity: .42 !important;
+  }
+
+  /* Cleaner premium presentation: the interaction remains intuitive. */
+  .z7f20__reveal-hint {
+    display: none !important;
+  }
+}
+
+/* Extra-wide screens: give the complete portrait a little more breathing room. */
+@media (min-width: 1500px) {
+  .z7f20__visual {
+    width: min(58vw, 940px) !important;
+  }
+}
+
+/* =========================================================
+   MOBILE — FULL-BLEED PORTRAIT, NO CARD
+========================================================= */
+@media (max-width: 760px) {
+  .z7f20__visual {
+    top: 72px !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: auto !important;
+
+    width: 100% !important;
+
+    /*
+      Matches the source portrait aspect closely.
+      This lets object-fit:contain display the complete uploaded photo.
+    */
+    height: clamp(470px, 136vw, 545px) !important;
+
+    overflow: visible !important;
+
+    border-radius: 0 !important;
+    border: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+  }
+
+  .z7f20__portrait {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: contain !important;
+    object-position: 50% 0% !important;
+
+    z-index: 2 !important;
+
+    transform: scale(1.001) !important;
+
+    /*
+      Full image remains visible.
+      Only its lower edge dissolves naturally into the black copy area.
+    */
+    -webkit-mask-image:
+      linear-gradient(
+        180deg,
+        #000 0%,
+        #000 73%,
+        rgba(0,0,0,.94) 79%,
+        rgba(0,0,0,.65) 87%,
+        rgba(0,0,0,.20) 95%,
+        transparent 100%
+      ) !important;
+
+    mask-image:
+      linear-gradient(
+        180deg,
+        #000 0%,
+        #000 73%,
+        rgba(0,0,0,.94) 79%,
+        rgba(0,0,0,.65) 87%,
+        rgba(0,0,0,.20) 95%,
+        transparent 100%
+      ) !important;
+  }
+
+  .z7f20__visual.is-color .z7f20__portrait {
+    transform: scale(1.006) !important;
+  }
+
+  .z7f20__visual::after {
+    inset: 0 !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,.06) 0%,
+        transparent 52%,
+        rgba(2,2,3,.12) 68%,
+        rgba(2,2,3,.52) 83%,
+        rgba(2,2,3,.93) 96%,
+        #020203 100%
+      ) !important;
+
+    opacity: 1 !important;
+  }
+
+  .z7f20__monogram {
+    top: 4% !important;
+    right: -8% !important;
+
+    width: 73% !important;
+
+    opacity: .18 !important;
+  }
+
+  .z7f20__visual-glow {
+    opacity: .34 !important;
+  }
+
+  .z7f20__reveal-hint {
+    display: none !important;
+  }
+
+  /*
+    Let the copy rise into the black fade instead of beginning
+    after a visibly separate image block.
+  */
+  .z7f20__content {
+    padding-top: clamp(468px, 130vw, 526px) !important;
+  }
+
+  .z7f20__copy {
+    padding-top: 12px !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,0) 0,
+        rgba(2,2,3,.58) 30px,
+        rgba(2,2,3,.95) 76px,
+        #020203 112px
+      ) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .z7f20__visual {
+    height: 515px !important;
+  }
+
+  .z7f20__content {
+    padding-top: 492px !important;
+  }
+}
+
+/* Landscape phone: frameless image remains on the right. */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  .z7f20__visual {
+    top: 62px !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+
+    width: 53vw !important;
+    height: auto !important;
+  }
+
+  .z7f20__portrait {
+    width: auto !important;
+    height: 100% !important;
+
+    object-position: 100% 100% !important;
+
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 16%, #000 33%, #000 100%) !important;
+
+    mask-image:
+      linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 16%, #000 33%, #000 100%) !important;
+  }
+}
+
+/* Z7_FOUNDERS_V20_1_FRAMELESS_FADE_END */

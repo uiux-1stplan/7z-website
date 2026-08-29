@@ -13,11 +13,11 @@
 
 <link href="/site.webmanifest" rel="manifest"/>
 <meta content="#111111" name="theme-color"/>
-<link as="image" href="/media/main_logo/7ZMagic-official-logo-20260822.png" rel="preload"/>
+<link as="image" href="/media/main_logo/7ZMagic-signature-logo-20260828.png" rel="preload"/>
 
 
 
-<link href="/assets/css/styles.css?v=20260823-header-logo-final-prod2" rel="stylesheet"/>
+<link href="/assets/css/styles.css?v=20260828-header-logo-final-v22-7" rel="stylesheet"/>
 <link href="/assets/css/performance.css?v=20260728-video3" rel="stylesheet"/>
 <link href="/assets/css/premium-refinement.css?v=20260811-premium1" rel="stylesheet"/>
 <link href="/assets/css/pages.css?v=20260804-prod8" rel="stylesheet"/>
@@ -246,239 +246,12 @@
 </style>
 
 
-<style id="z7-partner-refined-visual-v1">
 
-/* =========================================================
-   7Z MAGIC — REFINED PARTNER LOGOS
-   Scope: Partners page only
-   Same circular UX / no detailed cards
-   ========================================================= */
 
-.z7x-page--partners .z7p-partner {
-  position: relative;
-  text-align: center;
-}
 
-/* cleaner premium stage */
-.z7x-page--partners .z7p-partner__media {
-  position: relative !important;
-  display: grid !important;
-  place-items: center !important;
-
-  width: 100% !important;
-  aspect-ratio: 1 / 1 !important;
-
-  overflow: hidden !important;
-  border-radius: 50% !important;
-
-  background:
-    radial-gradient(
-      circle at 32% 25%,
-      rgba(255,255,255,.065) 0%,
-      rgba(255,255,255,.020) 38%,
-      rgba(204,180,122,.018) 65%,
-      rgba(4,5,7,.16) 100%
-    ) !important;
-
-  border:
-    1px solid rgba(255,255,255,.075) !important;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.035),
-    inset 0 -28px 55px rgba(0,0,0,.13) !important;
-
-  transition:
-    transform .55s cubic-bezier(.2,.8,.2,1),
-    border-color .55s ease,
-    box-shadow .55s ease,
-    background .55s ease !important;
-}
-
-/* inner precision ring */
-.z7x-page--partners .z7p-partner__media::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 7% !important;
-
-  border-radius: 50% !important;
-  border: 1px solid rgba(255,255,255,.035) !important;
-
-  pointer-events: none !important;
-
-  transition:
-    transform .55s cubic-bezier(.2,.8,.2,1),
-    border-color .55s ease !important;
-}
-
-/* cinematic light sweep */
-.z7x-page--partners .z7p-partner__media::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: -35% !important;
-
-  border-radius: 50% !important;
-
-  background:
-    linear-gradient(
-      118deg,
-      transparent 38%,
-      rgba(255,255,255,.065) 49%,
-      transparent 61%
-    ) !important;
-
-  opacity: 0 !important;
-  transform: translateX(-34%) rotate(8deg) !important;
-
-  pointer-events: none !important;
-
-  transition:
-    opacity .4s ease,
-    transform .8s cubic-bezier(.2,.8,.2,1) !important;
-}
-
-/* transparent rebuilt logos */
-.z7x-page--partners .z7p-partner__media img {
-  position: relative !important;
-  z-index: 2 !important;
-
-  display: block !important;
-
-  width: 78% !important;
-  height: 78% !important;
-  max-width: 78% !important;
-  max-height: 78% !important;
-
-  object-fit: contain !important;
-  object-position: center !important;
-
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-
-  opacity: .91 !important;
-
-  transform: scale(.94) !important;
-
-  filter:
-    drop-shadow(
-      0 9px 20px
-      rgba(0,0,0,.20)
-    ) !important;
-
-  transition:
-    opacity .45s ease,
-    transform .55s cubic-bezier(.2,.8,.2,1),
-    filter .55s ease !important;
-}
-
-.z7x-page--partners .z7p-partner > span {
-  display: block !important;
-
-  margin-top: 10px !important;
-
-  font-size: 8px !important;
-  font-weight: 500 !important;
-  letter-spacing: .22em !important;
-
-  color: rgba(232,229,218,.27) !important;
-
-  transition:
-    color .45s ease,
-    transform .45s ease !important;
-}
-
-@media (hover:hover) {
-
-  .z7x-page--partners
-  .z7p-partner:hover
-  .z7p-partner__media {
-
-    transform:
-      translateY(-6px)
-      scale(1.018) !important;
-
-    border-color:
-      rgba(208,182,119,.30) !important;
-
-    background:
-      radial-gradient(
-        circle at 32% 25%,
-        rgba(255,255,255,.09) 0%,
-        rgba(208,182,119,.040) 43%,
-        rgba(208,182,119,.018) 68%,
-        rgba(4,5,7,.11) 100%
-      ) !important;
-
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.055),
-      inset 0 -26px 54px rgba(0,0,0,.11),
-      0 18px 44px rgba(0,0,0,.22),
-      0 0 34px rgba(208,182,119,.055) !important;
-  }
-
-  .z7x-page--partners
-  .z7p-partner:hover
-  .z7p-partner__media::before {
-
-    transform: scale(.96) !important;
-
-    border-color:
-      rgba(208,182,119,.17) !important;
-  }
-
-  .z7x-page--partners
-  .z7p-partner:hover
-  .z7p-partner__media::after {
-
-    opacity: 1 !important;
-
-    transform:
-      translateX(30%)
-      rotate(8deg) !important;
-  }
-
-  .z7x-page--partners
-  .z7p-partner:hover
-  .z7p-partner__media img {
-
-    opacity: 1 !important;
-
-    transform: scale(1.025) !important;
-
-    filter:
-      sepia(.30)
-      saturate(1.20)
-      brightness(1.07)
-      drop-shadow(
-        0 10px 24px
-        rgba(208,182,119,.12)
-      ) !important;
-  }
-
-  .z7x-page--partners
-  .z7p-partner:hover > span {
-
-    color:
-      rgba(208,182,119,.62) !important;
-
-    transform:
-      translateY(2px) !important;
-  }
-}
-
-@media (max-width: 760px) {
-  .z7x-page--partners .z7p-partner__media img {
-    width: 73% !important;
-    height: 73% !important;
-    max-width: 73% !important;
-    max-height: 73% !important;
-  }
-}
-
-</style>
-
-<link rel="stylesheet" href="/assets/css/magic-cursor.css?v=20260823-magic1" />
+<!-- Z7_HEADER_LOGO_ROOT_V27_START -->
+<link rel="stylesheet" href="/assets/css/header-logo-final-v27.css?v=20260829-v27-root">
+<!-- Z7_HEADER_LOGO_ROOT_V27_END -->
 </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -487,7 +260,7 @@
 <div class="z7-route-transition__stage">
 <p class="z7-route-transition__micro">7Z Magic / Scene Change</p>
 <div aria-hidden="true" class="z7-route-transition__mark">
-<img alt="" src="/media/main_logo/7ZMagic-official-logo-20260822.png"/>
+<img alt="" src="/media/main_logo/7ZMagic-signature-logo-20260828.png"/>
 </div>
 <span aria-hidden="true" class="z7-route-transition__line"></span>
 <p class="z7-route-transition__label" data-z7-route-label="">7Z Magic</p>
@@ -497,7 +270,7 @@
 <div aria-hidden="true" class="grain"></div>
 <header aria-label="Primary" class="site-header">
 <a aria-label="7Z Magic home" class="brand magnetic" href="/">
-<img alt="" src="/media/main_logo/7ZMagic-header-transparent.png"/>
+<img alt="" src="/media/main_logo/7ZMagic-header-final-20260829.png?v=20260829-v27-root"/ id="z7-header-logo-root-v27">
 </a>
 <nav aria-label="Main navigation" class="main-nav">
 <a href="/">Home</a>
@@ -589,7 +362,7 @@
 
       <div class="z7x-emblem" data-z7-reveal>
         <img
-          src="/media/main_logo/7ZMagic-official-logo-20260822.png"
+          src="/media/main_logo/7ZMagic-signature-logo-20260828.png"
           alt="7Z Magic"
         />
         <span class="z7x-emblem__orbit" aria-hidden="true"></span>
@@ -622,7 +395,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/01.png"
+                src="/media/partnetslogos-approved-v2/01.png"
                 alt="7Z Magic Partner 01"
                 loading="lazy"
                 decoding="async"
@@ -633,7 +406,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/02.png"
+                src="/media/partnetslogos-approved-v2/02.png"
                 alt="7Z Magic Partner 02"
                 loading="lazy"
                 decoding="async"
@@ -644,7 +417,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/03.png"
+                src="/media/partnetslogos-approved-v2/03.png"
                 alt="7Z Magic Partner 03"
                 loading="lazy"
                 decoding="async"
@@ -655,7 +428,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/04.png"
+                src="/media/partnetslogos-approved-v2/04.png"
                 alt="7Z Magic Partner 04"
                 loading="lazy"
                 decoding="async"
@@ -666,7 +439,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/05.png"
+                src="/media/partnetslogos-approved-v2/05.png"
                 alt="7Z Magic Partner 05"
                 loading="lazy"
                 decoding="async"
@@ -677,7 +450,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/06.png"
+                src="/media/partnetslogos-approved-v2/06.png"
                 alt="7Z Magic Partner 06"
                 loading="lazy"
                 decoding="async"
@@ -688,7 +461,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/07.png"
+                src="/media/partnetslogos-approved-v2/07.png"
                 alt="7Z Magic Partner 07"
                 loading="lazy"
                 decoding="async"
@@ -699,7 +472,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/08.png"
+                src="/media/partnetslogos-approved-v2/08.png"
                 alt="7Z Magic Partner 08"
                 loading="lazy"
                 decoding="async"
@@ -710,7 +483,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/09.png"
+                src="/media/partnetslogos-approved-v2/09.png"
                 alt="7Z Magic Partner 09"
                 loading="lazy"
                 decoding="async"
@@ -721,7 +494,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/10.png"
+                src="/media/partnetslogos-approved-v2/10.png"
                 alt="7Z Magic Partner 10"
                 loading="lazy"
                 decoding="async"
@@ -732,7 +505,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/11.png"
+                src="/media/partnetslogos-approved-v2/11.png"
                 alt="7Z Magic Partner 11"
                 loading="lazy"
                 decoding="async"
@@ -743,7 +516,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/12.png"
+                src="/media/partnetslogos-approved-v2/12.png"
                 alt="7Z Magic Partner 12"
                 loading="lazy"
                 decoding="async"
@@ -754,7 +527,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/13.png"
+                src="/media/partnetslogos-approved-v2/13.png"
                 alt="7Z Magic Partner 13"
                 loading="lazy"
                 decoding="async"
@@ -765,7 +538,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/14.png"
+                src="/media/partnetslogos-approved-v2/14.png"
                 alt="7Z Magic Partner 14"
                 loading="lazy"
                 decoding="async"
@@ -776,7 +549,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/15.png"
+                src="/media/partnetslogos-approved-v2/15.png"
                 alt="7Z Magic Partner 15"
                 loading="lazy"
                 decoding="async"
@@ -787,7 +560,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/16.png"
+                src="/media/partnetslogos-approved-v2/16.png"
                 alt="7Z Magic Partner 16"
                 loading="lazy"
                 decoding="async"
@@ -798,7 +571,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/17.png"
+                src="/media/partnetslogos-approved-v2/17.png"
                 alt="7Z Magic Partner 17"
                 loading="lazy"
                 decoding="async"
@@ -809,7 +582,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/18.png"
+                src="/media/partnetslogos-approved-v2/18.png"
                 alt="7Z Magic Partner 18"
                 loading="lazy"
                 decoding="async"
@@ -820,7 +593,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/19.png"
+                src="/media/partnetslogos-approved-v2/19.png"
                 alt="7Z Magic Partner 19"
                 loading="lazy"
                 decoding="async"
@@ -831,7 +604,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/20.png"
+                src="/media/partnetslogos-approved-v2/20.png"
                 alt="7Z Magic Partner 20"
                 loading="lazy"
                 decoding="async"
@@ -842,7 +615,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/21.png"
+                src="/media/partnetslogos-approved-v2/21.png"
                 alt="7Z Magic Partner 21"
                 loading="lazy"
                 decoding="async"
@@ -853,7 +626,7 @@
           <article class="z7p-partner" data-z7-reveal>
             <div class="z7p-partner__media">
               <img
-                src="/partner-assets-v7-final/22.png"
+                src="/media/partnetslogos-approved-v2/22.png"
                 alt="7Z Magic Partner 22"
                 loading="lazy"
                 decoding="async"
@@ -889,7 +662,7 @@
 <footer class="footer" id="contact-footer">
 <div class="footer__inner">
 <div class="footer__brand">
-<img alt="7Z Magic" src="/media/main_logo/7ZMagic-official-logo-20260822.png"/>
+<img alt="7Z Magic" src="/media/main_logo/7ZMagic-signature-logo-20260828.png"/>
 <div>
 <p class="section-kicker">7Z Magic</p>
 <h2>Premium creative systems for spaces, screens and modern brands.</h2>
@@ -908,9 +681,7 @@
 <div class="footer__contact">
 <p>Ready to start a polished digital experience?</p>
 <a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
-<div aria-label="Strategic blueprint documents" class="footer__documents">
-<a class="footer__document-action" href="/admin/"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 5.5 5.8v5.3c0 4.1 2.7 7.8 6.5 9.9 3.8-2.1 6.5-5.8 6.5-9.9V5.8L12 3Z"></path><path d="M9.5 11.2V9.8a2.5 2.5 0 0 1 5 0v1.4"></path><rect x="8.4" y="11.2" width="7.2" height="5.1" rx="1.2"></rect></svg><span>ADMIN PANEL</span><span aria-hidden="true" class="footer__document-arrow">↗</span></a>
-</div>
+
 <div aria-label="Social links" class="socials">
 <a aria-label="Instagram" class="magnetic social-icon" href="https://www.instagram.com/7z.magic" rel="noopener" target="_blank">
 <svg aria-hidden="true" viewbox="0 0 24 24">
@@ -951,7 +722,7 @@
 </div>
 </div>
 <div class="footer__bottom">
-<small>Copyright © 2026 7Z Magic. All rights reserved.</small>
+<small>Copyright ┬® 2026 7Z Magic. All rights reserved.</small>
 <a href="/">Home</a>
 </div>
 </footer>

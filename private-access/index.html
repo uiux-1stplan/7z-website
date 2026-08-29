@@ -13,11 +13,11 @@
 
 <link href="/site.webmanifest" rel="manifest"/>
 <meta content="#111111" name="theme-color"/>
-<link as="image" href="/media/main_logo/7ZMagic-official-logo-20260822.png" rel="preload"/>
+<link as="image" href="/media/main_logo/7ZMagic-signature-logo-20260828.png" rel="preload"/>
 
 
 
-<link href="/assets/css/styles.css?v=20260823-header-logo-final-prod2" rel="stylesheet"/>
+<link href="/assets/css/styles.css?v=20260828-header-logo-final-v22-7" rel="stylesheet"/>
 <link href="/assets/css/performance.css?v=20260728-video3" rel="stylesheet"/>
 <link href="/assets/css/premium-refinement.css?v=20260811-premium1" rel="stylesheet"/>
 <link href="/assets/css/pages.css?v=20260804-prod8" rel="stylesheet"/>
@@ -99,7 +99,59 @@
     <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
   <link rel="stylesheet" href="/private-access/private-access.css?v=20260822-watermark-opacity-25" />
   <link rel="stylesheet" href="/assets/css/private-access-control.css?v=20260822-static-text-recovery" />
-<link rel="stylesheet" href="/assets/css/magic-cursor.css?v=20260823-magic1" />
+<link rel="stylesheet" href="/private-access/portal-files.css?v=20260824">
+<!-- 7Z INNER CIRCLE CRITICAL PAINT START -->
+
+<script>
+document.documentElement.classList.add('z7icx-preauth');
+</script>
+
+<style>
+
+/*
+  CRITICAL FIRST-PAINT RULES
+
+  Prevent the old Private Access hero/content from
+  flashing before Inner Circle initializes.
+*/
+
+html.z7icx-preauth body {
+  background: #030303 !important;
+}
+
+/* OLD PRIVATE ACCESS CONTENT */
+html.z7icx-preauth .z7pa-hero,
+html.z7icx-preauth .z7pa-section-head,
+html.z7icx-preauth .z7pa-grid {
+  display: none !important;
+}
+
+/*
+  Inner Circle is allowed to exist immediately.
+  Header/navigation remains untouched.
+*/
+html.z7icx-preauth [data-z7icx-live] {
+  display: block !important;
+}
+
+/*
+  Prevent accidental white/transparent flash.
+*/
+html.z7icx-preauth .z7pa-library {
+  background: #030303 !important;
+  min-height: 100svh !important;
+}
+
+</style>
+
+<!-- 7Z INNER CIRCLE CRITICAL PAINT END -->
+
+
+
+
+<!-- Z7_HEADER_LOGO_ROOT_V27_START -->
+<link rel="stylesheet" href="/assets/css/header-logo-final-v27.css?v=20260829-v27-root">
+<!-- Z7_HEADER_LOGO_ROOT_V27_END -->
 </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -108,7 +160,7 @@
 <div class="z7-route-transition__stage">
 <p class="z7-route-transition__micro">7Z Magic / Scene Change</p>
 <div aria-hidden="true" class="z7-route-transition__mark">
-<img alt="" src="/media/main_logo/7ZMagic-official-logo-20260822.png"/>
+<img alt="" src="/media/main_logo/7ZMagic-signature-logo-20260828.png"/>
 </div>
 <span aria-hidden="true" class="z7-route-transition__line"></span>
 <p class="z7-route-transition__label" data-z7-route-label="">7Z Magic</p>
@@ -118,7 +170,7 @@
 <div aria-hidden="true" class="grain"></div>
 <header aria-label="Primary" class="site-header">
 <a aria-label="7Z Magic home" class="brand magnetic" href="/">
-<img alt="" src="/media/main_logo/7ZMagic-header-transparent.png"/>
+<img alt="" src="/media/main_logo/7ZMagic-header-final-20260829.png?v=20260829-v27-root"/ id="z7-header-logo-root-v27">
 </a>
 <nav aria-label="Main navigation" class="main-nav">
 <a href="/">Home</a>
@@ -216,29 +268,228 @@
         <p>Choose an experience below. Existing 7Z Private Access authentication will handle the rest.</p>
       </div>
 
-      <div class="z7pa-login" data-z7pa-login-panel>
-        <img class="z7pa-login__watermark" src="/media/main_logo/7ZMagic-official-logo-20260822.png" alt="" aria-hidden="true" style="opacity:0.25 !important; visibility:visible !important; pointer-events:none !important;">
-        <div class="z7pa-login__content">
-          <p class="section-kicker">Private Access</p>
-          <h3>Login To Explore</h3>
-          <p>Enter your assigned 7Z access credentials. You will only see the protected experience assigned to your account.</p>
-          <form class="z7pa-login__form" id="z7PrivateAccessLoginForm" autocomplete="on">
-            <label>
-              <span>Username</span>
-              <input id="z7HubClientId" name="clientId" type="text" autocomplete="username" maxlength="256" required>
-            </label>
-            <label>
-              <span>Password</span>
-              <input id="z7HubAccessKey" name="accessKey" type="password" autocomplete="current-password" maxlength="256" required>
-            </label>
-            <button type="submit" class="magnetic">
-              <span>LOGIN TO EXPLORE</span>
-              <b aria-hidden="true">↗</b>
-            </button>
-            <p class="z7pa-login__message" id="z7HubLoginMessage" role="status" aria-live="polite"></p>
-          </form>
-        </div>
+            <section
+  class="z7icx"
+  data-z7pa-login-panel
+  data-z7icx-live>
+
+  <div class="z7icx__ambient" aria-hidden="true"></div>
+  <div class="z7icx__light-pass" aria-hidden="true"></div>
+
+  <header class="z7icx__topbar">
+
+    <span>
+      <strong>7Z MAGIC</strong>
+      <i>/</i>
+      PRIVATE CLIENT OFFICE
+    </span>
+
+    <span>
+      BY INVITATION ONLY
+    </span>
+
+  </header>
+
+
+  <main class="z7icx__scene">
+
+    <div
+      class="z7icx__divider"
+      aria-hidden="true">
+    </div>
+
+
+    <section class="z7icx__brand">
+
+      <div
+        class="z7icx__brand-aura"
+        aria-hidden="true">
       </div>
+
+
+      <div class="z7icx__logo-shell">
+
+        <img
+          class="z7icx__logo"
+          src="/media/main_logo/7ZMagic-signature-logo-20260828.png"
+          alt="7Z Magic">
+
+        <span
+          class="z7icx__logo-reflection"
+          aria-hidden="true">
+        </span>
+
+      </div>
+
+
+      <div class="z7icx__kicker">
+        PRIVATE ACCESS
+      </div>
+
+
+      <h1>
+        The Inner
+        <br>
+        Circle.
+      </h1>
+
+
+      <p class="z7icx__brand-copy">
+        Private access reserved for invited clients,
+        partners, and members of the 7Z network.
+      </p>
+
+
+      <button
+        type="button"
+        class="z7icx__seat"
+        id="z7InnerCircleSeat" onclick="event.preventDefault();event.stopPropagation();const p=window.document.querySelector('[data-z7pa-login-panel]');if(!p)return false;p.hidden=false;p.removeAttribute('hidden');p.setAttribute('aria-hidden','false');p.classList.remove('is-authorized','is-denied');p.classList.add('is-opening','is-open');this.setAttribute('aria-expanded','true');window.setTimeout(()=>p.classList.remove('is-opening'),1100);window.setTimeout(()=>window.document.querySelector('#z7HubClientId')?.focus(),450);return false;" aria-expanded="false">
+
+        <span>
+          TAKE YOUR SEAT
+        </span>
+
+        <b aria-hidden="true">
+          ÔåÆ
+        </b>
+
+      </button>
+
+    </section>
+
+
+
+    <section class="z7icx__auth">
+
+      <div class="z7icx__auth-inner">
+
+        <div class="z7icx__form-kicker">
+          MEMBERS ONLY
+        </div>
+
+
+        <h2>
+          Welcome
+          <br>
+          inside.
+        </h2>
+
+
+        <p class="z7icx__intro">
+          Use the credentials assigned to your
+          private 7Z experience.
+        </p>
+
+
+        <form
+          class="z7pa-login__form z7icx__form"
+          id="z7PrivateAccessLoginForm"
+          autocomplete="on">
+
+          <label class="z7icx__field">
+
+            <span>
+              MEMBER ID
+            </span>
+
+            <input
+              id="z7HubClientId"
+              name="clientId"
+              type="text"
+              autocomplete="username"
+              maxlength="256"
+              placeholder="Enter member ID"
+              required>
+
+          </label>
+
+
+          <label class="z7icx__field">
+
+            <span>
+              PASSCODE
+            </span>
+
+            <input
+              id="z7HubAccessKey"
+              name="accessKey"
+              type="password"
+              autocomplete="current-password"
+              maxlength="256"
+              placeholder="Enter passcode"
+              required>
+
+          </label>
+
+
+          <button
+            type="submit"
+            class="z7icx__submit">
+
+            <span data-z7icx-submit-label>
+              ENTER THE CIRCLE
+            </span>
+
+            <b aria-hidden="true">
+              ÔåÆ
+            </b>
+
+          </button>
+
+
+          <p
+            class="z7pa-login__message z7icx__message"
+            id="z7HubLoginMessage"
+            role="status"
+            aria-live="polite">
+          </p>
+
+        </form>
+
+
+        <div class="z7icx__meta">
+          PRIVATE
+          <i></i>
+          SECURE
+          <i></i>
+          7Z MAGIC
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <div
+    class="z7icx__welcome"
+    aria-hidden="true">
+
+    <span>
+      Welcome Inside.
+    </span>
+
+  </div>
+
+
+  <footer class="z7icx__signature">
+
+    7Z MAGIC
+
+    <i>/</i>
+
+    <b>AMMAN</b>
+
+    <i>/</i>
+
+    PRIVATE CLIENT NETWORK
+
+  </footer>
+
+</section>
+
+
       <div class="z7pa-grid" data-z7-stagger data-z7pa-grid>
         <a class="z7pa-card magnetic" data-z7pa-resource="silla" href="/silla-hall-presentation/">
           <div class="z7pa-card__meta">
@@ -249,7 +500,7 @@
             <h3>Silla Hall</h3>
             <span>Private interactive presentation and venue experience.</span>
           </div>
-          <div class="z7pa-card__action"><span>Open Private Experience</span><b>↗</b></div>
+          <div class="z7pa-card__action"><span>Open Private Experience</span><b>├óÔÇáÔÇö</b></div>
         </a>
 
         <a class="z7pa-card magnetic" data-z7pa-resource="elcon" href="/elcon-arabia-presentation/">
@@ -261,32 +512,12 @@
             <h3>ELCON Arabia</h3>
             <span>Protected corporate and project presentation experience.</span>
           </div>
-          <div class="z7pa-card__action"><span>Open Private Experience</span><b>↗</b></div>
+          <div class="z7pa-card__action"><span>Open Private Experience</span><b>├óÔÇáÔÇö</b></div>
         </a>
 
-        <a class="z7pa-card magnetic" data-z7pa-resource="blueprint-html" href="/strategic-blueprint/">
-          <div class="z7pa-card__meta">
-            <span>03</span><span class="z7pa-card__lock"><i></i>Protected</span>
-          </div>
-          <div class="z7pa-card__body">
-            <p>Protected HTML</p>
-            <h3>Strategic Blueprint</h3>
-            <span>Interactive strategic blueprint and operating framework.</span>
-          </div>
-          <div class="z7pa-card__action"><span>Open Blueprint</span><b>↗</b></div>
-        </a>
+        
 
-        <a class="z7pa-card magnetic" data-z7pa-resource="blueprint-pdf" href="/api/private-documents/blueprint">
-          <div class="z7pa-card__meta">
-            <span>04</span><span class="z7pa-card__lock"><i></i>Protected</span>
-          </div>
-          <div class="z7pa-card__body">
-            <p>Confidential PDF</p>
-            <h3>Blueprint PDF</h3>
-            <span>Protected document edition of the 7Z strategic blueprint.</span>
-          </div>
-          <div class="z7pa-card__action"><span>Open Protected PDF</span><b>↗</b></div>
-        </a>
+        
 
         <a class="z7pa-card magnetic" data-z7pa-resource="tawjihi-quotation" href="/tawjihi-english-quotation/">
           <div class="z7pa-card__meta">
@@ -297,7 +528,7 @@
             <h3>Tawjihi English</h3>
             <span>English digital curriculum production quotation.</span>
           </div>
-          <div class="z7pa-card__action"><span>Open Quotation</span><b>↗</b></div>
+          <div class="z7pa-card__action"><span>Open Quotation</span><b>├óÔÇáÔÇö</b></div>
         </a>
 
         <a class="z7pa-card magnetic" data-z7pa-resource="oman-partnership" href="/oman-market-partnership/">
@@ -307,9 +538,9 @@
           <div class="z7pa-card__body">
             <p>Partnership Presentation</p>
             <h3>Oman Market</h3>
-            <span>Jordan × Oman × UAE partnership and market experience.</span>
+            <span>Jordan ├âÔÇö Oman ├âÔÇö UAE partnership and market experience.</span>
           </div>
-          <div class="z7pa-card__action"><span>Open Presentation</span><b>↗</b></div>
+          <div class="z7pa-card__action"><span>Open Presentation</span><b>├óÔÇáÔÇö</b></div>
         </a>
 
 
@@ -334,7 +565,60 @@
     </div>
   </section>
 
-  <section class="z7pa-policy">
+
+<!-- Z7_FILES_STATIC_START -->
+
+<section
+  id="z7-client-private-files"
+  class="z7-client-private-files"
+  hidden
+  aria-hidden="true">
+
+  <div class="z7cpf-inner">
+
+    <div class="z7cpf-heading">
+
+      <div>
+
+        <div class="z7cpf-kicker">
+          PRIVATE DELIVERY
+        </div>
+
+        <h2>
+          Your Files
+        </h2>
+
+        <p>
+          Secure deliverables assigned specifically
+          to your private 7Z access.
+        </p>
+
+      </div>
+
+      <div
+        class="z7cpf-session"
+        aria-label="Secure private session">
+
+        <i></i>
+
+        SECURE SESSION
+
+      </div>
+
+    </div>
+
+    <div
+      id="z7cpf-list"
+      class="z7cpf-list">
+    </div>
+
+  </div>
+
+</section>
+
+<!-- Z7_FILES_STATIC_END -->
+
+<section class="z7pa-policy">
     <div class="z7pa-shell z7pa-policy__layout" data-z7-reveal>
       <div>
         <p class="section-kicker">Access Policy</p>
@@ -350,7 +634,7 @@
 <footer class="footer" id="contact-footer">
 <div class="footer__inner">
 <div class="footer__brand">
-<img alt="7Z Magic" src="/media/main_logo/7ZMagic-official-logo-20260822.png"/>
+<img alt="7Z Magic" src="/media/main_logo/7ZMagic-signature-logo-20260828.png"/>
 <div>
 <p class="section-kicker">7Z Magic</p>
 <h2>Premium creative systems for spaces, screens and modern brands.</h2>
@@ -369,9 +653,7 @@
 <div class="footer__contact">
 <p>Ready to start a polished digital experience?</p>
 <a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
-<div aria-label="Strategic blueprint documents" class="footer__documents">
-<a class="footer__document-action" href="/admin/"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 5.5 5.8v5.3c0 4.1 2.7 7.8 6.5 9.9 3.8-2.1 6.5-5.8 6.5-9.9V5.8L12 3Z"></path><path d="M9.5 11.2V9.8a2.5 2.5 0 0 1 5 0v1.4"></path><rect x="8.4" y="11.2" width="7.2" height="5.1" rx="1.2"></rect></svg><span>ADMIN PANEL</span><span aria-hidden="true" class="footer__document-arrow">↗</span></a>
-</div>
+
 <div aria-label="Social links" class="socials">
 <a aria-label="Instagram" class="magnetic social-icon" href="https://www.instagram.com/7z.magic" rel="noopener" target="_blank">
 <svg aria-hidden="true" viewbox="0 0 24 24">
@@ -412,7 +694,7 @@
 </div>
 </div>
 <div class="footer__bottom">
-<small>Copyright © 2026 7Z Magic. All rights reserved.</small>
+<small>Copyright ├é┬® 2026 7Z Magic. All rights reserved.</small>
 <a href="/">Home</a>
 </div>
 </footer>
@@ -430,9 +712,11 @@
 <script src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
 <script defer src="/assets/js/premium-refinement.js?v=20260811-premium1"></script>
 
-<script src="/private-access/private-access.js?v=20260821-shell2"></script>
+<script src="/private-access/private-access.js?v=1787773580108"></script>
 
   <script src="/assets/js/private-access-control.js?v=20260822-global-access"></script>
-<script defer src="/assets/js/magic-cursor.js?v=20260823-magic1"></script>
+<script src="/private-access/session-button-bridge.js?v=1787773580108"></script>
+
+<script src="/private-access/portal-files.js?v=1787783247962"></script>
 </body>
 </html>
