@@ -266,3 +266,14 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Z7-QA-MOBILE-NAV-SAFE-SPACE-V37 */
+@media (max-width: 760px) {
+  html {
+    scroll-padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  }
+
+  body {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  }
+}

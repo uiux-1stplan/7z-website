@@ -1,0 +1,9 @@
+/* 7Z Magic QA hotfix V37 - FOUNDERS ONLY */
+@media (min-width: 901px) and (max-width: 1100px) and (orientation: landscape) {
+  .z7f20__visual,
+  .z7f20__portrait {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}

@@ -1,0 +1,9 @@
+/* 7Z Magic QA hotfix V37 - HOME ONLY */
+@media (min-width: 761px) and (max-width: 1100px) {
+  .hero-title,
+  .hero-copy {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
