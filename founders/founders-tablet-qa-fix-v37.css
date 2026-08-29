@@ -1,4 +1,7 @@
-/* 7Z Magic FOUNDERS landscape tablet final fallback. */
+/* 7Z Magic FOUNDERS browser-safe portrait rendering.
+   Same approved portrait. No layout redesign.
+*/
+
 @media (min-width: 901px) and (max-width: 1100px) and (orientation: landscape) {
   .z7f20__visual {
     display: block !important;
@@ -45,5 +48,39 @@
         transparent 60%,
         rgba(2,2,3,.58) 100%
       ) !important;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) and (orientation: portrait) {
+  .z7f20__visual {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: transparent !important;
+    background-image: url('/media/founders/7z-founders-studio-v20.jpeg') !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    background-position: right bottom !important;
+  }
+
+  .z7f20__portrait {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) and (orientation: portrait) {
+  .z7f20__visual {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: transparent !important;
+    background-image: url('/media/founders/7z-founders-studio-v20.jpeg') !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    background-position: center top !important;
+  }
+
+  .z7f20__portrait {
+    display: none !important;
   }
 }

@@ -1,12 +1,16 @@
-/* 7Z Magic HOME tablet root fix. Scope: 761px to 1100px only. */
-@media (min-width: 761px) and (max-width: 1100px) {
-  .hero-title,
-  .hero-copy {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
+/* 7Z Magic HOME visibility root fix.
+   The native design remains responsible for sizing/positioning.
+   This file only prevents hero copy from being hidden at any viewport.
+*/
 
+.hero-title,
+.hero-copy {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
   .hero-title {
     width: min(86vw, 780px) !important;
     max-width: 780px !important;
