@@ -1,193 +1,70 @@
 (() => {
   "use strict";
 
-  const all = (selector, scope = document) =>
-    Array.from(scope.querySelectorAll(selector));
+  if (window.__Z7_ROOT_PERF_V6__) return;
+  window.__Z7_ROOT_PERF_V6__ = true;
 
-  const nativeSrc = Object.getOwnPropertyDescriptor(
-    HTMLMediaElement.prototype,
-    "src"
-  );
+  const hardReveal = () => {
+    const loader = document.querySelector("#loader");
+    const progressBar = document.querySelector("#loaderProgress");
+    const count = document.querySelector("#loaderCount");
 
-  const connection =
-    navigator.connection ||
-    navigator.mozConnection ||
-    navigator.webkitConnection;
+    if (progressBar) progressBar.style.width = "100%";
+    if (count) count.textContent = "100";
 
-  const constrainedNetwork = Boolean(
-    connection &&
-      (connection.saveData ||
-        /(^|-)2g$/.test(connection.effectiveType || ""))
-  );
-
-  const registered = new WeakSet();
-
-  const isCritical = (video) =>
-    video.id === "introVideo" ||
-    video.classList.contains("loader__video") ||
-    video.classList.contains("loader__video-bg");
-
-  const posterFor = (source) => {
-    const clean = String(source || "")
-      .split(/[?#]/)[0]
-      .replace(/^\/+/, "");
-
-    if (!clean.startsWith("media/")) return "";
-
-    return clean
-      .replace(/^media\//, "media/posters/")
-      .replace(/\.[^.]+$/, ".jpg");
-  };
-
-  const setNativeSource = (video, source) => {
-    if (nativeSrc && nativeSrc.set) {
-      nativeSrc.set.call(video, source);
-      return;
+    if (loader) {
+      loader.style.transition = "opacity 0.32s ease, visibility 0.32s ease";
+      loader.style.opacity = "0";
+      loader.style.visibility = "hidden";
+      loader.style.pointerEvents = "none";
+      window.setTimeout(() => {
+        loader.style.display = "none";
+      }, 360);
     }
 
-    video.setAttribute("src", source);
-  };
+    document.body.classList.remove("is-loading");
 
-  const ensurePoster = (video, source) => {
-    if (video.poster) return;
-    const poster = posterFor(source);
-    if (poster) video.poster = poster;
-  };
+    document.querySelectorAll(".reveal").forEach((element) => {
+      element.style.opacity = "1";
+      element.style.visibility = "visible";
+      element.style.transform = "none";
+      element.style.filter = "none";
+    });
 
-  const activate = (video, userInitiated = false) => {
-    if (!video || isCritical(video) || video.getAttribute("src")) return;
-
-    const source = video.dataset.src;
-    if (!source) return;
-
-    ensurePoster(video, source);
-    video.preload = userInitiated ? "auto" : "metadata";
-    setNativeSource(video, source);
-    video.load();
-  };
-
-  const observer =
-    "IntersectionObserver" in window
-      ? new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              if (!constrainedNetwork) activate(entry.target, false);
-              observer.unobserve(entry.target);
-            });
-          },
-          { rootMargin: "420px 0px", threshold: 0.01 }
-        )
-      : null;
-
-  const register = (video) => {
-    if (!(video instanceof HTMLVideoElement) || registered.has(video)) return;
-
-    registered.add(video);
-
-    const source =
-      video.dataset.src ||
-      video.getAttribute("src") ||
-      video.currentSrc;
-
-    ensurePoster(video, source);
-
-    if (isCritical(video)) {
-      video.preload = video.id === "introVideo" ? "metadata" : "none";
-      return;
+    const introVideo = document.querySelector("#introVideo");
+    if (introVideo && introVideo.paused) {
+      introVideo.muted = true;
+      introVideo.play().catch(() => {});
     }
-
-    if (video.getAttribute("src")) {
-      video.dataset.src = video.getAttribute("src");
-      video.removeAttribute("src");
-      video.preload = "none";
-      video.load();
-    } else {
-      video.preload = "none";
-    }
-
-    if (observer) observer.observe(video);
   };
 
-  if (
-    nativeSrc &&
-    nativeSrc.configurable &&
-    nativeSrc.get &&
-    nativeSrc.set
-  ) {
-    Object.defineProperty(HTMLMediaElement.prototype, "src", {
-      configurable: true,
-      enumerable: nativeSrc.enumerable,
+  // Absolute UX safety net. A visitor must never be trapped on the loader.
+  window.setTimeout(() => {
+    const loader = document.querySelector("#loader");
+    if (!loader) return;
 
-      get() {
-        return nativeSrc.get.call(this);
-      },
+    const style = getComputedStyle(loader);
+    const stillVisible =
+      style.display !== "none" &&
+      style.visibility !== "hidden" &&
+      Number.parseFloat(style.opacity || "1") > 0.01;
 
-      set(value) {
-        if (
-          this instanceof HTMLVideoElement &&
-          !isCritical(this) &&
-          typeof value === "string" &&
-          /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(value)
-        ) {
-          this.dataset.src = value;
-          this.preload = "none";
-          ensurePoster(this, value);
-          if (this.isConnected) register(this);
-          return;
-        }
+    if (stillVisible) hardReveal();
+  }, 2600);
 
-        nativeSrc.set.call(this, value);
+  const tuneImages = () => {
+    document.querySelectorAll("main img").forEach((image) => {
+      const rect = image.getBoundingClientRect();
+      if (rect.top > window.innerHeight * 1.25) {
+        if (!image.hasAttribute("loading")) image.loading = "lazy";
+        if (!image.hasAttribute("decoding")) image.decoding = "async";
       }
     });
+  };
+
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(tuneImages, { timeout: 1600 });
+  } else {
+    window.setTimeout(tuneImages, 700);
   }
-
-  all("video").forEach(register);
-
-  const mutations = new MutationObserver((records) => {
-    records.forEach((record) => {
-      record.addedNodes.forEach((node) => {
-        if (!(node instanceof Element)) return;
-        if (node.matches("video")) register(node);
-        all("video", node).forEach(register);
-      });
-    });
-  });
-
-  mutations.observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  });
-
-  const activateFromControl = (event) => {
-    if (!(event.target instanceof Element)) return;
-
-    const trigger = event.target.closest("[data-inline-video]");
-    if (!trigger) return;
-
-    const container = trigger.closest(
-      ".media-tile, .manifest__media, .browser-frame, .phone-frame, .film-player"
-    );
-
-    activate(container && container.querySelector("video"), true);
-  };
-
-  document.addEventListener("pointerdown", activateFromControl, true);
-
-  document.addEventListener(
-    "keydown",
-    (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        activateFromControl(event);
-      }
-    },
-    true
-  );
-
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) return;
-    all("main video:not(#introVideo)").forEach((video) => video.pause());
-  });
-
-  window.setTimeout(() => mutations.disconnect(), 15000);
 })();

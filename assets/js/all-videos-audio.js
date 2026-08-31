@@ -1,15 +1,19 @@
 (() => {
   "use strict";
 
-  const VIDEO_SELECTOR = "video";
-  const SKIP_SELECTOR = "#loader, .loader, [data-preloader], .z7-route-transition";
+  if (window.__Z7_VIDEO_ENGINE_V6__) return;
+  window.__Z7_VIDEO_ENGINE_V6__ = true;
+
+  const SKIP_SELECTOR =
+    "#loader, .loader, [data-preloader], .z7-route-transition, #introVideo";
+
   const HOST_SELECTOR =
     ".media-tile, .film-player, .manifest__media--cinema, .manifest__media, " +
-    ".browser-frame, .phone-frame, .web-device, .intro, .hero, .hero-media";
+    ".browser-frame, .phone-frame, .web-device, .hero-media";
 
-  const managedVideos = new Set();
+  const managed = new Set();
   const buttons = new WeakMap();
-  const visibleVideos = new Set();
+  const restartTimers = new WeakMap();
 
   const speakerMarkup = `
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -22,60 +26,41 @@
     </svg>
   `;
 
-  const observer =
-    "IntersectionObserver" in window
-      ? new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              const video = entry.target;
+  const isContentVideo = (video) =>
+    video instanceof HTMLVideoElement &&
+    !video.closest(SKIP_SELECTOR);
 
-              if (entry.isIntersecting) {
-                visibleVideos.add(video);
-                playVideoMuted(video);
-              } else {
-                visibleVideos.delete(video);
-                video.pause();
-                muteVideo(video);
-              }
-            });
-          },
-          {
-            rootMargin: "320px 0px",
-            threshold: 0.04
-          }
-        )
-      : null;
-
-  function isContentVideo(video) {
+  const inViewport = (video) => {
+    const rect = video.getBoundingClientRect();
     return (
-      video instanceof HTMLVideoElement &&
-      !video.closest(SKIP_SELECTOR)
+      rect.width > 0 &&
+      rect.height > 0 &&
+      rect.bottom > 0 &&
+      rect.top < window.innerHeight &&
+      rect.right > 0 &&
+      rect.left < window.innerWidth
     );
-  }
+  };
 
-  function getHost(video) {
-    const existingHost = video.closest(HOST_SELECTOR);
-    if (existingHost) return existingHost;
+  const getHost = (video) => {
+    const host = video.closest(HOST_SELECTOR) || video.parentElement;
+    if (!host) return null;
 
-    const parent = video.parentElement;
-    if (!parent) return null;
-
-    const computed = getComputedStyle(parent);
-    if (computed.position === "static") {
-      parent.style.position = "relative";
+    if (getComputedStyle(host).position === "static") {
+      host.style.position = "relative";
     }
 
-    return parent;
-  }
+    return host;
+  };
 
-  function loadSource(video) {
-    if (!video.getAttribute("src") && video.dataset.src) {
-      video.src = video.dataset.src;
-      video.load();
-    }
-  }
+  const ensureLoop = (video) => {
+    video.loop = true;
+    video.playsInline = true;
+    video.setAttribute("loop", "");
+    video.setAttribute("playsinline", "");
+  };
 
-  function syncButton(video) {
+  const syncButton = (video) => {
     const button = buttons.get(video);
     if (!button) return;
 
@@ -87,40 +72,98 @@
       audible ? "Mute this video" : "Turn sound on for this video"
     );
     button.title = audible ? "Mute video" : "Turn sound on";
-  }
+  };
 
-  function muteVideo(video) {
+  const muteVideo = (video) => {
     video.muted = true;
     video.defaultMuted = true;
     syncButton(video);
-  }
+  };
 
-  function muteEveryOtherVideo(current) {
-    managedVideos.forEach((video) => {
+  const muteOthers = (current) => {
+    managed.forEach((video) => {
       if (video !== current) muteVideo(video);
     });
-  }
+  };
 
-  function playVideoMuted(video) {
-    loadSource(video);
+  const activate = (video, eager = false) => {
+    if (!isContentVideo(video)) return false;
 
-    video.loop = true;
-    video.autoplay = true;
-    video.playsInline = true;
+    ensureLoop(video);
 
-    video.setAttribute("loop", "");
-    video.setAttribute("autoplay", "");
-    video.setAttribute("playsinline", "");
+    if (video.getAttribute("src")) return true;
 
-    if (!video.muted) return;
+    const source = video.dataset.src;
+    if (!source) return false;
+
+    video.preload = eager ? "auto" : "metadata";
+    video.setAttribute("src", source);
+
+    try {
+      video.load();
+    } catch (_) {}
+
+    return true;
+  };
+
+  const unload = (video) => {
+    if (!isContentVideo(video) || !video.paused) return;
+
+    const source = video.getAttribute("src");
+    if (!source) return;
+
+    video.dataset.src = source;
+    video.removeAttribute("src");
+    video.preload = "none";
+
+    try {
+      video.load();
+    } catch (_) {}
+  };
+
+  const playVisible = (video) => {
+    if (document.hidden || !inViewport(video)) return;
+
+    activate(video, false);
+    ensureLoop(video);
 
     video.play().catch(() => {
       muteVideo(video);
       video.play().catch(() => {});
     });
-  }
+  };
 
-  function createSoundButton(video, host) {
+  const scheduleHeal = (video) => {
+    const old = restartTimers.get(video);
+    if (old) window.clearTimeout(old);
+
+    const timer = window.setTimeout(() => {
+      restartTimers.delete(video);
+
+      if (
+        document.hidden ||
+        !video.isConnected ||
+        !inViewport(video)
+      ) {
+        return;
+      }
+
+      ensureLoop(video);
+      if (video.paused) playVisible(video);
+    }, 120);
+
+    restartTimers.set(video, timer);
+  };
+
+  const createSoundButton = (video, host) => {
+    const existing = host.querySelector(":scope > .z7-video-audio");
+
+    if (existing) {
+      buttons.set(video, existing);
+      syncButton(video);
+      return;
+    }
+
     const button = document.createElement("button");
     button.type = "button";
     button.className = "z7-video-audio";
@@ -137,10 +180,11 @@
       event.preventDefault();
       event.stopPropagation();
 
-      loadSource(video);
+      activate(video, true);
+      ensureLoop(video);
 
       if (video.muted || video.volume === 0) {
-        muteEveryOtherVideo(video);
+        muteOthers(video);
         video.defaultMuted = false;
         video.muted = false;
         video.volume = 1;
@@ -155,21 +199,81 @@
     host.appendChild(button);
     buttons.set(video, button);
     syncButton(video);
-  }
+  };
 
-  function prepareVideo(video) {
-    if (!isContentVideo(video) || managedVideos.has(video)) return;
+  const warmObserver =
+    "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) activate(entry.target, false);
+            });
+          },
+          { rootMargin: "700px 0px", threshold: 0.01 }
+        )
+      : null;
+
+  const playObserver =
+    "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const video = entry.target;
+
+              if (entry.isIntersecting && entry.intersectionRatio >= 0.06) {
+                playVisible(video);
+                return;
+              }
+
+              const timer = restartTimers.get(video);
+              if (timer) {
+                window.clearTimeout(timer);
+                restartTimers.delete(video);
+              }
+
+              video.pause();
+              muteVideo(video);
+            });
+          },
+          {
+            rootMargin: "0px",
+            threshold: [0, 0.06, 0.2, 0.5]
+          }
+        )
+      : null;
+
+  const coldObserver =
+    "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) unload(entry.target);
+            });
+          },
+          { rootMargin: "1600px 0px", threshold: 0 }
+        )
+      : null;
+
+  const prepare = (video) => {
+    if (!isContentVideo(video) || managed.has(video)) return;
 
     const host = getHost(video);
     if (!host) return;
 
-    managedVideos.add(video);
-    host.classList.add("z7-video-host");
+    managed.add(video);
+    host.classList.add("z7-video-host", "z7-autoloop-enabled");
+
+    const directSource = video.getAttribute("src");
+    if (directSource) {
+      video.dataset.src = directSource;
+      video.removeAttribute("src");
+      try {
+        video.load();
+      } catch (_) {}
+    }
 
     video.controls = false;
-    video.loop = true;
-    video.autoplay = true;
-    video.playsInline = true;
+    video.autoplay = false;
     video.preload = "none";
     video.muted = true;
     video.defaultMuted = true;
@@ -177,8 +281,7 @@
     video.disableRemotePlayback = true;
 
     video.removeAttribute("controls");
-    video.setAttribute("loop", "");
-    video.setAttribute("autoplay", "");
+    video.removeAttribute("autoplay");
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
     video.setAttribute(
@@ -188,6 +291,8 @@
     video.setAttribute("disablepictureinpicture", "");
     video.setAttribute("disableremoteplayback", "");
     video.setAttribute("oncontextmenu", "return false;");
+
+    ensureLoop(video);
 
     host.querySelectorAll("[data-inline-video]").forEach((control) => {
       control.hidden = true;
@@ -199,27 +304,53 @@
 
     video.addEventListener("volumechange", () => syncButton(video));
 
-    if (observer) {
-      observer.observe(video);
-    } else {
-      playVideoMuted(video);
-    }
-  }
+    video.addEventListener("play", () => {
+      ensureLoop(video);
+      host.classList.add("is-playing");
+    });
 
-  function scan(root = document) {
+    video.addEventListener("pause", () => {
+      host.classList.remove("is-playing");
+
+      if (inViewport(video) && !document.hidden) {
+        scheduleHeal(video);
+      }
+    });
+
+    video.addEventListener("ended", () => {
+      ensureLoop(video);
+
+      if (!document.hidden && inViewport(video)) {
+        try {
+          video.currentTime = 0;
+        } catch (_) {}
+        playVisible(video);
+      }
+    });
+
+    if (warmObserver) warmObserver.observe(video);
+    if (playObserver) playObserver.observe(video);
+    if (coldObserver) coldObserver.observe(video);
+
+    if (!playObserver && inViewport(video)) {
+      playVisible(video);
+    }
+  };
+
+  const scan = (root = document) => {
     if (root instanceof HTMLVideoElement) {
-      prepareVideo(root);
+      prepare(root);
       return;
     }
 
-    root.querySelectorAll?.(VIDEO_SELECTOR).forEach(prepareVideo);
-  }
+    root.querySelectorAll?.("video").forEach(prepare);
+  };
 
   scan();
 
-  const mutationObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
+  const mutationObserver = new MutationObserver((records) => {
+    records.forEach((record) => {
+      record.addedNodes.forEach((node) => {
         if (node instanceof Element) scan(node);
       });
     });
@@ -230,12 +361,27 @@
     subtree: true
   });
 
+  const reconcile = () => {
+    managed.forEach((video) => {
+      if (inViewport(video)) {
+        playVisible(video);
+      } else {
+        video.pause();
+      }
+    });
+  };
+
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      managedVideos.forEach((video) => video.pause());
+      managed.forEach((video) => video.pause());
       return;
     }
-
-    visibleVideos.forEach((video) => playVideoMuted(video));
+    reconcile();
   });
+
+  [250, 900, 2200, 4500].forEach((delay) => {
+    window.setTimeout(reconcile, delay);
+  });
+
+  window.addEventListener("load", reconcile, { once: true });
 })();

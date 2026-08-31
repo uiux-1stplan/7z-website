@@ -366,7 +366,13 @@
 
   async function loadManagedContent() {
     try {
-      const response = await fetch("/api/site-content", { cache: "no-store" });
+      const contentController = new AbortController();
+      const contentTimeout = window.setTimeout(() => contentController.abort(), 700);
+      const response = await fetch("/api/site-content", {
+        cache: "no-store",
+        signal: contentController.signal
+      });
+      window.clearTimeout(contentTimeout);
       if (!response.ok) return;
 
       const data = await response.json();
@@ -508,10 +514,10 @@
 
   function createVideoElement(src, poster = "") {
     const video = document.createElement("video");
-    video.src = src;
+    video.dataset.src = src;
     video.muted = true;
     video.playsInline = true;
-    video.preload = "metadata";
+    video.preload = "none";
     video.setAttribute("playsinline", "");
     if (poster) video.poster = poster;
     return video;
@@ -678,10 +684,10 @@
 
   function initVideos() {
     $$("main video:not(#introVideo)").forEach((video) => {
-      video.pause();
-      video.removeAttribute("autoplay");
-      video.loop = false;
-      video.addEventListener("ended", () => resetInlineVideo(video));
+      video.controls = false;
+      video.removeAttribute("controls");
+      video.playsInline = true;
+      video.setAttribute("playsinline", "");
     });
   }
 
@@ -1544,6 +1550,7 @@
     fixStaticMarkup();
     initLenis();
     forceStartAtTop();
+    initLoader();
     initVirtualWall();
     initAtmosphere();
     await loadManagedContent();
@@ -1562,7 +1569,6 @@
     initAnalytics();
     animateCounters();
     initScrollAnimations();
-    initLoader();
     refreshAfterMedia();
     window.addEventListener("load", forceStartAtTop, { once: true });
   }
