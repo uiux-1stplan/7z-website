@@ -127,7 +127,7 @@
             "stylesheet";
 
         link.href =
-            "/assets/css/styles.css";
+            "/assets/css/styles.css?v=7z-20260902-r1";
 
         link.dataset.z7SiteTheme =
             "true";
@@ -268,7 +268,7 @@
 
                     <div class="z7-admin-footer-brand">
                       <img
-                        src="/media/main_logo/7ZMagic-signature-logo-20260828.png"
+                        src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png"
                         alt="7Z Magic"
                       >
 
