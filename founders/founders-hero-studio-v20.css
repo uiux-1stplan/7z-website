@@ -1244,3 +1244,47 @@
   }
 }
 /* Z7_FOUNDERS_TOP_FADE_V24_END */
+
+/* Z7_FOUNDERS_LINE_CLEANUP_V27_START
+   Founders-only root cleanup for the unwanted structural lines.
+*/
+body::before {
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(24, 38, 56, 0.72),
+      rgba(20, 32, 49, 0.58) 48%,
+      rgba(14, 24, 39, 0.74)
+    ) !important;
+  background-position: center !important;
+  background-size: 100% 100% !important;
+}
+
+body::after {
+  background-image:
+    radial-gradient(circle, rgba(141, 238, 255, 0.22) 0 1px, transparent 2.8px),
+    radial-gradient(circle, rgba(185, 173, 255, 0.18) 0 1px, transparent 2.6px),
+    radial-gradient(circle, rgba(240, 199, 111, 0.16) 0 1px, transparent 2.4px),
+    linear-gradient(
+      90deg,
+      rgba(141, 238, 255, 0.06),
+      transparent 28%,
+      rgba(240, 199, 111, 0.055) 72%,
+      transparent
+    ) !important;
+  background-position:
+    center var(--wall-shift),
+    38px var(--wall-shift-slow),
+    76px var(--wall-shift),
+    center !important;
+  background-size:
+    76px 76px,
+    152px 152px,
+    228px 228px,
+    auto !important;
+}
+
+.site-header {
+  border: 0 !important;
+}
+/* Z7_FOUNDERS_LINE_CLEANUP_V27_END */
