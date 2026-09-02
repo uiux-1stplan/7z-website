@@ -1288,3 +1288,25 @@ body::after {
   border: 0 !important;
 }
 /* Z7_FOUNDERS_LINE_CLEANUP_V27_END */
+
+/* Z7_FOUNDERS_GEOMETRY_PURGE_V28_START
+   Root removal of the unwanted geometric line system from Founders hero.
+*/
+.z7f20__monogram,
+.z7f20__monogram i,
+.z7f20__edge-line {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+/* Also remove any residual portrait-frame hairline. */
+.z7f20__visual {
+  outline: 0 !important;
+  border: 0 !important;
+  box-shadow: 0 28px 80px rgba(0,0,0,.40) !important;
+}
+/* Z7_FOUNDERS_GEOMETRY_PURGE_V28_END */
