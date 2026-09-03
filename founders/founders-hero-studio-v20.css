@@ -1289,38 +1289,105 @@ body::after {
 }
 /* Z7_FOUNDERS_LINE_CLEANUP_V27_END */
 
-/* Z7_FOUNDERS_TOP_IMAGE_MASK_V29_START
-   Fade the ACTUAL founders portrait pixels at the top edge into the hero black.
-   Desktop only. No crop, no zoom, no face/layout movement.
+/* Z7_FOUNDERS_NEW_PORTRAIT_V30_1_START
+   Approved supplied portrait.
+   Smooth black fade from TOP + LEFT.
+   Desktop only. Tablet/mobile layout remains untouched.
 */
 @media (min-width: 1101px) {
-  .z7f20__portrait {
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0,0,0,.08) 2.5%,
-      rgba(0,0,0,.30) 5%,
-      rgba(0,0,0,.68) 9%,
-      #000 14%,
-      #000 100%
-    ) !important;
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0,0,0,.08) 2.5%,
-      rgba(0,0,0,.30) 5%,
-      rgba(0,0,0,.68) 9%,
-      #000 14%,
-      #000 100%
-    ) !important;
-    -webkit-mask-repeat: no-repeat !important;
-    mask-repeat: no-repeat !important;
-    -webkit-mask-size: 100% 100% !important;
-    mask-size: 100% 100% !important;
-  }
-
   .z7f20__visual {
     background: #020203 !important;
   }
+
+  .z7f20__portrait {
+    object-fit: cover !important;
+    object-position: 50% 50% !important;
+
+    /*
+     * Two masks intersect:
+     * - left edge dissolves into hero black
+     * - top edge dissolves into hero black
+     * Full opacity is reached early enough to keep both faces untouched.
+     */
+    -webkit-mask-image:
+      linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0,0,0,.15) 4%,
+        rgba(0,0,0,.42) 9%,
+        rgba(0,0,0,.78) 15%,
+        #000 23%,
+        #000 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,.20) 1.5%,
+        rgba(0,0,0,.55) 3.5%,
+        rgba(0,0,0,.86) 6%,
+        #000 9%,
+        #000 100%
+      );
+
+    -webkit-mask-composite: source-in;
+
+    mask-image:
+      linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0,0,0,.15) 4%,
+        rgba(0,0,0,.42) 9%,
+        rgba(0,0,0,.78) 15%,
+        #000 23%,
+        #000 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,.20) 1.5%,
+        rgba(0,0,0,.55) 3.5%,
+        rgba(0,0,0,.86) 6%,
+        #000 9%,
+        #000 100%
+      );
+
+    mask-composite: intersect;
+    -webkit-mask-repeat: no-repeat, no-repeat !important;
+    mask-repeat: no-repeat, no-repeat !important;
+    -webkit-mask-size: 100% 100%, 100% 100% !important;
+    mask-size: 100% 100%, 100% 100% !important;
+  }
+
+  /*
+   * Reinforce the requested BLACK fade without adding a hard edge.
+   * This sits above the portrait, not above the copy.
+   */
+  .z7f20__visual::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 6 !important;
+    height: auto !important;
+    pointer-events: none !important;
+
+    background:
+      linear-gradient(
+        90deg,
+        #020203 0%,
+        rgba(2,2,3,.96) 5%,
+        rgba(2,2,3,.72) 12%,
+        rgba(2,2,3,.36) 19%,
+        rgba(2,2,3,.10) 25%,
+        rgba(2,2,3,0) 31%
+      ),
+      linear-gradient(
+        180deg,
+        #020203 0%,
+        rgba(2,2,3,.86) 2.5%,
+        rgba(2,2,3,.48) 5.5%,
+        rgba(2,2,3,.16) 8%,
+        rgba(2,2,3,0) 11%
+      ) !important;
+  }
 }
-/* Z7_FOUNDERS_TOP_IMAGE_MASK_V29_END */
+/* Z7_FOUNDERS_NEW_PORTRAIT_V30_1_END */
