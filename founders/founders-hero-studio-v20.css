@@ -1289,24 +1289,38 @@ body::after {
 }
 /* Z7_FOUNDERS_LINE_CLEANUP_V27_END */
 
-/* Z7_FOUNDERS_GEOMETRY_PURGE_V28_START
-   Root removal of the unwanted geometric line system from Founders hero.
+/* Z7_FOUNDERS_TOP_IMAGE_MASK_V29_START
+   Fade the ACTUAL founders portrait pixels at the top edge into the hero black.
+   Desktop only. No crop, no zoom, no face/layout movement.
 */
-.z7f20__monogram,
-.z7f20__monogram i,
-.z7f20__edge-line {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  background: none !important;
-}
+@media (min-width: 1101px) {
+  .z7f20__portrait {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0,0,0,.08) 2.5%,
+      rgba(0,0,0,.30) 5%,
+      rgba(0,0,0,.68) 9%,
+      #000 14%,
+      #000 100%
+    ) !important;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0,0,0,.08) 2.5%,
+      rgba(0,0,0,.30) 5%,
+      rgba(0,0,0,.68) 9%,
+      #000 14%,
+      #000 100%
+    ) !important;
+    -webkit-mask-repeat: no-repeat !important;
+    mask-repeat: no-repeat !important;
+    -webkit-mask-size: 100% 100% !important;
+    mask-size: 100% 100% !important;
+  }
 
-/* Also remove any residual portrait-frame hairline. */
-.z7f20__visual {
-  outline: 0 !important;
-  border: 0 !important;
-  box-shadow: 0 28px 80px rgba(0,0,0,.40) !important;
+  .z7f20__visual {
+    background: #020203 !important;
+  }
 }
-/* Z7_FOUNDERS_GEOMETRY_PURGE_V28_END */
+/* Z7_FOUNDERS_TOP_IMAGE_MASK_V29_END */
