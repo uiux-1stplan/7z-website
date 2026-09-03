@@ -1289,15 +1289,18 @@ body::after {
 }
 /* Z7_FOUNDERS_LINE_CLEANUP_V27_END */
 
-/* Z7_FOUNDERS_VISIBLE_FADE_V30_3_START
-   Keep the actual V30 founders portrait fully visible.
-   Fade is overlay-only: BLACK from LEFT + TOP.
-   No mask-composite. No crop. No portrait file change.
+/* Z7_FOUNDERS_TOP_ALIGNED_V30_4_START
+   Fix the apparent top crop:
+   - fill the hero vertically with the supplied landscape portrait
+   - pin actual source pixels to TOP + RIGHT
+   - only unused dark background is cropped from the LEFT
+   - keep a soft black fade from TOP + LEFT
    Desktop only.
 */
 @media (min-width: 1101px) {
   .z7f20__visual {
     background: #020203 !important;
+    overflow: hidden !important;
   }
 
   .z7f20__portrait {
@@ -1305,27 +1308,24 @@ body::after {
     visibility: visible !important;
     opacity: 1 !important;
 
-    /*
-     * Reset all previous desktop masks so Chromium/Opera cannot
-     * intersect multiple mask layers and erase the portrait.
-     */
     -webkit-mask-image: none !important;
     mask-image: none !important;
     -webkit-mask-composite: initial !important;
     mask-composite: initial !important;
 
     /*
-     * Keep the full supplied photo framing.
-     * No new crop/zoom.
+     * The source is landscape while the hero area is taller.
+     * COVER by height preserves the entire vertical image:
+     * no crop from TOP or BOTTOM.
+     * Excess width is taken only from the LEFT.
      */
-    object-fit: contain !important;
-    object-position: 100% 100% !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: 100% 0% !important;
   }
 
-  /*
-   * One overlay creates both requested black fades.
-   * Portrait stays completely rendered underneath.
-   */
   .z7f20__visual::before {
     content: "" !important;
     position: absolute !important;
@@ -1347,13 +1347,12 @@ body::after {
       ),
       linear-gradient(
         180deg,
-        #020203 0%,
-        rgba(2,2,3,.96) 2%,
-        rgba(2,2,3,.74) 4.5%,
-        rgba(2,2,3,.44) 7%,
-        rgba(2,2,3,.18) 9.5%,
-        rgba(2,2,3,0) 13%
+        rgba(2,2,3,.62) 0%,
+        rgba(2,2,3,.46) 2.5%,
+        rgba(2,2,3,.26) 5%,
+        rgba(2,2,3,.10) 7.5%,
+        rgba(2,2,3,0) 10%
       ) !important;
   }
 }
-/* Z7_FOUNDERS_VISIBLE_FADE_V30_3_END */
+/* Z7_FOUNDERS_TOP_ALIGNED_V30_4_END */
