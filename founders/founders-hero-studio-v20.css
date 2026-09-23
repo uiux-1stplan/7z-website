@@ -1185,3 +1185,62 @@
 }
 
 /* Z7_FOUNDERS_V20_1_FRAMELESS_FADE_END */
+
+/* Z7_FOUNDERS_TOP_FADE_V24_START
+   Desktop-only founders hero top blend.
+   Removes the hard horizontal crop above the founders portrait.
+   Tablet/mobile are intentionally untouched.
+*/
+@media (min-width: 1101px) {
+  .z7f20__visual {
+    top: clamp(54px, 6.2vh, 72px) !important;
+    background: #020203 !important;
+    box-shadow:
+      0 28px 80px rgba(0,0,0,.40),
+      0 0 80px rgba(223,185,91,.025) !important;
+  }
+
+  .z7f20__visual::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    z-index: 6 !important;
+    height: clamp(100px, 14vh, 136px) !important;
+    pointer-events: none !important;
+    background: linear-gradient(
+      180deg,
+      #020203 0%,
+      rgba(2,2,3,.99) 10%,
+      rgba(2,2,3,.93) 24%,
+      rgba(2,2,3,.72) 45%,
+      rgba(2,2,3,.40) 66%,
+      rgba(2,2,3,.14) 84%,
+      rgba(2,2,3,0) 100%
+    ) !important;
+  }
+
+  .z7f20__portrait {
+    object-position: 50% 36% !important;
+  }
+
+  .z7f20__visual::after {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(0,0,0,.01) 0%,
+        transparent 30%,
+        rgba(0,0,0,.06) 62%,
+        rgba(0,0,0,.44) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(0,0,0,.10) 0%,
+        transparent 24%,
+        transparent 76%,
+        rgba(0,0,0,.12) 100%
+      ) !important;
+  }
+}
+/* Z7_FOUNDERS_TOP_FADE_V24_END */
