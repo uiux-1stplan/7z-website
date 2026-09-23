@@ -5096,3 +5096,123 @@ header.site-header > a.brand > img {
 }
 
 /* Z7_FINAL_HEADER_LOGO_V22_7_END */
+/* ============================================================
+   7Z_MEDIA_FAN_V3
+   Marketing Media only.
+   Desktop: scroll-driven pinned fan.
+   Tablet/phone: manual drag/swipe fan.
+   Motion lives on .media-fan-slot wrappers, never .media-tile.
+   ============================================================ */
+
+#media.chapter--horizontal {
+  overflow: clip;
+}
+
+#media .media-rail.is-fan-carousel {
+  position: relative;
+  display: block !important;
+  min-width: 0;
+  padding: 0;
+  overflow: visible !important;
+  isolation: isolate;
+  perspective: 1400px;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#media .media-rail.is-fan-carousel .media-fan-slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 50% 116%;
+  will-change: transform, opacity;
+  transition: none !important;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+#media .media-rail.is-fan-carousel .media-fan-slot .media-tile,
+#media .media-rail.is-fan-carousel .media-fan-slot .media-tile:hover {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  transform: none !important;
+}
+
+#media .media-rail.is-fan-carousel
+  .media-fan-slot:not([data-fan-active="true"])
+  [data-inline-video] {
+  pointer-events: none;
+}
+
+#media .media-rail.is-fan-carousel
+  .media-fan-slot[data-fan-active="true"]
+  .media-tile {
+  box-shadow:
+    0 30px 78px rgba(0, 0, 0, 0.42),
+    0 9px 24px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* DESKTOP â€” vertical scroll drives the fan */
+@media (min-width: 1181px) {
+  #media.chapter--horizontal {
+    grid-template-columns: minmax(360px, 42vw) minmax(0, 1fr);
+  }
+
+  #media .media-rail.is-fan-carousel {
+    justify-self: stretch;
+    width: 100%;
+    height: clamp(410px, 38vw, 520px);
+    cursor: default;
+  }
+
+  #media .media-rail.is-fan-carousel .media-fan-slot {
+    width: clamp(220px, 20.5vw, 318px);
+    height: clamp(300px, 31vw, 426px);
+  }
+}
+
+/* TABLET â€” same fan, manual drag/swipe */
+@media (min-width: 641px) and (max-width: 1180px) {
+  #media .media-rail.is-fan-carousel {
+    width: 100% !important;
+    height: clamp(350px, 52vw, 455px);
+    margin: 12px 0 0;
+    cursor: grab;
+  }
+
+  #media .media-rail.is-fan-carousel.is-fan-dragging {
+    cursor: grabbing;
+  }
+
+  #media .media-rail.is-fan-carousel .media-fan-slot {
+    width: clamp(190px, 30vw, 268px);
+    height: clamp(285px, 45vw, 402px);
+  }
+}
+
+/* PHONE â€” compact manual fan */
+@media (max-width: 640px) {
+  #media .media-rail.is-fan-carousel {
+    width: 100% !important;
+    height: clamp(330px, 104vw, 400px);
+    margin: 8px 0 0;
+    cursor: grab;
+  }
+
+  #media .media-rail.is-fan-carousel.is-fan-dragging {
+    cursor: grabbing;
+  }
+
+  #media .media-rail.is-fan-carousel .media-fan-slot {
+    width: min(59vw, 245px);
+    height: min(88.5vw, 368px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #media .media-rail.is-fan-carousel .media-fan-slot {
+    will-change: auto;
+  }
+}

@@ -615,8 +615,12 @@
 
     if (mediaRail) {
       mediaRail.innerHTML = "";
-      assets.mediaProjects.forEach((item) => {
-        mediaRail.append(createMediaTile(item));
+      assets.mediaProjects.forEach((item, index) => {
+        const slot = document.createElement("div");
+        slot.className = "media-fan-slot";
+        slot.dataset.fanIndex = String(index);
+        slot.append(createMediaTile(item));
+        mediaRail.append(slot);
       });
     }
 
@@ -1099,6 +1103,7 @@
     });
 
     gsap.utils.toArray(".media-tile").forEach((tile) => {
+      if (tile.closest("#media")) return;
       gsap.from(tile, {
         opacity: 0,
         y: 44,
@@ -1112,26 +1117,349 @@
       });
     });
 
+    // 7Z_MEDIA_FAN_V3
     const rail = $("#mediaRail");
-    if (rail && window.innerWidth > 1180) {
-      const setupHorizontal = () => {
-        const distance = rail.scrollWidth - window.innerWidth * 0.58;
-        if (distance <= 0) return;
-        gsap.to(rail, {
-          x: -distance,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#media",
+    if (rail) {
+      const setupFanCarousel = () => {
+        const section = $("#media");
+        const slots = gsap.utils.toArray(".media-fan-slot", rail);
+
+        if (!section || slots.length < 2) return;
+
+        rail.classList.add("is-fan-carousel");
+        rail.setAttribute("tabindex", "0");
+        rail.setAttribute("aria-label", "Campaign film fan carousel");
+
+        const count = slots.length;
+        const maxFocus = count - 1;
+
+        const isDesktopFan = () => window.matchMedia("(min-width: 1181px)").matches;
+
+        let currentFocus = 0;
+        let targetFocus = 0;
+        let activeIndex = 0;
+        let animationFrame = 0;
+
+        let dragPointerId = null;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragStartFocus = 0;
+        let didDrag = false;
+
+        const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+        const normalizeFocus = (value) => ((value % count) + count) % count;
+
+        const wrappedDelta = (index, focus) => {
+          const normalizedFocus = normalizeFocus(focus);
+          let delta = index - normalizedFocus;
+          const half = count / 2;
+
+          while (delta > half) delta -= count;
+          while (delta < -half) delta += count;
+
+          return delta;
+        };
+
+        const nearestActive = (focus) =>
+          ((Math.round(normalizeFocus(focus)) % count) + count) % count;
+
+        const updateActiveState = (focus) => {
+          const nextActive = nearestActive(focus);
+
+          if (nextActive === activeIndex) return;
+          activeIndex = nextActive;
+
+          slots.forEach((slot, index) => {
+            const active = index === activeIndex;
+            slot.dataset.fanActive = active ? "true" : "false";
+
+            if (!active) {
+              const video = $("video", slot);
+
+              if (video && !video.paused) {
+                video.pause();
+                resetInlineVideo(video);
+              }
+            }
+          });
+        };
+
+        const render = (focus) => {
+          const stageWidth = rail.getBoundingClientRect().width || window.innerWidth;
+          const desktop = isDesktopFan();
+
+          const spacing = desktop
+            ? clamp(stageWidth * 0.105, 54, 72)
+            : clamp(stageWidth * 0.145, 46, 66);
+
+          slots.forEach((slot, index) => {
+            const delta = wrappedDelta(index, focus);
+            const distance = Math.abs(delta);
+            const visibleLimit = desktop ? 3.35 : 2.7;
+            const visible = distance <= visibleLimit;
+
+            const x = delta * spacing;
+
+            const y =
+              (distance * (desktop ? 11.5 : 9.5)) +
+              (distance * distance * (desktop ? 2.55 : 2.15)) -
+              (Math.max(0, 1 - distance) * (desktop ? 35 : 28));
+
+            const rotation = delta * (desktop ? 6.25 : 6.8);
+            const scale = Math.max(
+              desktop ? 0.845 : 0.86,
+              1.045 - distance * (desktop ? 0.056 : 0.06)
+            );
+
+            const opacity = visible
+              ? Math.max(0.56, 1 - distance * 0.105)
+              : 0;
+
+            const zIndex = 120 - Math.round(distance * 12);
+
+            slot.style.transform =
+              `translate3d(calc(-50% + ${x.toFixed(2)}px), ` +
+              `calc(-50% + ${y.toFixed(2)}px), 0) ` +
+              `rotate(${rotation.toFixed(2)}deg) ` +
+              `scale(${scale.toFixed(4)})`;
+
+            slot.style.opacity = opacity.toFixed(3);
+            slot.style.zIndex = String(zIndex);
+            slot.style.pointerEvents = visible ? "auto" : "none";
+          });
+
+          updateActiveState(focus);
+        };
+
+        const stopManualAnimation = () => {
+          if (!animationFrame) return;
+          cancelAnimationFrame(animationFrame);
+          animationFrame = 0;
+        };
+
+        const animateManual = () => {
+          const difference = targetFocus - currentFocus;
+
+          if (Math.abs(difference) < 0.001) {
+            currentFocus = targetFocus;
+            render(currentFocus);
+            animationFrame = 0;
+            return;
+          }
+
+          currentFocus += difference * 0.22;
+          render(currentFocus);
+
+          animationFrame = requestAnimationFrame(animateManual);
+        };
+
+        const startManualAnimation = () => {
+          if (animationFrame) return;
+          animationFrame = requestAnimationFrame(animateManual);
+        };
+
+        const setManualTarget = (value) => {
+          targetFocus = value;
+          startManualAnimation();
+        };
+
+        const shortestTargetForIndex = (index) => {
+          const normalizedCurrent = normalizeFocus(targetFocus);
+          let delta = index - normalizedCurrent;
+          const half = count / 2;
+
+          while (delta > half) delta -= count;
+          while (delta < -half) delta += count;
+
+          return targetFocus + delta;
+        };
+
+        render(0);
+
+        // ----------------------------------------------------------
+        // DESKTOP: vertical scroll continuously drives the fan.
+        // No card-by-card tweens and no double smoothing.
+        // Lenis already supplies the smooth wheel interpolation.
+        // ----------------------------------------------------------
+        let desktopScrollTrigger = null;
+
+        const createDesktopScroll = () => {
+          if (!isDesktopFan() || desktopScrollTrigger) return;
+
+          stopManualAnimation();
+          currentFocus = 0;
+          targetFocus = 0;
+          render(0);
+
+          desktopScrollTrigger = ScrollTrigger.create({
+            trigger: section,
             start: "top top",
-            end: () => `+=${distance}`,
+            end: () => `+=${Math.max(1850, maxFocus * 175)}`,
             pin: true,
-            scrub: true,
-            invalidateOnRefresh: true
+            pinSpacing: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+
+            onUpdate: (self) => {
+              const focus = self.progress * maxFocus;
+
+              currentFocus = focus;
+              targetFocus = focus;
+              render(focus);
+            },
+
+            onLeave: () => {
+              currentFocus = maxFocus;
+              targetFocus = maxFocus;
+              render(maxFocus);
+            },
+
+            onLeaveBack: () => {
+              currentFocus = 0;
+              targetFocus = 0;
+              render(0);
+            }
+          });
+        };
+
+        const destroyDesktopScroll = () => {
+          if (!desktopScrollTrigger) return;
+
+          desktopScrollTrigger.kill(true);
+          desktopScrollTrigger = null;
+
+          currentFocus = normalizeFocus(currentFocus);
+          targetFocus = currentFocus;
+          render(currentFocus);
+        };
+
+        if (isDesktopFan()) {
+          createDesktopScroll();
+        }
+
+        // ----------------------------------------------------------
+        // TABLET + PHONE: manual swipe/drag fan.
+        // Vertical page scrolling remains native.
+        // ----------------------------------------------------------
+        rail.addEventListener("pointerdown", (event) => {
+          if (isDesktopFan()) return;
+          if (event.target.closest("button, a, input, select, textarea")) return;
+
+          dragPointerId = event.pointerId;
+          dragStartX = event.clientX;
+          dragStartY = event.clientY;
+          dragStartFocus = targetFocus;
+          didDrag = false;
+
+          stopManualAnimation();
+
+          rail.classList.add("is-fan-dragging");
+          rail.setPointerCapture?.(event.pointerId);
+        });
+
+        rail.addEventListener("pointermove", (event) => {
+          if (isDesktopFan()) return;
+          if (dragPointerId === null || event.pointerId !== dragPointerId) return;
+
+          const dx = event.clientX - dragStartX;
+          const dy = event.clientY - dragStartY;
+
+          if (Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
+
+          if (Math.abs(dy) > Math.abs(dx) && !didDrag) {
+            return;
+          }
+
+          didDrag = true;
+
+          const stageWidth = rail.getBoundingClientRect().width || window.innerWidth;
+          const pixelsPerCard = clamp(stageWidth * 0.21, 70, 105);
+
+          targetFocus = dragStartFocus - (dx / pixelsPerCard);
+          currentFocus = targetFocus;
+
+          render(currentFocus);
+        });
+
+        const finishDrag = (event) => {
+          if (isDesktopFan()) return;
+          if (dragPointerId === null) return;
+
+          if (event?.pointerId !== undefined && event.pointerId !== dragPointerId) return;
+
+          rail.classList.remove("is-fan-dragging");
+
+          try {
+            rail.releasePointerCapture?.(dragPointerId);
+          } catch (_) {}
+
+          dragPointerId = null;
+
+          if (didDrag) {
+            targetFocus = Math.round(targetFocus);
+            startManualAnimation();
+          }
+
+          window.setTimeout(() => {
+            didDrag = false;
+          }, 0);
+        };
+
+        rail.addEventListener("pointerup", finishDrag);
+        rail.addEventListener("pointercancel", finishDrag);
+
+        slots.forEach((slot, index) => {
+          slot.addEventListener("click", (event) => {
+            if (isDesktopFan()) return;
+
+            if (didDrag) {
+              event.preventDefault();
+              event.stopPropagation();
+              return;
+            }
+
+            if (index === activeIndex) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            setManualTarget(shortestTargetForIndex(index));
+          });
+        });
+
+        rail.addEventListener("keydown", (event) => {
+          if (isDesktopFan()) return;
+
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            setManualTarget(Math.round(targetFocus) + 1);
+          }
+
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            setManualTarget(Math.round(targetFocus) - 1);
           }
         });
+
+        let resizeTimer = 0;
+
+        window.addEventListener("resize", () => {
+          window.clearTimeout(resizeTimer);
+
+          resizeTimer = window.setTimeout(() => {
+            if (isDesktopFan()) {
+              createDesktopScroll();
+            } else {
+              destroyDesktopScroll();
+            }
+
+            render(currentFocus);
+            ScrollTrigger.refresh();
+          }, 160);
+        }, { passive: true });
       };
 
-      requestAnimationFrame(setupHorizontal);
+      requestAnimationFrame(setupFanCarousel);
     }
 
     gsap.to(".browser-frame", {
