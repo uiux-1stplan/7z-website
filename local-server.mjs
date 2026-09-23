@@ -1,4 +1,4 @@
-import {
+﻿import {
   createReadStream,
   existsSync,
   mkdirSync,
@@ -546,7 +546,19 @@ async function handleUpload(req, res) {
 
 function serveStatic(req, res, url) {
   const decodedPath = decodeURIComponent(url.pathname);
-  const requestedPath = decodedPath === "/" ? "/index.html" : decodedPath === "/admin" ? "/admin.html" : decodedPath;
+  const cleanRoutePath =
+    decodedPath !== "/" &&
+    decodedPath !== "/admin" &&
+    !extname(decodedPath)
+      ? `${decodedPath.replace(/\/+$/, "")}/index.html`
+      : decodedPath;
+
+  const requestedPath =
+    decodedPath === "/"
+      ? "/index.html"
+      : decodedPath === "/admin"
+        ? "/admin.html"
+        : cleanRoutePath;
   const safePath = normalize(requestedPath).replace(/^(\.\.[/\\])+/, "");
   const filePath = resolve(join(root, safePath));
 
@@ -671,3 +683,4 @@ createServer((req, res) => {
 }).listen(port, () => {
   console.log(`7Z Magic local server running at http://localhost:${port}`);
 });
+
