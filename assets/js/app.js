@@ -184,28 +184,12 @@
     [80, 300, 900, 1800, 2800].forEach((delay) => window.setTimeout(reset, delay));
   }
 
+  // 7Z_PERFORMANCE_V3
   function initLenis() {
-    if (!window.Lenis || prefersReducedMotion || window.matchMedia("(max-width: 899px), (hover: none), (pointer: coarse)").matches) return;
-
-    lenis = new Lenis({
-      lerp: 0.12,
-      wheelMultiplier: 0.88,
-      smoothWheel: true,
-      syncTouch: false
-    });
-
-    lenis.on("scroll", () => {
-      if (window.ScrollTrigger) ScrollTrigger.update();
-    });
-
-    const raf = (time) => {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    };
-
-    requestAnimationFrame(raf);
+    lenis = null;
   }
 
+  // 7Z_PERFORMANCE_V2
   function initVirtualWall() {
     if (prefersReducedMotion || useStaticBackground) return;
 
@@ -215,29 +199,43 @@
       current: window.scrollY || 0
     };
 
-    const update = () => {
-      state.current += (state.target - state.current) * 0.085;
+    let rafId = 0;
+
+    const paint = () => {
+      rafId = 0;
+      state.current += (state.target - state.current) * 0.12;
+
+      if (Math.abs(state.target - state.current) < 0.25) {
+        state.current = state.target;
+      }
+
       const scrollY = state.current;
+
       root.style.setProperty("--wall-shift", `${Math.round(scrollY * -0.13)}px`);
       root.style.setProperty("--wall-shift-slow", `${Math.round(scrollY * -0.07)}px`);
       root.style.setProperty("--wall-drift", `${Math.round(scrollY * 0.045)}px`);
       root.style.setProperty("--wall-drift-reverse", `${Math.round(scrollY * -0.035)}px`);
       root.style.setProperty("--wall-transform", `${Math.round(scrollY * -0.025)}px`);
-      requestAnimationFrame(update);
+
+      if (Math.abs(state.target - state.current) >= 0.25) {
+        rafId = requestAnimationFrame(paint);
+      }
     };
 
-    window.addEventListener("scroll", () => {
+    const schedule = () => {
       state.target = window.scrollY || 0;
-    }, { passive: true });
-    window.addEventListener("resize", () => {
-      state.target = window.scrollY || 0;
-    });
-    requestAnimationFrame(update);
+      if (!rafId) rafId = requestAnimationFrame(paint);
+    };
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+
+    schedule();
   }
 
   function initAtmosphere() {
     const canvas = $("#atmosphere");
-    if (!canvas || prefersReducedMotion || useStaticBackground) return;
+    if (!canvas || prefersReducedMotion || useStaticBackground || window.matchMedia("(max-width: 1180px), (hover: none), (pointer: coarse)").matches) return;
 
     const context = canvas.getContext("2d", { alpha: true });
     const palette = [
@@ -695,6 +693,56 @@
     });
   }
 
+  function initVideoPerformanceGovernor() {
+    const videos = $$("main video:not(#introVideo)");
+    if (!videos.length || !("IntersectionObserver" in window)) return;
+
+    const autoResume = new WeakSet();
+
+    const pauseForPerformance = (video) => {
+      if (video.paused) return;
+
+      if (
+        video.muted &&
+        (video.loop || video.autoplay || video.hasAttribute("autoplay"))
+      ) {
+        autoResume.add(video);
+      }
+
+      video.pause();
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.06) {
+            if (autoResume.has(video) && video.muted) {
+              autoResume.delete(video);
+              video.play().catch(() => {});
+            }
+            return;
+          }
+
+          pauseForPerformance(video);
+        });
+      },
+      {
+        root: null,
+        rootMargin: "120px 0px 120px 0px",
+        threshold: [0, 0.06]
+      }
+    );
+
+    videos.forEach((video) => observer.observe(video));
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) return;
+      videos.forEach(pauseForPerformance);
+    });
+  }
+
   function getInlineRoot(element) {
     return element.closest(".media-tile, .manifest__media, .browser-frame, .phone-frame, .film-player");
   }
@@ -990,7 +1038,7 @@
     if (!isCompactMotion) {
       gsap.to(".site-header", {
         background: "rgba(3, 4, 7, 0.9)",
-        backdropFilter: "blur(18px)",
+        // backdrop blur scrub removed by 7Z_PERFORMANCE_V3
         boxShadow: "0 18px 58px rgba(0, 0, 0, 0.42)",
         scrollTrigger: {
           trigger: document.body,
@@ -1003,7 +1051,7 @@
 
     gsap.to(".intro video", {
       scale: 1.14,
-      filter: "saturate(1.08) contrast(1.12) brightness(1.12)",
+      // video filter scrub removed by 7Z_PERFORMANCE_V3
       ease: "none",
       scrollTrigger: {
         trigger: intro,
@@ -1052,14 +1100,14 @@
         animatedItems,
         {
           autoAlpha: 0,
-          y: isCompactMotion ? 18 : 30,
-          filter: isCompactMotion ? "blur(6px)" : "blur(10px)"
+          y: isCompactMotion ? 14 : 24,
+          scale: isCompactMotion ? 0.995 : 0.99
         },
         {
           autoAlpha: 1,
           y: 0,
-          filter: "blur(0px)",
-          duration: isCompactMotion ? 0.58 : 0.78,
+          scale: 1,
+          duration: isCompactMotion ? 0.48 : 0.66,
           ease: "power3.out",
           stagger: isCompactMotion ? 0.045 : 0.075,
           immediateRender: false,
@@ -1137,7 +1185,7 @@
 
         let currentFocus = 0;
         let targetFocus = 0;
-        let activeIndex = 0;
+        let activeIndex = -1;
         let animationFrame = 0;
 
         let dragPointerId = null;
@@ -1195,7 +1243,7 @@
           slots.forEach((slot, index) => {
             const delta = wrappedDelta(index, focus);
             const distance = Math.abs(delta);
-            const visibleLimit = desktop ? 3.35 : 2.7;
+            const visibleLimit = desktop ? 2.55 : 1.75;
             const visible = distance <= visibleLimit;
 
             const x = delta * spacing;
@@ -1864,14 +1912,23 @@
   }
 
   function refreshAfterMedia() {
-    const refresh = () => window.ScrollTrigger?.refresh();
+    let timer = 0;
+
+    const refresh = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        window.ScrollTrigger?.refresh();
+      }, 160);
+    };
+
     $$("img, video").forEach((media) => {
       if (media.complete || media.readyState >= 1) return;
       media.addEventListener("load", refresh, { once: true });
       media.addEventListener("loadedmetadata", refresh, { once: true });
     });
-    window.setTimeout(refresh, 900);
-    window.setTimeout(refresh, 2400);
+
+    window.setTimeout(refresh, 700);
+    window.setTimeout(refresh, 1800);
   }
 
   async function boot() {
@@ -1880,13 +1937,14 @@
     forceStartAtTop();
     initLoader();
     initVirtualWall();
-    initAtmosphere();
+    // initAtmosphere(); // disabled by 7Z_PERFORMANCE_V3
     await loadManagedContent();
     renderLogos();
     renderComparisons();
     renderMedia();
     initComparisonSliders();
     initVideos();
+    initVideoPerformanceGovernor();
     initInlineVideos();
     initHeroVideo();
     initSectionWhatsappButtons();

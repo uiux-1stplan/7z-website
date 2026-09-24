@@ -5216,3 +5216,49 @@ header.site-header > a.brand > img {
     will-change: auto;
   }
 }
+/* ============================================================
+   7Z_PERFORMANCE_V3
+   Local hard performance mode.
+   Preserve layout/identity; remove expensive continuous effects.
+   ============================================================ */
+
+/* Fixed grain texture costs compositing over the whole viewport. */
+.grain {
+  display: none !important;
+}
+
+/* Glass identity retained via opaque translucent surface, no live blur. */
+.site-header,
+.services-panel {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.site-header {
+  background: rgba(3, 4, 7, 0.94) !important;
+}
+
+/* Keep the fan shape, reduce GPU layer pressure. */
+#media .media-rail.is-fan-carousel {
+  perspective: none !important;
+}
+
+#media .media-rail.is-fan-carousel .media-fan-slot {
+  will-change: auto !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+}
+
+#media .media-rail.is-fan-carousel
+  .media-fan-slot[data-fan-active="true"]
+  .media-tile {
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.34),
+    0 6px 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Reveal transforms remain; filter rendering is intentionally eliminated. */
+.reveal,
+.reveal * {
+  will-change: auto !important;
+}
