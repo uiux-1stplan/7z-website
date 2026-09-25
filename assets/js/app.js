@@ -1508,22 +1508,7 @@
       };
 
       requestAnimationFrame(setupFanCarousel);
-    }
-
-    gsap.to(".browser-frame", {
-      rotateY: 0,
-      rotateX: 0,
-      scale: 1.02,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".chapter--web",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true
-      }
-    });
-
-    gsap.from(".reach-metric", {
+    }gsap.from(".reach-metric", {
       clipPath: "inset(18% 18% 18% 18%)",
       opacity: 0,
       scale: 0.92,
@@ -1620,9 +1605,38 @@
     });
     introVideo.addEventListener("loadedmetadata", updateTitleByTime);
     introVideo.addEventListener("timeupdate", updateTitleByTime);
+    introVideo.addEventListener("timeupdate", () => {
+      if (!intro || !Number.isFinite(introVideo.duration) || introVideo.duration <= 0) return;
+
+      const remaining = introVideo.duration - introVideo.currentTime;
+
+      if (remaining <= 0.52 && introVideo.currentTime > 0.4) {
+        intro.classList.add("z7-loop-fading");
+      } else if (introVideo.currentTime < 0.35) {
+        intro.classList.remove("z7-loop-fading", "z7-loop-resetting", "is-video-ended");
+      }
+    });
     introVideo.addEventListener("ended", () => {
-      setHeroTitle("final", true);
-      freezeHeroVideo(introVideo);
+      /* 7Z_APPROVED_HERO_BEHAVIOR_V1
+         Restore the approved smooth cinematic loop. */
+      intro?.classList.add("z7-loop-resetting");
+
+      try {
+        introVideo.currentTime = 0;
+      } catch (_) {}
+
+      setHeroTitle("initial");
+
+      const restart = introVideo.play();
+      if (restart && typeof restart.catch === "function") {
+        restart.catch(() => {});
+      }
+
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          intro?.classList.remove("z7-loop-fading", "z7-loop-resetting", "is-video-ended");
+        });
+      });
     });
   }
 
@@ -1911,6 +1925,615 @@
     if (footerSmall) footerSmall.innerHTML = "Copyright &copy; 2026 7Z Magic. All rights reserved.";
   }
 
+  // 7Z_SELECTED_EXPERIENCES_LIVE_V2
+  function initSelectedExperiences() {
+    const embedMode =
+      new URLSearchParams(window.location.search).get("embed") === "1";
+
+    if (embedMode) {
+      document.documentElement.classList.add("is-7z-embed");
+      return;
+    }
+
+    const section = $("#websites");
+    const root = $("[data-selected-experiences]", section);
+    const dataNode = $("#selectedExperiencesData");
+
+    if (!section || !root || !dataNode) return;
+
+    let projects = [];
+
+    try {
+      projects = JSON.parse(dataNode.textContent || "[]");
+    } catch (_) {
+      return;
+    }
+
+    if (!projects.length) return;
+
+    const counter = $("[data-exp-counter]", root);
+    const client = $("[data-exp-client]", root);
+    const meta = $("[data-exp-meta]", root);
+    const description = $("[data-exp-description]", root);
+    const link = $("[data-exp-link]", root);
+    const linkLabel = $("[data-exp-link-label]", root);
+    const browserLabel = $("[data-exp-browser-label]", root);
+
+    const desktopFrame = $("[data-exp-live]", root);
+    const mobileFrame = $("[data-exp-live-mobile]", root);
+    const desktopStatus = $("[data-exp-live-status]", root);
+    const mobileStatus = $("[data-exp-phone-live-status]", root);
+
+    const desktopPoster = $("[data-exp-image]", root);
+    const phonePoster = $("[data-exp-phone]", root);
+
+    const browserMockup = $(".selected-browser", root);
+    const phoneMockup = $(".selected-phone", root);
+    const nav = $$("[data-exp-nav]", root);
+    const deviceTabs = $$("[data-exp-device-tab]", root);
+
+    let activeIndex = -1;
+    let activeDevice = "desktop";
+    let sectionVisible = false;
+
+    let pointerId = null;
+    let startX = 0;
+    let startY = 0;
+
+    let swapTimer = 0;
+    let liveTimer = 0;
+    let deviceTimer = 0;
+    let scrollIdleTimer = 0;
+
+    const isDesktop = () =>
+      window.matchMedia("(min-width: 1181px)").matches;
+
+    const getActiveFrame = () =>
+      activeDevice === "mobile" ? mobileFrame : desktopFrame;
+
+    const getInactiveFrame = () =>
+      activeDevice === "mobile" ? desktopFrame : mobileFrame;
+
+    const getActiveStatus = () =>
+      activeDevice === "mobile" ? mobileStatus : desktopStatus;
+
+    const clearFrame = (frame, status) => {
+      if (!frame) return;
+
+      frame.classList.remove("is-ready");
+      frame.removeAttribute("src");
+
+      if (status) {
+        status.classList.remove("is-ready");
+      }
+    };
+
+    const clearAllLive = () => {
+      window.clearTimeout(liveTimer);
+      clearFrame(desktopFrame, desktopStatus);
+      clearFrame(mobileFrame, mobileStatus);
+    };
+
+    const setDeviceClass = () => {
+      root.classList.toggle("is-live-desktop", activeDevice === "desktop");
+      root.classList.toggle("is-live-mobile", activeDevice === "mobile");
+
+      deviceTabs.forEach((button) => {
+        const active = button.dataset.expDeviceTab === activeDevice;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", active ? "true" : "false");
+      });
+    };
+
+    const loadActiveLive = (delay = 220) => {
+      window.clearTimeout(liveTimer);
+
+      if (!sectionVisible || activeIndex < 0) return;
+
+      const project = projects[activeIndex];
+      const activeFrame = getActiveFrame();
+      const inactiveFrame = getInactiveFrame();
+      const activeStatus = getActiveStatus();
+
+      if (!project?.liveUrl || !activeFrame) return;
+
+      // Hard guarantee: never two live websites at once.
+      clearFrame(
+        inactiveFrame,
+        activeDevice === "mobile" ? desktopStatus : mobileStatus
+      );
+
+      liveTimer = window.setTimeout(() => {
+        if (!sectionVisible) return;
+
+        const handleLoad = () => {
+          activeFrame.classList.add("is-ready");
+
+          if (activeStatus) {
+            activeStatus.classList.add("is-ready");
+          }
+
+          activeFrame.removeEventListener("load", handleLoad);
+        };
+
+        activeFrame.addEventListener("load", handleLoad);
+        activeFrame.setAttribute("src", project.liveUrl);
+      }, delay);
+    };
+
+    const switchDevice = (device) => {
+      if (device !== "desktop" && device !== "mobile") return;
+      if (device === activeDevice) return;
+
+      activeDevice = device;
+      setDeviceClass();
+      clearAllLive();
+      loadActiveLive(120);
+    };
+
+    const scheduleDevice = (device) => {
+      window.clearTimeout(deviceTimer);
+
+      deviceTimer = window.setTimeout(() => {
+        switchDevice(device);
+      }, 140);
+    };
+
+    const applyProject = (project, next) => {
+      clearAllLive();
+
+      if (counter) {
+        counter.textContent =
+          `${String(next + 1).padStart(2, "0")} / ${String(projects.length).padStart(2, "0")}`;
+      }
+
+      if (client) client.textContent = project.client || "";
+      if (meta) meta.textContent = project.meta || "";
+      if (description) description.textContent = project.description || "";
+      if (browserLabel) browserLabel.textContent = project.browserLabel || "";
+
+      if (link) {
+        link.href = project.url || "#";
+        link.setAttribute(
+          "aria-label",
+          `View ${project.short || project.client || "website"}`
+        );
+      }
+
+      if (linkLabel) {
+        linkLabel.textContent =
+          `View ${project.short || project.client || "Website"} Website`;
+      }
+
+      if (desktopPoster) {
+        desktopPoster.src = project.desktop || "";
+        desktopPoster.hidden = false;
+      }
+
+      if (phonePoster) {
+        phonePoster.src = project.phone || "";
+      }
+
+      nav.forEach((button, index) => {
+        const active = index === next;
+        button.classList.toggle("is-active", active);
+
+        if (active) button.setAttribute("aria-current", "true");
+        else button.removeAttribute("aria-current");
+      });
+
+      loadActiveLive(260);
+    };
+
+    const render = (index, animate = true) => {
+      const next = Math.max(0, Math.min(projects.length - 1, index));
+
+      if (next === activeIndex) return;
+
+      activeIndex = next;
+      window.clearTimeout(swapTimer);
+      clearAllLive();
+
+      if (!animate) {
+        applyProject(projects[next], next);
+        root.classList.remove("is-switching");
+        return;
+      }
+
+      root.classList.add("is-switching");
+
+      swapTimer = window.setTimeout(() => {
+        applyProject(projects[next], next);
+
+        requestAnimationFrame(() => {
+          root.classList.remove("is-switching");
+        });
+      }, 100);
+    };
+
+    nav.forEach((button, index) => {
+      button.addEventListener("click", () => render(index));
+    });
+
+    // Explicit device tabs are the primary device selector.
+    deviceTabs.forEach((button) => {
+      button.addEventListener("click", () => {
+        switchDevice(button.dataset.expDeviceTab);
+      });
+    });
+    // Device selector: desktop Browser and phone are both capable of Live.
+    browserMockup?.addEventListener("mouseenter", () => {
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        scheduleDevice("desktop");
+      }
+    });
+
+    phoneMockup?.addEventListener("mouseenter", () => {
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        scheduleDevice("mobile");
+      }
+    });
+
+    browserMockup?.addEventListener("click", (event) => {
+      if (event.target.closest("a")) return;
+      switchDevice("desktop");
+    });
+
+    phoneMockup?.addEventListener("click", () => {
+      switchDevice("mobile");
+    });
+
+    // During page scroll: stop painting the remote websites.
+    // Posters remain underneath, so the section stays visually stable.
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!sectionVisible) return;
+
+        root.classList.add("is-page-scrolling");
+        window.clearTimeout(scrollIdleTimer);
+
+        scrollIdleTimer = window.setTimeout(() => {
+          root.classList.remove("is-page-scrolling");
+        }, 140);
+      },
+      { passive: true }
+    );
+
+    let desktopTrigger = null;
+
+    const createDesktopTrigger = () => {
+      if (!isDesktop() || !window.ScrollTrigger || desktopTrigger) return;
+
+      desktopTrigger = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const next = Math.min(
+            projects.length - 1,
+            Math.floor(self.progress * projects.length)
+          );
+
+          render(next);
+        },
+        onEnter: () => {
+          sectionVisible = true;
+          loadActiveLive(180);
+        },
+        onEnterBack: () => {
+          sectionVisible = true;
+          loadActiveLive(180);
+        },
+        onLeave: () => {
+          sectionVisible = false;
+          clearAllLive();
+        },
+        onLeaveBack: () => {
+          sectionVisible = false;
+          clearAllLive();
+        }
+      });
+    };
+
+    const destroyDesktopTrigger = () => {
+      if (!desktopTrigger) return;
+      desktopTrigger.kill();
+      desktopTrigger = null;
+    };
+
+    root.addEventListener("pointerdown", (event) => {
+      if (isDesktop()) return;
+      if (event.target.closest("a, button")) return;
+
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startY = event.clientY;
+      root.setPointerCapture?.(pointerId);
+    });
+
+    root.addEventListener("pointerup", (event) => {
+      if (
+        isDesktop() ||
+        pointerId === null ||
+        event.pointerId !== pointerId
+      ) {
+        return;
+      }
+
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+
+      try {
+        root.releasePointerCapture?.(pointerId);
+      } catch (_) {}
+
+      pointerId = null;
+
+      if (Math.abs(dx) < 44 || Math.abs(dx) <= Math.abs(dy)) return;
+
+      render(activeIndex + (dx < 0 ? 1 : -1));
+    });
+
+    root.addEventListener("pointercancel", () => {
+      pointerId = null;
+    });
+
+    const visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          sectionVisible = entry.isIntersecting;
+
+          if (sectionVisible) {
+            loadActiveLive(220);
+          } else {
+            clearAllLive();
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+
+    visibilityObserver.observe(section);
+
+    let resizeTimer = 0;
+
+    window.addEventListener(
+      "resize",
+      () => {
+        window.clearTimeout(resizeTimer);
+
+        resizeTimer = window.setTimeout(() => {
+          if (isDesktop()) createDesktopTrigger();
+          else destroyDesktopTrigger();
+
+          window.ScrollTrigger?.refresh();
+        }, 180);
+      },
+      { passive: true }
+    );
+
+    setDeviceClass();
+    render(0, false);
+
+    if (isDesktop()) {
+      createDesktopTrigger();
+    }
+  }
+  // 7Z_SELECTED_EXPERIENCES_DEVICE_TABS_V2
+  function initSelectedExperienceDeviceTabs() {
+    const section = $("#websites");
+    const root = $("[data-selected-experiences]", section);
+
+    if (!section || !root) return;
+
+    const tabs = $$("[data-exp-device-tab]", root);
+    const browser = $(".selected-browser", root);
+    const phone = $(".selected-phone", root);
+
+    if (!tabs.length || !browser || !phone) return;
+
+    const setDevice = (device, triggerPreview = true) => {
+      const mobile = device === "mobile";
+
+      root.classList.toggle("is-device-desktop", !mobile);
+      root.classList.toggle("is-device-mobile", mobile);
+
+      tabs.forEach((button) => {
+        const active = button.dataset.expDeviceTab === device;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", active ? "true" : "false");
+        button.tabIndex = active ? 0 : -1;
+      });
+
+      if (!triggerPreview) return;
+
+      // Live V2 already listens to mockup clicks to guarantee that
+      // only one iframe has a src. This keeps the tab controller
+      // decoupled from the live controller internals.
+      const target = mobile ? phone : browser;
+
+      target.dispatchEvent(
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        })
+      );
+    };
+
+    tabs.forEach((button) => {
+      button.addEventListener("click", () => {
+        setDevice(button.dataset.expDeviceTab);
+      });
+
+      button.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+        event.preventDefault();
+
+        const current = tabs.indexOf(button);
+        const direction = event.key === "ArrowRight" ? 1 : -1;
+        const next = (current + direction + tabs.length) % tabs.length;
+
+        tabs[next].focus();
+        setDevice(tabs[next].dataset.expDeviceTab);
+      });
+    });
+
+    setDevice("desktop", false);
+  }
+  // 7Z_IFRAME_HANDSHAKE_GATE_V1
+  function init7ZIframeHandshakeGate() {
+    const root = document.querySelector("[data-selected-experiences]");
+    if (!root) return;
+
+    const frames = [
+      root.querySelector("[data-exp-live]"),
+      root.querySelector("[data-exp-live-mobile]")
+    ].filter(Boolean);
+
+    if (!frames.length) return;
+
+    const lastBeat = new WeakMap();
+    const readyCounts = new WeakMap();
+
+    const statusFor = (frame) =>
+      frame.matches("[data-exp-live-mobile]")
+        ? root.querySelector("[data-exp-phone-live-status]")
+        : root.querySelector("[data-exp-live-status]");
+
+    const setPending = (frame) => {
+      frame.classList.remove("is-7z-preview-confirmed");
+      frame.dataset.z7PreviewState = "pending";
+      readyCounts.set(frame, 0);
+
+      const status = statusFor(frame);
+      status?.classList.remove("is-ready");
+    };
+
+    const confirm = (frame) => {
+      const count = (readyCounts.get(frame) || 0) + 1;
+      readyCounts.set(frame, count);
+
+      // Require more than a single message before exposing a remote renderer.
+      if (count < 2) return;
+
+      frame.classList.add("is-7z-preview-confirmed");
+      frame.dataset.z7PreviewState = "ready";
+
+      const status = statusFor(frame);
+      status?.classList.add("is-ready");
+    };
+
+    frames.forEach((frame) => {
+      setPending(frame);
+
+      const observer = new MutationObserver((mutations) => {
+        if (mutations.some((item) => item.attributeName === "src")) {
+          setPending(frame);
+        }
+      });
+
+      observer.observe(frame, {
+        attributes: true,
+        attributeFilter: ["src"]
+      });
+    });
+
+    window.addEventListener("message", (event) => {
+      const data = event.data;
+
+      if (
+        !data ||
+        (data.type !== "7z-preview-ready" &&
+          data.type !== "7z-preview-heartbeat")
+      ) {
+        return;
+      }
+
+      const frame = frames.find(
+        (candidate) => candidate.contentWindow === event.source
+      );
+
+      if (!frame) return;
+
+      const src = frame.getAttribute("src");
+      if (!src) return;
+
+      let expectedOrigin = "";
+
+      try {
+        expectedOrigin = new URL(src, window.location.href).origin;
+      } catch (_) {
+        return;
+      }
+
+      if (event.origin !== expectedOrigin) return;
+
+      lastBeat.set(frame, Date.now());
+
+      if (data.type === "7z-preview-ready") {
+        confirm(frame);
+      } else {
+        confirm(frame);
+      }
+    });
+
+    window.setInterval(() => {
+      const now = Date.now();
+
+      frames.forEach((frame) => {
+        if (!frame.classList.contains("is-7z-preview-confirmed")) return;
+
+        const beat = lastBeat.get(frame) || 0;
+
+        if (now - beat > 900) {
+          setPending(frame);
+        }
+      });
+    }, 250);
+  }
+
+  // Child-side bridge for 7Z self-preview.
+  function init7ZSelfPreviewBridge() {
+    if (window.parent === window) return;
+
+    let beatId = 0;
+
+    const send = (type) => {
+      try {
+        window.parent.postMessage(
+          {
+            type,
+            version: 1,
+            href: window.location.href,
+            origin: window.location.origin,
+            ts: Date.now()
+          },
+          "*"
+        );
+      } catch (_) {}
+    };
+
+    const start = () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          send("7z-preview-ready");
+
+          if (!beatId) {
+            beatId = window.setInterval(() => {
+              send("7z-preview-heartbeat");
+            }, 300);
+          }
+        });
+      });
+    };
+
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+  }
   function refreshAfterMedia() {
     let timer = 0;
 
@@ -1946,6 +2569,10 @@
     initVideos();
     initVideoPerformanceGovernor();
     initInlineVideos();
+    initSelectedExperiences();
+    init7ZIframeHandshakeGate();
+    init7ZSelfPreviewBridge();
+    initSelectedExperienceDeviceTabs();
     initHeroVideo();
     initSectionWhatsappButtons();
     initMagneticElements();
@@ -1960,4 +2587,66 @@
   }
 
   boot();
+})();
+/* =========================================================
+   7Z_APPROVED_HERO_BEHAVIOR_V1
+   Founders hero:
+   monochrome default -> gradual color interaction.
+========================================================= */
+(function restoreApprovedFoundersHero() {
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (path !== "/founders") return;
+
+  document.documentElement.classList.add("z7-founders-approved-hero");
+
+  const excluded = /(logo|icon|favicon|partner|badge|whatsapp|brandmark|moh)/i;
+
+  const markHero = () => {
+    if (document.querySelector(".z7-founders-hero-photo")) return true;
+
+    const candidates = Array.from(document.querySelectorAll("main img, body img"))
+      .filter((img) => {
+        const source = `${img.currentSrc || img.src || ""} ${img.alt || ""}`;
+        if (excluded.test(source)) return false;
+
+        const rect = img.getBoundingClientRect();
+        const w = img.naturalWidth || img.width || rect.width || 0;
+        const h = img.naturalHeight || img.height || rect.height || 0;
+
+        return w >= 500 && h >= 420 && rect.width >= Math.min(240, window.innerWidth * 0.55);
+      })
+      .map((img) => {
+        const rect = img.getBoundingClientRect();
+        return {
+          img,
+          score: (rect.width * rect.height) + (Math.max(0, 1800 - Math.abs(rect.top)) * 1000)
+        };
+      })
+      .sort((a, b) => b.score - a.score);
+
+    const hero = candidates[0]?.img;
+    if (!hero) return false;
+
+    hero.classList.add("z7-founders-hero-photo");
+
+    const frame =
+      hero.closest('[class*="hero" i], [class*="founder" i], figure, picture') ||
+      hero.parentElement;
+
+    if (frame) frame.classList.add("z7-founders-hero-frame");
+
+    const on = () => hero.classList.add("is-color-active");
+    const off = () => hero.classList.remove("is-color-active");
+
+    hero.addEventListener("pointerdown", on, { passive: true });
+    hero.addEventListener("pointerup", () => window.setTimeout(off, 420), { passive: true });
+    hero.addEventListener("pointercancel", off, { passive: true });
+    hero.addEventListener("pointerleave", off, { passive: true });
+
+    return true;
+  };
+
+  markHero();
+  window.addEventListener("load", markHero, { once: true });
+  window.setTimeout(markHero, 250);
 })();

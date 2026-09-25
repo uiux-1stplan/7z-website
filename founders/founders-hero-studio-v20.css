@@ -1244,3 +1244,87 @@
   }
 }
 /* Z7_FOUNDERS_TOP_FADE_V24_END */
+/* =========================================================
+   Z7_FOUNDERS_APPROVED_VISUAL_LOCK_V3
+   Exact audited hero:
+   section  : .z7f20
+   frame    : .z7f20__visual
+   portrait : .z7f20__portrait
+
+   Approved behavior:
+   - monochrome by default
+   - gradual full color on hover/focus/touch
+   - no mobile side gutters around the hero visual
+   - preserve existing V20/V24 fades and image composition
+========================================================= */
+
+.z7x-page--founders .z7f20 .z7f20__portrait {
+  filter:
+    grayscale(1)
+    saturate(.08)
+    contrast(1.065)
+    brightness(.88) !important;
+
+  transition:
+    filter 900ms cubic-bezier(.22,.61,.36,1) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .z7x-page--founders .z7f20 .z7f20__visual:hover .z7f20__portrait,
+  .z7x-page--founders .z7f20 .z7f20__visual:focus-visible .z7f20__portrait {
+    filter:
+      grayscale(0)
+      saturate(.96)
+      contrast(1.025)
+      brightness(.98) !important;
+  }
+}
+
+.z7x-page--founders .z7f20.is-z7-approved-color .z7f20__portrait {
+  filter:
+    grayscale(0)
+    saturate(.96)
+    contrast(1.025)
+    brightness(.98) !important;
+}
+
+/* Keep the ambient duplicate quiet and monochrome so the real portrait
+   remains the interactive focus. */
+.z7x-page--founders .z7f20 .z7f20__ambient img {
+  filter:
+    grayscale(1)
+    saturate(.06)
+    contrast(1.04)
+    brightness(.62) !important;
+}
+
+/* Phone/tablet portrait visual: remove ONLY the visual's artificial side
+   gutters/frame. Text keeps its own approved shell spacing. */
+@media (max-width: 899px) {
+  .z7x-page--founders .z7f20 .z7f20__visual {
+    left: 0 !important;
+    right: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .z7x-page--founders .z7f20 .z7f20__portrait {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7x-page--founders .z7f20 .z7f20__portrait {
+    transition-duration: 280ms !important;
+  }
+}

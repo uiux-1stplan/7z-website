@@ -1,0 +1,195 @@
+/* =========================================================
+   7Z MAGIC — FOUNDERS FINAL HERO V42
+   Single source of truth:
+   /media/founders/7z-founders-studio-v31.jpeg
+========================================================= */
+
+/* Disable every previous visual photo layer. */
+.z7x-page--founders .z7f20 .z7f20__ambient,
+.z7x-page--founders .z7f20 .z7f20__portrait,
+.z7x-page--founders .z7f20 .z7f20__mono-same-image,
+.z7x-page--founders .z7f20 .z7f41__image,
+.z7x-page--founders .z7f20 .z7f41__fade {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Interaction shell. */
+.z7x-page--founders .z7f20 .z7f20__visual {
+  pointer-events: auto !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #020203 !important;
+  background-image: none !important;
+  isolation: isolate !important;
+}
+
+/* ONE approved image. */
+.z7x-page--founders .z7f20 .z7f42__image {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+
+  background-image: url('/media/founders/7z-founders-studio-v31.jpeg') !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: 50% 0% !important;
+
+  filter:
+    grayscale(1)
+    saturate(0)
+    contrast(1.07)
+    brightness(.86) !important;
+
+  transform: scale(1.006);
+  transform-origin: 50% 0%;
+
+  transition:
+    filter 760ms cubic-bezier(.22,.61,.36,1),
+    transform 900ms cubic-bezier(.22,.61,.36,1) !important;
+
+  pointer-events: none !important;
+  will-change: filter;
+}
+
+/* CSS hover fallback. */
+.z7x-page--founders .z7f20 .z7f20__visual:hover .z7f42__image,
+.z7x-page--founders .z7f20 .z7f20__visual:focus-visible .z7f42__image,
+.z7x-page--founders .z7f20 .z7f20__visual.is-z7-v42-color .z7f42__image {
+  filter:
+    grayscale(0)
+    saturate(.98)
+    contrast(1.02)
+    brightness(.98) !important;
+}
+
+/* Deliberate crop-hiding fade. */
+.z7x-page--founders .z7f20 .z7f42__fade {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2,2,3,.98) 0%,
+      rgba(2,2,3,.62) 3%,
+      rgba(2,2,3,.18) 8%,
+      transparent 15%,
+      transparent 78%,
+      rgba(2,2,3,.18) 84%,
+      rgba(2,2,3,.72) 94%,
+      #020203 100%
+    ),
+    linear-gradient(
+      90deg,
+      #020203 0%,
+      rgba(2,2,3,.74) 2.5%,
+      rgba(2,2,3,.28) 7%,
+      transparent 14%,
+      transparent 86%,
+      rgba(2,2,3,.28) 93%,
+      rgba(2,2,3,.74) 97.5%,
+      #020203 100%
+    ) !important;
+}
+
+/* Decorative overlays may remain visible, but never intercept input. */
+.z7x-page--founders .z7f20 .z7f20__visual::before,
+.z7x-page--founders .z7f20 .z7f20__visual::after,
+.z7x-page--founders .z7f20 .z7f20__monogram,
+.z7x-page--founders .z7f20 .z7f20__hint,
+.z7x-page--founders .z7f20 .z7f20__hint-mobile {
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   DESKTOP
+   JS measures the floating header and writes --z7f42-safe-top.
+   The image can never begin behind the header.
+========================================================= */
+@media (min-width: 1101px) {
+  .z7x-page--founders .z7f20 .z7f20__visual {
+    top: var(--z7f42-safe-top, 176px) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+
+    width: min(68vw, 1040px) !important;
+    max-width: none !important;
+    height: auto !important;
+
+    margin: 0 !important;
+  }
+
+  .z7x-page--founders .z7f20 .z7f42__image {
+    background-position: 50% 0% !important;
+    transform: scale(1.002);
+  }
+
+  /* Desktop: stronger blend into copy, not a visible card/frame. */
+  .z7x-page--founders .z7f20 .z7f42__fade {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,2,3,.98) 0%,
+        rgba(2,2,3,.36) 4%,
+        transparent 11%,
+        transparent 80%,
+        rgba(2,2,3,.20) 87%,
+        rgba(2,2,3,.74) 96%,
+        #020203 100%
+      ),
+      linear-gradient(
+        90deg,
+        #020203 0%,
+        rgba(2,2,3,.96) 5%,
+        rgba(2,2,3,.72) 13%,
+        rgba(2,2,3,.22) 24%,
+        transparent 38%,
+        transparent 91%,
+        rgba(2,2,3,.30) 97%,
+        #020203 100%
+      ) !important;
+  }
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+   Same V31 asset, full width, no old contain gutters.
+========================================================= */
+@media (max-width: 1100px) {
+  .z7x-page--founders .z7f20 .z7f20__visual {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .z7x-page--founders .z7f20 .z7f42__image {
+    background-size: cover !important;
+    background-position: 50% 0% !important;
+    transform: scale(1.002);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7x-page--founders .z7f20 .z7f42__image {
+    transition-duration: 240ms !important;
+  }
+}

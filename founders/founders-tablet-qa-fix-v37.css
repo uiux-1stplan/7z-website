@@ -84,3 +84,222 @@
     display: none !important;
   }
 }
+/* =========================================================
+   Z7_FOUNDERS_SAME_IMAGE_MONO_V5
+
+   IMPORTANT:
+   Keep the exact CURRENT visible asset:
+   /media/founders/7z-founders-studio-v20.jpeg
+
+   We do NOT swap to studio-v31.
+   We do NOT unhide/replace the existing portrait source.
+   We simply place a monochrome copy of the SAME background over it,
+   then fade that copy away on hover/touch to reveal the same image in color.
+========================================================= */
+
+.z7x-page--founders .z7f20 .z7f20__visual {
+  isolation: isolate !important;
+}
+
+/* exact same image, exact same geometry as the current V37 background */
+.z7x-page--founders .z7f20 .z7f20__mono-same-image {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+
+  background-image: url('/media/founders/7z-founders-studio-v20.jpeg') !important;
+  background-repeat: no-repeat !important;
+  background-size: inherit !important;
+  background-position: inherit !important;
+
+  filter:
+    grayscale(1)
+    saturate(0)
+    contrast(1.07)
+    brightness(.84) !important;
+
+  opacity: 1 !important;
+  transition:
+    opacity 780ms cubic-bezier(.22,.61,.36,1),
+    filter 780ms cubic-bezier(.22,.61,.36,1) !important;
+}
+
+/* Keep existing decorative/interaction layers above the mono photo. */
+.z7x-page--founders .z7f20 .z7f20__monogram,
+.z7x-page--founders .z7f20 .z7f20__hint,
+.z7x-page--founders .z7f20 .z7f20__hint-mobile {
+  position: relative;
+  z-index: 3 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .z7x-page--founders .z7f20 .z7f20__visual:hover .z7f20__mono-same-image,
+  .z7x-page--founders .z7f20 .z7f20__visual:focus-visible .z7f20__mono-same-image {
+    opacity: 0 !important;
+    filter:
+      grayscale(0)
+      saturate(1)
+      contrast(1)
+      brightness(1) !important;
+  }
+}
+
+.z7x-page--founders .z7f20 .z7f20__visual.is-z7-same-image-color .z7f20__mono-same-image {
+  opacity: 0 !important;
+  filter:
+    grayscale(0)
+    saturate(1)
+    contrast(1)
+    brightness(1) !important;
+}
+
+/* Remove only the external mobile frame/gutters.
+   Do NOT change background-size or background-position, so the same image
+   composition remains intact. */
+@media (max-width: 899px) {
+  .z7x-page--founders .z7f20 .z7f20__visual {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7x-page--founders .z7f20 .z7f20__mono-same-image {
+    transition-duration: 260ms !important;
+  }
+}
+/* =========================================================
+   Z7_FOUNDERS_SAME_IMAGE_VISUAL_V6
+
+   FINAL narrow-screen repair for the CURRENT approved image only:
+   /media/founders/7z-founders-studio-v20.jpeg
+
+   No source swap.
+   No studio-v31 activation.
+
+   Root fixes:
+   - force the hero visual to receive pointer interaction
+   - replace V37 "contain" gutters with a full-bleed crop
+   - keep V5 monochrome copy perfectly aligned with the base image
+   - add cinematic black fades to hide hard crop boundaries
+========================================================= */
+
+/* Hover was being defeated by the visual interaction state.
+   Make the visual itself interactive; all decorative layers remain
+   pointer-transparent. */
+.z7x-page--founders .z7f20 .z7f20__visual {
+  pointer-events: auto !important;
+}
+
+/* Ensure the SAME image changes from mono -> color.
+   Support both original V20 touch class and V5 touch class. */
+.z7x-page--founders .z7f20 .z7f20__visual:hover .z7f20__mono-same-image,
+.z7x-page--founders .z7f20 .z7f20__visual:focus-visible .z7f20__mono-same-image,
+.z7x-page--founders .z7f20 .z7f20__visual.is-color .z7f20__mono-same-image,
+.z7x-page--founders .z7f20 .z7f20__visual.is-z7-same-image-color .z7f20__mono-same-image {
+  opacity: 0 !important;
+  filter: grayscale(0) saturate(1) contrast(1) brightness(1) !important;
+}
+
+/* Tablet + phone are where V37 replaces the real portrait with the
+   current approved V20 background. Fix that SAME background only. */
+@media (max-width: 1100px) {
+  .z7x-page--founders .z7f20 .z7f20__visual {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    overflow: hidden !important;
+
+    background-color: #020203 !important;
+    background-image: url('/media/founders/7z-founders-studio-v20.jpeg') !important;
+    background-repeat: no-repeat !important;
+
+    /* Removes the visible empty side gutters. */
+    background-size: cover !important;
+    background-position: 50% 18% !important;
+  }
+
+  /* V5 monochrome copy uses EXACTLY the same crop/position so the
+     hover reveal never jumps between two compositions. */
+  .z7x-page--founders .z7f20 .z7f20__mono-same-image {
+    inset: 0 !important;
+    background-image: url('/media/founders/7z-founders-studio-v20.jpeg') !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: 50% 18% !important;
+  }
+
+  /* Dedicated cinematic edge blend ABOVE both color + mono layers.
+     This hides the hard image crop instead of showing a rectangular edge. */
+  .z7x-page--founders .z7f20 .z7f20__visual::after {
+    display: block !important;
+    content: "" !important;
+
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2 !important;
+
+    pointer-events: none !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        #020203 0%,
+        rgba(2,2,3,.86) 3%,
+        rgba(2,2,3,.34) 9%,
+        transparent 18%,
+        transparent 72%,
+        rgba(2,2,3,.20) 80%,
+        rgba(2,2,3,.76) 92%,
+        #020203 100%
+      ),
+      linear-gradient(
+        90deg,
+        #020203 0%,
+        rgba(2,2,3,.72) 2.5%,
+        rgba(2,2,3,.24) 7%,
+        transparent 15%,
+        transparent 85%,
+        rgba(2,2,3,.24) 93%,
+        rgba(2,2,3,.72) 97.5%,
+        #020203 100%
+      ) !important;
+  }
+
+  .z7x-page--founders .z7f20 .z7f20__monogram,
+  .z7x-page--founders .z7f20 .z7f20__hint,
+  .z7x-page--founders .z7f20 .z7f20__hint-mobile {
+    position: relative !important;
+    z-index: 3 !important;
+  }
+}
+
+/* Slightly less aggressive crop on very narrow phones so both founders
+   remain balanced while the side gutters stay gone. */
+@media (max-width: 520px) {
+  .z7x-page--founders .z7f20 .z7f20__visual,
+  .z7x-page--founders .z7f20 .z7f20__mono-same-image {
+    background-position: 50% 15% !important;
+  }
+}

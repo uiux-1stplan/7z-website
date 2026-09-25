@@ -90,3 +90,84 @@
     cancelAnimationFrame(raf);
   }, { once: true });
 })();
+/* =========================================================
+   Z7_FOUNDERS_APPROVED_VISUAL_LOCK_V3
+   Exact touch interaction for .z7f20__visual.
+========================================================= */
+(() => {
+  const hero = document.querySelector(".z7f20");
+  const visual = hero?.querySelector(".z7f20__visual");
+
+  if (!hero || !visual) return;
+
+  let returnTimer = 0;
+
+  const showColor = () => {
+    window.clearTimeout(returnTimer);
+    hero.classList.add("is-z7-approved-color");
+  };
+
+  const returnToMono = (delay = 0) => {
+    window.clearTimeout(returnTimer);
+
+    if (delay > 0) {
+      returnTimer = window.setTimeout(() => {
+        hero.classList.remove("is-z7-approved-color");
+      }, delay);
+      return;
+    }
+
+    hero.classList.remove("is-z7-approved-color");
+  };
+
+  visual.addEventListener("pointerdown", () => {
+    showColor();
+    returnToMono(1150);
+  }, { passive: true });
+
+  visual.addEventListener("pointercancel", () => returnToMono(), { passive: true });
+
+  visual.addEventListener("blur", () => returnToMono(), true);
+})();
+/* =========================================================
+   Z7_FOUNDERS_SAME_IMAGE_MONO_V5
+   Uses the CURRENT visible V37 image only.
+========================================================= */
+(() => {
+  const visual = document.querySelector(".z7f20__visual");
+  if (!visual) return;
+
+  if (!visual.querySelector(".z7f20__mono-same-image")) {
+    const mono = document.createElement("div");
+    mono.className = "z7f20__mono-same-image";
+    mono.setAttribute("aria-hidden", "true");
+    visual.prepend(mono);
+  }
+
+  let timer = 0;
+
+  const showColor = () => {
+    window.clearTimeout(timer);
+    visual.classList.add("is-z7-same-image-color");
+  };
+
+  const backToMono = (delay = 0) => {
+    window.clearTimeout(timer);
+
+    if (delay > 0) {
+      timer = window.setTimeout(() => {
+        visual.classList.remove("is-z7-same-image-color");
+      }, delay);
+      return;
+    }
+
+    visual.classList.remove("is-z7-same-image-color");
+  };
+
+  visual.addEventListener("pointerdown", () => {
+    showColor();
+    backToMono(1150);
+  }, { passive: true });
+
+  visual.addEventListener("pointercancel", () => backToMono(), { passive: true });
+})();
