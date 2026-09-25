@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050608">
+<title>Selected Websites | 7Z Magic</title>
+<meta name="description" content="Selected digital experiences by 7Z Magic.">
+<link rel="icon" href="/assets/brand/7z-20260902_203523_038/favicon.ico">
+<link rel="preload" as="image" href="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-header-final-20260829.png" fetchpriority="high">
+<link rel="preload" as="image" href="/media/selected_experiences/ercan-desktop-auto.png" fetchpriority="high">
+<link rel="stylesheet" href="/websites/websites.css?v=final-v3-1">
+</head>
+<body>
+<header class="wx-header">
+  <a class="wx-logo" href="/"><img src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-header-final-20260829.png" width="96" height="44" alt="7Z Magic" fetchpriority="high"></a>
+  <nav><a href="/">Home</a><a href="/#contact">Contact</a></nav>
+</header>
+
+<main>
+  <section class="wx-hero">
+    <span>Selected Digital Experiences</span>
+    <h1>Websites designed to be experienced, not just viewed.</h1>
+    <p>Choose a project, then switch between desktop and mobile. The live site is revealed only after its preview bridge confirms readiness.</p>
+  </section>
+
+  <section class="wx-work">
+    <div class="wx-projects" id="projects" role="tablist"></div>
+
+    <div class="wx-toolbar">
+      <div class="wx-devices">
+        <button class="is-active" data-device="desktop">Desktop</button>
+        <button data-device="mobile">Mobile</button>
+      </div>
+      <a id="openSite" target="_blank" rel="noopener">Open live site ↗</a>
+    </div>
+
+    <div class="wx-stage is-desktop" id="stage">
+      <div class="wx-browser">
+        <div class="wx-bar"><i></i><i></i><i></i><span id="address"></span></div>
+        <div class="wx-screen" id="screen">
+          <img id="poster" alt="" fetchpriority="high">
+          <iframe id="liveFrame" title="Live website preview" loading="eager" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture" aria-hidden="true"></iframe>
+          <div class="wx-status"><b></b><span id="statusText">Preparing live preview</span></div>
+          <button id="retry" hidden>Retry</button>
+        </div>
+      </div>
+    </div>
+
+    <small>Static preview stays above the iframe until READY/heartbeat is received. If framing fails, the broken browser view is never shown.</small>
+  </section>
+</main>
+
+<footer><span>7Z Magic</span><a href="/">Back to main experience</a></footer>
+
+<script>
+window.__Z7_WEBSITE_PROJECTS__ = [
+    { key: "ercan", name: "ERCAN", url: "https://www.ercanco.com/", desktop: "/media/selected_experiences/ercan-desktop-auto.png", mobile: "/media/selected_experiences/ercan-mobile-auto.png" },
+    { key: "elcon", name: "ELCON Arabia", url: "https://elcon-arabia.com/", desktop: "/media/selected_experiences/elcon-arabia-desktop.png", mobile: "/media/selected_experiences/elcon-arabia-mobile.png" },
+    { key: "scmc", name: "Smile Care Medical Center", url: "https://scmc-website-eight.vercel.app/", desktop: "/media/selected_experiences/scmc-desktop.png", mobile: "/media/selected_experiences/scmc-mobile.png" }
+];
+</script>
+<script src="/websites/websites.js?v=final-v3-1" defer></script>
+</body>
+</html>
