@@ -11,3 +11,51 @@ main,footer{width:min(1180px,calc(100% - 28px));margin:auto}.wx-hero{padding:78p
 .wx-work small{display:block;margin:12px 0 65px;color:#6e7682;font-size:10px;line-height:1.6}footer{display:flex;justify-content:space-between;padding:20px 0 28px;border-top:1px solid var(--line);color:#747b86;font-size:10px}footer a{text-decoration:none}
 @media(max-width:720px){.wx-header{top:8px;width:calc(100% - 16px);height:62px;margin-top:8px;padding:0 12px;border-radius:22px}.wx-logo img{height:27px}.wx-header nav a{min-height:35px;padding:0 10px;font-size:8px}main,footer{width:calc(100% - 20px)}.wx-hero{padding:50px 2px 28px}.wx-hero h1{font-size:36px}.wx-hero p{font-size:13px}.wx-toolbar{align-items:flex-start;flex-direction:column}.wx-browser{border-radius:20px}.wx-stage.is-mobile .wx-browser{width:min(360px,100%);border-radius:30px}footer{flex-direction:column;gap:7px}}
 @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+/* 7Z_WEBSITES_HEADER_INTEGRATION_KEEP_CTA_V1 */
+.wx-main-nav{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.wx-main-nav::-webkit-scrollbar{display:none}
+.wx-main-nav a{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:38px;
+  padding:0 11px;
+  border:1px solid transparent;
+  border-radius:999px;
+  text-decoration:none;
+  color:#b7bec8;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.055em;
+  white-space:nowrap;
+  transition:border-color .25s ease,background .25s ease,color .25s ease;
+}
+.wx-main-nav a:hover{
+  color:#fff;
+  border-color:rgba(255,255,255,.14);
+  background:rgba(255,255,255,.035);
+}
+.wx-main-nav a.is-active{
+  color:#071014;
+  background:var(--a);
+  border-color:var(--a);
+}
+@media(max-width:980px){
+  .wx-header{gap:12px}
+  .wx-main-nav{max-width:calc(100vw - 110px)}
+  .wx-main-nav a{min-height:34px;padding:0 9px;font-size:8px}
+}
+@media(max-width:720px){
+  .wx-header{display:flex;align-items:center}
+  .wx-main-nav{max-width:calc(100vw - 86px);gap:4px}
+  .wx-main-nav a{min-height:32px;padding:0 8px;font-size:7.5px}
+}
