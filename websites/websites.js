@@ -20,3 +20,32 @@ retry.onclick=load;frame.addEventListener("load",()=>{if(frame.src&&frame.src!==
 window.addEventListener("message",e=>{if(e.source!==frame.contentWindow||!readyMessage(e.data))return;status.textContent="Live";setLive(true)});
 render();
 })();
+/* Z7_CANONICAL_HEADER_BEHAVIOR_V1 */
+(() => {
+  const menu = document.querySelector(".services-menu");
+  const trigger = document.querySelector(".services-trigger");
+  const panel = document.querySelector(".services-panel");
+  if (!menu || !trigger || !panel) return;
+
+  const close = () => {
+    menu.classList.remove("is-open");
+    trigger.setAttribute("aria-expanded", "false");
+    panel.setAttribute("aria-hidden", "true");
+  };
+
+  trigger.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const open = !menu.classList.contains("is-open");
+    menu.classList.toggle("is-open", open);
+    trigger.setAttribute("aria-expanded", open ? "true" : "false");
+    panel.setAttribute("aria-hidden", open ? "false" : "true");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!menu.contains(event.target)) close();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") close();
+  });
+})();
