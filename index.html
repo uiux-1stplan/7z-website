@@ -169,23 +169,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://7z-magic.com/assets/brand/7z-20260902_203523_038/og-7z.png">
 <meta name="twitter:image:alt" content="7Z Magic">
-  <!-- 7Z_MOBILE_LCP_RENDER_V2
-       Mobile-only: the loader still visually covers the hero during startup,
-       but the real LCP logo is already painted underneath instead of waiting
-       for the generic .reveal animation. Desktop behavior is unchanged. -->
-  <style id="z7-mobile-lcp-render-v2">
-    @media (max-width: 860px) {
-      #intro .hero-logo.reveal {
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: none !important;
-        translate: none !important;
-        filter: none !important;
-        animation: none !important;
-        transition: none !important;
-      }
-    }
-  </style>
 </head>
   <body data-static-background="true">
     <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
@@ -272,7 +255,7 @@
         <video id="introVideo" muted playsinline preload="metadata" src="media/intro/1.mp4" poster="media/posters/intro/1.jpg"></video>
         <div class="intro__shade"></div>
         <div class="intro__content">
-          <img class="hero-logo reveal" src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png" alt="7Z Magic" / fetchpriority="high">
+          <img class="hero-logo reveal" src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png" alt="7Z Magic" />
           <p class="eyebrow reveal">Interactive Digital Experience</p>
           <h1 class="hero-title reveal" data-hero-title>Creating Digital Experiences Beyond Imagination</h1>
           <p class="hero-copy reveal">
