@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg: #050608;
   --bg2: #090b10;
   --panel: rgba(14,17,24,.78);
@@ -3536,3 +3536,512 @@ html {
   }
 }
 
+/* === 7Z ADMIN WORKSPACE FINAL === */
+
+#app main .workspace-grid.z7-workspace-legacy-hidden {
+  display: none !important;
+}
+
+.z7-admin-workspace-shell {
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 22px;
+}
+
+.z7-admin-workspace-nav {
+  position: sticky;
+  top: calc(var(--z7-admin-header-height, 0px) + 14px);
+  z-index: 70;
+
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+
+  width: 100%;
+  padding: 6px;
+  margin: 0 0 18px;
+
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+
+  background: rgba(7,7,7,.92);
+  box-shadow:
+    0 14px 36px rgba(0,0,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.025);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.z7-admin-workspace-nav button {
+  appearance: none;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 14px;
+
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  background: transparent;
+  color: rgba(255,255,255,.48);
+
+  font: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  transition:
+    color .18s ease,
+    background .18s ease,
+    border-color .18s ease,
+    transform .18s ease;
+}
+
+.z7-admin-workspace-nav button:hover {
+  color: rgba(255,255,255,.9);
+  background: rgba(255,255,255,.035);
+}
+
+.z7-admin-workspace-nav button:active {
+  transform: scale(.985);
+}
+
+.z7-admin-workspace-nav button.is-active {
+  color: var(--z7-gold-light, #e7cb82);
+  border-color: rgba(214,178,94,.24);
+  background: rgba(214,178,94,.09);
+}
+
+.z7-admin-workspace-stage {
+  width: 100%;
+  min-width: 0;
+}
+
+.z7-admin-workspace-stage > .panel {
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 18px !important;
+}
+
+.z7-workspace-panel-hidden {
+  display: none !important;
+}
+
+.z7-workspace-panel:not(.z7-workspace-panel-hidden) {
+  animation: z7WorkspacePanelIn .2s cubic-bezier(.22,.7,.3,1);
+}
+
+@keyframes z7WorkspacePanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .z7-admin-workspace-nav {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .z7-admin-workspace-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .z7-admin-workspace-nav button {
+    flex: 0 0 auto;
+    min-width: 88px;
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 8px;
+  }
+}
+
+/* === /7Z ADMIN WORKSPACE FINAL === */
+
+/* === 7Z ADMIN GRID + SEARCH + COMPACT V3 === */
+
+/* The workspace tabs replace the old left rail completely. */
+#app.app {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+#app > .sidebar {
+  display: none !important;
+}
+
+#app > .main {
+  width: min(1480px, 100%) !important;
+  margin-inline: auto !important;
+  padding: 34px clamp(18px, 3.2vw, 48px) 64px !important;
+}
+
+/* Compact page copy. */
+#app .topbar {
+  margin-bottom: 24px !important;
+}
+
+#app .topbar h1 {
+  font-size: clamp(22px, 2vw, 28px) !important;
+}
+
+#app .topbar p {
+  max-width: 620px;
+  font-size: 10px !important;
+}
+
+.z7-admin-workspace-shell {
+  margin-bottom: 16px !important;
+}
+
+.z7-admin-workspace-nav {
+  top: calc(var(--z7-admin-header-height, 0px) + 10px) !important;
+  margin-bottom: 10px !important;
+}
+
+.z7-admin-workspace-nav button {
+  min-height: 32px !important;
+  padding-inline: 11px !important;
+  font-size: 8px !important;
+}
+
+/* One contextual search bar shared by Clients / Files / Media. */
+.z7-admin-workspace-search {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+
+  width: min(680px, 100%);
+  min-height: 38px;
+  margin: 0 0 14px;
+  padding: 0 10px 0 12px;
+
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 11px;
+  background: rgba(255,255,255,.018);
+}
+
+.z7-admin-workspace-search[hidden] {
+  display: none !important;
+}
+
+.z7-admin-workspace-search-icon {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(214,178,94,.62);
+  border-radius: 50%;
+  position: relative;
+}
+
+.z7-admin-workspace-search-icon::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 1px;
+  right: -4px;
+  bottom: -2px;
+  background: rgba(214,178,94,.62);
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+#z7-admin-workspace-search-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #e7e7e7 !important;
+  font-size: 10px !important;
+}
+
+#z7-admin-workspace-search-input::placeholder {
+  color: rgba(255,255,255,.28);
+}
+
+#z7-admin-workspace-search-clear {
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 7px;
+  background: rgba(255,255,255,.018);
+  color: #777;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+
+#z7-admin-workspace-search-clear:hover {
+  color: #d6b25e;
+  border-color: rgba(214,178,94,.24);
+}
+
+.z7-search-filtered-out {
+  display: none !important;
+}
+
+/* Make all workspace panels tighter without changing their functionality. */
+.z7-admin-workspace-stage > .panel {
+  padding: 18px !important;
+  margin: 0 0 14px !important;
+  border-radius: 14px !important;
+}
+
+.z7-admin-workspace-stage .page-kicker,
+.z7-admin-workspace-stage .z7nc-create-caption {
+  font-size: 6px !important;
+}
+
+.z7-admin-workspace-stage h2 {
+  font-size: 18px !important;
+}
+
+.z7-admin-workspace-stage h3 {
+  font-size: 15px !important;
+}
+
+.z7-admin-workspace-stage p {
+  font-size: 9px !important;
+}
+
+.z7nc-head,
+.z7af-head,
+.z7-cap-head,
+.z7-upload-head {
+  margin-bottom: 14px !important;
+}
+
+/* CLIENTS — cards instead of horizontal list rows. */
+#z7-native-clients .z7nc-form {
+  gap: 7px !important;
+}
+
+#z7-native-clients .z7nc-form input,
+#z7-native-clients #z7nc-create {
+  min-height: 36px !important;
+}
+
+#z7-native-clients .z7nc-form input {
+  padding-inline: 10px !important;
+  font-size: 9px !important;
+}
+
+#z7-native-clients #z7nc-create {
+  padding-inline: 13px !important;
+  font-size: 7px !important;
+}
+
+#z7-native-clients .z7nc-list {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 9px !important;
+  margin-top: 12px !important;
+}
+
+#z7-native-clients .z7nc-client {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-content: space-between !important;
+  align-items: start !important;
+  gap: 12px !important;
+  min-height: 132px;
+  padding: 12px !important;
+  border-radius: 10px !important;
+}
+
+#z7-native-clients .z7nc-client strong {
+  font-size: 10px !important;
+}
+
+#z7-native-clients .z7nc-client span {
+  font-size: 8px !important;
+}
+
+#z7-native-clients .z7nc-client small {
+  font-size: 7px !important;
+}
+
+#z7-native-clients .z7nc-client-right {
+  justify-content: flex-start !important;
+  gap: 5px !important;
+}
+
+#z7-native-clients .z7nc-action {
+  min-height: 28px !important;
+  padding-inline: 8px !important;
+  font-size: 6px !important;
+}
+
+#z7-native-clients .z7nc-status {
+  width: 100%;
+  margin-bottom: 1px;
+  font-size: 7px !important;
+}
+
+/* FILES — private library becomes responsive cards. */
+#z7-admin-file-library .z7af-list {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+  gap: 9px !important;
+}
+
+#z7-admin-file-library .z7af-file {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-content: space-between !important;
+  align-items: start !important;
+  gap: 12px !important;
+  min-height: 128px;
+  padding: 12px !important;
+  border-radius: 10px !important;
+}
+
+#z7-admin-file-library .z7af-file-info strong,
+#z7-admin-file-library .z7af-file-copy strong {
+  font-size: 9px !important;
+}
+
+#z7-admin-file-library .z7af-file-info span,
+#z7-admin-file-library .z7af-file-info small,
+#z7-admin-file-library .z7af-file-copy span,
+#z7-admin-file-library .z7af-file-copy small {
+  font-size: 6px !important;
+}
+
+#z7-admin-file-library .z7af-actions {
+  width: 100% !important;
+  gap: 5px !important;
+}
+
+#z7-admin-file-library .z7af-actions button {
+  flex: 1 1 0 !important;
+  min-height: 28px !important;
+  padding-inline: 7px !important;
+  font-size: 6px !important;
+}
+
+/* Keep upload compact but full width. */
+#z7-private-upload-panel .z7-upload-drop {
+  gap: 8px !important;
+}
+
+#z7-private-upload-panel .z7-upload-picker,
+#z7-private-upload-panel .z7-upload-submit {
+  min-height: 34px !important;
+  font-size: 7px !important;
+}
+
+/* MEDIA — both client choices and resources are grids. */
+#legacy-file-access-panel .z7-cap-client-list {
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)) !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+}
+
+#legacy-file-access-panel .z7-cap-client {
+  min-height: 86px;
+  padding: 11px !important;
+  border-radius: 9px !important;
+}
+
+#legacy-file-access-panel .z7-cap-client strong {
+  font-size: 10px !important;
+}
+
+#legacy-file-access-panel .z7-cap-client span {
+  font-size: 8px !important;
+}
+
+#legacy-file-access-panel .z7-cap-client small {
+  margin-top: 6px !important;
+  font-size: 6px !important;
+}
+
+#legacy-file-access-panel .z7-cap-selected-tools {
+  margin-bottom: 12px !important;
+  padding: 10px 12px !important;
+}
+
+#legacy-file-access-panel .z7-cap-files {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+  gap: 9px !important;
+}
+
+#legacy-file-access-panel .z7-cap-file {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 9px !important;
+  align-content: start !important;
+  align-items: center !important;
+  min-height: 126px;
+  padding: 12px !important;
+  border-radius: 10px !important;
+}
+
+#legacy-file-access-panel .z7-cap-file-info {
+  grid-column: 1 / -1 !important;
+}
+
+#legacy-file-access-panel .z7-cap-file-info strong {
+  font-size: 9px !important;
+}
+
+#legacy-file-access-panel .z7-cap-file-info span {
+  font-size: 7px !important;
+}
+
+#legacy-file-access-panel .z7-cap-file label {
+  font-size: 8px !important;
+}
+
+#legacy-file-access-panel .z7-cap-open,
+#legacy-file-access-panel .z7-cap-save,
+#legacy-file-access-panel .z7-cap-refresh,
+#legacy-file-access-panel .z7-cap-selected-tools button {
+  min-height: 28px !important;
+  padding-inline: 8px !important;
+  font-size: 6px !important;
+}
+
+@media (max-width: 900px) {
+  #app > .main {
+    padding-inline: 16px !important;
+  }
+
+  #z7-native-clients .z7nc-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .z7-admin-workspace-nav {
+    display: flex !important;
+  }
+
+  #z7-native-clients .z7nc-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  #z7-native-clients .z7nc-list,
+  #z7-admin-file-library .z7af-list,
+  #legacy-file-access-panel .z7-cap-client-list,
+  #legacy-file-access-panel .z7-cap-files {
+    grid-template-columns: 1fr !important;
+  }
+
+  .z7-admin-workspace-search {
+    width: 100%;
+  }
+}
+
+/* === /7Z ADMIN GRID + SEARCH + COMPACT V3 === */
