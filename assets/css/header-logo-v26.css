@@ -1,0 +1,93 @@
+/* 7Z MAGIC HEADER LOGO — SINGLE SOURCE V26
+   This file owns ONLY the clickable logo inside header.site-header.
+   No other page image is targeted.
+*/
+
+html body header.site-header > a.brand {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 78px !important;
+  height: 46px !important;
+  min-width: 78px !important;
+  max-width: 78px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+html body header.site-header > a.brand::before,
+html body header.site-header > a.brand::after {
+  content: none !important;
+  display: none !important;
+}
+
+html body header.site-header > a.brand > img#z7-header-logo-v26 {
+  position: static !important;
+
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  width: 78px !important;
+  height: 46px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 78px !important;
+  max-height: 46px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  object-fit: contain !important;
+  object-position: center center !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  clip: auto !important;
+  clip-path: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+
+  filter: none !important;
+  transform: none !important;
+
+  /* Attached artwork has a black canvas; screen removes only that black visually. */
+  mix-blend-mode: screen !important;
+}
+
+@media (max-width: 760px) {
+  html body header.site-header > a.brand {
+    width: 66px !important;
+    height: 40px !important;
+    min-width: 66px !important;
+    max-width: 66px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+
+  html body header.site-header > a.brand > img#z7-header-logo-v26 {
+    width: 66px !important;
+    height: 40px !important;
+    max-width: 66px !important;
+    max-height: 40px !important;
+  }
+}

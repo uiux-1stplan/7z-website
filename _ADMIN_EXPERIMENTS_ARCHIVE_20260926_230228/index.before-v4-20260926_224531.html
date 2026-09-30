@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>7Z Magic Ã¢â‚¬â€ Admin Portal</title>
+
+  <link rel="stylesheet" href="/admin/admin.css">
+<link rel="stylesheet" href="/admin/admin-auth-polish.css?v=639234581960308959">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 7Z approved brand -->
+<link rel="stylesheet" href="/assets/brand/7z-20260902_203523_038/brand-identity.css">
+<link rel="icon" type="image/x-icon" href="/assets/brand/7z-20260902_203523_038/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/7z-20260902_203523_038/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/7z-20260902_203523_038/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/brand/7z-20260902_203523_038/favicon-48x48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/7z-20260902_203523_038/apple-touch-icon.png">
+<meta property="og:image" content="https://7z-magic.com/assets/brand/7z-20260902_203523_038/og-7z.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="7Z Magic">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://7z-magic.com/assets/brand/7z-20260902_203523_038/og-7z.png">
+<meta name="twitter:image:alt" content="7Z Magic">
+
+</head>
+
+<body>
+
+<div
+  id="site-header-slot"
+  class="z7-admin-site-header">
+</div>
+
+<div class="ambient ambient-a"></div>
+<div class="ambient ambient-b"></div>
+<div class="grid-bg"></div>
+
+<div id="boot-screen" class="boot-screen">
+  <div class="boot-mark">
+  <img
+    src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png"
+    alt="7Z Magic">
+</div>
+  <div class="boot-copy">
+    <strong>7Z MAGIC</strong>
+    <span>Secure Portal</span>
+  </div>
+  <div class="boot-loader"></div>
+</div>
+
+<div id="auth-screen" class="auth-screen hidden">
+  <div class="auth-shell">
+
+    <section class="auth-brand">
+      <div class="brand-kicker">7Z MAGIC / SECURE ACCESS</div>
+
+      <h1>
+        Client Portal
+        <span>Administration.</span>
+      </h1>
+
+      <p>
+        Secure user management, controlled access and private
+        project delivery.
+      </p>
+
+      <div class="security-points">
+        <div>
+          <span class="dot"></span>
+          Server-side authorization
+        </div>
+
+        <div>
+          <span class="dot"></span>
+          Private file permissions
+        </div>
+
+        <div>
+          <span class="dot"></span>
+          Administrative audit trail
+        </div>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-title">
+        <span>ADMIN ACCESS</span>
+        <h2>Sign in</h2>
+      </div>
+
+      <div id="clerk-signin"></div>
+
+      <p class="login-note">
+        Accounts are created by authorized 7Z Magic administrators only.
+      </p>
+    </section>
+
+  </div>
+</div>
+
+<div id="denied-screen" class="center-state hidden">
+  <div class="state-card">
+    <span class="eyebrow">ACCESS CONTROL</span>
+    <h1>Admin access required.</h1>
+    <p>
+      Your account is authenticated but does not have
+      administrator privileges.
+    </p>
+
+    <button id="denied-signout" class="button button-primary">
+      Sign Out
+    </button>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-symbol">7Z</div>
+
+      <div>
+        <strong>7Z MAGIC</strong>
+        <span>Client Portal</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+
+      <button class="nav-item active">
+        <span class="nav-icon">01</span>
+        <span>
+          <strong>Users</strong>
+          <small>Access management</small>
+        </span>
+      </button>
+
+      <button class="nav-item disabled" disabled>
+        <span class="nav-icon">02</span>
+        <span>
+          <strong>Files</strong>
+          <small>Next stage</small>
+        </span>
+      </button>
+
+      <button class="nav-item disabled" disabled>
+        <span class="nav-icon">03</span>
+        <span>
+          <strong>Permissions</strong>
+          <small>Next stage</small>
+        </span>
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="security-status">
+        <span></span>
+        SECURE SESSION
+      </div>
+
+      <small>
+        7Z Magic Client Infrastructure
+      </small>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div>
+        <span class="page-kicker">
+          ADMINISTRATION / USERS
+        </span>
+
+        <h1>User Management</h1>
+
+        <p>
+          Create users, manage account access,
+          roles and credentials.
+        </p>
+      </div>
+
+      <div class="admin-profile">
+        <div id="admin-copy">
+          <strong id="admin-name">Administrator</strong>
+          <span id="admin-email"></span>
+        </div>
+
+        <div id="clerk-user-button"></div>
+      </div>
+
+    </header>
+
+
+    <section class="stats">
+
+      <article class="stat">
+        <span>USERS</span>
+        <strong id="stat-users">Ã¢â‚¬â€</strong>
+        <small>Total portal accounts</small>
+      </article>
+
+      <article class="stat">
+        <span>ACTIVE</span>
+        <strong id="stat-active">Ã¢â‚¬â€</strong>
+        <small>Enabled accounts</small>
+      </article>
+
+      <article class="stat">
+        <span>ADMINS</span>
+        <strong id="stat-admins">Ã¢â‚¬â€</strong>
+        <small>Administrative access</small>
+      </article>
+
+    </section>
+
+
+    <section class="workspace-grid">
+
+      <article class="panel create-panel">
+
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">NEW ACCOUNT</span>
+            <h2>Create User</h2>
+          </div>
+
+          <span class="status-pill">
+            ADMIN ONLY
+          </span>
+        </div>
+
+        <form id="create-user-form">
+
+          <label>
+            <span>Display Name</span>
+            <input
+              id="create-name"
+              name="displayName"
+              autocomplete="off"
+              required
+              maxlength="120"
+              placeholder="Client or team member">
+          </label>
+
+          <label>
+            <span>Email Address</span>
+            <input
+              id="create-email"
+              name="email"
+              type="email"
+              autocomplete="off"
+              required
+              placeholder="name@company.com">
+          </label>
+
+          <label>
+            <span>Company</span>
+            <input
+              id="create-company"
+              name="company"
+              autocomplete="off"
+              maxlength="160"
+              placeholder="Company name">
+          </label>
+
+          <label>
+            <span>Initial Password</span>
+
+            <div class="password-field">
+              <input
+                id="create-password"
+                name="password"
+                type="password"
+                minlength="8"
+                maxlength="128"
+                autocomplete="new-password"
+                required
+                placeholder="Minimum 8 characters">
+
+              <button
+                type="button"
+                class="text-button toggle-password"
+                data-target="create-password">
+                SHOW
+              </button>
+            </div>
+          </label>
+
+          <label>
+            <span>Role</span>
+
+            <select
+              id="create-role"
+              name="role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+
+          <button
+            id="create-submit"
+            class="button button-primary full"
+            type="submit">
+            Create Account
+          </button>
+
+        </form>
+
+      </article>
+
+
+      <article class="panel users-panel">
+
+        <div class="panel-head table-head">
+
+          <div>
+            <span class="eyebrow">PORTAL DIRECTORY</span>
+            <h2>Users</h2>
+          </div>
+
+          <button
+            id="refresh-users"
+            type="button"
+            class="button button-secondary">
+            Refresh
+          </button>
+
+        </div>
+
+        <div id="users-loading" class="table-state">
+          Loading usersÃ¢â‚¬Â¦
+        </div>
+
+        <div id="users-empty" class="table-state hidden">
+          No users found.
+        </div>
+
+        <div
+          id="users-table-wrap"
+          class="table-wrap hidden">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Company</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="users-body"></tbody>
+
+          </table>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<div id="password-modal" class="modal hidden">
+
+  <div class="modal-backdrop" data-close-modal></div>
+
+  <div class="modal-card">
+
+    <div class="modal-head">
+
+      <div>
+        <span class="eyebrow">SECURITY</span>
+        <h2>Change Password</h2>
+      </div>
+
+      <button
+        class="close-button"
+        type="button"
+        data-close-modal>
+        Ãƒâ€”
+      </button>
+
+    </div>
+
+    <p id="password-user-label" class="modal-copy"></p>
+
+    <form id="password-form">
+
+      <input
+        type="hidden"
+        id="password-user-id">
+
+      <label>
+        <span>New Password</span>
+
+        <div class="password-field">
+
+          <input
+            id="new-password"
+            type="password"
+            minlength="8"
+            maxlength="128"
+            autocomplete="new-password"
+            required
+            placeholder="Minimum 8 characters">
+
+          <button
+            type="button"
+            class="text-button toggle-password"
+            data-target="new-password">
+            SHOW
+          </button>
+
+        </div>
+      </label>
+
+      <p class="warning-copy">
+        Existing sessions will be signed out after
+        the password is changed.
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="button button-secondary"
+          data-close-modal>
+          Cancel
+        </button>
+
+        <button
+          id="password-submit"
+          type="submit"
+          class="button button-primary">
+          Update Password
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<div
+  id="site-footer-slot"
+  class="z7-admin-site-footer">
+</div>
+
+<div id="toast-stack" class="toast-stack"></div>
+
+<script src="/admin/site-shell.js?v=7z-20260902-r1"></script>
+<script src="/admin/admin.js"></script>
+
+<script src="/admin/legacy-file-access.js?v=20260824"></script>
+<script src="/admin/private-file-upload.bundle.js?v=20260824"></script>
+<script src="/admin/native-clients.js?v=20260825"></script>
+  <script src="/admin/admin-files.js"></script>
+  <script src="/admin/admin-polish.js"></script>
+  <script src="/admin/admin-accounts.js"></script>
+<script src="/admin/admin-auth-polish.js?v=639234581960308959"></script>
+<!-- Z7_ADMIN_ORGANIZER_V3_START -->
+<script>
+(() => {
+    "use strict";
+
+    if (window.__Z7_ADMIN_ORGANIZER_V3__) return;
+    window.__Z7_ADMIN_ORGANIZER_V3__ = true;
+
+    const GROUPS = {
+        admins: [
+            "Administrator Management"
+        ],
+        clients: [
+            "Client Accounts"
+        ],
+        files: [
+            "Upload Private File",
+            "File Library"
+        ],
+        media: [
+            "Clients & All Media"
+        ]
+    };
+
+    const ALL_TITLES = Object.values(GROUPS).flat();
+
+    const clean = value =>
+        String(value || "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
+
+    const wantedTitles =
+        new Set(ALL_TITLES.map(clean));
+
+    const style = document.createElement("style");
+
+    style.id = "z7-admin-organizer-v3-style";
+
+    style.textContent = `
+        #z7-admin-workspace-tabs {
+            position: sticky;
+            top: 88px;
+            z-index: 900;
+
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            width: min(100%, 1180px);
+            margin: 16px auto 22px;
+            padding: 6px;
+
+            overflow-x: auto;
+            scrollbar-width: none;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(255,255,255,.035),
+                    rgba(255,255,255,.012)
+                ),
+                rgba(5,7,8,.92);
+
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+
+            box-shadow:
+                0 16px 45px rgba(0,0,0,.28),
+                inset 0 1px 0 rgba(255,255,255,.03);
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        #z7-admin-workspace-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .z7-workspace-tab {
+            appearance: none;
+            border: 0;
+            outline: 0;
+
+            min-height: 36px;
+            padding: 0 16px;
+
+            flex: 0 0 auto;
+
+            border-radius: 11px;
+
+            background: transparent;
+            color: rgba(255,255,255,.56);
+
+            font: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .035em;
+
+            cursor: pointer;
+
+            transition:
+                background .18s ease,
+                color .18s ease,
+                box-shadow .18s ease,
+                transform .18s ease;
+        }
+
+        .z7-workspace-tab:hover {
+            color: rgba(255,255,255,.92);
+            background: rgba(255,255,255,.035);
+        }
+
+        .z7-workspace-tab:active {
+            transform: scale(.985);
+        }
+
+        .z7-workspace-tab.is-active {
+            color: #e6c464;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(218,177,78,.16),
+                    rgba(218,177,78,.07)
+                );
+
+            box-shadow:
+                inset 0 0 0 1px rgba(218,177,78,.24),
+                0 5px 18px rgba(0,0,0,.18);
+        }
+
+        .z7-admin-section-hidden {
+            display: none !important;
+        }
+
+        [data-z7-admin-group] {
+            animation:
+                z7WorkspaceReveal .22s
+                cubic-bezier(.22,.7,.3,1);
+        }
+
+        @keyframes z7WorkspaceReveal {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 760px) {
+            #z7-admin-workspace-tabs {
+                top: 72px;
+                width: calc(100% - 24px);
+                margin: 12px auto 16px;
+                padding: 5px;
+            }
+
+            .z7-workspace-tab {
+                min-height: 34px;
+                padding: 0 13px;
+                font-size: 10px;
+            }
+        }
+    `;
+
+    document.head.appendChild(style);
+
+    function exactTextElement(title) {
+        const target = clean(title);
+
+        /*
+         * Search TEXT NODES, not headings/classes.
+         * Works with div/span/p/h1/... anything.
+         */
+        const walker =
+            document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT
+            );
+
+        let node;
+
+        while ((node = walker.nextNode())) {
+            if (clean(node.nodeValue) === target) {
+                return node.parentElement;
+            }
+        }
+
+        return null;
+    }
+
+    function countKnownTitles(element) {
+        if (!element) return 0;
+
+        const text = clean(element.innerText);
+
+        let count = 0;
+
+        wantedTitles.forEach(title => {
+            if (text.includes(title)) {
+                count++;
+            }
+        });
+
+        return count;
+    }
+
+    function findSection(titleElement) {
+        if (!titleElement) return null;
+
+        let node = titleElement;
+        let best = titleElement.parentElement;
+
+        /*
+         * Move upward and select the largest ancestor
+         * that still belongs to ONLY this management section.
+         */
+        for (let depth = 0; node && depth < 12; depth++) {
+
+            node = node.parentElement;
+
+            if (
+                !node ||
+                node === document.body ||
+                node === document.documentElement ||
+                node.tagName === "MAIN"
+            ) {
+                break;
+            }
+
+            const knownCount =
+                countKnownTitles(node);
+
+            if (knownCount === 1) {
+                best = node;
+                continue;
+            }
+
+            if (knownCount > 1) {
+                break;
+            }
+        }
+
+        return best;
+    }
+
+    function discover() {
+        const mappings = [];
+
+        Object.entries(GROUPS).forEach(
+            ([group, titles]) => {
+
+                titles.forEach(title => {
+
+                    const titleElement =
+                        exactTextElement(title);
+
+                    if (!titleElement) return;
+
+                    const section =
+                        findSection(titleElement);
+
+                    if (!section) return;
+
+                    if (
+                        !mappings.some(
+                            item =>
+                                item.group === group &&
+                                item.section === section
+                        )
+                    ) {
+                        mappings.push({
+                            group,
+                            title,
+                            section
+                        });
+                    }
+                });
+            }
+        );
+
+        return mappings;
+    }
+
+    function uniqueSections(mappings) {
+        const result = [];
+
+        mappings.forEach(item => {
+            if (
+                !result.some(
+                    existing =>
+                        existing.section ===
+                        item.section
+                )
+            ) {
+                result.push(item);
+            }
+        });
+
+        return result;
+    }
+
+    function createTabs(anchor) {
+        let nav =
+            document.getElementById(
+                "z7-admin-workspace-tabs"
+            );
+
+        if (nav) return nav;
+
+        nav = document.createElement("nav");
+
+        nav.id =
+            "z7-admin-workspace-tabs";
+
+        nav.setAttribute(
+            "aria-label",
+            "Administrator workspace"
+        );
+
+        const tabs = [
+            ["overview", "Overview"],
+            ["clients", "Clients"],
+            ["files", "Files"],
+            ["media", "Media"],
+            ["admins", "Admins"]
+        ];
+
+        tabs.forEach(([id, label]) => {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.className =
+                "z7-workspace-tab";
+
+            button.dataset.tab = id;
+            button.textContent = label;
+
+            nav.appendChild(button);
+        });
+
+        anchor.parentElement.insertBefore(
+            nav,
+            anchor
+        );
+
+        return nav;
+    }
+
+    let currentMappings = [];
+
+    function activate(tab) {
+        currentMappings.forEach(item => {
+
+            /*
+             * OVERVIEW:
+             * hide every large management area.
+             * Existing summary/stat cards outside these
+             * sections remain visible.
+             */
+            const visible =
+                tab !== "overview" &&
+                item.group === tab;
+
+            item.section.classList.toggle(
+                "z7-admin-section-hidden",
+                !visible
+            );
+        });
+
+        const nav =
+            document.getElementById(
+                "z7-admin-workspace-tabs"
+            );
+
+        if (nav) {
+            nav.querySelectorAll(
+                ".z7-workspace-tab"
+            ).forEach(button => {
+
+                const active =
+                    button.dataset.tab === tab;
+
+                button.classList.toggle(
+                    "is-active",
+                    active
+                );
+
+                button.setAttribute(
+                    "aria-selected",
+                    active ? "true" : "false"
+                );
+            });
+        }
+
+        sessionStorage.setItem(
+            "z7-admin-active-workspace-v3",
+            tab
+        );
+    }
+
+    function install() {
+        const discovered =
+            uniqueSections(discover());
+
+        const foundGroups =
+            new Set(
+                discovered.map(item => item.group)
+            );
+
+        const required =
+            ["admins", "clients", "files", "media"];
+
+        const ready =
+            required.every(group =>
+                foundGroups.has(group)
+            );
+
+        if (!ready) {
+            return false;
+        }
+
+        currentMappings = discovered;
+
+        currentMappings.forEach(item => {
+            item.section.dataset.z7AdminGroup =
+                item.group;
+        });
+
+        const firstSection =
+            currentMappings
+                .map(item => item.section)
+                .sort((a, b) => {
+                    const pos =
+                        a.compareDocumentPosition(b);
+
+                    return (
+                        pos &
+                        Node.DOCUMENT_POSITION_FOLLOWING
+                    ) ? -1 : 1;
+                })[0];
+
+        if (!firstSection?.parentElement) {
+            return false;
+        }
+
+        const nav =
+            createTabs(firstSection);
+
+        if (!nav.dataset.bound) {
+
+            nav.dataset.bound = "true";
+
+            nav.addEventListener(
+                "click",
+                event => {
+
+                    const button =
+                        event.target.closest(
+                            ".z7-workspace-tab"
+                        );
+
+                    if (!button) return;
+
+                    activate(
+                        button.dataset.tab
+                    );
+
+                    const top =
+                        nav.getBoundingClientRect().top +
+                        window.scrollY -
+                        110;
+
+                    window.scrollTo({
+                        top: Math.max(0, top),
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+        const remembered =
+            sessionStorage.getItem(
+                "z7-admin-active-workspace-v3"
+            );
+
+        const allowed = [
+            "overview",
+            "clients",
+            "files",
+            "media",
+            "admins"
+        ];
+
+        activate(
+            allowed.includes(remembered)
+                ? remembered
+                : "overview"
+        );
+
+        console.info(
+            "[7Z] Admin Organizer V3 ACTIVE",
+            currentMappings.map(item => ({
+                group: item.group,
+                title: item.title
+            }))
+        );
+
+        return true;
+    }
+
+    function start() {
+        let installed = install();
+
+        const observer =
+            new MutationObserver(() => {
+
+                if (!installed) {
+                    installed = install();
+                    return;
+                }
+
+                if (
+                    currentMappings.some(
+                        item =>
+                            !item.section.isConnected
+                    )
+                ) {
+                    installed = install();
+                }
+            });
+
+        observer.observe(
+            document.body,
+            {
+                subtree: true,
+                childList: true,
+                characterData: true
+            }
+        );
+
+        let attempts = 0;
+
+        const timer =
+            setInterval(() => {
+
+                attempts++;
+
+                if (!installed) {
+                    installed = install();
+                }
+
+                if (
+                    installed ||
+                    attempts >= 80
+                ) {
+                    clearInterval(timer);
+                }
+
+            }, 250);
+    }
+
+    if (
+        document.readyState === "loading"
+    ) {
+        document.addEventListener(
+            "DOMContentLoaded",
+            start,
+            { once: true }
+        );
+    } else {
+        start();
+    }
+})();
+</script>
+<!-- Z7_ADMIN_ORGANIZER_V3_END -->
+
+</body>
+</html>

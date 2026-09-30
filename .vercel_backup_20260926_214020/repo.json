@@ -1,0 +1,11 @@
+{
+  "remoteName": "origin",
+  "projects": [
+    {
+      "id": "prj_vr2eOHSNPrLdLePyH0a0cNV2eK05",
+      "name": "7z-website",
+      "directory": ".",
+      "orgId": "team_wz7SBxS4VgNctZQMCuh5g1Tc"
+    }
+  ]
+}

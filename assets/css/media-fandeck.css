@@ -1,0 +1,122 @@
+/* ============================================================
+   7Z MAGIC — MARKETING MEDIA FAN DECK
+   STRICT SCOPE: #media ONLY
+   ============================================================ */
+
+#media {
+  overflow: clip;
+}
+
+#media .pin-copy {
+  position: relative;
+  z-index: 20;
+}
+
+#media #mediaRail.z7-fandeck {
+  position: relative !important;
+  display: block !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+
+  min-height: clamp(500px, 47vw, 650px);
+
+  overflow: visible !important;
+
+  isolation: isolate;
+  perspective: 1400px;
+
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#media #mediaRail.z7-fandeck > .media-tile {
+  position: absolute !important;
+
+  left: 50% !important;
+  top: 50% !important;
+
+  width: clamp(225px, 22vw, 330px) !important;
+  max-width: 78%;
+
+  margin: 0 !important;
+
+  transform-origin: 50% 118% !important;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  will-change: transform, filter, opacity;
+
+  cursor: pointer;
+
+  transition:
+    box-shadow 0.45s ease,
+    border-color 0.45s ease;
+}
+
+#media #mediaRail.z7-fandeck > .media-tile[data-fan-active="true"] {
+  cursor: default;
+
+  box-shadow:
+    0 34px 80px rgba(0, 0, 0, 0.46),
+    0 10px 30px rgba(0, 0, 0, 0.24);
+}
+
+#media #mediaRail.z7-fandeck > .media-tile video {
+  pointer-events: auto;
+}
+
+#media #mediaRail.z7-fandeck.is-dragging {
+  cursor: grabbing;
+}
+
+#media #mediaRail.z7-fandeck.is-dragging > .media-tile {
+  cursor: grabbing;
+}
+
+@media (min-width: 900px) {
+  #media.chapter--horizontal {
+    grid-template-columns:
+      minmax(330px, 35vw)
+      minmax(0, 1fr) !important;
+
+    align-items: center;
+  }
+
+  #media #mediaRail.z7-fandeck {
+    min-height: clamp(520px, 45vw, 650px);
+  }
+}
+
+@media (max-width: 899px) {
+  #media #mediaRail.z7-fandeck {
+    width: 100% !important;
+
+    min-height: clamp(390px, 115vw, 520px);
+
+    margin-top: 1rem;
+  }
+
+  #media #mediaRail.z7-fandeck > .media-tile {
+    width: min(66vw, 285px) !important;
+    max-width: 72vw;
+  }
+}
+
+@media (max-width: 520px) {
+  #media #mediaRail.z7-fandeck {
+    min-height: 410px;
+  }
+
+  #media #mediaRail.z7-fandeck > .media-tile {
+    width: min(68vw, 265px) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #media #mediaRail.z7-fandeck > .media-tile {
+    transition: none !important;
+  }
+}

@@ -142,6 +142,231 @@
 <meta name="twitter:image" content="https://7z-magic.com/assets/brand/7z-20260902_203523_038/og-7z.png">
 <meta name="twitter:image:alt" content="7Z Magic">
   <link rel="stylesheet" href="/founders/founders-final-hero-lock-v42.css?v=20260925-final-v42">
+
+<style id="z7-founders-admin-dropdown-style-v2">
+.z7-founders-admin-strip,
+.z7-founders-admin-strip__inner{
+  overflow:visible!important;
+}
+
+.z7-founders-admin-menu-v2{
+  position:relative;
+  display:inline-block;
+  margin:0;
+  padding:0;
+  overflow:visible;
+}
+
+.z7-founders-admin-menu-v2 > summary{
+  list-style:none;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+
+.z7-founders-admin-menu-v2 > summary::-webkit-details-marker{display:none}
+.z7-founders-admin-menu-v2 > summary::marker{content:""}
+
+.z7-founders-admin-menu-v2__chevron{
+  display:inline-block;
+  transition:transform .20s cubic-bezier(.22,.61,.36,1);
+}
+
+.z7-founders-admin-menu-v2[open] .z7-founders-admin-menu-v2__chevron{
+  transform:rotate(90deg);
+}
+
+.z7-founders-admin-menu-v2__panel{
+  position:absolute;
+  right:0;
+  bottom:calc(100% + 12px);
+  z-index:999999;
+  width:270px;
+  padding:9px;
+  border:1px solid rgba(214,178,74,.30);
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(18,18,18,.99),rgba(7,7,7,.99));
+  box-shadow:0 24px 64px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.045);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  transform-origin:bottom right;
+  animation:z7AdminV2In .18s cubic-bezier(.22,.61,.36,1) both;
+}
+
+@keyframes z7AdminV2In{
+  from{opacity:0;transform:translateY(8px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.z7-founders-admin-menu-v2__eyebrow{
+  padding:8px 11px 9px;
+  color:rgba(214,178,74,.86);
+  font:700 8px/1 Inter,Arial,sans-serif;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+.z7-founders-admin-menu-v2__item{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  min-height:58px!important;
+  padding:11px 12px!important;
+  border:1px solid transparent!important;
+  border-radius:13px!important;
+  background:transparent!important;
+  color:#f5f5f2!important;
+  text-decoration:none!important;
+  box-sizing:border-box!important;
+  transition:background-color .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+
+.z7-founders-admin-menu-v2__item:hover{
+  background:rgba(255,255,255,.055)!important;
+  border-color:rgba(255,255,255,.08)!important;
+  transform:translateY(-1px);
+}
+
+.z7-founders-admin-menu-v2__item strong{
+  display:block;
+  color:#fff!important;
+  font:750 11px/1.15 Inter,Arial,sans-serif!important;
+}
+
+.z7-founders-admin-menu-v2__item small{
+  display:block;
+  margin-top:5px;
+  color:rgba(255,255,255,.46)!important;
+  font:500 9px/1.25 Inter,Arial,sans-serif!important;
+}
+
+.z7-founders-admin-menu-v2__icon{
+  display:grid;
+  place-items:center;
+  width:31px;
+  height:31px;
+  flex:0 0 31px;
+  border:1px solid rgba(214,178,74,.24);
+  border-radius:10px;
+  color:#d6b24a!important;
+  background:rgba(214,178,74,.045);
+  font:800 11px/1 Inter,Arial,sans-serif!important;
+}
+
+.z7-founders-admin-menu-v2__divider{
+  height:1px;
+  margin:5px 7px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);
+}
+
+@media(max-width:700px){
+  .z7-founders-admin-menu-v2__panel{
+    width:min(276px,calc(100vw - 28px));
+  }
+}
+</style>
+<style id="z7-founders-dropdown-portal-v4-style">
+/* The native <details> still controls open/closed state.
+   Its in-flow panel is hidden because an ancestor clips it. */
+#z7-founders-admin-menu-v2 > .z7-founders-admin-menu-v2__panel{
+  display:none!important;
+}
+
+/* Portaled clone lives directly under <body>, outside every clipping ancestor. */
+#z7-founders-admin-portal-v4{
+  position:fixed!important;
+  z-index:2147483646!important;
+  display:block!important;
+  width:270px!important;
+  padding:9px!important;
+  margin:0!important;
+  border:1px solid rgba(214,178,74,.30)!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,rgba(18,18,18,.99),rgba(7,7,7,.99))!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.54),inset 0 1px 0 rgba(255,255,255,.045)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+  box-sizing:border-box!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transform-origin:bottom right!important;
+  animation:z7AdminPortalV4In .18s cubic-bezier(.22,.61,.36,1) both!important;
+}
+
+@keyframes z7AdminPortalV4In{
+  from{opacity:0;transform:translateY(7px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+#z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__eyebrow{
+  padding:8px 11px 9px!important;
+  color:rgba(214,178,74,.86)!important;
+  font:700 8px/1 Inter,Arial,sans-serif!important;
+  letter-spacing:.15em!important;
+  text-transform:uppercase!important;
+}
+
+#z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__item{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  min-height:58px!important;
+  padding:11px 12px!important;
+  border:1px solid transparent!important;
+  border-radius:13px!important;
+  background:transparent!important;
+  color:#f5f5f2!important;
+  text-decoration:none!important;
+  box-sizing:border-box!important;
+  transition:background-color .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+
+#z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__item:hover{
+  background:rgba(255,255,255,.06)!important;
+  border-color:rgba(255,255,255,.09)!important;
+  transform:translateY(-1px)!important;
+}
+
+#z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__item strong{
+  display:block!important;
+  color:#fff!important;
+  font:750 11px/1.15 Inter,Arial,sans-serif!important;
+}
+
+#z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__item small{
+  display:block!important;
+  margin-top:5px!important;
+  color:rgba(255,255,255,.46)!important;
+  font:500 9px/1.25 Inter,Arial,sans-serif!important;
+}
+
+#z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__icon{
+  display:grid!important;
+  place-items:center!important;
+  width:31px!important;
+  height:31px!important;
+  flex:0 0 31px!important;
+  border:1px solid rgba(214,178,74,.24)!important;
+  border-radius:10px!important;
+  color:#d6b24a!important;
+  background:rgba(214,178,74,.045)!important;
+  font:800 11px/1 Inter,Arial,sans-serif!important;
+}
+
+#z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__divider{
+  height:1px!important;
+  margin:5px 7px!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent)!important;
+}
+
+@media(max-width:700px){
+  #z7-founders-admin-portal-v4{
+    width:min(276px,calc(100vw - 24px))!important;
+  }
+}
+</style>
 </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -353,14 +578,39 @@
       7Z INTERNAL / ADMINISTRATION
     </div>
 
-    <a
-      class="z7-founders-admin-strip__link"
-      href="/admin/">
+    <details class="z7-founders-admin-menu-v2" id="z7-founders-admin-menu-v2">
+  <summary class="z7-founders-admin-strip__link" aria-label="Open administration menu">
+    <span>ADMIN PANEL</span>
+    <span class="z7-founders-admin-menu-v2__chevron" aria-hidden="true">&rarr;</span>
+  </summary>
 
-      <span>ADMIN PANEL</span>
-      <span aria-hidden="true">&rarr;</span>
+  <div class="z7-founders-admin-menu-v2__panel">
+    <div class="z7-founders-admin-menu-v2__eyebrow">7Z INTERNAL / ADMINISTRATION</div>
 
+    <a class="z7-founders-admin-menu-v2__item" href="/admin/">
+      <span>
+        <strong>7Z Admin Panel</strong>
+        <small>Website administration</small>
+      </span>
+      <span class="z7-founders-admin-menu-v2__icon" aria-hidden="true">&rarr;</span>
     </a>
+
+    <div class="z7-founders-admin-menu-v2__divider"></div>
+
+    <a
+      class="z7-founders-admin-menu-v2__item"
+      id="z7-content-engine-admin-entry-v2"
+      href="http://127.0.0.1:7070/engine"
+      target="_blank"
+      rel="noopener">
+      <span>
+        <strong>7Z Content Engine</strong>
+        <small>AI content operations</small>
+      </span>
+      <span class="z7-founders-admin-menu-v2__icon" aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</details>
 
   </div>
 
@@ -437,5 +687,129 @@
 <script src="/founders/founders-hero-studio-v20.js?v=20260925-same-image-v5"></script>
 <script src="/founders/founder-profile-color-reveal-v21.js?v=20260828-profile-v21"></script>
   <script src="/founders/founders-final-hero-lock-v42.js?v=20260925-final-v42"></script>
+
+<script id="z7-founders-admin-engine-target-v2">
+(function(){
+  var a=document.getElementById('z7-content-engine-admin-entry-v2');
+  if(!a)return;
+  if(location.hostname!=='127.0.0.1' && location.hostname!=='localhost'){
+    a.href='https://content.7z-magic.com/portal';
+  }
+})();
+</script>
+<script id="z7-founders-dropdown-portal-v4-script">
+(function(){
+  var details=document.getElementById('z7-founders-admin-menu-v2');
+  if(!details)return;
+
+  var trigger=details.querySelector('summary');
+  var source=details.querySelector('.z7-founders-admin-menu-v2__panel');
+  if(!trigger || !source)return;
+
+  var portal=null;
+
+  function removePortal(){
+    if(portal && portal.parentNode){
+      portal.parentNode.removeChild(portal);
+    }
+    portal=null;
+  }
+
+  function positionPortal(){
+    if(!portal)return;
+
+    var r=trigger.getBoundingClientRect();
+    var w=Math.min(270,window.innerWidth-24);
+
+    portal.style.width=w+'px';
+
+    /* Measure after insertion. */
+    var ph=portal.offsetHeight || 175;
+    var gap=12;
+
+    var left=Math.min(
+      Math.max(12,r.right-w),
+      window.innerWidth-w-12
+    );
+
+    /* Prefer opening above the strip; fall back below when needed. */
+    var top=r.top-ph-gap;
+    if(top<12){
+      top=r.bottom+gap;
+    }
+
+    if(top+ph>window.innerHeight-12){
+      top=Math.max(12,window.innerHeight-ph-12);
+    }
+
+    portal.style.left=Math.round(left)+'px';
+    portal.style.top=Math.round(top)+'px';
+    portal.style.right='auto';
+    portal.style.bottom='auto';
+  }
+
+  function createPortal(){
+    removePortal();
+
+    portal=source.cloneNode(true);
+    portal.id='z7-founders-admin-portal-v4';
+
+    /* Ensure local/production engine destination remains correct in the clone. */
+    var engineLink=portal.querySelector('#z7-content-engine-admin-entry-v2');
+    if(engineLink){
+      engineLink.removeAttribute('id');
+      if(location.hostname==='127.0.0.1' || location.hostname==='localhost'){
+        engineLink.href='http://127.0.0.1:7070/engine';
+      }else{
+        engineLink.href='https://content.7z-magic.com/portal';
+      }
+    }
+
+    document.body.appendChild(portal);
+    positionPortal();
+
+    /* Avoid leaving the native details open when a destination is chosen. */
+    portal.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){
+        details.open=false;
+        removePortal();
+      },{once:true});
+    });
+  }
+
+  details.addEventListener('toggle',function(){
+    if(details.open){
+      createPortal();
+    }else{
+      removePortal();
+    }
+  });
+
+  /* If page was restored with details already open. */
+  if(details.open){
+    createPortal();
+  }
+
+  window.addEventListener('resize',positionPortal);
+  window.addEventListener('scroll',positionPortal,{passive:true});
+
+  document.addEventListener('pointerdown',function(e){
+    if(!details.open)return;
+    if(details.contains(e.target))return;
+    if(portal && portal.contains(e.target))return;
+
+    details.open=false;
+    removePortal();
+  },true);
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && details.open){
+      details.open=false;
+      removePortal();
+      try{trigger.focus()}catch(_){}
+    }
+  });
+})();
+</script>
 </body>
 </html>

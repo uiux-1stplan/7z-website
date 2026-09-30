@@ -1,0 +1,70 @@
+
+
+SearchTerm : Administrator Management
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\admin-accounts.js
+LineNumber : 89
+Line       :               "administrator management"
+
+SearchTerm : Administrator Management
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\admin-accounts.js
+LineNumber : 162
+Line       :             Administrator Management
+
+SearchTerm : Administrator Management
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\admin-polish.js
+LineNumber : 28
+Line       :               "Administrator Management";
+
+SearchTerm : Client Accounts
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\admin-polish.js
+LineNumber : 7
+Line       :      * with customer/client accounts.
+
+SearchTerm : Client Accounts
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\native-clients.js
+LineNumber : 149
+Line       :             CLIENT ACCOUNTS
+
+SearchTerm : Client Accounts
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\native-clients.js
+LineNumber : 153
+Line       :             Client Accounts
+
+SearchTerm : Client Accounts
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\native-clients.js
+LineNumber : 591
+Line       :           No client accounts found.
+
+SearchTerm : Upload Private File
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\private-file-upload.bundle.js
+LineNumber : 13
+Line       :             Upload Private File
+
+SearchTerm : Upload Private File
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\private-file-upload.bundle.js
+LineNumber : 56
+Line       :           UPLOAD PRIVATE FILE
+
+SearchTerm : Upload Private File
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\private-file-upload.entry.js
+LineNumber : 188
+Line       :             Upload Private File
+
+SearchTerm : Upload Private File
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\private-file-upload.entry.js
+LineNumber : 231
+Line       :           UPLOAD PRIVATE FILE
+
+SearchTerm : File Library
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\admin-files.js
+LineNumber : 181
+Line       :               File Library
+
+SearchTerm : File Library
+Path       : D:\7Z-Magic\7Z-Magic Website\7Z-Magic-Website_MASTER\admin\admin-files.js
+LineNumber : 785
+Line       :      * dynamically, so keep File Library in the correct
+
+
+
+

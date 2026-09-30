@@ -1,0 +1,192 @@
+/* =========================================================
+   7Z MAGIC — FOUNDERS FINAL HERO LOCK V40
+
+   Source of truth:
+   Desktop-approved canonical portrait:
+   /media/founders/7z-founders-studio-v31.jpeg
+
+   This stylesheet is intentionally loaded LAST.
+   It overrides old V37 fallback behavior and old V5 experiments
+   without modifying the approved desktop image asset.
+========================================================= */
+
+/* Kill the previous V5 duplicated V20 overlay completely. */
+.z7x-page--founders .z7f20 .z7f20__mono-same-image {
+  display: none !important;
+}
+
+/* The actual hero interaction target must receive the pointer. */
+.z7x-page--founders .z7f20 .z7f20__visual {
+  pointer-events: auto !important;
+}
+
+/* Decorative layers never steal hover/touch from the hero. */
+.z7x-page--founders .z7f20 .z7f20__ambient,
+.z7x-page--founders .z7f20 .z7f20__visual::before,
+.z7x-page--founders .z7f20 .z7f20__visual::after,
+.z7x-page--founders .z7f20 .z7f20__monogram,
+.z7x-page--founders .z7f20 .z7f20__hint,
+.z7x-page--founders .z7f20 .z7f20__hint-mobile {
+  pointer-events: none !important;
+}
+
+/* SAME desktop-approved portrait on every viewport.
+   Default is monochrome. */
+.z7x-page--founders .z7f20 .z7f20__visual > img.z7f20__portrait {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  filter:
+    grayscale(1)
+    saturate(0)
+    contrast(1.075)
+    brightness(.86) !important;
+
+  transition:
+    filter 820ms cubic-bezier(.22,.61,.36,1),
+    transform 950ms cubic-bezier(.22,.61,.36,1) !important;
+}
+
+/* Desktop mouse/focus interaction. */
+@media (hover: hover) and (pointer: fine) {
+  .z7x-page--founders .z7f20 .z7f20__visual:hover > img.z7f20__portrait,
+  .z7x-page--founders .z7f20 .z7f20__visual:focus-visible > img.z7f20__portrait,
+  .z7x-page--founders .z7f20 .z7f20__visual.is-z7-final-color > img.z7f20__portrait {
+    filter:
+      grayscale(0)
+      saturate(.98)
+      contrast(1.025)
+      brightness(.98) !important;
+  }
+}
+
+/* JS class also covers touch/pen and any browser that suppresses :hover. */
+.z7x-page--founders .z7f20 .z7f20__visual.is-z7-final-color > img.z7f20__portrait {
+  filter:
+    grayscale(0)
+    saturate(.98)
+    contrast(1.025)
+    brightness(.98) !important;
+}
+
+
+/* =========================================================
+   TABLET + MOBILE
+   Remove the old V37 background fallback entirely.
+   Use the SAME real V31 portrait as desktop.
+========================================================= */
+@media (max-width: 1100px) {
+  .z7x-page--founders .z7f20 .z7f20__visual {
+    left: 0 !important;
+    right: 0 !important;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    overflow: hidden !important;
+    background: #020203 !important;
+    background-image: none !important;
+
+    isolation: isolate !important;
+  }
+
+  /* Stop the duplicate ambient portrait on narrow screens.
+     The single canonical V31 image is the visual source. */
+  .z7x-page--founders .z7f20 .z7f20__ambient {
+    display: none !important;
+  }
+
+  .z7x-page--founders .z7f20 .z7f20__visual > img.z7f20__portrait {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+
+    margin: 0 !important;
+
+    object-fit: cover !important;
+    object-position: 50% 22% !important;
+
+    transform: scale(1.012) !important;
+    transform-origin: 50% 28% !important;
+
+    border-radius: 0 !important;
+
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+
+    z-index: 1 !important;
+  }
+
+  /* One deliberate cinematic fade layer.
+     Hides the hard crop at top/left/right/bottom. */
+  .z7x-page--founders .z7f20 .z7f20__visual::after {
+    display: block !important;
+    content: "" !important;
+
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2 !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        #020203 0%,
+        rgba(2,2,3,.94) 2.5%,
+        rgba(2,2,3,.56) 7%,
+        rgba(2,2,3,.16) 13%,
+        transparent 20%,
+        transparent 73%,
+        rgba(2,2,3,.16) 80%,
+        rgba(2,2,3,.68) 91%,
+        #020203 100%
+      ),
+      linear-gradient(
+        90deg,
+        #020203 0%,
+        rgba(2,2,3,.80) 2%,
+        rgba(2,2,3,.36) 6%,
+        transparent 13%,
+        transparent 87%,
+        rgba(2,2,3,.36) 94%,
+        rgba(2,2,3,.80) 98%,
+        #020203 100%
+      ) !important;
+
+    pointer-events: none !important;
+  }
+
+  .z7x-page--founders .z7f20 .z7f20__monogram,
+  .z7x-page--founders .z7f20 .z7f20__hint,
+  .z7x-page--founders .z7f20 .z7f20__hint-mobile {
+    position: relative !important;
+    z-index: 3 !important;
+  }
+}
+
+/* Phone composition: same V31 image, centered slightly higher so both
+   founders remain readable while the crop is hidden by the fade. */
+@media (max-width: 520px) {
+  .z7x-page--founders .z7f20 .z7f20__visual > img.z7f20__portrait {
+    object-position: 50% 18% !important;
+    transform: scale(1.008) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z7x-page--founders .z7f20 .z7f20__visual > img.z7f20__portrait {
+    transition-duration: 260ms !important;
+  }
+}

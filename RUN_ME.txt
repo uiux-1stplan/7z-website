@@ -1,0 +1,9 @@
+7Z FOUNDERS V30 PACKAGE
+
+1) Extract this folder to:
+   D:\7Z-Magic\7Z_FOUNDERS_V30_PACKAGE
+
+2) Run:
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File "D:\7Z-Magic\7Z_FOUNDERS_V30_PACKAGE\7Z_FOUNDERS_NEW_PORTRAIT_V30_RELEASE.ps1"
+
+The JPEG must stay next to the PS1.

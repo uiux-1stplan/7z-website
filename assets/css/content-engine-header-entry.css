@@ -1,0 +1,12 @@
+/* 7Z Content Engine - website header entry only */
+.z7-content-engine-entry{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+}
+@media (max-width: 980px){
+  .z7-content-engine-entry{
+    width:100%;
+  }
+}

@@ -1,0 +1,84 @@
+/* 7Z Magic Founders - premium admin dropdown */
+#z7-admin-premium-menu{
+  position:fixed;
+  z-index:2147483000;
+  width:260px;
+  padding:8px;
+  border:1px solid rgba(216,178,74,.28);
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(18,18,18,.98),rgba(8,8,8,.98));
+  box-shadow:0 22px 60px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(8px) scale(.985);
+  transform-origin:top right;
+  transition:opacity .18s ease,transform .20s cubic-bezier(.22,.61,.36,1),visibility .18s ease;
+}
+#z7-admin-premium-menu.is-open{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0) scale(1);
+}
+#z7-admin-premium-menu .z7-menu-kicker{
+  padding:8px 10px 7px;
+  color:rgba(214,178,74,.86);
+  font:700 9px/1 Inter,Arial,sans-serif;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+#z7-admin-premium-menu .z7-menu-item{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  width:100%!important;
+  min-height:54px!important;
+  padding:11px 12px!important;
+  border:1px solid transparent!important;
+  border-radius:13px!important;
+  background:transparent!important;
+  color:#f4f4f0!important;
+  text-decoration:none!important;
+  box-sizing:border-box!important;
+  cursor:pointer!important;
+  transition:background-color .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+#z7-admin-premium-menu .z7-menu-item:hover{
+  background:rgba(255,255,255,.055)!important;
+  border-color:rgba(255,255,255,.08)!important;
+  transform:translateY(-1px);
+}
+#z7-admin-premium-menu .z7-menu-item + .z7-menu-item{margin-top:4px!important}
+#z7-admin-premium-menu .z7-menu-title{
+  display:block;
+  color:#fff!important;
+  font:700 11px/1.15 Inter,Arial,sans-serif!important;
+}
+#z7-admin-premium-menu .z7-menu-meta{
+  display:block;
+  margin-top:5px;
+  color:rgba(255,255,255,.46)!important;
+  font:500 9px/1.25 Inter,Arial,sans-serif!important;
+}
+#z7-admin-premium-menu .z7-menu-icon{
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  border:1px solid rgba(214,178,74,.24);
+  border-radius:10px;
+  color:#d6b24a!important;
+  font:700 11px/1 Inter,Arial,sans-serif!important;
+  background:rgba(214,178,74,.04);
+}
+#z7-admin-premium-menu .z7-menu-divider{
+  height:1px;
+  margin:6px 6px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);
+}
+@media(max-width:700px){
+  #z7-admin-premium-menu{width:min(280px,calc(100vw - 24px))}
+}

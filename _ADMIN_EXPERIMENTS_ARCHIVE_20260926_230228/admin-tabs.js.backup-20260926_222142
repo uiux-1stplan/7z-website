@@ -1,0 +1,234 @@
+﻿(() => {
+    "use strict";
+
+    const CONFIG = [
+        {
+            id: "admins",
+            label: "Admins",
+            headings: [
+                "Administrator Management"
+            ]
+        },
+        {
+            id: "clients",
+            label: "Clients",
+            headings: [
+                "Client Accounts"
+            ]
+        },
+        {
+            id: "files",
+            label: "Files",
+            headings: [
+                "Upload Private File",
+                "File Library"
+            ]
+        },
+        {
+            id: "media",
+            label: "Media",
+            headings: [
+                "Clients & All Media"
+            ]
+        }
+    ];
+
+    const clean = value =>
+        String(value || "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
+
+    function findTitle(text) {
+        const target = clean(text);
+
+        const candidates = document.querySelectorAll(
+            "h1,h2,h3,h4,h5,h6,[class*='title'],[class*='heading']"
+        );
+
+        return [...candidates].find(el => clean(el.textContent) === target) || null;
+    }
+
+    function findPanel(titleElement) {
+        if (!titleElement) return null;
+
+        let node = titleElement;
+
+        const selectors = [
+            "section",
+            "article",
+            "[data-section]",
+            "[class*='admin-section']",
+            "[class*='admin-card']",
+            "[class*='panel']",
+            "[class*='card']"
+        ];
+
+        for (let depth = 0; depth < 7 && node; depth++) {
+            if (
+                node !== titleElement &&
+                selectors.some(selector => {
+                    try {
+                        return node.matches(selector);
+                    } catch {
+                        return false;
+                    }
+                })
+            ) {
+                return node;
+            }
+
+            node = node.parentElement;
+        }
+
+        return titleElement.parentElement;
+    }
+
+    function boot() {
+        if (document.getElementById("z7-admin-tabs")) return;
+
+        const mappings = [];
+
+        CONFIG.forEach(group => {
+            group.headings.forEach(headingText => {
+                const title = findTitle(headingText);
+                if (!title) return;
+
+                const panel = findPanel(title);
+                if (!panel) return;
+
+                if (!mappings.some(item => item.panel === panel)) {
+                    mappings.push({
+                        tab: group.id,
+                        panel,
+                        headingText
+                    });
+                }
+            });
+        });
+
+        /*
+         * Safety lock:
+         * Do absolutely nothing unless the four critical areas exist.
+         */
+        const foundTabs = new Set(mappings.map(item => item.tab));
+
+        const required = ["admins", "clients", "files", "media"];
+
+        const valid = required.every(id => foundTabs.has(id));
+
+        if (!valid) {
+            console.warn(
+                "[7Z Admin Organizer] Required sections were not found. Layout was left untouched."
+            );
+            return;
+        }
+
+        mappings.forEach(({ panel, tab }) => {
+            panel.dataset.z7AdminTab = tab;
+            panel.classList.add("z7-admin-layout-panel");
+        });
+
+        const firstPanel = mappings[0]?.panel;
+
+        if (!firstPanel || !firstPanel.parentElement) {
+            return;
+        }
+
+        const nav = document.createElement("nav");
+
+        nav.id = "z7-admin-tabs";
+        nav.setAttribute("aria-label", "Admin workspace");
+
+        const tabs = [
+            {
+                id: "overview",
+                label: "Overview"
+            },
+            ...CONFIG.map(({ id, label }) => ({
+                id,
+                label
+            }))
+        ];
+
+        tabs.forEach(item => {
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "z7-admin-tab";
+            button.dataset.tab = item.id;
+            button.textContent = item.label;
+
+            nav.appendChild(button);
+        });
+
+        /*
+         * Nav is inserted next to the first detected admin section.
+         * Existing admin nodes are NOT moved or recreated.
+         */
+        firstPanel.parentElement.insertBefore(nav, firstPanel);
+
+        function activate(tabId) {
+            mappings.forEach(({ tab, panel }) => {
+                const visible =
+                    tabId !== "overview" &&
+                    tab === tabId;
+
+                panel.classList.toggle(
+                    "z7-admin-layout-hidden",
+                    !visible
+                );
+            });
+
+            nav.querySelectorAll(".z7-admin-tab").forEach(button => {
+                const active = button.dataset.tab === tabId;
+
+                button.classList.toggle("is-active", active);
+                button.setAttribute(
+                    "aria-selected",
+                    active ? "true" : "false"
+                );
+            });
+
+            sessionStorage.setItem(
+                "z7-admin-active-tab",
+                tabId
+            );
+        }
+
+        nav.addEventListener("click", event => {
+            const button = event.target.closest(".z7-admin-tab");
+
+            if (!button) return;
+
+            activate(button.dataset.tab);
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+
+        /*
+         * Overview intentionally shows the compact dashboard only.
+         * Large management blocks are hidden.
+         */
+        const saved =
+            sessionStorage.getItem("z7-admin-active-tab");
+
+        const allowed =
+            tabs.some(tab => tab.id === saved);
+
+        activate(allowed ? saved : "overview");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            boot,
+            { once: true }
+        );
+    } else {
+        boot();
+    }
+})();
