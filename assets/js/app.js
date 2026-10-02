@@ -2567,7 +2567,7 @@
     renderMedia();
     initComparisonSliders();
     initVideos();
-    initVideoPerformanceGovernor();
+    /* 7Z_VIDEO_ENGINE_V7: handled by all-videos-audio.js */
     initInlineVideos();
     initSelectedExperiences();
     init7ZIframeHandshakeGate();

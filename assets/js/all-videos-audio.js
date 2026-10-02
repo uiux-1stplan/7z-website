@@ -127,6 +127,9 @@
     activate(video, false);
     ensureLoop(video);
 
+    // Avoid repeated play() promises from observers/reconcile timers.
+    if (!video.paused && !video.ended) return;
+
     video.play().catch(() => {
       muteVideo(video);
       video.play().catch(() => {});
@@ -247,7 +250,10 @@
       ? new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (!entry.isIntersecting) unload(entry.target);
+              if (!entry.isIntersecting) {
+                entry.target.pause();
+                muteVideo(entry.target);
+              }
             });
           },
           { rootMargin: "1600px 0px", threshold: 0 }
