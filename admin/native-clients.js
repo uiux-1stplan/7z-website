@@ -591,47 +591,18 @@
 
 
     const bulkDelete =
-      document.getElementById(
-        "z7nc-bulk-delete"
-      );
-
+      document.getElementById("z7nc-bulk-delete");
     if (bulkDelete) {
-      const legacyCount =
-        clients.filter(client =>
-          client.auth_type !== "native"
-        ).length;
-      const nativeCount =
-        clients.length - legacyCount;
-
-      bulkDelete.innerHTML =
-        clients.length === 23
-          ? `
-            <div>
-              <strong style="display:block;color:#e5d2d3;font-size:11px;margin-bottom:5px">
-                23 client accounts detected
-              </strong>
-              <span style="color:#999;font-size:10px">
-                ${legacyCount} legacy · ${nativeCount} native. Admin accounts and client files are excluded.
-              </span>
-            </div>
-            <button type="button" id="z7nc-delete-all" class="z7nc-action is-danger" style="min-height:38px;padding:0 16px;font-size:9px">
-              DELETE ALL 23 CLIENT ACCOUNTS
-            </button>
-          `
-          : `
-            <div>
-              <strong style="display:block;color:#ddd;font-size:11px;margin-bottom:5px">
-                Bulk deletion is locked
-              </strong>
-              <span style="color:#999;font-size:10px">
-                Current count: ${clients.length}. The action is available only when exactly 23 client accounts are present.
-              </span>
-            </div>
-          `;
-
-      document
-        .getElementById("z7nc-delete-all")
-        ?.addEventListener("click", deleteAllClients);
+      const legacyCount = clients.filter(client => client.auth_type !== "native").length;
+      const nativeCount = clients.length - legacyCount;
+      bulkDelete.style.borderColor = "rgba(205,184,132,.22)";
+      bulkDelete.style.background = "rgba(205,184,132,.035)";
+      bulkDelete.innerHTML = `
+        <div>
+          <strong style="display:block;color:#e4dbc8;font-size:11px;margin-bottom:5px">${clients.length} client accounts</strong>
+          <span style="color:#999;font-size:10px">${legacyCount} legacy · ${nativeCount} native. Use the controls on each account to manage it. Client files are retained when an account is deleted.</span>
+        </div>
+      `;
     }
 
 
@@ -730,51 +701,13 @@
                 </div>
 
 
-                ${
-                  isNative
-                    ? `
-                      <button
-                        type="button"
-                        class="z7nc-action"
-                        data-action="password"
-                        data-client-key="${esc(
-                          client.client_key
-                        )}"
-                        data-username="${esc(
-                          client.username
-                        )}">
-                        CHANGE PASSWORD
-                      </button>
-
-                      <button
-                        type="button"
-                        class="z7nc-action ${
-                          active
-                            ? "is-danger"
-                            : "is-success"
-                        }"
-                        data-action="status"
-                        data-client-key="${esc(
-                          client.client_key
-                        )}"
-                        data-current-status="${esc(
-                          client.status
-                        )}">
-
-                        ${
-                          active
-                            ? "DISABLE"
-                            : "ENABLE"
-                        }
-
-                      </button>
-                    `
-                    : `
-                      <span class="z7nc-legacy-note">
-                        LEGACY ACCESS
-                      </span>
-                    `
-                }
+                ${isNative ? `
+                  <button type="button" class="z7nc-action" data-action="password" data-client-key="${esc(client.client_key)}" data-username="${esc(client.username)}">CHANGE PASSWORD</button>
+                ` : `
+                  <span class="z7nc-legacy-note" title="This legacy account uses shared credentials.">SHARED LEGACY LOGIN</span>
+                `}
+                <button type="button" class="z7nc-action ${active ? "is-danger" : "is-success"}" data-action="status" data-client-key="${esc(client.client_key)}" data-client-name="${esc(client.display_name)}" data-current-status="${esc(client.status)}">${active ? "DISABLE" : "ENABLE"}</button>
+                <button type="button" class="z7nc-action is-danger" data-action="delete" data-client-key="${esc(client.client_key)}" data-client-name="${esc(client.display_name)}">DELETE ACCOUNT</button>
 
               </div>
 
@@ -825,96 +758,42 @@
           );
         }
       );
+    root.querySelectorAll('[data-action="delete"]').forEach(button => {
+      button.addEventListener("click", () =>
+        deleteClient(button.dataset.clientKey, button.dataset.clientName, button)
+      );
+    });
   }
 
 
-  async function deleteAllClients(event) {
-    const button = event.currentTarget;
-    const message =
-      document.getElementById("z7nc-message");
-
-    if (
-      document.querySelectorAll("#z7nc-list .z7nc-client").length !== 23
-    ) {
-      message.textContent =
-        "Deletion stopped: the visible account count is no longer exactly 23.";
-      message.className =
-        "z7nc-message is-error";
-      return;
-    }
-
-    const approved =
-      window.confirm(
-        "PERMANENT ACTION: Delete exactly 23 client accounts (legacy and native)? The two administrator accounts and all client files will remain. This cannot be undone."
-      );
-
+  async function deleteClient(clientKey, displayName, button) {
+    const message = document.getElementById("z7nc-message");
+    const approved = window.confirm(
+      `PERMANENT ACTION: Delete the account "${displayName}"? Only this account and its access records will be removed. All client files will remain. This cannot be undone.`
+    );
     if (!approved) return;
-
     button.disabled = true;
-    button.textContent = "DELETING 23 CLIENT ACCOUNTS...";
-
+    button.textContent = "DELETING...";
     try {
-      const response =
-        await authFetch(
-          API,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              confirmation:
-                "DELETE_ALL_23_CLIENT_ACCOUNTS",
-              expectedCount: 23
-            })
-          }
-        );
-
+      const response = await authFetch(API, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirmation: "DELETE_CLIENT_ACCOUNT", clientKey })
+      });
       const result = await response.json();
-
-      if (!response.ok) {
-        const countDetails =
-          Number.isInteger(result.clientCount) &&
-          Number.isInteger(result.administratorCount) &&
-          !String(result.error || "").includes("Current database counts:")
-            ? ` Live counts: ${result.clientCount} clients and ${result.administratorCount} administrators; expected 23 clients and 2 administrators.`
-            : "";
-        throw new Error(
-          (result.error || "The server rejected the deletion.") +
-          countDetails
-        );
+      if (!response.ok) throw new Error(result.error || "The server rejected the deletion.");
+      if (result.deletedCount !== 1 || result.clientKey !== clientKey || result.filesDeleted !== false || result.filesUnchanged !== true) {
+        throw new Error("Deletion verification did not match. Review the audit log and file count before continuing.");
       }
-
-      if (
-        result.deletedCount !== 23 ||
-        result.remainingClients !== 0 ||
-        result.administrators !== 2 ||
-        result.filesBefore !== result.filesAfter
-      ) {
-        throw new Error(
-          "The server returned unexpected verification counts. Stop and review the audit log."
-        );
-      }
-
-      message.textContent =
-        `Verified: deleted 23 client accounts; ${result.administrators} administrator accounts remain; client files unchanged (${result.filesAfter}).`;
-      message.className =
-        "z7nc-message is-success";
-
+      message.textContent = `Deleted ${result.displayName}. Client files remain unchanged (${result.fileCount}).`;
+      message.className = "z7nc-message is-success";
       await loadClients();
-
-      document
-        .getElementById("z7-cap-refresh")
-        ?.click();
+      document.getElementById("z7-cap-refresh")?.click();
     } catch (error) {
-      message.textContent =
-        error.message ||
-        "Client account deletion failed.";
-      message.className =
-        "z7nc-message is-error";
+      message.textContent = error.message || "Client account deletion failed.";
+      message.className = "z7nc-message is-error";
       button.disabled = false;
-      button.textContent =
-        "DELETE ALL 23 CLIENT ACCOUNTS";
+      button.textContent = "DELETE ACCOUNT";
     }
   }
 
