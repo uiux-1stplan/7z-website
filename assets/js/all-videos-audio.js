@@ -261,6 +261,8 @@
       : null;
 
   const prepare = (video) => {
+    // This decorative homepage layer owns its muted loop and scroll pause behavior.
+    if ((video.classList.contains("z7-cinema__ambient-video") || video.classList.contains("z7-web-reel"))) return;
     if (!isContentVideo(video) || managed.has(video)) return;
 
     const host = getHost(video);

@@ -93,11 +93,11 @@
 
 
 
-      
-    
-    
-    
-    
+
+
+
+
+
 <style id="z7-home-static-copy-fix">
 /* Home copy visibility fix only. Do not touch app.js motion. */
 .manifest__copy,
@@ -178,8 +178,11 @@
   </style>
 
   <script defer src="/_vercel/insights/script.js"></script>
+  <link rel="stylesheet" href="/assets/css/home-hero.css?v=20261007-4">
+  <link rel="stylesheet" href="/assets/css/home-theme.css?v=20261007-4">
+  <link rel="stylesheet" href="/assets/css/home-gallery.css?v=20261007-7">
 </head>
-  <body data-static-background="true">
+  <body data-static-background="true" class="z7-cinematic-home">
     <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
       <div class="z7-route-transition__panel z7-route-transition__panel--left"></div>
       <div class="z7-route-transition__panel z7-route-transition__panel--right"></div>
@@ -194,19 +197,6 @@
     </div>
     <canvas id="atmosphere" aria-hidden="true"></canvas>
     <div class="grain" aria-hidden="true"></div>
-    <div class="loader" id="loader" aria-live="polite">
-      <video class="loader__video-bg" muted playsinline preload="none" data-src="media/intro/hero.mp4" aria-hidden="true" poster="media/posters/intro/hero.jpg"></video>
-      <video class="loader__video" playsinline preload="none" data-src="media/intro/hero.mp4" poster="media/posters/intro/hero.jpg"></video>
-      <div class="loader__veil"></div>
-      <div class="loader__phrases" aria-hidden="true"></div>
-      <div class="loader__content">
-        <img class="loader__logo" src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png" alt="7Z Magic" />
-        <div class="loader__bar" aria-hidden="true"><span id="loaderProgress"></span></div>
-        <p class="loader__count"><span id="loaderCount">0</span>%</p>
-        <button class="loader__sound" type="button" hidden>Start with sound</button>
-      </div>
-    </div>
-
     <header class="site-header" aria-label="Primary">
       <a class="brand magnetic" href="#intro" aria-label="7Z Magic home">
         <img src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-header-final-20260829.png?v=20260829-v27-root" alt="" / id="z7-header-logo-root-v27">
@@ -225,7 +215,6 @@
             <a href="#advertising-7sanz">Advertising on 7SANZ</a>
             <a href="#presentations">Interactive Presentations</a>
             <a href="#film">Film Production</a>
-            <a href="#ai-masterclass">AI Masterclass</a>
           </div>
         </div>
         <a href="/websites/">Websites</a>
@@ -243,44 +232,38 @@
             <circle cx="16.5" cy="7.5" r="0.9"></circle>
           </svg>
         </a>
-        
-        
+
+
         <a class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com" aria-label="Email 7Z Magic">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="4" y="6" width="16" height="12" rx="2"></rect>
             <path d="m5 8 7 5 7-5"></path>
           </svg>
         </a>
-        <a class="magnetic social-icon social-icon--whatsapp" href="https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp: Ask about 7Z Magic services" title="WhatsApp: Ask about 7Z Magic services" data-z7-contact="services" style="display:inline-flex!important;align-items:center;justify-content:center;flex-shrink:0">
-  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <path d="M20.5 11.7a8.5 8.5 0 0 1-12.7 7.4L3 20.5l1.4-4.7a8.5 8.5 0 1 1 16.1-4.1Z"></path>
-    <path d="m8.6 7.5-1 1.3c-.3.4-.3.9-.1 1.4a10.7 10.7 0 0 0 6.3 6.1c.5.2 1 .1 1.4-.2l1.3-1.1-2.5-1.7-1.1 1a8.2 8.2 0 0 1-3.4-3.4l.9-1.1-1.8-2.3Z"></path>
-  </svg>
-</a>
+
       </div>
     </header>
 
     <main id="top">
-      <section class="intro" id="intro">
-        <video id="introVideo" muted playsinline preload="metadata" src="media/intro/1.mp4" poster="media/posters/intro/1.jpg"></video>
-        <div class="intro__shade"></div>
-        <div class="intro__content">
-          <img class="hero-logo reveal" src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png" alt="7Z Magic" />
-          <p class="eyebrow reveal">Interactive Digital Experience</p>
-          <h1 class="hero-title reveal" data-hero-title>Creating Digital Experiences Beyond Imagination</h1>
-          <p class="hero-copy reveal">
-            AI, architecture, web experiences, branding, media production and design shaped into cinematic
-            systems for ambitious brands.
-          </p>
-          <a href="#universe" class="button magnetic reveal">
-            <span>Explore Our Universe</span>
-            <i aria-hidden="true"></i>
-          </a>
-        </div>
-        <div class="intro__scroll" aria-hidden="true">
-          <span></span>
-        </div>
-      </section>
+      <div class="z7-opening">
+        <div class="z7-opening__stage">
+          <section class="intro z7-cinema" id="intro" aria-label="7Z Magic — Interactive Digital Experience">
+            <div class="z7-cinema__background" aria-hidden="true"><video class="z7-cinema__ambient-video" src="/media/intro/hero-ambient.mp4" muted autoplay loop playsinline preload="metadata" disablepictureinpicture></video><div class="z7-cinema__floor"></div><div class="z7-cinema__light"></div></div>
+            <div class="z7-cinema__halo" aria-hidden="true"></div>
+            <div class="z7-cinema__logo" role="img" aria-label="7Z"><div class="z7-cinema__logo-face"></div></div>
+            <figure class="z7-cinema__card z7-cinema__card--1" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/arch_projects/9-16H/1.jpg" alt="" width="240" height="150"><figcaption>Spatial stories <span>01</span></figcaption></div></figure>
+            <figure class="z7-cinema__card z7-cinema__card--2" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/film/1.jpg" alt="" width="240" height="150"><figcaption>Moving image <span>02</span></figcaption></div></figure>
+            <figure class="z7-cinema__card z7-cinema__card--3" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/website_project/1.jpg" alt="" width="240" height="150"><figcaption>Digital worlds <span>03</span></figcaption></div></figure>
+            <figure class="z7-cinema__card z7-cinema__card--4" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/id_design/1.png" alt="" width="240" height="150"><figcaption>Brand identity <span>04</span></figcaption></div></figure>
+            <div class="z7-cinema__copy">
+              <p class="z7-cinema__eyebrow">7Z Magic / Interactive Digital Experience</p>
+              <h1>Creating digital experiences beyond <em>imagination.</em></h1>
+              <p class="z7-cinema__description">AI, architecture, web experiences and moving image. One creative universe. Infinite possibilities.</p>
+              <div class="z7-cinema__actions"><a href="#universe" class="z7-cinema__cta">Explore our universe <span aria-hidden="true">↗</span></a><a href="/contact" class="z7-cinema__cta z7-cinema__cta--secondary">Start a conversation</a></div>
+            </div>
+            <div class="z7-cinema__footer"><span>Independent minds. Extraordinary worlds.</span><a class="z7-cinema__scroll" href="#universe">Scroll to enter <span aria-hidden="true">↓</span></a></div>
+          </section>
+
 <section class="manifest" id="universe">
         <div class="manifest__media manifest__media--cinema">
           <div class="manifest__film-header" aria-hidden="true">
@@ -306,20 +289,22 @@
         </div>
       </section>
 
+        </div>
+      </div>
+
       <section class="service-loop" aria-label="Digital services loop">
         <div class="service-loop__inner">
           <div class="service-loop__intro">
-            <p class="eyebrow">Digital Service Layer</p>
-            <h2>Every discipline moves as one connected production system.</h2>
+            <p class="eyebrow">Explore Our Worlds</p>
+            <h2>One vision. Five ways to make it unforgettable.</h2>
           </div>
-          <div class="service-orbit" aria-hidden="true">
-            <article class="service-card" style="--i: 0"><span>AI</span><strong>Visual Systems</strong></article>
-            <article class="service-card" style="--i: 1"><span>3D</span><strong>Spatial Stories</strong></article>
-            <article class="service-card" style="--i: 2"><span>UX</span><strong>Web Experiences</strong></article>
-            <article class="service-card" style="--i: 3"><span>FM</span><strong>Campaign Films</strong></article>
-            <article class="service-card" style="--i: 4"><span>ID</span><strong>Brand Identity</strong></article>
-            <article class="service-card" style="--i: 5"><span>PD</span><strong>Product Launches</strong></article>
-          </div>
+          <nav class="service-orbit" aria-label="Explore our services">
+            <a class="service-card" href="#architecture" style="--i: 1; --service-image: url(/media/posters/arch_projects/16-9V/1.jpg)"><span>3D</span><strong>Spatial Stories</strong></a>
+            <a class="service-card" href="#websites" style="--i: 2; --service-image: url(/media/posters/website_project/26.jpg)"><span>UX</span><strong>Websites</strong></a>
+            <a class="service-card" href="#film" style="--i: 3; --service-image: url(/media/posters/film/1.jpg)"><span>FM</span><strong>Campaign Films</strong></a>
+            <a class="service-card" href="#identity" style="--i: 4; --service-image: url(/media/id_design/1.png)"><span>ID</span><strong>Brand Identity</strong></a>
+            <a class="service-card" href="#product-design" style="--i: 5; --service-image: url(/media/posters/prop/1.jpg)"><span>PD</span><strong>Product Launches</strong></a>
+          </nav>
         </div>
       </section>
 
@@ -368,6 +353,7 @@
             <!-- 7Z_WEBSITES_PAGE_GATEWAY_V3 -->
       <section class="chapter chapter--web websites-gateway" id="websites">
         <div class="web-stage">
+          <video class="web-stage__video z7-web-reel" muted playsinline loop preload="none" poster="/media/websites/homepage-reel-poster.jpg" data-src="/media/websites/homepage-reel.mp4" aria-hidden="true" tabindex="-1"></video>
           <div class="web-copy">
             <p class="chapter__number">03</p>
             <p class="eyebrow">Selected Digital Experiences</p>
@@ -414,28 +400,6 @@
           <video muted playsinline preload="none" data-src="media/film/1.mp4" poster="media/posters/film/1.jpg"></video>
           <button class="film-play magnetic" type="button" data-inline-video aria-label="Play film production showcase">Play Film</button>
         </div>
-      </section>
-
-      <section class="chapter chapter--ai" id="ai-masterclass">
-        <div class="ai-heading">
-          <p class="chapter__number">10</p>
-          <p class="eyebrow">AI Masterclass</p>
-          <h2>A premium learning experience for modern creative and business teams.</h2>
-          <p>
-            Learn how to use AI as a practical operating layer for content, automation, visual production and
-            modern business execution.
-          </p>
-        </div>
-        <div class="timeline" id="aiTimeline">
-          <article><span>01</span><h3>AI Workflow</h3><p>Build repeatable systems that turn ideas into organized execution.</p></article>
-          <article><span>02</span><h3>Prompt Engineering</h3><p>Direct models with clarity, structure and reliable creative intent.</p></article>
-          <article><span>03</span><h3>Content Creation</h3><p>Produce scripts, campaigns, visuals and publishing systems with speed.</p></article>
-          <article><span>04</span><h3>Automation</h3><p>Connect routine tasks into elegant workflows that save operational time.</p></article>
-          <article><span>05</span><h3>Creative AI</h3><p>Use AI as a co-director for ideation, style exploration and production.</p></article>
-          <article><span>06</span><h3>Visual AI</h3><p>Create image and video directions that support premium brand outcomes.</p></article>
-          <article><span>07</span><h3>Business Applications</h3><p>Apply AI to marketing, sales, service and strategic decision-making.</p></article>
-        </div>
-        <a href="#top" class="button button--wide magnetic"><span>Begin the Conversation</span><i aria-hidden="true"></i></a>
       </section>
 
       <section class="chapter chapter--studio-suite" id="identity">
@@ -509,7 +473,7 @@
         <div class="footer__contact">
           <p>Ready to start a polished digital experience?</p>
           <a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
-          
+
           <div class="socials" aria-label="Social links">
             <a class="magnetic social-icon" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener" aria-label="Instagram">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -518,20 +482,15 @@
                 <circle cx="16.5" cy="7.5" r="0.9"></circle>
               </svg>
             </a>
-            
-            
+
+
             <a class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com" aria-label="Email 7Z Magic">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="4" y="6" width="16" height="12" rx="2"></rect>
             <path d="m5 8 7 5 7-5"></path>
           </svg>
         </a>
-            <a class="magnetic social-icon social-icon--whatsapp" href="https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp: Ask about 7Z Magic services" title="WhatsApp: Ask about 7Z Magic services" data-z7-contact="services" style="display:inline-flex!important;align-items:center;justify-content:center;flex-shrink:0">
-  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <path d="M20.5 11.7a8.5 8.5 0 0 1-12.7 7.4L3 20.5l1.4-4.7a8.5 8.5 0 1 1 16.1-4.1Z"></path>
-    <path d="m8.6 7.5-1 1.3c-.3.4-.3.9-.1 1.4a10.7 10.7 0 0 0 6.3 6.1c.5.2 1 .1 1.4-.2l1.3-1.1-2.5-1.7-1.1 1a8.2 8.2 0 0 1-3.4-3.4l.9-1.1-1.8-2.3Z"></path>
-  </svg>
-</a>
+
           </div>
         </div>
       </div>
@@ -546,12 +505,14 @@
     <script src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
     <script src="assets/js/performance.js?v=20260831-rootfix-v6"></script>
 
-    <script src="assets/js/app.js?v=5f549c3-fan-v3-20260924"></script>
+    <script src="assets/js/app.js?v=20261007-no-home-whatsapp"></script>
       <script src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
       <script src="/assets/js/universe-video.js?v=20260806-video12"></script>
       <script src="/assets/js/content-protection.js?v=20260831-rootfix-v6"></script>
-      <script src="/assets/js/all-videos-audio.js?v=20260831-rootfix-v6"></script>
+      <script src="/assets/js/all-videos-audio.js?v=20261007-ambient-guard"></script>
 <script src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
 
+  <script src="/assets/js/home-hero.js?v=20261007-2"></script>
+  <script src="/assets/js/home-web-reel.js?v=20261007-1"></script>
 </body>
 </html>

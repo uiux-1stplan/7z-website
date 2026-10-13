@@ -37,3 +37,32 @@ _BACKUPS/
 _7Z_ROOT_CAUSE_PACKAGE/
 media/private-access/
 video-optimization-report.csv
+
+# Keep local checkpoint backups and environment files out of public deployments
+/_*CHECKPOINT*/
+/.env
+/.env.*
+# Local-only preview bundles and screenshots
+/private-access-live-update/
+/private-access-update/
+/7z-magic-login/
+/private-access-live-preview.png
+/private-access-integrated.jpg
+/private-access-mobile.jpg
+/data/analytics.json
+
+# Private and archived working copies; not part of the live site
+/_PRIVATE_VAULT/
+/_ADMIN_*/
+/_DEPENDENCY_BACKUP_*/
+/_*CHECKPOINT*/
+*.bak
+*.backup-*
+.vercel_backup_*/
+
+# Exclude archive directory entries from the deployment manifest
+_PRIVATE_VAULT
+_ADMIN_*
+_DEPENDENCY_BACKUP_*
+_*CHECKPOINT*
+.vercel_backup_*

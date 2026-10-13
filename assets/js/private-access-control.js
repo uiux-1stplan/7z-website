@@ -236,7 +236,9 @@
 
     if (!logoImg) return;
 
-    logoImg.src = "/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png";
+    logoImg.src = location.pathname.replace(/\/+$/, "/") === "/private-access/"
+      ? "/private-access/7Z-LogoT.png"
+      : "/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png";
     logoImg.classList.add("z7-clean-header-logo__img");
 
     let node = logoImg.parentElement;
@@ -274,7 +276,9 @@
 
     if (!logoImg) return;
 
-    logoImg.src = "/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png";
+    logoImg.src = location.pathname.replace(/\/+$/, "/") === "/private-access/"
+      ? "/private-access/7Z-LogoT.png"
+      : "/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png";
     logoImg.classList.add("z7-arabic-header-logo__img");
 
     let node = logoImg.parentElement;

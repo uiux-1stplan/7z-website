@@ -601,6 +601,7 @@
     async event => {
 
       event.preventDefault();
+      const transition = window.z7LoginMotion?.exit() || Promise.resolve();
 
       const submit =
         form.querySelector(
@@ -650,7 +651,7 @@
 
         const payload =
           await response.json();
-
+        await transition;
 
         if (
           !response.ok ||
@@ -671,6 +672,7 @@
             accessKey.focus();
           }
 
+          window.z7LoginMotion?.reset();
           applyAccess(
             null
           );
@@ -712,6 +714,8 @@
 
 
       } catch {
+        await transition;
+        window.z7LoginMotion?.reset();
 
         if (message) {
 

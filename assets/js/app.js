@@ -7,7 +7,7 @@
   const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const navigationEntry = performance.getEntriesByType?.("navigation")?.[0];
-  const shouldStartAtTop = navigationEntry?.type === "reload";
+  const shouldStartAtTop = navigationEntry?.type === "reload" && !document.body.classList.contains("z7-cinematic-home");
   const useStaticBackground = document.body.dataset.staticBackground === "true";
 
   if ("scrollRestoration" in history) {
@@ -391,6 +391,7 @@
   }
 
   function initSectionWhatsappButtons() {
+    if (document.body.classList.contains("z7-cinematic-home")) return;
     whatsappRequests.forEach((request) => {
       const section = document.getElementById(request.id);
       if (!section || $(".section-whatsapp", section)) return;
@@ -1049,6 +1050,8 @@
       });
     }
 
+    // The layered homepage owns its hero motion; retain legacy behavior elsewhere.
+    if (!intro?.classList.contains("z7-cinema")) {
     gsap.to(".intro video", {
       scale: 1.14,
       // video filter scrub removed by 7Z_PERFORMANCE_V3
@@ -1072,6 +1075,8 @@
         scrub: true
       }
     });
+
+    }
 
     const sectionSelectors = [
       ".manifest__copy",
@@ -1652,7 +1657,7 @@
        */
       document.body.classList.remove("is-loading");
 
-      if (hasGsap) {
+      if (hasGsap && $(".reveal")) {
         gsap.set(".reveal", {
           autoAlpha: 1,
           y: 0,
