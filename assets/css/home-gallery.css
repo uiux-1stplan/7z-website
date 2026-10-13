@@ -154,6 +154,42 @@ body.z7-cinematic-home main .studio-suite__grid { margin-bottom: 110px; }
   body.z7-cinematic-home main .studio-card { grid-column: span 6; }
   body.z7-cinematic-home main .studio-card:nth-child(3) { grid-column: span 12; min-height: 550px; transform: none; }
 }
+
+/* Phone campaign films: preserve the full vertical video frame instead of cropping it into a short card. */
+@media (max-width: 640px) {
+  body.z7-cinematic-home main #media #mediaRail.is-fan-carousel {
+    height: min(142vw, 560px);
+    min-height: 420px;
+    margin-top: 18px;
+    overflow: hidden !important;
+  }
+  body.z7-cinematic-home main #media #mediaRail.is-fan-carousel > .media-fan-slot {
+    width: min(70vw, 280px);
+    height: min(124.45vw, 498px);
+    max-height: calc(100% - 12px);
+    overflow: hidden;
+    border-radius: 18px;
+  }
+  body.z7-cinematic-home main #media #mediaRail.is-fan-carousel .media-fan-slot > .media-tile {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: inherit;
+    background: #080b12;
+  }
+  body.z7-cinematic-home main #media #mediaRail.is-fan-carousel .media-tile > video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    object-position: center;
+    transform: none !important;
+    background: #080b12;
+  }
+}
 @media (max-width: 640px) {
   body.z7-cinematic-home main .service-orbit { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   body.z7-cinematic-home main .service-card:nth-child(n) { grid-column: span 1; min-height: 270px; padding: 18px; }
@@ -375,5 +411,92 @@ body.z7-cinematic-home main .gallery-copy h3 { font-size: clamp(2.8rem, 4vw, 4.8
   }
   body.z7-cinematic-home .z7-opening__stage > #universe .manifest__media {
     overflow: hidden;
+  }
+}
+
+/* Use the mouse wheel to move the comparison while the section is in view, without adding spacer height. */
+@media (min-width: 901px) {
+  body.z7-cinematic-home main .comparison-scroll .compare__handle {
+    display: none;
+  }
+}
+
+/* On touch screens, keep a plain drag control with no hover animation. */
+@media (max-width: 900px) {
+  body.z7-cinematic-home main .comparison-scroll {
+    height: auto;
+  }
+  body.z7-cinematic-home main .compare,
+  body.z7-cinematic-home main .compare:hover {
+    transform: none;
+    filter: none;
+    box-shadow: none;
+  }
+  body.z7-cinematic-home main .compare__handle,
+  body.z7-cinematic-home main .compare__handle:hover {
+    width: 64px;
+    height: 34px;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: 999px;
+    background: #101c2c;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    line-height: 1;
+    text-transform: uppercase;
+    box-shadow: none;
+    backdrop-filter: none;
+    transition: none;
+  }
+  body.z7-cinematic-home main .compare__handle::before,
+  body.z7-cinematic-home main .compare__handle::after {
+    display: none;
+  }
+}
+
+/* Phone: keep campaign cards in one centered frame with a compact fade transition. */
+@media (max-width: 640px) {
+  body.z7-cinematic-home main #media.chapter--horizontal {
+    min-height: 0;
+    padding: 24px 22px calc(96px + env(safe-area-inset-bottom));
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  body.z7-cinematic-home main #media .pin-copy {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-top: 14px;
+    gap: 9px;
+  }
+
+  body.z7-cinematic-home main #media .pin-copy h2 {
+    max-width: 16ch;
+    font-size: clamp(1.95rem, 8vw, 2.25rem);
+    line-height: 1.05;
+  }
+
+  body.z7-cinematic-home main #media .pin-copy p:not(.eyebrow):not(.chapter__number) {
+    max-width: 36ch;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+
+  body.z7-cinematic-home main #media .media-rail.is-fan-carousel {
+    width: 100% !important;
+    height: clamp(210px, 62vw, 244px);
+    min-height: 0;
+    margin: 0 auto;
+    overflow: hidden !important;
+    touch-action: pan-y;
+    direction: ltr;
+    overflow-anchor: none;
+  }
+
+  body.z7-cinematic-home main #media .media-rail.is-fan-carousel .media-fan-slot {
+    width: min(56vw, 220px);
+    height: min(62vw, 244px);
   }
 }

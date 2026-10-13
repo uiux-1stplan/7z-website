@@ -36,17 +36,17 @@
     background:
       linear-gradient(
         90deg,
-        #020203 0%,
-        rgba(2,2,3,.90) 8%,
-        rgba(2,2,3,.52) 18%,
-        rgba(2,2,3,.16) 30%,
+        #070b12 0%,
+        rgba(7,11,18,.90) 8%,
+        rgba(7,11,18,.52) 18%,
+        rgba(7,11,18,.16) 30%,
         transparent 44%
       ),
       linear-gradient(
         180deg,
-        rgba(2,2,3,.05) 0%,
+        rgba(7,11,18,.05) 0%,
         transparent 60%,
-        rgba(2,2,3,.58) 100%
+        rgba(7,11,18,.58) 100%
       ) !important;
   }
 }
@@ -231,7 +231,7 @@
 
     overflow: hidden !important;
 
-    background-color: #020203 !important;
+    background-color: #070b12 !important;
     background-image: url('/media/founders/7z-founders-studio-v20.jpeg') !important;
     background-repeat: no-repeat !important;
 
@@ -265,25 +265,25 @@
     background:
       linear-gradient(
         180deg,
-        #020203 0%,
-        rgba(2,2,3,.86) 3%,
-        rgba(2,2,3,.34) 9%,
+        #070b12 0%,
+        rgba(7,11,18,.86) 3%,
+        rgba(7,11,18,.34) 9%,
         transparent 18%,
         transparent 72%,
-        rgba(2,2,3,.20) 80%,
-        rgba(2,2,3,.76) 92%,
-        #020203 100%
+        rgba(7,11,18,.20) 80%,
+        rgba(7,11,18,.76) 92%,
+        #070b12 100%
       ),
       linear-gradient(
         90deg,
-        #020203 0%,
-        rgba(2,2,3,.72) 2.5%,
-        rgba(2,2,3,.24) 7%,
+        #070b12 0%,
+        rgba(7,11,18,.72) 2.5%,
+        rgba(7,11,18,.24) 7%,
         transparent 15%,
         transparent 85%,
-        rgba(2,2,3,.24) 93%,
-        rgba(2,2,3,.72) 97.5%,
-        #020203 100%
+        rgba(7,11,18,.24) 93%,
+        rgba(7,11,18,.72) 97.5%,
+        #070b12 100%
       ) !important;
   }
 

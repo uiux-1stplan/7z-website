@@ -1193,8 +1193,8 @@ select:focus {
    ========================================================= */
 
 :root {
-  --z7-gold: #d6b25e;
-  --z7-gold-light: #e7cb82;
+  --z7-gold: #8bbcff;
+  --z7-gold-light: #a9d0ff;
   --z7-gold-soft: rgba(214,178,94,.16);
 }
 
@@ -1248,8 +1248,8 @@ select:focus {
 
 :root {
   --z7-admin-header-height: 0px;
-  --z7-gold: #d6b25e;
-  --z7-gold-light: #e7cb82;
+  --z7-gold: #8bbcff;
+  --z7-gold-light: #a9d0ff;
 }
 
 
@@ -1399,14 +1399,14 @@ body {
 
 /* 7Z ADMIN — Create Account Gold Button */
 #create-submit.button-primary {
-  background: #d6b25e !important;
-  border-color: #d6b25e !important;
+  background: #8bbcff !important;
+  border-color: #8bbcff !important;
   color: #080808 !important;
 }
 
 #create-submit.button-primary:hover:not(:disabled) {
-  background: #e7cb82 !important;
-  border-color: #e7cb82 !important;
+  background: #a9d0ff !important;
+  border-color: #a9d0ff !important;
   color: #080808 !important;
 }
 
@@ -1453,7 +1453,7 @@ body {
 .z7-cap-save {
   border: 1px solid rgba(214,178,94,.28);
   background: rgba(214,178,94,.08);
-  color: #e7cb82;
+  color: #a9d0ff;
   border-radius: 8px;
   cursor: pointer;
   transition: .2s ease;
@@ -1470,7 +1470,7 @@ body {
 
 .z7-cap-refresh:hover,
 .z7-cap-save:hover {
-  background: #d6b25e;
+  background: #8bbcff;
   color: #080808;
 }
 
@@ -1510,7 +1510,7 @@ body {
 
 .z7-cap-client small {
   margin-top: 10px;
-  color: #d6b25e;
+  color: #8bbcff;
   font-size: 8px;
   letter-spacing: .12em;
 }
@@ -1577,7 +1577,7 @@ body {
 }
 
 .z7-cap-file input {
-  accent-color: #d6b25e;
+  accent-color: #8bbcff;
 }
 
 .z7-cap-empty {
@@ -1680,7 +1680,7 @@ body {
 }
 
 .z7-admin-footer-brand strong {
-  color: #d6b25e;
+  color: #8bbcff;
   font-size: 11px;
   letter-spacing: .15em;
 }
@@ -1708,7 +1708,7 @@ body {
 }
 
 .z7-admin-footer-nav a:hover {
-  color: #d6b25e !important;
+  color: #8bbcff !important;
 }
 
 .z7-admin-footer-meta {
@@ -1719,7 +1719,7 @@ body {
 }
 
 .z7-admin-footer-meta span:first-child {
-  color: #d6b25e;
+  color: #8bbcff;
   font-size: 8px;
   letter-spacing: .14em;
 }
@@ -1800,7 +1800,7 @@ body {
   background:
     rgba(214,178,94,.06);
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 8px;
   font-weight: 700;
@@ -1860,20 +1860,20 @@ body {
   border-color:
     rgba(214,178,94,.35);
 
-  color: #e7cb82;
+  color: #a9d0ff;
 }
 
 .z7-upload-submit {
   border:
-    1px solid #d6b25e;
+    1px solid #8bbcff;
 
-  background: #d6b25e;
+  background: #8bbcff;
 
   color: #090909;
 }
 
 .z7-upload-submit:hover:not(:disabled) {
-  background: #e7cb82;
+  background: #a9d0ff;
 }
 
 .z7-upload-submit:disabled,
@@ -1922,7 +1922,7 @@ body {
 }
 
 .z7-upload-progress-meta strong {
-  color: #d6b25e;
+  color: #8bbcff;
 }
 
 .z7-upload-progress {
@@ -1941,7 +1941,7 @@ body {
   width: 0%;
   height: 100%;
 
-  background: #d6b25e;
+  background: #8bbcff;
 
   transition:
     width .12s linear;
@@ -2027,7 +2027,7 @@ body {
 
   border-radius: 999px;
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 8px;
   font-weight: 700;
@@ -2065,11 +2065,11 @@ body {
 
   padding: 0 18px;
 
-  border: 1px solid #d6b25e;
+  border: 1px solid #8bbcff;
 
   border-radius: 8px;
 
-  background: #d6b25e;
+  background: #8bbcff;
 
   color: #070707;
 
@@ -2133,7 +2133,7 @@ body {
 .z7nc-client span {
   margin-top: 3px;
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 10px;
 }
@@ -2201,7 +2201,7 @@ body {
 }
 
 .z7-cap-client small.is-legacy {
-  color: #d6b25e;
+  color: #8bbcff;
 }
 
 
@@ -2256,7 +2256,7 @@ body {
   border-color:
     rgba(214,178,94,.38);
 
-  color: #e7cb82;
+  color: #a9d0ff;
 }
 
 
@@ -2422,11 +2422,11 @@ body {
   margin-top: 7px;
 
   border:
-    1px solid #d6b25e;
+    1px solid #8bbcff;
 
   border-radius: 8px;
 
-  background: #d6b25e;
+  background: #8bbcff;
 
   color: #070707;
 
@@ -2438,7 +2438,7 @@ body {
 
 
 .z7nc-password-save:hover {
-  background: #e7cb82;
+  background: #a9d0ff;
 }
 
 
@@ -2488,7 +2488,7 @@ body {
 }
 
 .z7nc-type.is-legacy {
-  color: #d6b25e;
+  color: #8bbcff;
 }
 
 .z7nc-legacy-note {
@@ -2540,7 +2540,7 @@ body {
   border: 1px solid rgba(214,178,94,.30);
   border-radius: 8px;
   background: #0a0a0a;
-  color: #d6b25e;
+  color: #8bbcff;
   font-size: 7px;
   font-weight: 800;
   letter-spacing: .08em;
@@ -2585,7 +2585,7 @@ body {
   border: 1px solid rgba(214,178,94,.24);
   border-radius: 8px;
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 6px;
   font-weight: 900;
@@ -2640,8 +2640,8 @@ body {
 }
 
 .z7af-open {
-  border: 1px solid #d6b25e;
-  background: #d6b25e;
+  border: 1px solid #8bbcff;
+  background: #8bbcff;
   color: #050505;
 }
 
@@ -2727,7 +2727,7 @@ body {
   border-radius: 8px;
 
   background: #0a0a0a;
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 7px;
   font-weight: 800;
@@ -2807,8 +2807,8 @@ body {
 }
 
 .z7af-open {
-  border: 1px solid #d6b25e;
-  background: #d6b25e;
+  border: 1px solid #8bbcff;
+  background: #8bbcff;
   color: #050505;
 }
 
@@ -2916,7 +2916,7 @@ html {
 
   background: #090909;
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 7px;
   font-weight: 800;
@@ -2986,11 +2986,11 @@ html {
 
   flex: 0 0 auto;
 
-  border: 1px solid #d6b25e;
+  border: 1px solid #8bbcff;
 
   border-radius: 7px;
 
-  background: #d6b25e;
+  background: #8bbcff;
 
   color: #050505;
 
@@ -3096,7 +3096,7 @@ html {
 
   background: #0b0b0b;
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 7px;
   font-weight: 800;
@@ -3111,13 +3111,13 @@ html {
 
   padding: 0 11px;
 
-  border: 1px solid #d6b25e;
+  border: 1px solid #8bbcff;
 
   border-radius: 7px;
 
   background: transparent;
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 7px;
   font-weight: 800;
@@ -3178,7 +3178,7 @@ html {
 
   border-radius: 999px;
 
-  color: #d6b25e;
+  color: #8bbcff;
 
   font-size: 7px;
   font-weight: 800;
@@ -3226,11 +3226,11 @@ html {
   padding: 0 18px;
 
   border:
-    1px solid #d6b25e;
+    1px solid #8bbcff;
 
   border-radius: 9px;
 
-  background: #d6b25e;
+  background: #8bbcff;
   color: #050505;
 
   font-size: 8px;
@@ -3322,7 +3322,7 @@ html {
 
   border-radius: 999px;
 
-  color: #d6b25e !important;
+  color: #8bbcff !important;
 
   font-size: 6px !important;
   font-weight: 900;
@@ -3609,7 +3609,7 @@ html {
 }
 
 .z7-admin-workspace-nav button.is-active {
-  color: var(--z7-gold-light, #e7cb82);
+  color: var(--z7-gold-light, #a9d0ff);
   border-color: rgba(214,178,94,.24);
   background: rgba(214,178,94,.09);
 }
@@ -3785,7 +3785,7 @@ html {
 }
 
 #z7-admin-workspace-search-clear:hover {
-  color: #d6b25e;
+  color: #8bbcff;
   border-color: rgba(214,178,94,.24);
 }
 

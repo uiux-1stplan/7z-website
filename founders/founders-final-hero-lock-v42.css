@@ -22,7 +22,7 @@
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  background: #020203 !important;
+  background: #070b12 !important;
   background-image: none !important;
   isolation: isolate !important;
 }
@@ -76,25 +76,25 @@
   background:
     linear-gradient(
       180deg,
-      rgba(2,2,3,.98) 0%,
-      rgba(2,2,3,.62) 3%,
-      rgba(2,2,3,.18) 8%,
+      rgba(7,11,18,.98) 0%,
+      rgba(7,11,18,.62) 3%,
+      rgba(7,11,18,.18) 8%,
       transparent 15%,
       transparent 78%,
-      rgba(2,2,3,.18) 84%,
-      rgba(2,2,3,.72) 94%,
-      #020203 100%
+      rgba(7,11,18,.18) 84%,
+      rgba(7,11,18,.72) 94%,
+      #070b12 100%
     ),
     linear-gradient(
       90deg,
-      #020203 0%,
-      rgba(2,2,3,.74) 2.5%,
-      rgba(2,2,3,.28) 7%,
+      #070b12 0%,
+      rgba(7,11,18,.74) 2.5%,
+      rgba(7,11,18,.28) 7%,
       transparent 14%,
       transparent 86%,
-      rgba(2,2,3,.28) 93%,
-      rgba(2,2,3,.74) 97.5%,
-      #020203 100%
+      rgba(7,11,18,.28) 93%,
+      rgba(7,11,18,.74) 97.5%,
+      #070b12 100%
     ) !important;
 }
 
@@ -137,24 +137,24 @@
     background:
       linear-gradient(
         180deg,
-        rgba(2,2,3,.98) 0%,
-        rgba(2,2,3,.36) 4%,
+        rgba(7,11,18,.98) 0%,
+        rgba(7,11,18,.36) 4%,
         transparent 11%,
         transparent 80%,
-        rgba(2,2,3,.20) 87%,
-        rgba(2,2,3,.74) 96%,
-        #020203 100%
+        rgba(7,11,18,.20) 87%,
+        rgba(7,11,18,.74) 96%,
+        #070b12 100%
       ),
       linear-gradient(
         90deg,
-        #020203 0%,
-        rgba(2,2,3,.96) 5%,
-        rgba(2,2,3,.72) 13%,
-        rgba(2,2,3,.22) 24%,
+        #070b12 0%,
+        rgba(7,11,18,.96) 5%,
+        rgba(7,11,18,.72) 13%,
+        rgba(7,11,18,.22) 24%,
         transparent 38%,
         transparent 91%,
-        rgba(2,2,3,.30) 97%,
-        #020203 100%
+        rgba(7,11,18,.30) 97%,
+        #070b12 100%
       ) !important;
   }
 }

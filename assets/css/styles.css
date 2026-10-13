@@ -7,7 +7,7 @@
   --muted: rgba(255, 249, 239, 0.74);
   --dim: rgba(255, 249, 239, 0.52);
   --line: rgba(255, 255, 255, 0.22);
-  --gold: #f0c76f;
+  --gold: #8bbcff;
   --cyan: #8deeff;
   --green: #9effd0;
   --red: #ff8797;
@@ -2402,7 +2402,7 @@ main > section,
   --muted: rgba(255, 248, 237, 0.72);
   --dim: rgba(255, 248, 237, 0.48);
   --line: rgba(255, 255, 255, 0.16);
-  --gold: #efc76e;
+  --gold: #8bbcff;
   --cyan: #91edff;
   --green: #99f7c9;
   --red: #ff8493;

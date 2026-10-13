@@ -1,5 +1,5 @@
 .z7-login, .z7-login * { box-sizing: border-box; }
-.z7-login-stage { --bg: #020203; --bg-soft: #08090d; --text: #fff8ed; --muted: rgba(255, 248, 237, .72); --gold: #efc76e; --cyan: #91edff; --line: rgba(255, 255, 255, .16); }
+.z7-login-stage { --bg: #020203; --bg-soft: #08090d; --text: #fff8ed; --muted: rgba(255, 248, 237, .72); --gold: #8bbcff; --cyan: #91edff; --line: rgba(255, 255, 255, .16); }
 .z7-login-stage { min-height: 100%; background: var(--bg); color-scheme: dark; }
 .z7-login-stage::before, .z7-login-stage::after { content: ''; position: absolute; inset: 0; pointer-events: none; }
 .z7-login-stage::before { background: conic-gradient(from 185deg at 50% -15%, transparent 0deg, rgba(145,237,255,.1) 22deg, transparent 42deg, transparent 300deg, rgba(239,199,110,.065) 330deg, transparent 350deg); filter: blur(28px); animation: light-drift 16s ease-in-out infinite alternate; }

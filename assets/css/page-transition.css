@@ -3,7 +3,7 @@
 
 html.z7-route-pending,
 html.z7-route-running {
-  background: #030303;
+  background: #070b12;
 }
 
 html.z7-route-running,
@@ -12,7 +12,7 @@ html.z7-route-running body {
 }
 
 .z7-route-transition {
-  --z7-route-ease: cubic-bezier(0.76, 0, 0.24, 1);
+  --z7-route-ease: cubic-bezier(.22,.7,.2,1);
   position: fixed;
   inset: 0;
   z-index: 2147483000;
@@ -22,7 +22,7 @@ html.z7-route-running body {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
-  color: #fff;
+  color: #eef5ff;
   background: transparent;
   isolation: isolate;
   transition: opacity 0.12s linear, visibility 0.12s linear;
@@ -40,11 +40,10 @@ html.z7-route-running body {
   bottom: 0;
   width: calc(50% + 2px);
   background:
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.025), transparent 42%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 52px),
-    #030303;
+    radial-gradient(circle at 50% 38%, rgba(73,132,210,.15), transparent 52%),
+    linear-gradient(130deg, #070b12, #0b1728 60%, #070b12);
   will-change: transform;
-  transition: transform .72s var(--z7-route-ease);
+  transition: transform .52s var(--z7-route-ease);
 }
 
 .z7-route-transition__panel::after {
@@ -53,8 +52,8 @@ html.z7-route-running body {
   bottom: 0;
   width: 1px;
   content: "";
-  background: linear-gradient(180deg, transparent 5%, rgba(255,255,255,.32) 50%, transparent 95%);
-  box-shadow: 0 0 28px rgba(255,255,255,.13);
+  background: linear-gradient(180deg, transparent 5%, rgba(139,188,255,.8) 50%, transparent 95%);
+  box-shadow: 0 0 22px rgba(91,157,237,.32);
 }
 
 .z7-route-transition__panel--left {
@@ -82,12 +81,12 @@ html.z7-route-running body {
 
 .z7-route-transition.is-revealing .z7-route-transition__panel--left {
   transform: translate3d(-102%, 0, 0);
-  transition-delay: .1s;
+  transition-delay: .06s;
 }
 
 .z7-route-transition.is-revealing .z7-route-transition__panel--right {
   transform: translate3d(102%, 0, 0);
-  transition-delay: .1s;
+  transition-delay: .06s;
 }
 
 .z7-route-transition__stage {
@@ -96,14 +95,14 @@ html.z7-route-running body {
   display: grid;
   width: min(86vw, 460px);
   place-items: center;
-  gap: 17px;
+  gap: 15px;
   opacity: 0;
-  transform: scale(.9);
-  filter: blur(12px);
+  transform: translate3d(0, 12px, 0) scale(.96);
+  filter: blur(5px);
   transition:
-    opacity .3s ease,
-    transform .58s var(--z7-route-ease),
-    filter .46s ease;
+    opacity .24s ease,
+    transform .42s var(--z7-route-ease),
+    filter .36s ease;
 }
 
 .z7-route-transition.is-covering .z7-route-transition__stage,
@@ -111,19 +110,19 @@ html.z7-route-running body {
   opacity: 1;
   transform: scale(1);
   filter: blur(0);
-  transition-delay: .2s;
+  transition-delay: .12s;
 }
 
 .z7-route-transition.is-revealing .z7-route-transition__stage {
   opacity: 0;
-  transform: scale(1.08);
-  filter: blur(10px);
+  transform: translate3d(0, -8px, 0) scale(1.03);
+  filter: blur(5px);
   transition-delay: 0s;
 }
 
 .z7-route-transition__eyebrow {
   margin: 0;
-  color: rgba(255,255,255,.4);
+  color: rgba(173,205,247,.7);
   font-size: .6rem;
   font-weight: 800;
   letter-spacing: .32em;
@@ -134,23 +133,23 @@ html.z7-route-running body {
 .z7-route-transition__mark {
   position: relative;
   display: grid;
-  width: clamp(84px, 8vw, 112px);
+  width: clamp(118px, 11vw, 148px);
   aspect-ratio: 1;
   place-items: center;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,.26);
-  border-radius: 24px;
-  background: #080808;
+  border: 1px solid rgba(139,188,255,.4);
+  border-radius: 26px;
+  background: #0a1421;
   box-shadow:
-    0 28px 80px rgba(0,0,0,.78),
-    inset 0 0 0 1px rgba(255,255,255,.04);
-  transform: rotate(-3deg);
+    0 24px 72px rgba(0,0,0,.55),
+    0 0 40px rgba(67,139,236,.12),
+    inset 0 0 0 1px rgba(139,188,255,.07);
 }
 
 .z7-route-transition__mark::before {
   position: absolute;
   inset: -38%;
-  border: 1px solid rgba(255,255,255,.13);
+  border: 1px solid rgba(139,188,255,.3);
   border-radius: 50%;
   content: "";
   animation: z7RouteOrbit 2.6s linear infinite;
@@ -161,17 +160,16 @@ html.z7-route-running body {
   top: -25%;
   bottom: -25%;
   left: -30%;
-  width: 19%;
+  width: 24%;
   content: "";
   opacity: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.74), transparent);
-  filter: blur(5px);
+  background: linear-gradient(90deg, transparent, rgba(161,206,255,.72), transparent);
   transform: skewX(-18deg);
 }
 
 .z7-route-transition.is-covering .z7-route-transition__mark::after,
 .z7-route-transition.is-covered .z7-route-transition__mark::after {
-  animation: z7RouteScan .88s .28s var(--z7-route-ease) both;
+  animation: z7RouteScan 1.08s .22s var(--z7-route-ease) both;
 }
 
 .z7-route-transition__mark img {
@@ -179,35 +177,35 @@ html.z7-route-running body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(1) contrast(1.18) brightness(1.08);
-  transform: scale(1.025);
+  filter: grayscale(1) contrast(1.12) brightness(1.12);
+  transform: scale(1.01);
 }
 
 .z7-route-transition__line {
   position: relative;
-  width: min(68vw, 270px);
+  width: min(72vw, 310px);
   height: 1px;
   overflow: hidden;
-  background: rgba(255,255,255,.11);
+  background: rgba(139,188,255,.22);
 }
 
 .z7-route-transition__line::after {
   position: absolute;
   inset: 0;
   content: "";
-  background: #fff;
+  background: #8bbcff;
   transform: translateX(-105%);
 }
 
 .z7-route-transition.is-covering .z7-route-transition__line::after,
 .z7-route-transition.is-covered .z7-route-transition__line::after {
-  animation: z7RouteLine .76s .16s var(--z7-route-ease) both;
+  animation: z7RouteLine 1.12s .1s var(--z7-route-ease) both;
 }
 
 .z7-route-transition__label {
   min-height: 1.2em;
   margin: 0;
-  color: rgba(255,255,255,.76);
+  color: rgba(222,237,255,.86);
   font-size: clamp(.68rem, 1vw, .78rem);
   font-weight: 900;
   letter-spacing: .4em;
@@ -227,8 +225,7 @@ html.z7-route-running body {
 
 @keyframes z7RouteLine {
   0% { transform: translateX(-105%); }
-  54% { transform: translateX(0); }
-  100% { transform: translateX(105%); }
+  100% { transform: translateX(0); }
 }
 
 @media (max-width: 680px) {
@@ -237,7 +234,7 @@ html.z7-route-running body {
   }
 
   .z7-route-transition__mark {
-    width: 86px;
+    width: 112px;
     border-radius: 20px;
   }
 

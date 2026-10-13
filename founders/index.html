@@ -28,7 +28,7 @@
   <style id="z7-route-transition-critical">
       html.z7-route-pending,
       html.z7-route-pending body {
-        background: #030303 !important;
+        background: #070b12 !important;
       }
 
       html.z7-route-pending body::before {
@@ -36,7 +36,7 @@
         inset: 0;
         z-index: 2147482000;
         content: "";
-        background: #030303;
+        background: #070b12;
       }
 
       .z7-route-transition {
@@ -68,7 +68,7 @@
       (() => {
         try {
           const raw = sessionStorage.getItem("z7:route-transition-v11");
-          if (!raw) return;
+          if (!raw) { document.documentElement.classList.add("z7-route-pending"); window.setTimeout(() => document.documentElement.classList.remove("z7-route-pending"), 4000); return; }
           const data = JSON.parse(raw);
           if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
             document.documentElement.classList.add("z7-route-pending");
@@ -80,8 +80,8 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route11" />
-    <script defer src="/assets/js/page-transition.js?v=7z-20260902-r1"></script>
+    <link rel="stylesheet" href="/assets/css/page-transition.css?v=cinematic-blue-3" />
+    <script defer src="/assets/js/page-transition.js?v=cinematic-blue-3"></script>
       <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
       <link rel="stylesheet" href="/assets/css/all-videos-audio.css?v=20260806-allvideos15" />
 <link rel="stylesheet" href="/assets/css/blueprint-access.css?v=20260813-private-access1" />
@@ -187,7 +187,7 @@
   z-index:999999;
   width:270px;
   padding:9px;
-  border:1px solid rgba(214,178,74,.30);
+  border:1px solid rgba(139,188,255,.30);
   border-radius:18px;
   background:linear-gradient(180deg,rgba(18,18,18,.99),rgba(7,7,7,.99));
   box-shadow:0 24px 64px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.045);
@@ -204,7 +204,7 @@
 
 .z7-founders-admin-menu-v2__eyebrow{
   padding:8px 11px 9px;
-  color:rgba(214,178,74,.86);
+  color:rgba(139,188,255,.86);
   font:700 8px/1 Inter,Arial,sans-serif;
   letter-spacing:.15em;
   text-transform:uppercase;
@@ -251,10 +251,10 @@
   width:31px;
   height:31px;
   flex:0 0 31px;
-  border:1px solid rgba(214,178,74,.24);
+  border:1px solid rgba(139,188,255,.24);
   border-radius:10px;
-  color:#d6b24a!important;
-  background:rgba(214,178,74,.045);
+  color:#8bbcff!important;
+  background:rgba(139,188,255,.045);
   font:800 11px/1 Inter,Arial,sans-serif!important;
 }
 
@@ -285,7 +285,7 @@
   width:270px!important;
   padding:9px!important;
   margin:0!important;
-  border:1px solid rgba(214,178,74,.30)!important;
+  border:1px solid rgba(139,188,255,.30)!important;
   border-radius:18px!important;
   background:linear-gradient(180deg,rgba(18,18,18,.99),rgba(7,7,7,.99))!important;
   box-shadow:0 24px 64px rgba(0,0,0,.54),inset 0 1px 0 rgba(255,255,255,.045)!important;
@@ -306,7 +306,7 @@
 
 #z7-founders-admin-portal-v4 .z7-founders-admin-menu-v2__eyebrow{
   padding:8px 11px 9px!important;
-  color:rgba(214,178,74,.86)!important;
+  color:rgba(139,188,255,.86)!important;
   font:700 8px/1 Inter,Arial,sans-serif!important;
   letter-spacing:.15em!important;
   text-transform:uppercase!important;
@@ -353,10 +353,10 @@
   width:31px!important;
   height:31px!important;
   flex:0 0 31px!important;
-  border:1px solid rgba(214,178,74,.24)!important;
+  border:1px solid rgba(139,188,255,.24)!important;
   border-radius:10px!important;
-  color:#d6b24a!important;
-  background:rgba(214,178,74,.045)!important;
+  color:#8bbcff!important;
+  background:rgba(139,188,255,.045)!important;
   font:800 11px/1 Inter,Arial,sans-serif!important;
 }
 
@@ -373,6 +373,8 @@
 }
 </style>
   <script defer src="/_vercel/insights/script.js"></script>
+<link rel="stylesheet" href="/assets/css/charcoal-blue-theme.css?v=local-preview-1">
+<link rel="stylesheet" href="/assets/css/cinematic-motion.css?v=scroll-blur-2">
 </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -817,5 +819,6 @@
   });
 })();
 </script>
+<script src="/assets/js/cinematic-motion.js?v=scroll-blur-2" defer></script>
 </body>
 </html>

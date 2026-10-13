@@ -1,0 +1,42 @@
+/* Keep the unauthenticated login scene full bleed. Authenticated views retain their layout. */
+html.z7icx-preauth body,
+html.z7icx-preauth .z7pa-library {
+  background: #070b12 !important;
+}
+
+html.z7icx-preauth .z7pa-library {
+  padding: 0 !important;
+}
+
+html.z7icx-preauth .z7pa-library > .z7pa-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+html.z7icx-preauth .z7-login-stage {
+  width: 100%;
+  min-height: 100svh;
+  margin: 0;
+  padding: clamp(110px, 13vh, 150px) clamp(24px, 7vw, 110px) 64px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 65% 46%, rgba(65, 121, 195, .16), transparent 43%),
+    linear-gradient(120deg, #070b12 0%, #0b1421 52%, #070b12 100%);
+}
+
+html.z7icx-preauth .z7-login-stage .login-box {
+  justify-self: center;
+  animation: none;
+  opacity: 1;
+}
+
+html.z7icx-preauth .z7-login-stage .logo-control::after {
+  border-top-color: rgba(139,188,255,.72);
+}
+
+@media (max-width: 980px) {
+  html.z7icx-preauth .z7-login-stage {
+    padding: 108px 24px 48px;
+  }
+}

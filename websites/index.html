@@ -10,12 +10,27 @@
 <meta name="description" content="Explore selected website design and digital experience projects by 7Z Magic, with desktop and mobile previews.">
 <meta name="robots" content="index,follow,max-image-preview:large"/>
 <link rel="icon" href="/assets/brand/7z-20260902_203523_038/favicon.ico">
-<link rel="preload" as="image" href="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-header-final-20260829.png" fetchpriority="high">
-<link rel="preload" as="image" href="/media/selected_experiences/ercan-desktop-auto.png" fetchpriority="high">
 <link rel="stylesheet" href="/assets/css/styles.css?v=5f549c3-fan-v3-20260924" />
 <link rel="stylesheet" href="/assets/css/performance.css?v=20260728-video3" />
 <link rel="stylesheet" href="/assets/css/navigation-overflow.css?v=20260805-nav9" />
-<link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route11" />
+<style>
+  html.z7-route-pending, html.z7-route-pending body { background:#070b12 !important; }
+  html.z7-route-pending body::before { content:""; position:fixed; inset:0; z-index:2147482000; background:#070b12; }
+</style>
+<script>
+  (() => {
+    try {
+      const raw = sessionStorage.getItem('z7:route-transition-v11');
+      const data = raw && JSON.parse(raw);
+      if (!raw || (data && Number.isFinite(data.time) && Date.now() - data.time < 15000)) {
+        document.documentElement.classList.add('z7-route-pending');
+        setTimeout(() => document.documentElement.classList.remove('z7-route-pending'), 4000);
+      }
+    } catch { document.documentElement.classList.remove('z7-route-pending'); }
+  })();
+</script>
+<link rel="stylesheet" href="/assets/css/page-transition.css?v=cinematic-blue-3" />
+<script defer src="/assets/js/page-transition.js?v=cinematic-blue-3"></script>
 <link rel="stylesheet" href="/assets/css/universe-video.css?v=20260806-video12" />
 <link rel="stylesheet" href="/assets/css/static-media-hover.css?v=20260806-static13" />
 <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
@@ -25,9 +40,11 @@
 <link rel="stylesheet" href="/assets/css/header-logo-final-v27.css?v=20260829-v27-root">
 <link rel="stylesheet" href="/assets/css/home-tablet-qa-fix-v37.css?v=b212139-p1-final">
 <link rel="stylesheet" href="/assets/brand/7z-20260902_203523_038/brand-identity.css">
-<link rel="stylesheet" href="/websites/websites.css?v=final-v3-1">
+<link rel="stylesheet" href="/websites/websites.css?v=video-preview-1">
 
   <script defer src="/_vercel/insights/script.js"></script>
+<link rel="stylesheet" href="/assets/css/charcoal-blue-theme.css?v=local-preview-1">
+<link rel="stylesheet" href="/assets/css/cinematic-motion.css?v=scroll-blur-2">
 </head>
 <body>
 <header class="site-header" aria-label="Primary">
@@ -87,7 +104,7 @@
   <section class="wx-hero">
     <span>Selected Digital Experiences</span>
     <h1>Websites designed to be experienced, not just viewed.</h1>
-    <p>Choose a project, then switch between desktop and mobile. The live site is revealed only after its preview bridge confirms readiness.</p>
+    <p>Choose a project and device to watch its recorded website experience.</p>
   </section>
 
   <section class="wx-work">
@@ -98,22 +115,23 @@
         <button class="is-active" data-device="desktop">Desktop</button>
         <button data-device="mobile">Mobile</button>
       </div>
-      <a id="openSite" target="_blank" rel="noopener">Open live site ↗</a>
+      <div class="wx-clips" id="clips" aria-label="Recording version" hidden></div>
+      <a id="openSite" target="_blank" rel="noopener">Visit website ↗</a>
     </div>
 
     <div class="wx-stage is-desktop" id="stage">
       <div class="wx-browser">
         <div class="wx-bar"><i></i><i></i><i></i><span id="address"></span></div>
         <div class="wx-screen" id="screen">
-          <img id="poster" alt="" fetchpriority="high">
-          <iframe id="liveFrame" title="Live website preview" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture" aria-hidden="true"></iframe>
-          <div class="wx-status"><b></b><span id="statusText">Preparing live preview</span></div>
-          <button id="retry" hidden>Retry</button>
+          <img id="poster" alt="" decoding="async">
+          <video id="previewVideo" muted playsinline autoplay loop preload="none" controlslist="nodownload noplaybackrate noremoteplayback" disablepictureinpicture disableremoteplayback aria-label="Recorded website preview"></video>
+          <div class="wx-status"><b></b><span id="statusText">Preparing video</span></div>
+          <button id="playPreview" type="button" aria-label="Play website recording">Play recording</button>
         </div>
       </div>
     </div>
 
-    <small>Static preview stays above the iframe until READY/heartbeat is received. If framing fails, the broken browser view is never shown.</small>
+    <small>Only the selected recording loads. Playback pauses when you leave this page or switch to another tab.</small>
   </section>
 </main>
 
@@ -121,13 +139,16 @@
 
 <script>
 window.__Z7_WEBSITE_PROJECTS__ = [
-    { key: "ercan", name: "ERCAN", url: "https://www.ercanco.com/", desktop: "/media/selected_experiences/ercan-desktop-auto.png", mobile: "/media/selected_experiences/ercan-mobile-auto.png" },
-    { key: "elcon", name: "ELCON Arabia", url: "https://elcon-arabia.com/", desktop: "/media/selected_experiences/elcon-arabia-desktop.png", mobile: "/media/selected_experiences/elcon-arabia-mobile.png" },
-    { key: "scmc", name: "Smile Care Medical Center", url: "https://scmc-website-eight.vercel.app/", desktop: "/media/selected_experiences/scmc-desktop.png", mobile: "/media/selected_experiences/scmc-mobile.png" }
+    { key: "ercan", name: "ERCAN", url: "https://www.ercanco.com/", videos: { desktop: [{ label: "Desktop", src: "/media/website-portfolio/ercan-desktop.mp4" }], mobile: [{ label: "Mobile", src: "/media/website-portfolio/ercan-mobile.mp4" }] } },
+    { key: "elcon", name: "ELCON Arabia", url: "https://elcon-arabia.com/", videos: { desktop: [{ label: "Desktop", src: "/media/website-portfolio/elcon-desktop.mp4" }], mobile: [{ label: "Mobile", src: "/media/website-portfolio/elcon-mobile.mp4" }] } },
+    { key: "scmc", name: "Smile Care Medical Center", url: "https://scmc-website-eight.vercel.app/", videos: { desktop: [{ label: "Desktop", src: "/media/website-portfolio/scmc-desktop-2.mp4" }], mobile: [{ label: "Mobile", src: "/media/website-portfolio/scmc-mobile.mp4" }] } }
 ];
+window.__Z7_WEBSITE_VIDEO_MODE__ = true;
 </script>
 <script src="/assets/js/navigation-overflow.js?v=20260805-nav9" defer></script>
-<script src="/websites/websites.js?v=perf-nav-v4-20261002" defer></script>
+<script src="/websites/websites.js?v=video-preview-1" defer></script>
+<script src="/websites/video-preview.js?v=local-preview-2" defer></script>
 
+<script src="/assets/js/cinematic-motion.js?v=scroll-blur-2" defer></script>
 </body>
 </html>

@@ -34,8 +34,8 @@
   width:6px;
   height:6px;
   border-radius:50%;
-  background:#d8b65a;
-  box-shadow:0 0 16px rgba(216,182,90,.38);
+  background:#8bbcff;
+  box-shadow:0 0 16px rgba(139,188,255,.38);
 }
 
 .z7-founders-admin-strip__link{
@@ -45,9 +45,9 @@
   gap:14px;
   min-height:44px;
   padding:0 18px;
-  border:1px solid rgba(216,182,90,.28);
+  border:1px solid rgba(139,188,255,.28);
   border-radius:999px;
-  background:rgba(216,182,90,.04);
+  background:rgba(139,188,255,.04);
   color:#fff;
   text-decoration:none;
   font-size:.66rem;

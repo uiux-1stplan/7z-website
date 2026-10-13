@@ -15,7 +15,7 @@ body.subpage {
   --z7x-dim: rgba(255, 250, 241, 0.43);
   --z7x-line: rgba(255, 255, 255, 0.13);
   --z7x-line-strong: rgba(255, 255, 255, 0.27);
-  --z7x-gold: #efc76e;
+  --z7x-gold: #8bbcff;
   min-height: 100vh;
   background: var(--z7x-bg);
   color: var(--z7x-text);

@@ -1,5 +1,5 @@
 /* Homepage redesign, scoped to main so the header and inner pages stay intact. */
-body.z7-cinematic-home main { --gold:#beb4a1;--cyan:#beb4a1;--green:#beb4a1;--red:#beb4a1;--violet:#beb4a1;--text:#f4f2ee;--muted:#aaa9a6;--dim:#777775;--line:rgba(255,255,255,.16);color:var(--text);background:#050505 }
+body.z7-cinematic-home main { --gold:#a9bad0;--cyan:#a9bad0;--green:#a9bad0;--red:#a9bad0;--violet:#a9bad0;--text:#f4f2ee;--muted:#aaa9a6;--dim:#777775;--line:rgba(255,255,255,.16);color:var(--text);background:#050505 }
 body.z7-cinematic-home main :is(.service-loop,.chapter,.manifest) { background-color:#050505 }
 body.z7-cinematic-home main :is(.service-loop,.chapter) { border-top:1px solid rgba(255,255,255,.13) }
 body.z7-cinematic-home main :is(.eyebrow,.chapter__number) { color:#b7b2a8 }

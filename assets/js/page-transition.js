@@ -5,8 +5,8 @@
   const LEGACY_KEY = "z7:route-transition";
   const root = document.documentElement;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const COVER_MS = reducedMotion ? 190 : 820;
-  const REVEAL_MS = reducedMotion ? 220 : 930;
+  const COVER_MS = reducedMotion ? 190 : 850;
+  const REVEAL_MS = reducedMotion ? 220 : 720;
   let navigating = false;
   let overlay = null;
   let labelNode = null;
@@ -111,17 +111,20 @@
     loader?.remove();
 
     setLabel(arrival?.label || routeLabel(new URL(window.location.href)));
+    const eyebrow = overlay.querySelector('.z7-route-transition__eyebrow');
+    if (eyebrow) eyebrow.textContent = arrival ? '7Z Magic / Next Scene' : '7Z Magic / Preparing Experience';
     overlay.setAttribute("aria-hidden", "false");
     overlay.classList.add("is-active", "is-covered");
     root.classList.add("z7-route-running");
     root.classList.remove("z7-route-pending");
 
+    const holdMs = reducedMotion ? 0 : arrival ? 260 : 1050;
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+      window.setTimeout(() => {
         overlay.classList.remove("is-covered");
         overlay.classList.add("is-revealing");
         window.setTimeout(clearOverlay, REVEAL_MS);
-      });
+      }, holdMs);
     });
   }
 
@@ -170,6 +173,8 @@
   function beginNavigation(destination) {
     navigating = true;
     setLabel(routeLabel(destination));
+    const eyebrow = overlay.querySelector('.z7-route-transition__eyebrow');
+    if (eyebrow) eyebrow.textContent = '7Z Magic / Next Scene';
 
     try {
       sessionStorage.setItem(

@@ -20,6 +20,20 @@
   const range = (p, a, b) => clamp((p - a) / (b - a));
   let frame = 0, start = 0, travel = 1, stageWidth = 0, centerX = 0, centerY = 0, mx = 0, my = 0;
   let lastProgress = -1, lastMx = 0, lastMy = 0, forcePaint = true, deferredFilm = false;
+  let ambientTimer = 0;
+  const saveData = navigator.connection?.saveData === true;
+  function startAmbientAfterPaint() {
+    if (!ambient || ambientTimer || reduced.matches || saveData || document.hidden) return;
+    ambientTimer = window.setTimeout(() => {
+      ambientTimer = 0;
+      if (reduced.matches || saveData || document.hidden || lastProgress > .12) return;
+      if (!ambient.src && ambient.dataset.src) {
+        ambient.src = ambient.dataset.src;
+        ambient.preload = 'metadata';
+      }
+      ambient.play().catch(() => {});
+    }, 700);
+  }
   function measure() {
     opening.classList.toggle('is-enhanced', !reduced.matches);
     start = opening.getBoundingClientRect().top + scrollY;
@@ -78,8 +92,9 @@
     if (ambient) {
       if (reduced.matches || p > .12 || document.hidden) {
         if (!ambient.paused) ambient.pause();
-      } else if (ambient.paused) {
-        ambient.play().catch(() => {});
+      } else if (ambient.paused && !saveData) {
+        if (ambient.src) ambient.play().catch(() => {});
+        else startAmbientAfterPaint();
       }
     }
     // Keep its poster visible during the zoom; video decoding resumes after the handoff.

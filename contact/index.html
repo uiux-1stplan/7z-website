@@ -28,7 +28,7 @@
   <style id="z7-route-transition-critical">
       html.z7-route-pending,
       html.z7-route-pending body {
-        background: #030303 !important;
+        background: #070b12 !important;
       }
 
       html.z7-route-pending body::before {
@@ -36,7 +36,7 @@
         inset: 0;
         z-index: 2147482000;
         content: "";
-        background: #030303;
+        background: #070b12;
       }
 
       .z7-route-transition {
@@ -68,7 +68,7 @@
       (() => {
         try {
           const raw = sessionStorage.getItem("z7:route-transition-v11");
-          if (!raw) return;
+          if (!raw) { document.documentElement.classList.add("z7-route-pending"); window.setTimeout(() => document.documentElement.classList.remove("z7-route-pending"), 4000); return; }
           const data = JSON.parse(raw);
           if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
             document.documentElement.classList.add("z7-route-pending");
@@ -80,8 +80,8 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route11" />
-    <script defer src="/assets/js/page-transition.js?v=7z-20260902-r1"></script>
+    <link rel="stylesheet" href="/assets/css/page-transition.css?v=cinematic-blue-3" />
+    <script defer src="/assets/js/page-transition.js?v=cinematic-blue-3"></script>
       <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
       <link rel="stylesheet" href="/assets/css/all-videos-audio.css?v=20260806-allvideos15" />
 <link rel="stylesheet" href="/assets/css/blueprint-access.css?v=20260813-private-access1" />
@@ -143,6 +143,8 @@
 <meta name="twitter:image:alt" content="7Z Magic">
 
   <script defer src="/_vercel/insights/script.js"></script>
+<link rel="stylesheet" href="/assets/css/charcoal-blue-theme.css?v=local-preview-1">
+<link rel="stylesheet" href="/assets/css/cinematic-motion.css?v=scroll-blur-2">
 </head>
 <body class="subpage" data-static-background="true">
 <div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
@@ -324,5 +326,6 @@
 <script defer src="/assets/js/premium-refinement.js?v=20260811-premium1"></script>
     <script src="/assets/js/private-access-control.js?v=7z-20260902-r1"></script>
 
+<script src="/assets/js/cinematic-motion.js?v=scroll-blur-2" defer></script>
 </body>
 </html>

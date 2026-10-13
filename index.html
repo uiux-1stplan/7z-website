@@ -39,7 +39,7 @@
   <style id="z7-route-transition-critical">
       html.z7-route-pending,
       html.z7-route-pending body {
-        background: #030303 !important;
+        background: #070b12 !important;
       }
 
       html.z7-route-pending body::before {
@@ -47,7 +47,7 @@
         inset: 0;
         z-index: 2147482000;
         content: "";
-        background: #030303;
+        background: #070b12;
       }
 
       .z7-route-transition {
@@ -79,7 +79,7 @@
       (() => {
         try {
           const raw = sessionStorage.getItem("z7:route-transition-v11");
-          if (!raw) return;
+          if (!raw) { document.documentElement.classList.add("z7-route-pending"); window.setTimeout(() => document.documentElement.classList.remove("z7-route-pending"), 4000); return; }
           const data = JSON.parse(raw);
           if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
             document.documentElement.classList.add("z7-route-pending");
@@ -91,8 +91,8 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/assets/css/page-transition.css?v=20260805-route11" />
-    <script defer src="/assets/js/page-transition.js?v=7z-20260902-r1"></script>
+    <link rel="stylesheet" href="/assets/css/page-transition.css?v=cinematic-blue-3" />
+    <script defer src="/assets/js/page-transition.js?v=cinematic-blue-3"></script>
       <link rel="stylesheet" href="/assets/css/universe-video.css?v=20260806-video12" />
       <link rel="stylesheet" href="/assets/css/static-media-hover.css?v=20260806-static13" />
       <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
@@ -196,7 +196,7 @@
   <link rel="stylesheet" href="/assets/css/home-hero.css?v=20261007-4">
 <style id="z7-hero-ambient-video-opacity">#intro.z7-cinema .z7-cinema__ambient-video { opacity: .28; }</style>
   <link rel="stylesheet" href="/assets/css/home-theme.css?v=20261007-4">
-  <link rel="stylesheet" href="/assets/css/home-gallery.css?v=20261007-7">
+  <link rel="stylesheet" href="/assets/css/home-gallery.css?v=20261014-phone-full-video-v1">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -208,6 +208,8 @@
     "sameAs": ["https://www.instagram.com/7z.magic"]
   }
   </script>
+<link rel="stylesheet" href="/assets/css/charcoal-blue-theme.css?v=20261013-grid-clear-v1">
+<link rel="stylesheet" href="/assets/css/cinematic-motion.css?v=scroll-blur-2">
 </head>
   <body data-static-background="true" class="z7-cinematic-home">
     <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
@@ -275,7 +277,7 @@
       <div class="z7-opening">
         <div class="z7-opening__stage">
           <section class="intro z7-cinema" id="intro" aria-label="7Z Magic — Interactive Digital Experience">
-            <div class="z7-cinema__background" aria-hidden="true"><video class="z7-cinema__ambient-video" src="/media/intro/1.mp4" muted autoplay loop playsinline preload="metadata" disablepictureinpicture></video><div class="z7-cinema__floor"></div><div class="z7-cinema__light"></div></div>
+            <div class="z7-cinema__background" aria-hidden="true"><video class="z7-cinema__ambient-video" data-src="/media/intro/1.mp4" poster="/assets/img/charcoal-blue/film.webp" muted loop playsinline preload="none" disablepictureinpicture></video><div class="z7-cinema__floor"></div><div class="z7-cinema__light"></div></div>
             <div class="z7-cinema__halo" aria-hidden="true"></div>
             <div class="z7-cinema__logo" role="img" aria-label="7Z"><div class="z7-cinema__logo-face"></div></div>
             <figure class="z7-cinema__card z7-cinema__card--1" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/arch_projects/9-16H/1.jpg" alt="" width="240" height="150"><figcaption>Spatial stories <span>01</span></figcaption></div></figure>
@@ -326,11 +328,11 @@
             <h2>One vision. Five ways to make it unforgettable.</h2>
           </div>
           <nav class="service-orbit" aria-label="Explore our services">
-            <a class="service-card" href="#architecture" style="--i: 1; --service-image: url(/media/posters/arch_projects/16-9V/1.jpg)"><span>3D</span><strong>Spatial Stories</strong></a>
-            <a class="service-card" href="#websites" style="--i: 2; --service-image: url(/media/posters/website_project/26.jpg)"><span>UX</span><strong>Websites</strong></a>
-            <a class="service-card" href="#film" style="--i: 3; --service-image: url(/media/posters/film/1.jpg)"><span>FM</span><strong>Campaign Films</strong></a>
-            <a class="service-card" href="#identity" style="--i: 4; --service-image: url(/media/id_design/1.png)"><span>ID</span><strong>Brand Identity</strong></a>
-            <a class="service-card" href="#product-design" style="--i: 5; --service-image: url(/media/posters/prop/1.jpg)"><span>PD</span><strong>Product Launches</strong></a>
+            <a class="service-card" href="#architecture" style="--i: 1; --service-image: url(/assets/img/charcoal-blue/architecture.webp)"><span>3D</span><strong>Spatial Stories</strong></a>
+            <a class="service-card" href="#websites" style="--i: 2; --service-image: url(/assets/img/charcoal-blue/websites.webp)"><span>UX</span><strong>Websites</strong></a>
+            <a class="service-card" href="#film" style="--i: 3; --service-image: url(/assets/img/charcoal-blue/film.webp)"><span>FM</span><strong>Campaign Films</strong></a>
+            <a class="service-card" href="#identity" style="--i: 4; --service-image: url(/assets/img/charcoal-blue/identity.webp)"><span>ID</span><strong>Brand Identity</strong></a>
+            <a class="service-card" href="#product-design" style="--i: 5; --service-image: url(/assets/img/charcoal-blue/product.webp)"><span>PD</span><strong>Product Launches</strong></a>
           </nav>
         </div>
       </section>
@@ -354,7 +356,9 @@
           <div><strong data-count="360">0</strong><span>Degree direction</span></div>
         </div>
 
-        <div class="comparison-stage" id="comparisonStage"></div>
+        <div class="comparison-scroll" id="comparisonScroll">
+          <div class="comparison-stage" id="comparisonStage"></div>
+        </div>
 
         <div class="immersive-gallery">
           <div class="gallery-copy">
@@ -532,7 +536,7 @@
     <script src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
     <script src="assets/js/performance.js?v=20260831-rootfix-v6"></script>
 
-    <script src="assets/js/app.js?v=20261007-no-home-whatsapp"></script>
+    <script src="assets/js/app.js?v=20261013-phone-fade-v6"></script>
       <script src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
       <script src="/assets/js/universe-video.js?v=20260806-video12"></script>
       <script src="/assets/js/content-protection.js?v=20260831-rootfix-v6"></script>
@@ -541,5 +545,6 @@
 
   <script src="/assets/js/home-hero.js?v=20261007-2"></script>
   <script src="/assets/js/home-web-reel.js?v=20261007-1"></script>
+<script src="/assets/js/cinematic-motion.js?v=scroll-blur-2" defer></script>
 </body>
 </html>

@@ -584,7 +584,8 @@
 
       const handle = document.createElement("button");
       handle.type = "button";
-      handle.className = "compare__handle magnetic";
+      handle.className = "compare__handle";
+      handle.textContent = "Drag";
       handle.setAttribute("aria-label", `Compare architecture transformation ${index + 1}`);
       handle.setAttribute("aria-valuemin", "0");
       handle.setAttribute("aria-valuemax", "100");
@@ -657,6 +658,7 @@
       };
 
       handle.addEventListener("pointerdown", (event) => {
+        if (matchMedia("(min-width: 901px)").matches) return;
         active = true;
         handle.setPointerCapture?.(event.pointerId);
         setSplit(event.clientX);
@@ -665,6 +667,7 @@
       });
 
       compare.addEventListener("pointerdown", (event) => {
+        if (matchMedia("(min-width: 901px)").matches) return;
         if (event.target === handle) return;
         active = true;
         setSplit(event.clientX);
@@ -683,6 +686,45 @@
         handle.setAttribute("aria-valuenow", String(Math.round(currentValue)));
       });
     });
+
+    const stage = $("#comparisonStage");
+    if (!stage) return;
+    const desktop = matchMedia("(min-width: 901px)");
+    let wheelSplit = 50;
+    let wheelLockActive = false;
+    document.addEventListener("wheel", (event) => {
+      if (!desktop.matches || event.ctrlKey || !event.deltaY) return;
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+      const movingTowardEnd = delta > 0;
+      const alreadyAtEnd = movingTowardEnd ? wheelSplit <= 8 : wheelSplit >= 92;
+      if (!wheelLockActive && alreadyAtEnd) return;
+
+      if (!wheelLockActive) {
+        const rect = stage.getBoundingClientRect();
+        const header = $(".site-header");
+        const headerBottom = header?.getBoundingClientRect().bottom || 0;
+        const isApproaching = rect.bottom > headerBottom + 12 && rect.top < window.innerHeight * 0.72;
+        if (!isApproaching) return;
+
+        wheelLockActive = true;
+        const snapTop = Math.max(headerBottom + 28, Math.round(window.innerHeight * 0.2));
+        const snapY = Math.max(0, window.scrollY + rect.top - snapTop);
+        event.preventDefault();
+        window.scrollTo(0, snapY);
+      }
+
+      event.preventDefault();
+      const next = Math.max(8, Math.min(92, wheelSplit - delta * 0.14));
+      if (next === wheelSplit) {
+        wheelLockActive = false;
+        return;
+      }
+      wheelSplit = next;
+      $$(".compare", stage).forEach((compare) => {
+        compare.style.setProperty("--split", `${wheelSplit}%`);
+        $(".compare__handle", compare)?.setAttribute("aria-valuenow", String(Math.round(wheelSplit)));
+      });
+    }, { passive: false, capture: true });
   }
 
   function initVideos() {
@@ -1180,6 +1222,7 @@
         if (!section || slots.length < 2) return;
 
         rail.classList.add("is-fan-carousel");
+        rail.scrollLeft = 0;
         rail.setAttribute("tabindex", "0");
         rail.setAttribute("aria-label", "Campaign film fan carousel");
 
@@ -1198,6 +1241,7 @@
         let dragStartY = 0;
         let dragStartFocus = 0;
         let didDrag = false;
+        let dragAxis = null;
 
         const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
         const normalizeFocus = (value) => ((value % count) + count) % count;
@@ -1235,49 +1279,58 @@
               }
             }
           });
+          rail.dispatchEvent(new CustomEvent("z7:fan-active-change", { bubbles: true }));
         };
 
         const render = (focus) => {
           const stageWidth = rail.getBoundingClientRect().width || window.innerWidth;
           const desktop = isDesktopFan();
 
-          const spacing = desktop
-            ? clamp(stageWidth * 0.105, 54, 72)
-            : clamp(stageWidth * 0.145, 46, 66);
+          const spacing = clamp(stageWidth * 0.105, 54, 72);
 
           slots.forEach((slot, index) => {
             const delta = wrappedDelta(index, focus);
             const distance = Math.abs(delta);
-            const visibleLimit = desktop ? 2.55 : 1.75;
+
+            if (!desktop) {
+              // Phone: one stable centered frame with a short crossfade between cards.
+              const fadeLimit = 1.12;
+              const visible = distance < fadeLimit;
+              const opacity = visible
+                ? Math.pow(clamp(1 - distance / fadeLimit, 0, 1), 1.35)
+                : 0;
+              const x = delta * 14;
+              const scale = 1 - Math.min(distance, 1) * 0.025;
+
+              slot.style.transform =
+                `translate3d(calc(-50% + ${x.toFixed(2)}px), -50%, 0) ` +
+                `scale(${scale.toFixed(4)})`;
+              slot.style.opacity = opacity.toFixed(3);
+              slot.style.zIndex = String(120 - Math.round(distance * 12));
+              slot.style.pointerEvents = distance < 0.5 ? "auto" : "none";
+              return;
+            }
+
+            const visibleLimit = 2.55;
             const visible = distance <= visibleLimit;
-
             const x = delta * spacing;
-
             const y =
-              (distance * (desktop ? 11.5 : 9.5)) +
-              (distance * distance * (desktop ? 2.55 : 2.15)) -
-              (Math.max(0, 1 - distance) * (desktop ? 35 : 28));
-
-            const rotation = delta * (desktop ? 6.25 : 6.8);
-            const scale = Math.max(
-              desktop ? 0.845 : 0.86,
-              1.045 - distance * (desktop ? 0.056 : 0.06)
-            );
-
+              (distance * 11.5) +
+              (distance * distance * 2.55) -
+              (Math.max(0, 1 - distance) * 35);
+            const rotation = delta * 6.25;
+            const scale = Math.max(0.845, 1.045 - distance * 0.056);
             const opacity = visible
-              ? Math.max(0.56, 1 - distance * 0.105)
+              ? Math.pow(clamp(1 - distance / visibleLimit, 0, 1), 1.35)
               : 0;
-
-            const zIndex = 120 - Math.round(distance * 12);
 
             slot.style.transform =
               `translate3d(calc(-50% + ${x.toFixed(2)}px), ` +
               `calc(-50% + ${y.toFixed(2)}px), 0) ` +
               `rotate(${rotation.toFixed(2)}deg) ` +
               `scale(${scale.toFixed(4)})`;
-
             slot.style.opacity = opacity.toFixed(3);
-            slot.style.zIndex = String(zIndex);
+            slot.style.zIndex = String(120 - Math.round(distance * 12));
             slot.style.pointerEvents = visible ? "auto" : "none";
           });
 
@@ -1335,6 +1388,7 @@
         // Lenis already supplies the smooth wheel interpolation.
         // ----------------------------------------------------------
         let desktopScrollTrigger = null;
+        let desktopScrollAnimation = null;
 
         const createDesktopScroll = () => {
           if (!isDesktopFan() || desktopScrollTrigger) return;
@@ -1344,35 +1398,37 @@
           targetFocus = 0;
           render(0);
 
-          desktopScrollTrigger = ScrollTrigger.create({
-            trigger: section,
-            start: "top top",
-            end: () => `+=${Math.max(1850, maxFocus * 175)}`,
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-
-            onUpdate: (self) => {
-              const focus = self.progress * maxFocus;
-
-              currentFocus = focus;
-              targetFocus = focus;
-              render(focus);
+          const progress = { focus: 0 };
+          desktopScrollAnimation = gsap.to(progress, {
+            focus: maxFocus,
+            ease: "none",
+            onUpdate: () => {
+              currentFocus = progress.focus;
+              targetFocus = progress.focus;
+              render(progress.focus);
             },
-
-            onLeave: () => {
-              currentFocus = maxFocus;
-              targetFocus = maxFocus;
-              render(maxFocus);
-            },
-
-            onLeaveBack: () => {
-              currentFocus = 0;
-              targetFocus = 0;
-              render(0);
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: () => `+=${Math.max(1500, maxFocus * 175)}`,
+              pin: true,
+              pinSpacing: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              scrub: 0.35,
+              onLeave: () => {
+                currentFocus = maxFocus;
+                targetFocus = maxFocus;
+                render(maxFocus);
+              },
+              onLeaveBack: () => {
+                currentFocus = 0;
+                targetFocus = 0;
+                render(0);
+              }
             }
           });
+          desktopScrollTrigger = desktopScrollAnimation.scrollTrigger;
         };
 
         const destroyDesktopScroll = () => {
@@ -1380,6 +1436,8 @@
 
           desktopScrollTrigger.kill(true);
           desktopScrollTrigger = null;
+          desktopScrollAnimation?.kill();
+          desktopScrollAnimation = null;
 
           currentFocus = normalizeFocus(currentFocus);
           targetFocus = currentFocus;
@@ -1391,8 +1449,8 @@
         }
 
         // ----------------------------------------------------------
-        // TABLET + PHONE: manual swipe/drag fan.
-        // Vertical page scrolling remains native.
+        // TABLET + PHONE: settle one card per horizontal swipe.
+        // Vertical page scrolling remains native and never changes card positions.
         // ----------------------------------------------------------
         rail.addEventListener("pointerdown", (event) => {
           if (isDesktopFan()) return;
@@ -1401,13 +1459,14 @@
           dragPointerId = event.pointerId;
           dragStartX = event.clientX;
           dragStartY = event.clientY;
-          dragStartFocus = targetFocus;
+          currentFocus = Math.round(targetFocus);
+          targetFocus = currentFocus;
+          dragStartFocus = currentFocus;
           didDrag = false;
+          dragAxis = null;
 
           stopManualAnimation();
-
-          rail.classList.add("is-fan-dragging");
-          rail.setPointerCapture?.(event.pointerId);
+          render(currentFocus);
         });
 
         rail.addEventListener("pointermove", (event) => {
@@ -1417,21 +1476,18 @@
           const dx = event.clientX - dragStartX;
           const dy = event.clientY - dragStartY;
 
-          if (Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
-
-          if (Math.abs(dy) > Math.abs(dx) && !didDrag) {
-            return;
+          if (!dragAxis) {
+            if (Math.max(Math.abs(dx), Math.abs(dy)) < 10) return;
+            if (Math.abs(dy) >= Math.abs(dx)) {
+              dragAxis = "vertical";
+              dragPointerId = null;
+              return;
+            }
+            dragAxis = "horizontal";
+            didDrag = true;
+            rail.classList.add("is-fan-dragging");
+            rail.setPointerCapture?.(event.pointerId);
           }
-
-          didDrag = true;
-
-          const stageWidth = rail.getBoundingClientRect().width || window.innerWidth;
-          const pixelsPerCard = clamp(stageWidth * 0.21, 70, 105);
-
-          targetFocus = dragStartFocus - (dx / pixelsPerCard);
-          currentFocus = targetFocus;
-
-          render(currentFocus);
         });
 
         const finishDrag = (event) => {
@@ -1442,16 +1498,23 @@
 
           rail.classList.remove("is-fan-dragging");
 
-          try {
-            rail.releasePointerCapture?.(dragPointerId);
-          } catch (_) {}
+          if (dragAxis === "horizontal") {
+            try {
+              rail.releasePointerCapture?.(dragPointerId);
+            } catch (_) {}
+          }
 
+          const deltaX = event?.clientX === undefined ? 0 : event.clientX - dragStartX;
           dragPointerId = null;
 
-          if (didDrag) {
-            targetFocus = Math.round(targetFocus);
+          if (dragAxis === "horizontal" && Math.abs(deltaX) >= 34) {
+            targetFocus = Math.round(dragStartFocus) + (deltaX < 0 ? 1 : -1);
             startManualAnimation();
+          } else if (dragAxis === "horizontal") {
+            currentFocus = targetFocus = dragStartFocus;
+            render(currentFocus);
           }
+          dragAxis = null;
 
           window.setTimeout(() => {
             didDrag = false;
@@ -1510,6 +1573,10 @@
             ScrollTrigger.refresh();
           }, 160);
         }, { passive: true });
+        if (!isDesktopFan()) {
+          requestAnimationFrame(() => requestAnimationFrame(() => { rail.scrollLeft = 0; }));
+          window.setTimeout(() => { rail.scrollLeft = 0; }, 90);
+        }
       };
 
       requestAnimationFrame(setupFanCarousel);

@@ -14,6 +14,14 @@
   const managed = new Set();
   const buttons = new WeakMap();
   const restartTimers = new WeakMap();
+  const autoMotionAllowed =
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+    navigator.connection?.saveData !== true;
+
+  const isActiveFanVideo = (video) => {
+    const slot = video.closest(".media-fan-slot");
+    return !slot || slot.dataset.fanActive === "true";
+  };
 
   const speakerMarkup = `
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -33,6 +41,7 @@
   const inViewport = (video) => {
     const rect = video.getBoundingClientRect();
     return (
+      isActiveFanVideo(video) &&
       rect.width > 0 &&
       rect.height > 0 &&
       rect.bottom > 0 &&
@@ -122,7 +131,7 @@
   };
 
   const playVisible = (video) => {
-    if (document.hidden || !inViewport(video)) return;
+    if (!autoMotionAllowed || document.hidden || !inViewport(video)) return;
 
     activate(video, false);
     ensureLoop(video);
@@ -209,10 +218,10 @@
       ? new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (entry.isIntersecting) activate(entry.target, false);
+              if (entry.isIntersecting && isActiveFanVideo(entry.target)) activate(entry.target, false);
             });
           },
-          { rootMargin: "700px 0px", threshold: 0.01 }
+          { rootMargin: "240px 0px", threshold: 0.01 }
         )
       : null;
 
@@ -223,7 +232,7 @@
             entries.forEach((entry) => {
               const video = entry.target;
 
-              if (entry.isIntersecting && entry.intersectionRatio >= 0.06) {
+              if (entry.isIntersecting && entry.intersectionRatio >= 0.06 && isActiveFanVideo(video)) {
                 playVisible(video);
                 return;
               }
@@ -378,6 +387,16 @@
       }
     });
   };
+
+  document.addEventListener("z7:fan-active-change", (event) => {
+    event.target.querySelectorAll(".media-fan-slot video").forEach((video) => {
+      if (isActiveFanVideo(video) && inViewport(video)) playVisible(video);
+      else {
+        video.pause();
+        muteVideo(video);
+      }
+    });
+  });
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {

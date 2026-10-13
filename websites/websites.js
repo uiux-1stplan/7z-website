@@ -1,6 +1,8 @@
 ﻿(() => {
   "use strict";
 
+  if (window.__Z7_WEBSITE_VIDEO_MODE__) return;
+
   const P = window.__Z7_WEBSITE_PROJECTS__ || [];
   if (!P.length) return;
 
