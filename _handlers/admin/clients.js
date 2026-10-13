@@ -155,7 +155,7 @@ export default async function handler(
         audit_record AS (
           INSERT INTO portal_audit_log (actor_user_id, action, target_type, target_id, details)
           SELECT ${gate.auth.userId}, 'CLIENT_ACCOUNT_DELETED', 'client', ${parsed.data.clientKey},
-            jsonb_build_object('displayName', ${target.display_name}, 'authType', ${target.auth_type}, 'filesDeleted', false)
+            jsonb_build_object('displayName', ${target.display_name}::text, 'authType', ${target.auth_type}::text, 'filesDeleted', false)
           FROM deleted_client RETURNING id
         )
         SELECT guard.matched_count,
