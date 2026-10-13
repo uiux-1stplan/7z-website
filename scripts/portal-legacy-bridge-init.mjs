@@ -76,6 +76,13 @@ await sql`
   ON portal_clients(status)
 `;
 
+await sql`
+  CREATE TABLE IF NOT EXISTS portal_retired_legacy_scopes (
+    scope TEXT PRIMARY KEY,
+    retired_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )
+`;
+
 /*
  * Automatically create one legacy profile
  * for every scope already used by the old system.
@@ -87,6 +94,17 @@ function labelFromScope(scope) {
 }
 
 for (const scope of HUB_PUBLIC_SCOPES) {
+  const retired = await sql`
+    SELECT scope
+    FROM portal_retired_legacy_scopes
+    WHERE scope = ${scope}
+    LIMIT 1
+  `;
+  if (retired.length) {
+    console.log(`Skipping deleted legacy client scope: ${scope}`);
+    continue;
+  }
+
   const clientKey = `legacy:${scope}`;
   const displayName = labelFromScope(scope);
 

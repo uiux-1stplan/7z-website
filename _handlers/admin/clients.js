@@ -90,6 +90,180 @@ export default async function handler(
     }
 
 
+
+    // =====================================================
+    // REMOVE ALL CLIENT ACCOUNTS (EXPLICIT, GUARDED ACTION)
+    // =====================================================
+
+    if (req.method === "DELETE") {
+      const origin = String(req.headers.origin || "");
+      if (origin !== "https://7z-magic.com" && origin !== "https://www.7z-magic.com") {
+        return http.sendJson(res, 403, { error: "Same-origin administrator request required." });
+      }
+
+      const schema = z.object({
+        confirmation: z.literal("DELETE_ALL_23_CLIENT_ACCOUNTS"),
+        expectedCount: z.literal(23)
+      });
+      const parsed = schema.safeParse(await http.readJson(req));
+      if (!parsed.success) return http.validationError(res, parsed);
+
+      const [counts] = await Promise.all([
+        sql`
+          SELECT
+            (SELECT COUNT(*)::int FROM portal_clients) AS client_count,
+            (SELECT COUNT(*)::int FROM portal_users WHERE role = 'admin') AS admin_count,
+            (SELECT COUNT(*)::int FROM portal_files) AS file_count
+        `
+      ]);
+      if (Number(counts.client_count) !== 23 || Number(counts.admin_count) !== 2) {
+        return http.sendJson(res, 409, {
+          error: "Deletion stopped because the live client or administrator count changed.",
+          clientCount: Number(counts.client_count),
+          administratorCount: Number(counts.admin_count)
+        });
+      }
+
+      const foreignKeys = await sql`
+        SELECT DISTINCT tc.table_name
+        FROM information_schema.table_constraints tc
+        JOIN information_schema.key_column_usage kcu
+          ON tc.constraint_name = kcu.constraint_name
+         AND tc.constraint_schema = kcu.constraint_schema
+        JOIN information_schema.constraint_column_usage ccu
+          ON ccu.constraint_name = tc.constraint_name
+         AND ccu.constraint_schema = tc.constraint_schema
+        WHERE tc.constraint_type = 'FOREIGN KEY'
+          AND ccu.table_schema = 'public'
+          AND ccu.table_name = 'portal_clients'
+          AND ccu.column_name = 'client_key'
+      `;
+      const safeClientTables = new Set([
+        "portal_client_sessions",
+        "portal_client_file_permissions",
+        "portal_client_resource_permissions"
+      ]);
+      const unexpectedTables = foreignKeys
+        .map(row => String(row.table_name))
+        .filter(tableName => !safeClientTables.has(tableName));
+      if (unexpectedTables.length) {
+        return http.sendJson(res, 409, {
+          error: "Deletion stopped because an unreviewed table references client accounts."
+        });
+      }
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS portal_retired_legacy_scopes (
+          scope TEXT PRIMARY KEY,
+          retired_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+      `;
+
+      const result = await sql`
+        WITH target_clients AS MATERIALIZED (
+          SELECT client_key, legacy_scope
+          FROM portal_clients
+          FOR UPDATE
+        ),
+        guard AS (
+          SELECT COUNT(*)::int AS client_count
+          FROM target_clients
+        ),
+        retired_scopes AS (
+          INSERT INTO portal_retired_legacy_scopes (scope)
+          SELECT target.legacy_scope
+          FROM target_clients target
+          CROSS JOIN guard
+          WHERE target.legacy_scope IS NOT NULL
+            AND guard.client_count = 23
+          ON CONFLICT (scope) DO NOTHING
+          RETURNING scope
+        ),
+        removed_resource_permissions AS (
+          DELETE FROM portal_client_resource_permissions permission
+          USING target_clients target, guard
+          WHERE permission.client_key = target.client_key
+            AND guard.client_count = 23
+          RETURNING permission.client_key
+        ),
+        removed_file_permissions AS (
+          DELETE FROM portal_client_file_permissions permission
+          USING target_clients target, guard
+          WHERE permission.client_key = target.client_key
+            AND guard.client_count = 23
+            AND (SELECT COUNT(*) FROM removed_resource_permissions) >= 0
+          RETURNING permission.client_key
+        ),
+        removed_sessions AS (
+          DELETE FROM portal_client_sessions session
+          USING target_clients target, guard
+          WHERE session.client_key = target.client_key
+            AND guard.client_count = 23
+            AND (SELECT COUNT(*) FROM removed_file_permissions) >= 0
+          RETURNING session.client_key
+        ),
+        deleted_clients AS (
+          DELETE FROM portal_clients client
+          USING target_clients target, guard
+          WHERE client.client_key = target.client_key
+            AND guard.client_count = 23
+            AND (SELECT COUNT(*) FROM removed_sessions) >= 0
+            AND (SELECT COUNT(*) FROM removed_file_permissions) >= 0
+            AND (SELECT COUNT(*) FROM removed_resource_permissions) >= 0
+            AND (SELECT COUNT(*) FROM retired_scopes) >= 0
+          RETURNING client.client_key
+        ),
+        audit_record AS (
+          INSERT INTO portal_audit_log (
+            actor_user_id,
+            action,
+            target_type,
+            target_id,
+            details
+          )
+          SELECT
+            ${gate.auth.userId},
+            'CLIENT_ACCOUNTS_BULK_DELETED',
+            'client_accounts',
+            NULL,
+            jsonb_build_object('deletedCount', COUNT(*))
+          FROM deleted_clients
+          HAVING COUNT(*) = 23
+          RETURNING id
+        )
+        SELECT
+          guard.client_count,
+          (SELECT COUNT(*)::int FROM deleted_clients) AS deleted_count,
+          (SELECT COUNT(*)::int FROM retired_scopes) AS retired_scope_count,
+          (SELECT COUNT(*)::int FROM audit_record) AS audit_count
+        FROM guard
+      `;
+
+      const deletion = result[0];
+      if (Number(deletion?.deleted_count) !== 23 || Number(deletion?.audit_count) !== 1) {
+        return http.sendJson(res, 409, {
+          error: "Deletion did not remove the exact confirmed account set.",
+          deletedCount: Number(deletion?.deleted_count || 0)
+        });
+      }
+
+      const after = await sql`
+        SELECT
+          (SELECT COUNT(*)::int FROM portal_clients) AS remaining_clients,
+          (SELECT COUNT(*)::int FROM portal_users WHERE role = 'admin') AS administrators,
+          (SELECT COUNT(*)::int FROM portal_files) AS files
+      `;
+      return http.sendJson(res, 200, {
+        ok: true,
+        deletedCount: Number(deletion.deleted_count),
+        remainingClients: Number(after[0].remaining_clients),
+        administrators: Number(after[0].administrators),
+        filesBefore: Number(counts.file_count),
+        filesAfter: Number(after[0].files)
+      });
+    }
+
+
     // =====================================================
     // CREATE NATIVE CLIENT
     // =====================================================
@@ -519,7 +693,8 @@ export default async function handler(
       [
         "GET",
         "POST",
-        "PATCH"
+        "PATCH",
+        "DELETE"
       ]
     );
 
