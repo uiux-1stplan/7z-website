@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Keep account, admin, and registration workflows out of search results.
+Disallow: /admin
+Disallow: /access/
+Disallow: /private-access/
+Disallow: /course-registration/form/
+Disallow: /course-registration/checkout/
+Disallow: /api/
+
+Sitemap: https://7z-magic.com/sitemap.xml
