@@ -875,7 +875,8 @@
       if (!response.ok) {
         const countDetails =
           Number.isInteger(result.clientCount) &&
-          Number.isInteger(result.administratorCount)
+          Number.isInteger(result.administratorCount) &&
+          !String(result.error || "").includes("Current database counts:")
             ? ` Live counts: ${result.clientCount} clients and ${result.administratorCount} administrators; expected 23 clients and 2 administrators.`
             : "";
         throw new Error(
