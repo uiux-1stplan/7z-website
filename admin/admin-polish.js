@@ -4,7 +4,7 @@
   const STORAGE_KEY = "z7-admin-workspace-view-v1";
 
   const VIEW_PANELS = {
-    overview: [],
+    overview: ["z7-admin-overview"],
     clients: ["z7-native-clients"],
     files: ["z7-private-upload-panel", "z7-admin-file-library"],
     media: ["legacy-file-access-panel"],
@@ -52,6 +52,7 @@
   };
 
   const ALL_PANEL_IDS = [
+    "z7-admin-overview",
     "z7-admin-accounts",
     "z7-native-clients",
     "z7-private-upload-panel",
@@ -136,7 +137,18 @@
           <input id="z7-admin-workspace-search-input" type="search" autocomplete="off" spellcheck="false" aria-label="Search current admin section">
           <button type="button" id="z7-admin-workspace-search-clear" aria-label="Clear search">CLEAR</button>
         </div>
-        <div id="z7-admin-workspace-stage" class="z7-admin-workspace-stage"></div>
+        <div id="z7-admin-workspace-stage" class="z7-admin-workspace-stage">
+          <section id="z7-admin-overview" class="panel z7-admin-overview">
+            <div class="z7-overview-heading"><div><span class="page-kicker">7Z MAGIC / CONTROL CENTER</span><h2>Workspace at a glance</h2><p>Choose an area to manage. Account totals above update from the live portal data.</p></div><span class="z7-overview-live"><i></i> LIVE WORKSPACE</span></div>
+            <div class="z7-overview-actions">
+              <button type="button" data-z7-shortcut="clients"><span class="z7-overview-icon">01</span><strong>Client accounts</strong><small>Manage access, passwords and account status</small><b>Open section <span aria-hidden="true">↗</span></b></button>
+              <button type="button" data-z7-shortcut="files"><span class="z7-overview-icon">02</span><strong>Private files</strong><small>Upload and organize protected files</small><b>Open section <span aria-hidden="true">↗</span></b></button>
+              <button type="button" data-z7-shortcut="media"><span class="z7-overview-icon">03</span><strong>Media access</strong><small>Review client access to shared resources</small><b>Open section <span aria-hidden="true">↗</span></b></button>
+              <button type="button" data-z7-shortcut="admins"><span class="z7-overview-icon">04</span><strong>Administrators</strong><small>Manage authorized dashboard operators</small><b>Open section <span aria-hidden="true">↗</span></b></button>
+            </div>
+            <div class="z7-overview-note"><span class="z7-overview-note-mark">7Z</span><span><strong>Administration workspace</strong><small>Changes here apply to portal access and protected client resources.</small></span></div>
+          </section>
+        </div>
       `;
 
       const stats = main.querySelector(".stats");
@@ -157,6 +169,17 @@
     }
 
     if (!nav || !search || !searchInput || !stage) return null;
+
+    if (stage.dataset.shortcutsBound !== "true") {
+      stage.dataset.shortcutsBound = "true";
+      stage.addEventListener("click", event => {
+        const button = event.target.closest("[data-z7-shortcut]");
+        if (!button) return;
+        activeView = normalizeView(button.dataset.z7Shortcut);
+        sessionStorage.setItem(STORAGE_KEY, activeView);
+        reconcile();
+      });
+    }
 
     if (nav.dataset.bound !== "true") {
       nav.dataset.bound = "true";
@@ -250,9 +273,34 @@
     syncSearch(search, searchInput);
   }
 
+  function ensureThemeToggle() {
+    const profile = document.querySelector("#app .admin-profile");
+    if (!profile || document.getElementById("z7-admin-theme-toggle")) return;
+    let theme = localStorage.getItem("z7-admin-theme") || "dark";
+    const button = document.createElement("button");
+    button.id = "z7-admin-theme-toggle";
+    button.type = "button";
+    button.className = "z7-admin-theme-toggle";
+    button.setAttribute("aria-label", "Switch dashboard theme");
+    const apply = () => {
+      const app = document.getElementById("app");
+      if (!app) return;
+      app.dataset.adminTheme = theme;
+      button.innerHTML = theme === "dark" ? "<span aria-hidden='true'>☼</span><small>Light mode</small>" : "<span aria-hidden='true'>◐</span><small>Dark mode</small>";
+    };
+    button.addEventListener("click", () => {
+      theme = theme === "dark" ? "light" : "dark";
+      localStorage.setItem("z7-admin-theme", theme);
+      apply();
+    });
+    profile.insertBefore(button, profile.querySelector("#clerk-user-button") || null);
+    apply();
+  }
+
   function reconcile() {
     scheduled = false;
 
+    ensureThemeToggle();
     hideLegacyWorkspace();
     restoreTopbar();
 
