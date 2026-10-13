@@ -118,7 +118,7 @@ export default async function handler(
       ]);
       if (Number(counts.client_count) !== 23 || Number(counts.admin_count) !== 2) {
         return http.sendJson(res, 409, {
-          error: "Deletion stopped because the live client or administrator count changed.",
+          error: `Deletion stopped for safety. Current database counts: ${Number(counts.client_count)} clients, ${Number(counts.admin_count)} administrators. Expected exactly 23 clients and 2 administrators. No accounts or files were deleted.`,
           clientCount: Number(counts.client_count),
           administratorCount: Number(counts.admin_count)
         });
