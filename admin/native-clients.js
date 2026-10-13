@@ -873,9 +873,14 @@
       const result = await response.json();
 
       if (!response.ok) {
+        const countDetails =
+          Number.isInteger(result.clientCount) &&
+          Number.isInteger(result.administratorCount)
+            ? ` Live counts: ${result.clientCount} clients and ${result.administratorCount} administrators; expected 23 clients and 2 administrators.`
+            : "";
         throw new Error(
-          result.error ||
-          "The server rejected the deletion."
+          (result.error || "The server rejected the deletion.") +
+          countDetails
         );
       }
 
