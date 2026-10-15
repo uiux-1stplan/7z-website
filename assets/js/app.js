@@ -69,11 +69,6 @@
         layout: "is-wide"
       },
       {
-        src: "media/arch_projects/9-16H/3.mp4",
-        title: "Spatial Transformation",
-        layout: "is-wide"
-      },
-      {
         src: "media/arch_projects/9-16H/4.mp4",
         title: "Luxury Detail Study",
         layout: "is-wide"
