@@ -104,3 +104,35 @@ body.z7-cinematic-home .main-nav a.is-active, body.z7-cinematic-home .main-nav a
 .z7-opening:not(.is-enhanced) #intro { position: relative; height: max(100svh, 640px); }
 .z7-opening:not(.is-enhanced) #universe { position: relative; min-height: 100svh; height: auto; }
 @media (prefers-reduced-motion: reduce) { .z7-cinema__card-inner { animation: none; } }
+
+
+/* Keep the cinematic opening in its final geometry before deferred JS runs. */
+@media (prefers-reduced-motion: no-preference) {
+  html.z7-js .z7-opening:not(.is-enhanced) {
+    height: 235svh;
+  }
+
+  html.z7-js .z7-opening:not(.is-enhanced) .z7-opening__stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 580px;
+    overflow: hidden;
+  }
+
+  html.z7-js .z7-opening:not(.is-enhanced) #intro.z7-cinema {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
+  html.z7-js .z7-opening:not(.is-enhanced) .z7-opening__stage > #universe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+}
