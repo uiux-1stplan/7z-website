@@ -221,7 +221,7 @@
               if (entry.isIntersecting && isActiveFanVideo(entry.target) && !isHiddenByPage(entry.target)) activate(entry.target, false);
             });
           },
-          { rootMargin: "900px 0px", threshold: 0.01 }
+          { rootMargin: "600px 0px", threshold: 0.01 }
         )
       : null;
 
@@ -268,7 +268,7 @@
               }
             });
           },
-          { rootMargin: "1000px 0px", threshold: 0 }
+          { rootMargin: "700px 0px", threshold: 0 }
         )
       : null;
 
