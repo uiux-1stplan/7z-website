@@ -210,6 +210,8 @@
 }
 
 .manifest__media--cinema.is-playing video {
+  position: absolute;
+  inset: 0;
   z-index: 2;
   opacity: 1;
   filter: none;
