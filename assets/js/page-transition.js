@@ -5,8 +5,8 @@
   const LEGACY_KEY = "z7:route-transition";
   const root = document.documentElement;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const COVER_MS = reducedMotion ? 190 : 850;
-  const REVEAL_MS = reducedMotion ? 220 : 720;
+  const COVER_MS = reducedMotion ? 50 : 100;
+  const REVEAL_MS = reducedMotion ? 70 : 140;
   let navigating = false;
   let overlay = null;
   let labelNode = null;
@@ -103,6 +103,7 @@
       "z7-transition-arrival",
       "z7-transition-running"
     );
+    overlay.hidden = true;
     navigating = false;
   }
 
@@ -113,12 +114,18 @@
     setLabel(arrival?.label || routeLabel(new URL(window.location.href)));
     const eyebrow = overlay.querySelector('.z7-route-transition__eyebrow');
     if (eyebrow) eyebrow.textContent = arrival ? '7Z Magic / Next Scene' : '7Z Magic / Preparing Experience';
+    overlay.hidden = false;
     overlay.setAttribute("aria-hidden", "false");
     overlay.classList.add("is-active", "is-covered");
+    if (sessionStorage.getItem(`${STORAGE_KEY}:started`) === "1") {
+      sessionStorage.removeItem(`${STORAGE_KEY}:started`);
+      clearOverlay();
+      return;
+    }
     root.classList.add("z7-route-running");
     root.classList.remove("z7-route-pending");
 
-    const holdMs = reducedMotion ? 0 : arrival ? 260 : 1050;
+    const holdMs = reducedMotion ? 0 : arrival ? 15 : 45;
     requestAnimationFrame(() => {
       window.setTimeout(() => {
         overlay.classList.remove("is-covered");
@@ -126,6 +133,7 @@
         window.setTimeout(clearOverlay, REVEAL_MS);
       }, holdMs);
     });
+    if (root.classList.contains("z7-route-pending")) window.setTimeout(clearOverlay, 700);
   }
 
   function eligibleDestination(event, link) {
@@ -170,6 +178,14 @@
     return destination;
   }
 
+  function navigationDelay() {
+    const connection = navigator.connection;
+    if (reducedMotion || connection?.saveData ||
+        window.matchMedia("(max-width: 899px), (update: slow)").matches ||
+        (connection?.effectiveType && ["slow-2g", "2g", "3g"].includes(connection.effectiveType))) return 0;
+    return COVER_MS;
+  }
+
   function beginNavigation(destination) {
     navigating = true;
     setLabel(routeLabel(destination));
@@ -184,11 +200,13 @@
           time: Date.now()
         })
       );
+      sessionStorage.setItem(`${STORAGE_KEY}:started`, "1");
       sessionStorage.removeItem(LEGACY_KEY);
     } catch {
       // Navigation still works without storage.
     }
 
+    overlay.hidden = false;
     overlay.setAttribute("aria-hidden", "false");
     overlay.classList.remove("is-covered", "is-revealing");
     overlay.classList.add("is-active");
@@ -201,7 +219,7 @@
 
     window.setTimeout(() => {
       window.location.assign(destination.href);
-    }, COVER_MS);
+    }, navigationDelay());
   }
 
   function onCapturedClick(event) {
@@ -226,8 +244,12 @@
     buildOverlay();
 
     const arrival = readStoredTransition();
+    const clickedArrival = arrival && sessionStorage.getItem(`${STORAGE_KEY}:started`) === "1";
 
-    if (arrival || root.classList.contains("z7-route-pending")) {
+    if (clickedArrival) {
+      sessionStorage.removeItem(`${STORAGE_KEY}:started`);
+      clearOverlay();
+    } else if (arrival || root.classList.contains("z7-route-pending")) {
       showArrival(arrival);
     } else {
       root.classList.remove("z7-route-pending");

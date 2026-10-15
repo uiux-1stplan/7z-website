@@ -22,15 +22,16 @@
     try {
       const raw = sessionStorage.getItem('z7:route-transition-v11');
       const data = raw && JSON.parse(raw);
-      if (!raw || (data && Number.isFinite(data.time) && Date.now() - data.time < 15000)) {
+      if (raw && data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
         document.documentElement.classList.add('z7-route-pending');
-        setTimeout(() => document.documentElement.classList.remove('z7-route-pending'), 4000);
+      } else {
+        sessionStorage.removeItem('z7:route-transition-v11');
       }
     } catch { document.documentElement.classList.remove('z7-route-pending'); }
   })();
 </script>
 <link rel="stylesheet" href="/assets/css/page-transition.css?v=cinematic-blue-3" />
-<script defer src="/assets/js/page-transition.js?v=cinematic-blue-3"></script>
+<script defer src="/assets/js/page-transition.js?v=20261015-live-smooth-v1"></script>
 <link rel="stylesheet" href="/assets/css/universe-video.css?v=20260806-video12" />
 <link rel="stylesheet" href="/assets/css/static-media-hover.css?v=20260806-static13" />
 <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />

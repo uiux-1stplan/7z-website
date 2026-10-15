@@ -79,7 +79,7 @@
       (() => {
         try {
           const raw = sessionStorage.getItem("z7:route-transition-v11");
-          if (!raw) { document.documentElement.classList.add("z7-route-pending"); window.setTimeout(() => document.documentElement.classList.remove("z7-route-pending"), 4000); return; }
+          if (!raw) return;
           const data = JSON.parse(raw);
           if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
             document.documentElement.classList.add("z7-route-pending");
@@ -92,7 +92,7 @@
       })();
     </script>
     <link rel="stylesheet" href="/assets/css/page-transition.css?v=cinematic-blue-3" />
-    <script defer src="/assets/js/page-transition.js?v=cinematic-blue-3"></script>
+    <script defer src="/assets/js/page-transition.js?v=20261015-live-smooth-v1"></script>
       <link rel="stylesheet" href="/assets/css/universe-video.css?v=20260806-video12" />
       <link rel="stylesheet" href="/assets/css/static-media-hover.css?v=20260806-static13" />
       <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
@@ -531,20 +531,20 @@
       </div>
     </footer>
 
-    <script src="assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
-    <script src="assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
-    <script src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
-    <script src="assets/js/performance.js?v=20260831-rootfix-v6"></script>
+    <script defer src="assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
+    <script defer src="assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
+    <script defer src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
+    <script defer src="assets/js/performance.js?v=20261015-live-smooth-v1"></script>
 
-    <script src="assets/js/app.js?v=20261013-phone-fade-v6"></script>
-      <script src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
-      <script src="/assets/js/universe-video.js?v=20260806-video12"></script>
-      <script src="/assets/js/content-protection.js?v=20260831-rootfix-v6"></script>
-      <script src="/assets/js/all-videos-audio.js?v=20261007-ambient-guard"></script>
-<script src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
+    <script defer src="assets/js/app.js?v=20261015-live-smooth-v1"></script>
+      <script defer src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
+      <script defer src="/assets/js/universe-video.js?v=20260806-video12"></script>
+      <script defer src="/assets/js/content-protection.js?v=20260831-rootfix-v6"></script>
+      <script defer src="/assets/js/all-videos-audio.js?v=20261015-live-smooth-v1"></script>
+<script defer src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
 
-  <script src="/assets/js/home-hero.js?v=20261007-2"></script>
-  <script src="/assets/js/home-web-reel.js?v=20261007-1"></script>
+  <script defer src="/assets/js/home-hero.js?v=20261007-2"></script>
+  <script defer src="/assets/js/home-web-reel.js?v=20261007-1"></script>
 <script src="/assets/js/cinematic-motion.js?v=scroll-blur-2" defer></script>
 </body>
 </html>

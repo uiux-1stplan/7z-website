@@ -14,10 +14,6 @@
   const managed = new Set();
   const buttons = new WeakMap();
   const restartTimers = new WeakMap();
-  const autoMotionAllowed =
-    !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
-    navigator.connection?.saveData !== true;
-
   const isActiveFanVideo = (video) => {
     const slot = video.closest(".media-fan-slot");
     return !slot || slot.dataset.fanActive === "true";
@@ -131,9 +127,9 @@
   };
 
   const playVisible = (video) => {
-    if (!autoMotionAllowed || document.hidden || !inViewport(video)) return;
+    if (document.hidden || !inViewport(video)) return;
 
-    activate(video, false);
+    activate(video, true);
     ensureLoop(video);
 
     // Avoid repeated play() promises from observers/reconcile timers.
@@ -221,7 +217,7 @@
               if (entry.isIntersecting && isActiveFanVideo(entry.target)) activate(entry.target, false);
             });
           },
-          { rootMargin: "240px 0px", threshold: 0.01 }
+          { rootMargin: "900px 0px", threshold: 0.01 }
         )
       : null;
 
@@ -236,6 +232,8 @@
                 playVisible(video);
                 return;
               }
+
+              if (entry.isIntersecting && isActiveFanVideo(video)) return;
 
               const timer = restartTimers.get(video);
               if (timer) {
@@ -262,10 +260,11 @@
               if (!entry.isIntersecting) {
                 entry.target.pause();
                 muteVideo(entry.target);
+                unload(entry.target);
               }
             });
           },
-          { rootMargin: "1600px 0px", threshold: 0 }
+          { rootMargin: "1000px 0px", threshold: 0 }
         )
       : null;
 
@@ -382,7 +381,7 @@
     managed.forEach((video) => {
       if (inViewport(video)) {
         playVisible(video);
-      } else {
+      } else if (video.getBoundingClientRect().bottom <= 0 || video.getBoundingClientRect().top >= window.innerHeight) {
         video.pause();
       }
     });

@@ -55,7 +55,7 @@
   const tuneImages = () => {
     document.querySelectorAll("main img").forEach((image) => {
       const rect = image.getBoundingClientRect();
-      if (rect.top > window.innerHeight * 1.25) {
+      if (rect.top > window.innerHeight * 0.9 || rect.bottom < -window.innerHeight * 0.25) {
         if (!image.hasAttribute("loading")) image.loading = "lazy";
         if (!image.hasAttribute("decoding")) image.decoding = "async";
       }
@@ -63,8 +63,8 @@
   };
 
   if ("requestIdleCallback" in window) {
-    requestIdleCallback(tuneImages, { timeout: 1600 });
+    requestIdleCallback(tuneImages, { timeout: 700 });
   } else {
-    window.setTimeout(tuneImages, 700);
+    window.setTimeout(tuneImages, 150);
   }
 })();

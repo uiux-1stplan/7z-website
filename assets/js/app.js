@@ -191,7 +191,7 @@
 
   // 7Z_PERFORMANCE_V2
   function initVirtualWall() {
-    if (prefersReducedMotion || useStaticBackground) return;
+    if (prefersReducedMotion || useStaticBackground || window.matchMedia("(max-width: 899px), (update: slow)").matches) return;
 
     const root = document.documentElement;
     const state = {
@@ -365,7 +365,7 @@
   async function loadManagedContent() {
     try {
       const contentController = new AbortController();
-      const contentTimeout = window.setTimeout(() => contentController.abort(), 700);
+      const contentTimeout = window.setTimeout(() => contentController.abort(), 250);
       const response = await fetch("/api/site-content", {
         cache: "no-store",
         signal: contentController.signal
@@ -1892,7 +1892,7 @@
         introVideo.play().catch(() => {});
       }
 
-      loader.style.transition = "opacity 0.55s ease, visibility 0.55s ease";
+      loader.style.transition = "opacity 0.22s ease, visibility 0.22s ease";
       loader.style.opacity = "0";
       loader.style.visibility = "hidden";
       loader.style.pointerEvents = "none";
@@ -1901,7 +1901,7 @@
         loader.style.display = "none";
         document.body.classList.remove("is-loading");
         revealPage();
-      }, 620);
+      }, 250);
     };
 
     if (useFastDesktopLoader) {
@@ -1916,7 +1916,7 @@
       });
 
       const startedAt = performance.now();
-      const duration = 980;
+      const duration = 260;
       const tickFastLoader = (now) => {
         if (completed) return;
         const progress = ((now - startedAt) / duration) * 100;
