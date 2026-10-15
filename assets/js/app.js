@@ -2633,7 +2633,7 @@
     initLoader();
     initVirtualWall();
     // initAtmosphere(); // disabled by 7Z_PERFORMANCE_V3
-    await loadManagedContent();
+    // Static production pages use the embedded media manifest; no missing API request or boot delay.
     renderLogos();
     renderComparisons();
     renderMedia();
