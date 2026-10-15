@@ -23,7 +23,7 @@
   let ambientTimer = 0;
   const saveData = navigator.connection?.saveData === true;
   function startAmbientAfterPaint() {
-    if (!ambient || ambientTimer || reduced.matches || saveData || document.hidden) return;
+    if (!ambient || ambientTimer || reduced.matches || matchMedia('(max-width: 760px)').matches || saveData || document.hidden) return;
     ambientTimer = window.setTimeout(() => {
       ambientTimer = 0;
       if (reduced.matches || saveData || document.hidden || lastProgress > .12) return;
@@ -90,7 +90,7 @@
     universe.setAttribute('aria-hidden', String(!reduced.matches && p < .65));
     opening.classList.toggle('is-exiting', p > .02 || y > start + travel);
     if (ambient) {
-      if (reduced.matches || p > .12 || document.hidden) {
+      if (reduced.matches || matchMedia('(max-width: 760px)').matches || p > .12 || document.hidden) {
         if (!ambient.paused) ambient.pause();
       } else if (ambient.paused && !saveData) {
         if (ambient.src) ambient.play().catch(() => {});
@@ -114,7 +114,7 @@
     if (!reduced.matches && lastProgress < 1) { deferredFilm = true; film.pause(); }
   });
   ambient?.addEventListener('play', () => {
-    if (reduced.matches || lastProgress > .12 || document.hidden) ambient.pause();
+    if (reduced.matches || matchMedia('(max-width: 760px)').matches || lastProgress > .12 || document.hidden) ambient.pause();
   });
   document.addEventListener('visibilitychange', schedule);
   addEventListener('scroll', schedule, { passive: true });
