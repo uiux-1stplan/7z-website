@@ -68,11 +68,6 @@
         title: "Residence Walkthrough",
         layout: "is-wide"
       },
-      {
-        src: "media/arch_projects/9-16H/4.mp4",
-        title: "Luxury Detail Study",
-        layout: "is-wide"
-      }
     ],
     mediaProjects: Array.from({ length: 12 }, (_, index) => ({
       src: `media/media_projects/Media (${index + 1}).mp4`,
