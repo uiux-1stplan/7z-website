@@ -568,14 +568,14 @@
       const beforeImage = document.createElement("img");
       beforeImage.src = before;
       beforeImage.alt = `Architecture project ${index + 1} before`;
-      beforeImage.loading = index === 0 ? "eager" : "lazy";
+      beforeImage.loading = "lazy";
       beforeImage.decoding = "async";
 
       const afterImage = document.createElement("img");
       afterImage.className = "compare__after";
       afterImage.src = after;
       afterImage.alt = `Architecture project ${index + 1} after`;
-      afterImage.loading = index === 0 ? "eager" : "lazy";
+      afterImage.loading = "lazy";
       afterImage.decoding = "async";
 
       const divider = document.createElement("span");

@@ -19,6 +19,9 @@
     return !slot || slot.dataset.fanActive === "true";
   };
 
+  const isHiddenByPage = (video) =>
+    Boolean(video.closest('[aria-hidden="true"], [inert]'));
+
   const speakerMarkup = `
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M5 10v4h4l5 4V6L9 10H5Z"></path>
@@ -38,6 +41,7 @@
     const rect = video.getBoundingClientRect();
     return (
       isActiveFanVideo(video) &&
+      !isHiddenByPage(video) &&
       rect.width > 0 &&
       rect.height > 0 &&
       rect.bottom > 0 &&
@@ -214,7 +218,7 @@
       ? new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (entry.isIntersecting && isActiveFanVideo(entry.target)) activate(entry.target, false);
+              if (entry.isIntersecting && isActiveFanVideo(entry.target) && !isHiddenByPage(entry.target)) activate(entry.target, false);
             });
           },
           { rootMargin: "900px 0px", threshold: 0.01 }
@@ -228,12 +232,12 @@
             entries.forEach((entry) => {
               const video = entry.target;
 
-              if (entry.isIntersecting && entry.intersectionRatio >= 0.06 && isActiveFanVideo(video)) {
+              if (entry.isIntersecting && entry.intersectionRatio >= 0.06 && isActiveFanVideo(video) && !isHiddenByPage(video)) {
                 playVisible(video);
                 return;
               }
 
-              if (entry.isIntersecting && isActiveFanVideo(video)) return;
+              if (entry.isIntersecting && isActiveFanVideo(video) && !isHiddenByPage(video)) return;
 
               const timer = restartTimers.get(video);
               if (timer) {
@@ -366,6 +370,20 @@
 
   const mutationObserver = new MutationObserver((records) => {
     records.forEach((record) => {
+      if (record.type === "attributes" && record.target instanceof Element) {
+        const target = record.target;
+        const videos = target instanceof HTMLVideoElement ? [target] : target.querySelectorAll("video");
+        videos.forEach((video) => {
+          if (isHiddenByPage(video)) {
+            video.pause();
+            muteVideo(video);
+          } else if (inViewport(video)) {
+            playVisible(video);
+          }
+        });
+        return;
+      }
+
       record.addedNodes.forEach((node) => {
         if (node instanceof Element) scan(node);
       });
@@ -373,6 +391,8 @@
   });
 
   mutationObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["aria-hidden", "inert"],
     childList: true,
     subtree: true
   });
