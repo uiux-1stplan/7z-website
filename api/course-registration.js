@@ -215,7 +215,7 @@ function base64Lines(value) {
   return encoded.match(/.{1,76}/g)?.join("\r\n") || "";
 }
 
-export async function sendZohoMail({ subject, body, attachment, proofAttachment }) {
+export async function sendZohoMail({ subject, body, html, attachment, proofAttachment }) {
   const host = process.env.ZOHO_SMTP_HOST;
   const password = process.env.ZOHO_SMTP_APP_PASSWORD;
   const user = process.env.ZOHO_SMTP_USER || RECIPIENT;
@@ -227,7 +227,23 @@ export async function sendZohoMail({ subject, body, attachment, proofAttachment 
     `From: 7Z Magic <${user}>`, `To: ${RECIPIENT}`, `Subject: =?UTF-8?B?${Buffer.from(subject).toString("base64")}?=`,
     "MIME-Version: 1.0", `Content-Type: multipart/mixed; boundary="${boundary}"`,
   ];
-  const parts = [`--${boundary}`, "Content-Type: text/plain; charset=UTF-8", "Content-Transfer-Encoding: base64", "", base64Lines(body)];
+  const alternativeBoundary = `7z-alt-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
+  const parts = [
+    `--${boundary}`,
+    `Content-Type: multipart/alternative; boundary="${alternativeBoundary}"`,
+    "",
+    `--${alternativeBoundary}`,
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    base64Lines(body),
+    `--${alternativeBoundary}`,
+    "Content-Type: text/html; charset=UTF-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    base64Lines(html || `<html><body><pre>${String(body).replace(/[&<>]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[char])}</pre></body></html>`),
+    `--${alternativeBoundary}--`,
+  ];
   const attachments = [
     ...(attachment ? [{ ...attachment, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }] : []),
     ...(proofAttachment ? [proofAttachment] : []),
