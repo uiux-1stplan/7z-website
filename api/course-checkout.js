@@ -68,8 +68,9 @@ export default async function handler(req, res) {
   const tokenHash = createHash("sha256").update(token).digest("hex");
 
   try {
+    // Registration creates and migrates the checkout schema before issuing a token.
+    // Keep checkout requests read-only with respect to DDL to avoid transient schema-lock failures.
     const sql = sqlClient();
-    await prepare(sql);
     const methods = getPaymentMethods();
     const priceJod = Number(process.env.COURSE_PRICE_JOD);
     if (!Number.isFinite(priceJod) || priceJod <= 0 || methods.length === 0) return res.status(503).json({ error: "Checkout is not configured yet." });
