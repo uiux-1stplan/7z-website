@@ -16,7 +16,7 @@ body :is(h1,h2,h3,h4,p,a,button,input,select,textarea,label,small,strong,span) {
   display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 auto;
   color: inherit; text-decoration: none; direction: ltr;
 }
-.academy-header .brand img { display: block; width: 44px; height: 44px; object-fit: contain; }
+.academy-header .brand img { display: block; flex: 0 0 44px; width: 44px !important; min-width: 44px; max-width: 44px !important; height: 44px !important; min-height: 44px; max-height: 44px !important; object-fit: contain; }
 .academy-header .brand span { color: inherit; font-size: 13px; font-weight: 800; line-height: 1.2; letter-spacing: .08em; white-space: nowrap; }
 .academy-header .brand small { display: block; margin-top: 4px; color: #91b9eb; font: 700 8px/1.3 Inter, sans-serif; letter-spacing: .18em; white-space: nowrap; }
 .academy-header .tools { display: flex; align-items: center; justify-content: flex-start; flex: 0 0 auto; flex-wrap: wrap; gap: 8px; margin: 0; direction: rtl; }
@@ -48,7 +48,7 @@ body :is(h1,h2,h3,h4,p,a,button,input,select,textarea,label,small,strong,span) {
     width: calc(100% - 24px); min-height: 62px; margin-top: 12px !important;
     padding: 8px 12px; gap: 10px;
   }
-  .academy-header .brand img { width: 38px; height: 38px; }
+  .academy-header .brand img { flex-basis: 38px; width: 38px !important; min-width: 38px; max-width: 38px !important; height: 38px !important; min-height: 38px; max-height: 38px !important; }
   .academy-header .brand span { font-size: 11px; }
   .academy-header .brand small { font-size: 7px; letter-spacing: .12em; }
   .academy-header .tools { gap: 6px; }
@@ -58,7 +58,7 @@ body :is(h1,h2,h3,h4,p,a,button,input,select,textarea,label,small,strong,span) {
 @media (max-width: 430px) {
   .academy-header, .academy-header.wrap.top { width: calc(100% - 18px); padding-inline: 9px; }
   .academy-header .brand { gap: 7px; }
-  .academy-header .brand img { width: 34px; height: 34px; }
+  .academy-header .brand img { flex-basis: 34px; width: 34px !important; min-width: 34px; max-width: 34px !important; height: 34px !important; min-height: 34px; max-height: 34px !important; }
   .academy-header .brand small { display: none; }
   .academy-header .tool { min-height: 42px; padding-inline: 10px; font-size: 9px; }
   .academy-motion-ready .academy-reveal { transform: translate3d(0,12px,0); transition-duration: .48s; }
