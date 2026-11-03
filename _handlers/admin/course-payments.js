@@ -18,7 +18,6 @@ export default async function handler(req, res) {
         SELECT id, seat_number, full_name, email, preferred_language, payment_status,
           payment_provider, payment_reference, price_jod, discount_jod, discount_percent,
           course_id, payment_submitted_at, created_at, pending_student_email_status,
-          (SELECT i.registration_email_status FROM course_checkout_intents i WHERE i.course_id=course_registrations.course_id AND i.registration_seat=course_registrations.seat_number ORDER BY i.created_at DESC LIMIT 1) AS registration_email_status,
           confirmation_email_status, confirmation_email_attempted_at, pending_student_email_attempted_at, payment_verified_at
         FROM course_registrations
         ORDER BY payment_submitted_at DESC NULLS LAST, created_at DESC
