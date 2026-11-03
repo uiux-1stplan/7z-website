@@ -22,6 +22,42 @@ html{scroll-behavior:smooth;scroll-padding-top:100px}body.z7-cinematic-home{back
 @media(max-width:860px){.academy{width:min(100% - 32px,680px)}.academy-hero{min-height:auto;grid-template-columns:1fr;padding:126px 0 50px;gap:30px}.academy-copy{order:1}.academy-art{order:2;min-height:clamp(320px,68vw,470px)}.academy-title{font-size:clamp(42px,9vw,68px)}.section-heading{align-items:flex-start;flex-direction:column}.course-grid{grid-template-columns:1fr;margin-bottom:55px}.course-card__visual{min-height:clamp(250px,62vw,390px)}}
 @media(max-width:520px){.academy{width:calc(100% - 28px)}.academy-hero{padding-top:110px}.academy-eyebrow{font-size:8px;letter-spacing:.16em}.academy-title{font-size:39px}.academy-lead{font-size:13px}.academy-actions{flex-direction:column;align-items:stretch}.academy-cta{width:100%}.academy-art{min-height:300px}.art-thumb{width:110px;height:78px}.section-heading h2{font-size:29px}.course-card__body{padding-inline:18px}.site-footer{align-items:flex-start;flex-direction:column}.site-header{top:10px;width:calc(100% - 22px);min-height:58px}.main-nav{gap:2px}.main-nav>a{padding:0 10px;min-height:38px;font-size:.65rem}.header-socials{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.academy *{transition:none!important}}
+
+/* Softer shapes and quiet cinematic motion */
+.site-header{border-radius:999px!important;transition:background .35s ease,box-shadow .35s ease,transform .35s ease}
+.academy-cta,.cta{border-radius:999px!important}
+.academy-art,.hero-art{border-radius:26px}
+.art-thumb,.thumb{border-radius:14px}
+.course-grid{gap:18px;border:0;background:transparent}
+.course-card{border:1px solid var(--academy-line);border-radius:22px;overflow:hidden;transition:transform .45s cubic-bezier(.2,.75,.25,1),border-color .35s,box-shadow .35s}
+.course-card:hover{transform:translateY(-7px);border-color:rgba(139,188,255,.5);box-shadow:0 22px 65px rgba(0,0,0,.28),0 0 34px rgba(76,137,207,.09)}
+.course-card__visual{border-radius:21px 21px 0 0}
+.course-card__body{padding-top:22px}
+.course-card__tags span,.tools span{border-radius:999px}
+.bonus{border-radius:20px}
+.stage{margin:6px;padding:20px;border:1px solid var(--line)!important;border-radius:16px;background:linear-gradient(135deg,rgba(16,31,51,.82),rgba(9,17,28,.82));transition:transform .35s,border-color .35s,background .35s}
+.stage:hover{transform:translateY(-4px);border-color:rgba(139,188,255,.42)!important;background:linear-gradient(135deg,rgba(25,48,75,.88),rgba(9,17,28,.88))}
+.stages{border:0;gap:8px}
+.outcomes{border:0;background:transparent;gap:10px}
+.outcome{border:1px solid var(--line);border-radius:14px;background:linear-gradient(120deg,#0d1521,#0a111b);transition:transform .3s,border-color .3s}
+.outcome:hover{transform:translateY(-3px);border-color:rgba(139,188,255,.45)}
+.team{border:0;background:transparent;gap:12px}
+.person{border:1px solid var(--line)!important;border-radius:16px;background:linear-gradient(135deg,#101d2d,#0a111b);transition:transform .35s,border-color .35s}
+.person:hover{transform:translateY(-4px);border-color:rgba(139,188,255,.48)!important}
+.quote{border-radius:4px 18px 18px 4px}
+.academy-art,.hero-art{--parallax:0px}
+.academy-art__image,.hero-art>img{transform:translateY(var(--parallax)) scale(1.015);transition:filter .7s,opacity .7s}
+.art-thumb,.thumb{transition:transform .55s cubic-bezier(.2,.75,.25,1),box-shadow .35s}
+.academy-art:hover .art-thumb.one,.hero-art:hover .thumb.one{transform:translateY(-7px) rotate(-3deg)}
+.academy-art:hover .art-thumb.two,.hero-art:hover .thumb.two{transform:translateY(6px) rotate(3deg)}
+.motion-ready .reveal{opacity:0;transform:translate3d(0,24px,0);transition:opacity .75s ease,transform .85s cubic-bezier(.2,.7,.2,1);transition-delay:var(--reveal-delay,0ms)}
+.motion-ready .reveal.is-visible{opacity:1;transform:translate3d(0,0,0)}
+.motion-ready .reveal.from-side{transform:translate3d(22px,0,0)}
+.motion-ready .reveal.from-side.is-visible{transform:translate3d(0,0,0)}
+@media(max-width:850px){.course-grid{gap:14px}.stages{gap:6px}.stage{margin:4px}}
+@media(max-width:560px){.academy-art,.hero-art{border-radius:20px}.course-card{border-radius:18px}.course-card__visual{border-radius:17px 17px 0 0}.stages,.team{gap:8px}.stage{margin:0;padding:17px 13px}.outcomes{gap:8px}.team{gap:8px}.person{border-radius:14px}.academy-cta,.cta{min-height:48px}}
+@media(prefers-reduced-motion:reduce){.motion-ready .reveal,.course-card,.stage,.outcome,.person,.thumb,.art-thumb{transition:none!important;transform:none!important;opacity:1!important}}
+
 </style></head>
 <body class="subpage z7-cinematic-home" data-static-background="true">
 <header class="site-header" aria-label="التنقل الرئيسي"><a class="brand" href="/" aria-label="7Z MAGIC"><img src="/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-header-optimized.svg" alt="7Z Magic"></a><nav class="main-nav" aria-label="التنقل"><a href="/">الرئيسية</a><a href="/courses/" class="is-active" aria-current="page">الدورات</a></nav><div class="header-socials" aria-label="روابط 7Z"><a href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="4"></rect><circle cx="12" cy="12" r="3.2"></circle><circle cx="16.5" cy="7.5" r=".9"></circle></svg></a></div></header>
@@ -33,4 +69,14 @@ html{scroll-behavior:smooth;scroll-padding-top:100px}body.z7-cinematic-home{back
 <article class="course-card"><div class="course-card__visual"><img src="/media/posters/arch_projects/9-16H/1-optimized.svg" alt="تصميم معماري ثلاثي الأبعاد"><span class="course-number">02</span><span class="course-label">ARCHITECTURE / AI</span></div><div class="course-card__body"><p class="eyebrow">العمارة والذكاء الاصطناعي</p><h3>دورة الذكاء الاصطناعي للمهندسين</h3><p class="course-card__subtitle">من الفكرة إلى الواقع السينمائي</p><p class="course-card__desc">وجّه Claude Desktop عبر برامجك الهندسية، وطوّر مشروعًا من مخطط AutoCAD إلى نموذج ثلاثي الأبعاد وفيديو معماري.</p><div class="course-card__tags"><span>4 محاضرين متخصصين</span><span>AutoCAD · Blender · 3ds Max</span><span>مشروع تطبيقي</span></div><a class="course-card__link" href="/courses/ai-engineering/"><span>اكتشف المسار الهندسي</span><span aria-hidden="true">↙</span></a></div></article>
 </div></section>
 </main><footer class="academy site-footer"><span>7Z MAGIC · © 2026</span><a href="mailto:creative@7z-magic.com">creative@7z-magic.com</a></footer>
+
+<script>
+(()=>{const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduce||!('IntersectionObserver'in window))return;
+const selectors='.academy-copy > *, .academy-art, .hero-art > *, .section-heading, .course-card, .stage, .bonus, .outcome, .person, .quote, .final > *';
+const items=[...document.querySelectorAll(selectors)];items.forEach((el,i)=>{el.classList.add('reveal');el.style.setProperty('--reveal-delay',Math.min(i%5,4)*75+'ms')});
+document.documentElement.classList.add('motion-ready');
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});items.forEach(el=>observer.observe(el));
+const art=document.querySelector('.academy-art,.hero-art');if(art){let queued=false;window.addEventListener('scroll',()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{const r=art.getBoundingClientRect();const delta=Math.max(-10,Math.min(10,(innerHeight/2-(r.top+r.height/2))*.018));art.style.setProperty('--parallax',delta+'px');queued=false})},{passive:true})}
+})();
+</script>
 </body></html>
