@@ -2,7 +2,9 @@ import tls from "node:tls";
 import { createHash, randomBytes } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
 
-const CAPACITY = 60;
+const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: 60 }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200, capacity: 40 } });
+const DEFAULT_COURSE = "cinematic-film";
+const ACADEMY_CAPACITY = 100;
 const RECIPIENT = "creative@7z-magic.com";
 const ALLOWED_ORIGINS = new Set(["https://7z-magic.com", "https://www.7z-magic.com"]);
 
@@ -63,6 +65,12 @@ export async function prepare(sql) {
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_status TEXT NOT NULL DEFAULT 'NOT_APPLICABLE'`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS course_id TEXT NOT NULL DEFAULT 'cinematic-film'`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS price_jod NUMERIC(10,3) NOT NULL DEFAULT 250`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_email_key ON course_registrations (course_id,lower(email))`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_seat_key ON course_registrations (course_id,seat_number)`;
+  await sql`ALTER TABLE course_registrations DROP CONSTRAINT IF EXISTS course_registrations_email_key`;
+  await sql`ALTER TABLE course_registrations DROP CONSTRAINT IF EXISTS course_registrations_seat_number_key`;
   await sql`CREATE TABLE IF NOT EXISTS course_checkout_intents (
     id BIGSERIAL PRIMARY KEY,
     token_hash TEXT NOT NULL UNIQUE,
@@ -97,61 +105,52 @@ export async function prepare(sql) {
   await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0`;
   await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS commission_status TEXT NOT NULL DEFAULT 'NOT_APPLICABLE'`;
   await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS previous_course_email TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS course_id TEXT NOT NULL DEFAULT 'cinematic-film'`;
+  await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS price_jod NUMERIC(10,3) NOT NULL DEFAULT 250`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_checkout_one_pending_per_course_email ON course_checkout_intents (course_id,lower(email)) WHERE status = 'PENDING'`;
+  await sql`DROP INDEX IF EXISTS course_checkout_one_pending_per_email`;
   await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_checkout_one_pending_per_email ON course_checkout_intents (lower(email)) WHERE status = 'PENDING'`;
-  await sql`CREATE OR REPLACE FUNCTION start_course_checkout_intent(p_token_hash text,p_name text,p_email text,p_phone text,p_location text,p_experience text,p_language text,p_goal text)
+  await sql`CREATE OR REPLACE FUNCTION start_course_checkout_intent(p_token_hash text,p_name text,p_email text,p_phone text,p_location text,p_experience text,p_language text,p_goal text,p_course_id text,p_price_jod numeric)
     RETURNS TABLE(outcome text, expires_at timestamptz)
     LANGUAGE plpgsql VOLATILE AS $$
-    DECLARE active_count integer; expires timestamptz;
+    DECLARE active_count integer; course_count integer; course_capacity integer; expires timestamptz;
     BEGIN
       PERFORM pg_advisory_xact_lock(742060);
       UPDATE course_checkout_intents AS i SET status='EXPIRED' WHERE i.status='PENDING' AND i.expires_at <= NOW();
-      IF EXISTS (SELECT 1 FROM course_registrations WHERE lower(email)=lower(p_email)) THEN
-        RETURN QUERY SELECT 'duplicate'::text,NULL::timestamptz; RETURN;
-      END IF;
-      IF EXISTS (SELECT 1 FROM course_checkout_intents WHERE lower(email)=lower(p_email) AND status='PENDING') THEN
-        RETURN QUERY SELECT 'pending'::text,NULL::timestamptz; RETURN;
-      END IF;
+      course_capacity := CASE p_course_id WHEN 'ai-engineering' THEN 40 WHEN 'cinematic-film' THEN 60 ELSE 0 END;
+      IF course_capacity = 0 OR p_price_jod <= 0 THEN RETURN QUERY SELECT 'invalid_course'::text,NULL::timestamptz; RETURN; END IF;
+      IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=p_course_id AND lower(email)=lower(p_email)) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::timestamptz; RETURN; END IF;
+      IF EXISTS (SELECT 1 FROM course_checkout_intents WHERE course_id=p_course_id AND lower(email)=lower(p_email) AND status='PENDING') THEN RETURN QUERY SELECT 'pending'::text,NULL::timestamptz; RETURN; END IF;
       SELECT (SELECT COUNT(*) FROM course_registrations) + (SELECT COUNT(*) FROM course_checkout_intents AS i WHERE i.status='PENDING' AND i.expires_at > NOW()) INTO active_count;
-      IF active_count >= 60 THEN
-        RETURN QUERY SELECT 'full'::text,NULL::timestamptz; RETURN;
-      END IF;
+      SELECT (SELECT COUNT(*) FROM course_registrations WHERE course_id=p_course_id) + (SELECT COUNT(*) FROM course_checkout_intents AS i WHERE i.course_id=p_course_id AND i.status='PENDING' AND i.expires_at > NOW()) INTO course_count;
+      IF active_count >= 100 OR course_count >= course_capacity THEN RETURN QUERY SELECT 'full'::text,NULL::timestamptz; RETURN; END IF;
       expires := NOW() + INTERVAL '30 minutes';
-      INSERT INTO course_checkout_intents(token_hash,full_name,email,phone,location,experience,preferred_language,goal,expires_at)
-      VALUES(p_token_hash,p_name,lower(p_email),p_phone,p_location,p_experience,p_language,p_goal,expires);
+      INSERT INTO course_checkout_intents(token_hash,full_name,email,phone,location,experience,preferred_language,goal,course_id,price_jod,expires_at)
+      VALUES(p_token_hash,p_name,lower(p_email),p_phone,p_location,p_experience,p_language,p_goal,p_course_id,p_price_jod,expires);
       RETURN QUERY SELECT 'created'::text,expires;
     END $$`;
   await sql`CREATE OR REPLACE FUNCTION complete_course_payment(p_token_hash text,p_provider text,p_reference text)
     RETURNS TABLE(outcome text, seat integer, registration_id bigint, registered_at timestamptz)
     LANGUAGE plpgsql VOLATILE AS $$
-    DECLARE intent course_checkout_intents%ROWTYPE; next_seat integer; new_id bigint; new_time timestamptz;
+    DECLARE intent course_checkout_intents%ROWTYPE; next_seat integer; new_id bigint; new_time timestamptz; course_capacity integer; active_count integer; course_count integer;
     BEGIN
       PERFORM pg_advisory_xact_lock(742060);
       SELECT * INTO intent FROM course_checkout_intents WHERE token_hash=p_token_hash FOR UPDATE;
-      IF NOT FOUND THEN
-        RETURN QUERY SELECT 'invalid'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN;
-      END IF;
-      IF intent.status='PAYMENT_SUBMITTED' THEN
-        RETURN QUERY SELECT 'submitted'::text,intent.registration_seat,NULL::bigint,NULL::timestamptz; RETURN;
-      END IF;
-      IF intent.status <> 'PENDING' THEN
-        RETURN QUERY SELECT 'invalid'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN;
-      END IF;
-      IF intent.expires_at <= NOW() THEN
-        UPDATE course_checkout_intents SET status='EXPIRED' WHERE id=intent.id;
-        RETURN QUERY SELECT 'expired'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN;
-      END IF;
-      IF EXISTS (SELECT 1 FROM course_registrations WHERE lower(email)=lower(intent.email)) THEN
-        RETURN QUERY SELECT 'duplicate'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN;
-      END IF;
-      SELECT COALESCE(MAX(seat_number),0)+1 INTO next_seat FROM course_registrations;
-      IF next_seat > 60 THEN
-        RETURN QUERY SELECT 'full'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN;
-      END IF;
-      IF intent.payment_proof_pathname = '' OR intent.payment_proof_provider <> p_provider THEN
-        RETURN QUERY SELECT 'proof_missing'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN;
-      END IF;
-      INSERT INTO course_registrations(seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,consent,payment_status,payment_provider,payment_reference,payment_proof_pathname,payment_proof_content_type,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,payment_submitted_at)
-      VALUES(next_seat,intent.full_name,intent.email,intent.phone,intent.location,intent.experience,intent.preferred_language,intent.goal,intent.previous_course_email,TRUE,'PENDING_REVIEW',p_provider,p_reference,intent.payment_proof_pathname,intent.payment_proof_content_type,intent.coupon_code,intent.discount_percent,intent.discount_jod,intent.affiliate_name,intent.commission_percent,intent.commission_jod,CASE WHEN intent.commission_percent > 0 THEN 'PENDING_PAYMENT_REVIEW' ELSE 'NOT_APPLICABLE' END,NOW())
+      IF NOT FOUND THEN RETURN QUERY SELECT 'invalid'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      IF intent.status='PAYMENT_SUBMITTED' THEN RETURN QUERY SELECT 'submitted'::text,intent.registration_seat,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      IF intent.status <> 'PENDING' THEN RETURN QUERY SELECT 'invalid'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      IF intent.expires_at <= NOW() THEN UPDATE course_checkout_intents SET status='EXPIRED' WHERE id=intent.id; RETURN QUERY SELECT 'expired'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      course_capacity := CASE intent.course_id WHEN 'ai-engineering' THEN 40 WHEN 'cinematic-film' THEN 60 ELSE 0 END;
+      IF course_capacity=0 THEN RETURN QUERY SELECT 'invalid'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=intent.course_id AND lower(email)=lower(intent.email)) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      SELECT (SELECT COUNT(*) FROM course_registrations) + (SELECT COUNT(*) FROM course_checkout_intents AS i WHERE i.status='PENDING' AND i.expires_at > NOW() AND i.id<>intent.id) INTO active_count;
+      SELECT (SELECT COUNT(*) FROM course_registrations WHERE course_id=intent.course_id) + (SELECT COUNT(*) FROM course_checkout_intents AS i WHERE i.course_id=intent.course_id AND i.status='PENDING' AND i.expires_at > NOW() AND i.id<>intent.id) INTO course_count;
+      IF active_count >= 100 OR course_count >= course_capacity THEN RETURN QUERY SELECT 'full'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      SELECT COALESCE(MAX(seat_number),0)+1 INTO next_seat FROM course_registrations WHERE course_id=intent.course_id;
+      IF next_seat > course_capacity THEN RETURN QUERY SELECT 'full'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      IF intent.payment_proof_pathname = '' OR intent.payment_proof_provider <> p_provider THEN RETURN QUERY SELECT 'proof_missing'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      INSERT INTO course_registrations(seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,consent,payment_status,payment_provider,payment_reference,payment_proof_pathname,payment_proof_content_type,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,payment_submitted_at,course_id,price_jod)
+      VALUES(next_seat,intent.full_name,intent.email,intent.phone,intent.location,intent.experience,intent.preferred_language,intent.goal,intent.previous_course_email,TRUE,'PENDING_REVIEW',p_provider,p_reference,intent.payment_proof_pathname,intent.payment_proof_content_type,intent.coupon_code,intent.discount_percent,intent.discount_jod,intent.affiliate_name,intent.commission_percent,intent.commission_jod,CASE WHEN intent.commission_percent > 0 THEN 'PENDING_PAYMENT_REVIEW' ELSE 'NOT_APPLICABLE' END,NOW(),intent.course_id,intent.price_jod)
       RETURNING id,created_at INTO new_id,new_time;
       UPDATE course_checkout_intents SET status='PAYMENT_SUBMITTED',payment_provider=p_provider,payment_reference=p_reference,registration_seat=next_seat,submitted_at=NOW() WHERE id=intent.id;
       RETURN QUERY SELECT 'created'::text,next_seat,new_id,new_time;
@@ -306,17 +305,17 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       const sql = sqlClient(); await prepare(sql);
+      const courseId = String(req.query?.course || DEFAULT_COURSE);
+      const course = COURSES[courseId];
+      if (!course) return res.status(400).json({ error: "Course not found." });
       await sql`UPDATE course_checkout_intents SET status='EXPIRED' WHERE status='PENDING' AND expires_at <= NOW()`;
-      const counts = await sql`SELECT
-        (SELECT COUNT(*)::int FROM course_registrations) AS registrations,
-        (SELECT COUNT(*)::int FROM course_checkout_intents WHERE status='PENDING' AND expires_at > NOW()) AS pending`;
+      const counts = await sql`SELECT (SELECT COUNT(*)::int FROM course_registrations WHERE course_id=${courseId}) AS registrations,(SELECT COUNT(*)::int FROM course_checkout_intents WHERE course_id=${courseId} AND status='PENDING' AND expires_at > NOW()) AS pending,(SELECT COUNT(*)::int FROM course_registrations) + (SELECT COUNT(*)::int FROM course_checkout_intents WHERE status='PENDING' AND expires_at > NOW()) AS academy_total`;
       const registered = Number(counts[0]?.registrations || 0) + Number(counts[0]?.pending || 0);
       const configured = Boolean(process.env.ZOHO_SMTP_HOST && process.env.ZOHO_SMTP_APP_PASSWORD);
-      const paymentConfigured = Boolean(Number(process.env.COURSE_PRICE_JOD) > 0 && (process.env.COURSE_CLIQ_ALIAS?.trim() && process.env.COURSE_CLIQ_PHONE?.trim() && process.env.COURSE_CLIQ_INSTRUCTIONS?.trim() || process.env.COURSE_WU_BENEFICIARY?.trim() && process.env.COURSE_WU_INSTRUCTIONS?.trim()));
-      return res.status(200).json({ capacity: CAPACITY, registered, open: registered < CAPACITY && configured && paymentConfigured, configured: configured && paymentConfigured });
-    } catch {
-      return res.status(503).json({ error: "Registration is temporarily unavailable.", open: false, configured: false });
-    }
+      const paymentConfigured = Boolean((process.env.COURSE_CLIQ_ALIAS?.trim() && process.env.COURSE_CLIQ_PHONE?.trim() && process.env.COURSE_CLIQ_INSTRUCTIONS?.trim()) || (process.env.COURSE_WU_BENEFICIARY?.trim() && process.env.COURSE_WU_INSTRUCTIONS?.trim()));
+      const academyRegistered = Number(counts[0]?.academy_total || 0);
+      return res.status(200).json({ courseId, courseName: course.name, priceJod: course.priceJod, capacity: course.capacity, registered, academyCapacity: ACADEMY_CAPACITY, academyRegistered, open: registered < course.capacity && academyRegistered < ACADEMY_CAPACITY && configured && paymentConfigured, configured: configured && paymentConfigured });
+    } catch { return res.status(503).json({ error: "Registration is temporarily unavailable.", open: false, configured: false }); }
   }
   if (req.method !== "POST") { res.setHeader("Allow", "GET, POST, OPTIONS"); return res.status(405).json({ error: "Method not allowed." }); }
   if (!ALLOWED_ORIGINS.has(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
@@ -327,17 +326,20 @@ export default async function handler(req, res) {
     const clean = (value, max) => String(value || "").trim().slice(0, max);
     const name = clean(input.name, 120), email = clean(input.email, 254).toLowerCase(), phone = clean(input.phone, 40);
     const location = clean(input.country, 120), experience = clean(input.experience, 30), language = clean(input.language, 30), goal = clean(input.goal, 2000);
+    const courseId = clean(input.courseId || DEFAULT_COURSE, 40), course = COURSES[courseId];
+    if (!course) return res.status(400).json({ error: "Course not found." });
     if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.length < 6 || location.length < 2 || !["beginner", "some", "pro"].includes(experience.toLowerCase()) || !["arabic", "english"].includes(language.toLowerCase()) || input.consent !== true) return res.status(400).json({ error: "Please complete the required fields and consent." });
     const sql = sqlClient(); await prepare(sql);
-    const hour = await sql`SELECT COUNT(*)::int AS count FROM course_checkout_intents WHERE lower(email)=${email} AND created_at > NOW() - INTERVAL '1 hour'`;
+    const hour = await sql`SELECT COUNT(*)::int AS count FROM course_checkout_intents WHERE course_id=${courseId} AND lower(email)=${email} AND created_at > NOW() - INTERVAL '1 hour'`;
     if (Number(hour[0]?.count || 0) >= 5) return res.status(429).json({ error: "Too many attempts. Please retry later." });
     const token = randomBytes(32).toString("base64url");
     const tokenHash = createHash("sha256").update(token).digest("hex");
-    const intent = (await sql`SELECT * FROM start_course_checkout_intent(${tokenHash},${name},${email},${phone},${location},${experience.toLowerCase()},${language.toLowerCase()},${goal})`)[0];
+    const intent = (await sql`SELECT * FROM start_course_checkout_intent(${tokenHash},${name},${email},${phone},${location},${experience.toLowerCase()},${language.toLowerCase()},${goal},${courseId},${course.priceJod})`)[0];
+    if (intent.outcome === "invalid_course") return res.status(400).json({ error: "Course not found." });
     if (intent.outcome === "full") return res.status(409).json({ error: "Course is full.", full: true });
     if (intent.outcome === "duplicate" || intent.outcome === "pending") return res.status(409).json({ error: intent.outcome === "duplicate" ? "This email is already registered." : "A checkout is already open for this email.", duplicate: true });
     if (intent.outcome !== "created") return res.status(503).json({ error: "Registration is temporarily unavailable." });
-    return res.status(201).json({ ok: true, checkoutToken: token, expiresAt: new Date(intent.expires_at).toISOString() });
+    return res.status(201).json({ ok: true, courseId, checkoutToken: token, expiresAt: new Date(intent.expires_at).toISOString() });
   } catch (error) {
     console.error("Course checkout start failed", error);
     return res.status(503).json({ error: "Registration is temporarily unavailable." });
