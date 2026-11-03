@@ -70,3 +70,21 @@ body :is(h1,h2,h3,h4,p,a,button,input,select,textarea,label,small,strong,span) {
     opacity: 1 !important; transform: none !important; transition: none !important;
   }
 }
+
+/* Academy course controls: shared day/night palette and bilingual layout */
+html[data-academy-ui][data-theme="light"] { color-scheme: light; --academy-light-bg:#f2f5f9; --academy-light-panel:#fff; --academy-light-panel2:#e8eff7; --academy-light-text:#182a40; --academy-light-muted:#50647a; --academy-light-line:rgba(30,65,105,.18); --academy-light-blue:#286db7; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home { background:radial-gradient(ellipse at 50% -15%,rgba(73,132,196,.12),transparent 45%),var(--academy-light-bg)!important; color:var(--academy-light-text)!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home main { background:transparent!important; color:var(--academy-light-text)!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home .academy-header { color:var(--academy-light-text)!important; background:rgba(255,255,255,.88)!important; border-color:var(--academy-light-line)!important; box-shadow:0 12px 36px rgba(30,65,105,.1)!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home .academy-header .tool { color:var(--academy-light-text)!important; border-color:var(--academy-light-line)!important; background:rgba(255,255,255,.72)!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home .academy-header .tool:hover { background:#e6f0fb!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home :is(h1,h2,h3,p,li,.academy-title,.academy-lead,.lead,.description,.intro,.section-intro,.course-card__subtitle,.course-card__desc,.note,.micro,.quote,.section-index,.eyebrow,.index,.label,.step,.stage,.outcome,.person,.bonus) { color:var(--academy-light-text)!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home :is(.course-card,.stage,.outcome,.person,.bonus,.offer-item,.price-card,.step,.quote) { background:var(--academy-light-panel)!important; border-color:var(--academy-light-line)!important; box-shadow:0 14px 38px rgba(30,65,105,.07); }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home :is(.academy-hero,.hero,.section,.final) { border-color:var(--academy-light-line)!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home :is(.academy-cta,.cta) { background:var(--academy-light-blue)!important; border-color:var(--academy-light-blue)!important; color:#fff!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home :is(.academy-cta.secondary,.cta.secondary) { background:rgba(255,255,255,.75)!important; border-color:var(--academy-light-line)!important; color:var(--academy-light-text)!important; }
+html[data-academy-ui][data-theme="light"] body.z7-cinematic-home .academy-header .brand small { color:#286db7!important; }
+html[lang="en"][data-academy-ui] body { direction:ltr; }
+html[lang="en"][data-academy-ui] .academy-header .tools { direction:ltr; }
+html[lang="en"][data-academy-ui] body.z7-cinematic-home :is(.academy-copy,.copy,.course-card__body) { text-align:left; }
+html[lang="en"][data-academy-ui] body.z7-cinematic-home :is(.hero,.academy-hero) { direction:ltr; }
