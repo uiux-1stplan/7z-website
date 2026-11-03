@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { randomUUID } from "node:crypto";
 import { get, issueSignedToken, presignUrl } from "@vercel/blob";
 import { prepare, sqlClient, sendZohoMail, workbook } from "./course-registration.js";
+import { renderCourseEmail } from "./course-email.js";
 
 const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", capacity: null }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", capacity: null } });
 const DEFAULT_COURSE = "cinematic-film";
@@ -227,7 +228,21 @@ export default async function handler(req, res) {
     let emailSent = true;
     try { await sendZohoMail({ subject, body: details, html, attachment, proofAttachment }); }
     catch (mailError) { console.error("Payment reference saved; Zoho email failed", mailError); emailSent = false; }
-    return res.status(201).json({ ok: true, seat, capacity: CAPACITY, paymentStatus: "PENDING_REVIEW", emailSent, batchFileSent: Boolean(attachment) });
+    let studentEmailSent = false;
+    try {
+      const studentEmailClaim = await sql`UPDATE course_registrations SET pending_student_email_status='SENDING', pending_student_email_attempted_at=NOW(), pending_student_email_error='' WHERE id=${registration.id} AND pending_student_email_status='NOT_SENT' RETURNING id`;
+      if (studentEmailClaim.length) {
+        const studentMessage = renderCourseEmail({ kind: 'pending', courseId, language: registration.preferred_language, student: registration, payment: { seat_number: seat, method: methodName, reference, amount: payableJod } });
+        await sendZohoMail({ ...studentMessage, to: registration.email });
+        await sql`UPDATE course_registrations SET pending_student_email_status='SENT', pending_student_email_sent_at=NOW(), pending_student_email_error='' WHERE id=${registration.id}`;
+        studentEmailSent = true;
+      }
+    } catch (mailError) {
+      console.error('Student payment-pending email failed', mailError);
+      try { await sql`UPDATE course_registrations SET pending_student_email_status='FAILED', pending_student_email_error='Delivery attempt failed' WHERE id=${registration.id}`; }
+      catch (statusError) { console.error('Could not save student email status', statusError); }
+    }
+    return res.status(201).json({ ok: true, seat, capacity: CAPACITY, paymentStatus: 'PENDING_REVIEW', emailSent, studentEmailSent, batchFileSent: Boolean(attachment) });
   } catch (error) {
     console.error("Course checkout failed", error);
     return res.status(503).json({ error: "Checkout is temporarily unavailable." });
