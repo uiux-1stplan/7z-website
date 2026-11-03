@@ -1,0 +1,72 @@
+/* Shared 7Z Academy typography, header, responsive rhythm and motion */
+:root { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body { overflow-x: hidden; font-family: "Cairo", "Segoe UI", Arial, sans-serif !important; }
+body :is(h1,h2,h3,h4,p,a,button,input,select,textarea,label,small,strong,span) { font-family: inherit; }
+.academy-header,
+.academy-header.wrap.top {
+  position: relative !important; inset: auto !important; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  width: min(1240px, calc(100% - 40px)); min-height: 70px;
+  margin: 16px auto 0 !important; padding: 10px 18px;
+  direction: ltr; border: 1px solid rgba(139,188,255,.2);
+  border-radius: 999px; background: rgba(10,17,27,.84);
+  box-shadow: 0 12px 36px rgba(0,0,0,.14); backdrop-filter: blur(16px);
+}
+.academy-header .brand {
+  display: flex; align-items: center; gap: 10px; min-width: 0;
+  color: inherit; text-decoration: none; direction: ltr;
+}
+.academy-header .brand img { display: block; width: 44px; height: 44px; object-fit: contain; }
+.academy-header .brand span { color: inherit; font-size: 13px; font-weight: 800; line-height: 1.2; letter-spacing: .08em; }
+.academy-header .brand small { display: block; margin-top: 4px; color: #91b9eb; font: 700 8px/1.3 Inter, sans-serif; letter-spacing: .18em; }
+.academy-header .tools { display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 8px; margin: 0; direction: rtl; }
+.academy-header .tool {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 17px; border: 1px solid rgba(139,188,255,.2);
+  border-radius: 999px; background: rgba(255,255,255,.025); color: inherit;
+  text-decoration: none; font-size: 11px; line-height: 1.3; cursor: pointer;
+  transition: background .22s ease, border-color .22s ease, color .22s ease;
+}
+.academy-header .tool:hover, .academy-header .tool[aria-current="page"] { border-color: rgba(139,188,255,.55); background: rgba(91,151,224,.13); color: #cfe2fb; }
+.academy-hero, .hero { padding-top: clamp(48px, 7vw, 92px) !important; scroll-margin-top: 24px; }
+.academy-title em { font-family: inherit !important; font-style: normal !important; }
+.course-card, .stage, .outcome, .person, .offer-item, .price-card, .step {
+  border-radius: 18px;
+}
+@media (hover:hover) and (pointer:fine) {
+  .course-card, .offer-item, .price-card { transition: transform .32s ease, border-color .32s ease, box-shadow .32s ease; }
+  .course-card:hover, .offer-item:hover, .price-card:hover { transform: translateY(-4px); }
+}
+.academy-motion-ready .academy-reveal {
+  opacity: 0; transform: translate3d(0,18px,0);
+  transition: opacity .62s ease, transform .68s cubic-bezier(.2,.7,.2,1);
+  transition-delay: var(--academy-delay,0ms);
+}
+.academy-motion-ready .academy-reveal.is-visible { opacity: 1; transform: translate3d(0,0,0); }
+@media (max-width: 760px) {
+  .academy-header, .academy-header.wrap.top {
+    width: calc(100% - 24px); min-height: 62px; margin-top: 12px !important;
+    padding: 8px 12px; gap: 10px;
+  }
+  .academy-header .brand img { width: 38px; height: 38px; }
+  .academy-header .brand span { font-size: 11px; }
+  .academy-header .brand small { font-size: 7px; letter-spacing: .12em; }
+  .academy-header .tools { gap: 6px; }
+  .academy-header .tool { min-height: 44px; padding-inline: 13px; font-size: 10px; }
+  .academy-hero, .hero { padding-top: 42px !important; }
+}
+@media (max-width: 430px) {
+  .academy-header, .academy-header.wrap.top { width: calc(100% - 18px); padding-inline: 9px; }
+  .academy-header .brand { gap: 7px; }
+  .academy-header .brand img { width: 34px; height: 34px; }
+  .academy-header .brand small { letter-spacing: .06em; }
+  .academy-header .tool { min-height: 42px; padding-inline: 10px; font-size: 9px; }
+  .academy-motion-ready .academy-reveal { transform: translate3d(0,12px,0); transition-duration: .48s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { scroll-behavior: auto; }
+  .academy-motion-ready .academy-reveal,
+  .course-card, .stage, .outcome, .person, .offer-item, .price-card, .step {
+    opacity: 1 !important; transform: none !important; transition: none !important;
+  }
+}
