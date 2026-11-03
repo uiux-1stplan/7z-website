@@ -68,7 +68,22 @@ h1{max-width:780px;margin:0;color:#f4f2ee;font-size:clamp(43px,6.8vw,82px);font-
 @media(max-width:560px){.academy-art,.hero-art{border-radius:20px}.course-card{border-radius:18px}.course-card__visual{border-radius:17px 17px 0 0}.stages,.team{gap:8px}.stage{margin:0;padding:17px 13px}.outcomes{gap:8px}.team{gap:8px}.person{border-radius:14px}.academy-cta,.cta{min-height:48px}}
 @media(prefers-reduced-motion:reduce){.motion-ready .reveal,.course-card,.stage,.outcome,.person,.thumb,.art-thumb{transition:none!important;transform:none!important;opacity:1!important}}
 
-</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/css/academy-course-shared.css?v=20261103-4"></head>
+
+/* Tighter course rhythm on tablets and phones */
+@media (max-width: 850px) {
+  .wrap-section { padding-block: 38px !important; }
+  .section-head { gap: 7px; margin-bottom: 22px; }
+  .bonus { margin-top: 22px; }
+  .final { padding-block: 34px; gap: 18px; }
+}
+@media (max-width: 560px) {
+  .wrap-section { padding-block: 30px !important; }
+  .section-head { gap: 5px; margin-bottom: 17px; }
+  .section h2 { line-height: 1.3; }
+  .bonus { margin-top: 17px; }
+  .final { padding-block: 27px; gap: 15px; }
+}
+</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/css/academy-course-shared.css?v=20261103-5"></head>
 <body class="subpage z7-cinematic-home" data-static-background="true">
 <header class="wrap top academy-header" aria-label="التنقل الرئيسي"><a class="brand" href="/courses/" aria-label="7Z MAGIC"><img src="/assets/brand/7z-20260902_203523_038/logo.png" alt=""><span>7Z MAGIC<small>AI CINEMATIC FILMMAKING</small></span></a><div class="tools"><a class="tool" href="/courses/" data-i="allCourses">كل الدورات</a><button class="tool" id="lang" type="button" aria-label="Switch language">EN</button><button class="tool" id="theme" type="button" data-i="theme">المظهر</button></div></header>
 <main id="content">
