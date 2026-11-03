@@ -1,7 +1,6 @@
 import tls from "node:tls";
 import { createHash, randomBytes } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
-import { renderCourseEmail } from "./course-email.js";
 
 const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: null }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200, capacity: null } });
 const DEFAULT_COURSE = "cinematic-film";
@@ -147,7 +146,6 @@ export async function prepare(sql) {
       UPDATE course_checkout_intents AS i SET status='EXPIRED' WHERE i.status='PENDING' AND i.expires_at <= NOW();
       IF p_course_id NOT IN ('ai-engineering','cinematic-film') OR p_price_jod <= 0 THEN RETURN QUERY SELECT 'invalid_course'::text,NULL::timestamptz; RETURN; END IF;
       IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=p_course_id AND lower(email)=lower(p_email)) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::timestamptz; RETURN; END IF;
-      UPDATE course_checkout_intents SET status='EXPIRED' WHERE course_id=p_course_id AND lower(email)=lower(p_email) AND status='PENDING' AND registration_email_status='FAILED';
       IF EXISTS (SELECT 1 FROM course_checkout_intents WHERE course_id=p_course_id AND lower(email)=lower(p_email) AND status='PENDING') THEN RETURN QUERY SELECT 'pending'::text,NULL::timestamptz; RETURN; END IF;
       expires := NOW() + INTERVAL '30 minutes';
       INSERT INTO course_checkout_intents(token_hash,full_name,email,phone,location,experience,preferred_language,goal,course_id,price_jod,expires_at)
@@ -361,22 +359,7 @@ export default async function handler(req, res) {
     if (intent.outcome === "full") return res.status(409).json({ error: "Course is full.", full: true });
     if (intent.outcome === "duplicate" || intent.outcome === "pending") return res.status(409).json({ error: intent.outcome === "duplicate" ? "This email is already registered." : "A checkout is already open for this email.", duplicate: true });
     if (intent.outcome !== "created") return res.status(503).json({ error: "Registration is temporarily unavailable." });
-    let studentEmailSent = false;
-    try {
-      const emailClaim = await sql`UPDATE course_checkout_intents SET registration_email_status='SENDING', registration_email_attempted_at=NOW(), registration_email_error='' WHERE token_hash=${tokenHash} AND registration_email_status='NOT_SENT' RETURNING id`;
-      if (emailClaim.length) {
-        const checkoutUrl = String(req.headers.origin) + '/course-registration/checkout/?lang=' + (language.toLowerCase() === 'english' ? 'en' : 'ar') + '#' + token;
-        const emailMessage = renderCourseEmail({ kind: 'registration', courseId, language, student: { full_name: name }, checkoutUrl });
-        await sendZohoMail({ ...emailMessage, to: email });
-        await sql`UPDATE course_checkout_intents SET registration_email_status='SENT', registration_email_sent_at=NOW(), registration_email_error='' WHERE token_hash=${tokenHash}`;
-        studentEmailSent = true;
-      }
-    } catch (mailError) {
-      console.error('Course registration email failed; checkout link will still be returned', mailError);
-      try { await sql`UPDATE course_checkout_intents SET registration_email_status='FAILED', registration_email_error='Delivery attempt failed' WHERE token_hash=${tokenHash}`; }
-      catch (statusError) { console.error('Could not save registration email status', statusError); }
-    }
-    return res.status(201).json({ ok: true, courseId, checkoutToken: token, expiresAt: new Date(intent.expires_at).toISOString(), studentEmailSent });
+    return res.status(201).json({ ok: true, courseId, checkoutToken: token, expiresAt: new Date(intent.expires_at).toISOString() });
   } catch (error) {
     console.error("Course checkout start failed", error);
     return res.status(503).json({ error: "Registration is temporarily unavailable." });
