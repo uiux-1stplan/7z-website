@@ -1,0 +1,85 @@
+/* One small composited atmosphere layer. No animated filters or repaints. */
+.z7-ambient-wash {
+  position: fixed;
+  z-index: 8;
+  top: 7vh;
+  right: -8vw;
+  width: min(62vw, 760px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(91, 158, 249, .34) 0%, rgba(54, 120, 213, .17) 38%, transparent 72%);
+  opacity: .66;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  animation: z7-ambient-drift 14s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes z7-ambient-drift {
+  to { transform: translate3d(-110px, 70px, 0); }
+}
+
+body.z7-motion-paused .z7-ambient-wash { animation-play-state: paused; }
+body.z7-admin-theme .z7-ambient-wash { display: none; }
+body.z7-cinematic-home .z7-ambient-wash {
+  top: 12vh;
+  right: 0;
+  z-index: 9;
+  opacity: .55;
+}
+
+/* Restore a small, transform-only movement the charcoal theme had disabled. */
+@media (prefers-reduced-motion:no-preference) {
+  body.z7-cinematic-home:not(.z7-motion-economy) #intro .z7-cinema__card-inner {
+    animation: z7-card-float 5.5s ease-in-out infinite alternate !important;
+  }
+  body.z7-cinematic-home:not(.z7-motion-economy) #intro .z7-cinema__card--2 .z7-cinema__card-inner { animation-delay: -1.5s !important; }
+  body.z7-cinematic-home:not(.z7-motion-economy) #intro .z7-cinema__card--3 .z7-cinema__card-inner { animation-delay: -3s !important; }
+  body.z7-cinematic-home:not(.z7-motion-economy) #intro .z7-cinema__card--4 .z7-cinema__card-inner { animation-delay: -4.5s !important; }
+  body.z7-cinematic-home:not(.z7-motion-economy) #intro .z7-cinema__halo {
+    animation: z7-halo-breathe 8s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+}
+@keyframes z7-halo-breathe {
+  to { transform: translate(-50%, -50%) scale(1.045); }
+}
+
+html.z7-scroll-ready .z7-scroll-blur {
+  filter: blur(7px);
+  opacity: .36;
+  transform: translate3d(0, 22px, 0);
+  transition: filter .55s ease, opacity .55s ease, transform .65s cubic-bezier(.2,.7,.2,1);
+}
+html.z7-scroll-ready .z7-scroll-blur.is-in-focus {
+  filter: blur(0);
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .z7x-page--partners a,
+  .z7x-page--about a,
+  .z7x-page--contact a,
+  .z7x-page--founders .z7x-cta__panel a,
+  body.z7-course-theme .offer-item,
+  body.z7-course-theme .price-card {
+    transition: border-color .26s ease, box-shadow .26s ease, transform .26s ease;
+  }
+  body.z7-course-theme :is(.offer-item,.price-card):hover {
+    transform: translate3d(0,-2px,0);
+    border-color: rgba(139,188,255,.48);
+    box-shadow: 0 12px 32px rgba(4,11,22,.24);
+  }
+}
+
+@media (max-width:760px), (prefers-reduced-motion:reduce) {
+  .z7-ambient-wash { width: 90vw; right: -35vw; opacity:.38; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .z7-ambient-wash { animation:none; will-change:auto; }
+  html.z7-scroll-ready .z7-scroll-blur { filter:none; opacity:1; transform:none; transition:none; }
+}
+
+body.z7-motion-economy .z7-ambient-wash { display:none; }
