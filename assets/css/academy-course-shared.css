@@ -13,13 +13,13 @@ body :is(h1,h2,h3,h4,p,a,button,input,select,textarea,label,small,strong,span) {
   box-shadow: 0 12px 36px rgba(0,0,0,.14); backdrop-filter: blur(16px);
 }
 .academy-header .brand {
-  display: flex; align-items: center; gap: 10px; min-width: 0;
+  display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 auto;
   color: inherit; text-decoration: none; direction: ltr;
 }
 .academy-header .brand img { display: block; width: 44px; height: 44px; object-fit: contain; }
-.academy-header .brand span { color: inherit; font-size: 13px; font-weight: 800; line-height: 1.2; letter-spacing: .08em; }
-.academy-header .brand small { display: block; margin-top: 4px; color: #91b9eb; font: 700 8px/1.3 Inter, sans-serif; letter-spacing: .18em; }
-.academy-header .tools { display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 8px; margin: 0; direction: rtl; }
+.academy-header .brand span { color: inherit; font-size: 13px; font-weight: 800; line-height: 1.2; letter-spacing: .08em; white-space: nowrap; }
+.academy-header .brand small { display: block; margin-top: 4px; color: #91b9eb; font: 700 8px/1.3 Inter, sans-serif; letter-spacing: .18em; white-space: nowrap; }
+.academy-header .tools { display: flex; align-items: center; justify-content: flex-start; flex: 0 0 auto; flex-wrap: wrap; gap: 8px; margin: 0; direction: rtl; }
 .academy-header .tool {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 44px; padding: 0 17px; border: 1px solid rgba(139,188,255,.2);
@@ -59,7 +59,7 @@ body :is(h1,h2,h3,h4,p,a,button,input,select,textarea,label,small,strong,span) {
   .academy-header, .academy-header.wrap.top { width: calc(100% - 18px); padding-inline: 9px; }
   .academy-header .brand { gap: 7px; }
   .academy-header .brand img { width: 34px; height: 34px; }
-  .academy-header .brand small { letter-spacing: .06em; }
+  .academy-header .brand small { display: none; }
   .academy-header .tool { min-height: 42px; padding-inline: 10px; font-size: 9px; }
   .academy-motion-ready .academy-reveal { transform: translate3d(0,12px,0); transition-duration: .48s; }
 }
