@@ -7,6 +7,19 @@
   "cleanUrls": true,
   "headers": [
     {
+      "source": "/course-registration/admin/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noarchive, nosnippet"
+        }
+      ]
+    },
+    {
       "source": "/access/(.*)",
       "headers": [
         {
@@ -89,6 +102,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/api/admin/course-payments",
+      "destination": "/api/admin-router?__z7route=course-payments"
+    },
     {
       "source": "/api/admin/admin-accounts",
       "destination": "/api/admin-router?__z7route=admin-accounts"

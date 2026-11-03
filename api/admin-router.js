@@ -1,4 +1,5 @@
 ﻿const loaders = {
+  "course-payments": () => import("../_handlers/admin/course-payments.js"),
 
   "admin-accounts":
     () =>

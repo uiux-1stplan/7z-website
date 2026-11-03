@@ -1,6 +1,7 @@
 import tls from "node:tls";
 import { createHash, randomBytes } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
+import { renderCourseEmail } from "./course-email.js";
 
 const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: null }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200, capacity: null } });
 const DEFAULT_COURSE = "cinematic-film";
@@ -46,11 +47,31 @@ export async function prepare(sql) {
     commission_percent INTEGER NOT NULL DEFAULT 0,
     commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
     commission_status TEXT NOT NULL DEFAULT 'NOT_APPLICABLE',
+    pending_student_email_status TEXT NOT NULL DEFAULT 'NOT_SENT',
+    pending_student_email_sent_at TIMESTAMPTZ,
+    pending_student_email_attempted_at TIMESTAMPTZ,
+    pending_student_email_error TEXT NOT NULL DEFAULT '',
+    confirmation_email_status TEXT NOT NULL DEFAULT 'NOT_SENT',
+    confirmation_email_sent_at TIMESTAMPTZ,
+    confirmation_email_attempted_at TIMESTAMPTZ,
+    confirmation_email_error TEXT NOT NULL DEFAULT '',
+    payment_verified_at TIMESTAMPTZ,
+    payment_verified_by TEXT NOT NULL DEFAULT '',
     payment_submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE (email)
   )`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_status TEXT NOT NULL DEFAULT 'PENDING_REVIEW'`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS pending_student_email_status TEXT NOT NULL DEFAULT 'NOT_SENT'`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS pending_student_email_sent_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS pending_student_email_attempted_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS pending_student_email_error TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS confirmation_email_status TEXT NOT NULL DEFAULT 'NOT_SENT'`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS confirmation_email_sent_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS confirmation_email_attempted_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS confirmation_email_error TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_verified_by TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_provider TEXT NOT NULL DEFAULT 'LEGACY'`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_reference TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_proof_pathname TEXT NOT NULL DEFAULT ''`;
@@ -89,10 +110,18 @@ export async function prepare(sql) {
     payment_proof_provider TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     expires_at TIMESTAMPTZ NOT NULL,
+    registration_email_status TEXT NOT NULL DEFAULT 'NOT_SENT',
+    registration_email_sent_at TIMESTAMPTZ,
+    registration_email_attempted_at TIMESTAMPTZ,
+    registration_email_error TEXT NOT NULL DEFAULT '',
     submitted_at TIMESTAMPTZ,
     registration_seat INTEGER
   )`;
   await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS registration_seat INTEGER`;
+  await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS registration_email_status TEXT NOT NULL DEFAULT 'NOT_SENT'`;
+  await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS registration_email_sent_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS registration_email_attempted_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS registration_email_error TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS payment_proof_pathname TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS payment_proof_content_type TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_checkout_intents ADD COLUMN IF NOT EXISTS payment_proof_provider TEXT NOT NULL DEFAULT ''`;
@@ -118,6 +147,7 @@ export async function prepare(sql) {
       UPDATE course_checkout_intents AS i SET status='EXPIRED' WHERE i.status='PENDING' AND i.expires_at <= NOW();
       IF p_course_id NOT IN ('ai-engineering','cinematic-film') OR p_price_jod <= 0 THEN RETURN QUERY SELECT 'invalid_course'::text,NULL::timestamptz; RETURN; END IF;
       IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=p_course_id AND lower(email)=lower(p_email)) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::timestamptz; RETURN; END IF;
+      UPDATE course_checkout_intents SET status='EXPIRED' WHERE course_id=p_course_id AND lower(email)=lower(p_email) AND status='PENDING' AND registration_email_status='FAILED';
       IF EXISTS (SELECT 1 FROM course_checkout_intents WHERE course_id=p_course_id AND lower(email)=lower(p_email) AND status='PENDING') THEN RETURN QUERY SELECT 'pending'::text,NULL::timestamptz; RETURN; END IF;
       expires := NOW() + INTERVAL '30 minutes';
       INSERT INTO course_checkout_intents(token_hash,full_name,email,phone,location,experience,preferred_language,goal,course_id,price_jod,expires_at)
@@ -204,7 +234,9 @@ function base64Lines(value) {
   return encoded.match(/.{1,76}/g)?.join("\r\n") || "";
 }
 
-export async function sendZohoMail({ subject, body, html, attachment, proofAttachment }) {
+export async function sendZohoMail({ subject, body, html, attachment, proofAttachment, to = RECIPIENT }) {
+  const recipient = String(to || RECIPIENT).trim();
+  if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(recipient) || /[\r\n]/.test(recipient)) throw new Error("Zoho recipient address is invalid");
   const host = process.env.ZOHO_SMTP_HOST;
   const password = process.env.ZOHO_SMTP_APP_PASSWORD;
   const user = process.env.ZOHO_SMTP_USER || RECIPIENT;
@@ -213,7 +245,7 @@ export async function sendZohoMail({ subject, body, html, attachment, proofAttac
   const domain = user.split("@")[1] || "7z-magic.com";
   const boundary = `7z-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
   const headers = [
-    `From: 7Z Magic <${user}>`, `To: ${RECIPIENT}`, `Subject: =?UTF-8?B?${Buffer.from(subject).toString("base64")}?=`,
+    `From: 7Z Magic <${user}>`, `To: ${recipient}`, `Subject: =?UTF-8?B?${Buffer.from(subject).toString("base64")}?=`,
     "MIME-Version: 1.0", `Content-Type: multipart/mixed; boundary="${boundary}"`,
   ];
   const alternativeBoundary = `7z-alt-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
@@ -277,7 +309,7 @@ export async function sendZohoMail({ subject, body, html, attachment, proofAttac
         await command(Buffer.from(user).toString("base64"), 334);
         await command(Buffer.from(password).toString("base64"), 235);
         await command(`MAIL FROM:<${user}>`, 250);
-        await command(`RCPT TO:<${RECIPIENT}>`, 250);
+        await command(`RCPT TO:<${recipient}>`, 250);
         await command("DATA", 354);
         socket.write(`${message}\r\n.\r\n`);
         const accepted = await readReply();
@@ -329,7 +361,22 @@ export default async function handler(req, res) {
     if (intent.outcome === "full") return res.status(409).json({ error: "Course is full.", full: true });
     if (intent.outcome === "duplicate" || intent.outcome === "pending") return res.status(409).json({ error: intent.outcome === "duplicate" ? "This email is already registered." : "A checkout is already open for this email.", duplicate: true });
     if (intent.outcome !== "created") return res.status(503).json({ error: "Registration is temporarily unavailable." });
-    return res.status(201).json({ ok: true, courseId, checkoutToken: token, expiresAt: new Date(intent.expires_at).toISOString() });
+    let studentEmailSent = false;
+    try {
+      const emailClaim = await sql`UPDATE course_checkout_intents SET registration_email_status='SENDING', registration_email_attempted_at=NOW(), registration_email_error='' WHERE token_hash=${tokenHash} AND registration_email_status='NOT_SENT' RETURNING id`;
+      if (emailClaim.length) {
+        const checkoutUrl = String(req.headers.origin) + '/course-registration/checkout/?lang=' + (language.toLowerCase() === 'english' ? 'en' : 'ar') + '#' + token;
+        const emailMessage = renderCourseEmail({ kind: 'registration', courseId, language, student: { full_name: name }, checkoutUrl });
+        await sendZohoMail({ ...emailMessage, to: email });
+        await sql`UPDATE course_checkout_intents SET registration_email_status='SENT', registration_email_sent_at=NOW(), registration_email_error='' WHERE token_hash=${tokenHash}`;
+        studentEmailSent = true;
+      }
+    } catch (mailError) {
+      console.error('Course registration email failed; checkout link will still be returned', mailError);
+      try { await sql`UPDATE course_checkout_intents SET registration_email_status='FAILED', registration_email_error='Delivery attempt failed' WHERE token_hash=${tokenHash}`; }
+      catch (statusError) { console.error('Could not save registration email status', statusError); }
+    }
+    return res.status(201).json({ ok: true, courseId, checkoutToken: token, expiresAt: new Date(intent.expires_at).toISOString(), studentEmailSent });
   } catch (error) {
     console.error("Course checkout start failed", error);
     return res.status(503).json({ error: "Registration is temporarily unavailable." });
