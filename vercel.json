@@ -107,6 +107,10 @@
       "destination": "/api/admin-router?__z7route=course-payments"
     },
     {
+      "source": "/api/admin/course-finance",
+      "destination": "/api/admin-router?__z7route=course-finance"
+    },
+    {
       "source": "/api/admin/admin-accounts",
       "destination": "/api/admin-router?__z7route=admin-accounts"
     },
