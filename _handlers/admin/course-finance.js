@@ -1,3 +1,4 @@
+import { issueSignedToken, presignUrl } from "@vercel/blob";
 import { prepare, sqlClient } from "../../api/course-registration.js";
 import { requireAdmin, writeAudit } from "../../lib/portal-runtime.mjs";
 import { toWebRequest, sendWebResponse, readJson, sendJson, methodNotAllowed } from "../../lib/vercel-api.mjs";
@@ -31,6 +32,21 @@ export default async function handler(req, res) {
     await prepare(sql);
 
     if (req.method === "GET") {
+      if (req.query?.action === "proof") {
+        const registrationId = Number(req.query?.registrationId);
+        if (!Number.isSafeInteger(registrationId) || registrationId < 1) return fail(res, 400, "Registration not found.");
+        const rows = await sql`SELECT payment_proof_pathname,payment_proof_content_type FROM course_registrations WHERE id=${registrationId}`;
+        const proofUrl = String(rows[0]?.payment_proof_pathname || "");
+        if (!proofUrl) return fail(res, 404, "No payment receipt is attached to this registration.");
+        let parsedProof;
+        try { parsedProof = new URL(proofUrl); } catch {}
+        if (!parsedProof || parsedProof.protocol !== "https:" || !parsedProof.hostname.endsWith(".private.blob.vercel-storage.com") || !parsedProof.pathname.startsWith("/course-payment-proofs/")) return fail(res, 404, "The payment receipt is unavailable.");
+        const pathname = decodeURIComponent(parsedProof.pathname.slice(1));
+        const validUntil = Date.now() + 5 * 60 * 1000;
+        const signedToken = await issueSignedToken({ pathname, operations: ["get"], validUntil });
+        const { presignedUrl } = await presignUrl(signedToken, { pathname, operation: "get", access: "private", validUntil });
+        return sendJson(res, 200, { ok: true, url: presignedUrl, validUntil });
+      }
       const rawCourse = clean(req.query?.course, 40);
       const courseId = rawCourse === "all" || !rawCourse ? "all" : rawCourse;
       if (courseId !== "all" && !COURSES[courseId]) return fail(res, 400, "Course not found.");
@@ -39,7 +55,7 @@ export default async function handler(req, res) {
       const offset = (page - 1) * pageSize;
       const registrations = await sql`
         SELECT id, seat_number, full_name, email, phone, location, payment_status,
-          payment_provider, payment_reference, price_jod, discount_jod, discount_percent,
+          payment_provider, payment_reference, payment_proof_pathname, payment_proof_content_type, price_jod, discount_jod, discount_percent,
           coupon_code, affiliate_name, commission_percent, commission_jod, commission_status,
           commission_paid_at, commission_payment_reference, course_id, payment_submitted_at,
           created_at, payment_verified_at
