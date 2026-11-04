@@ -37,6 +37,7 @@ export default async function handler(req, res) {
       rows = await sql`
         UPDATE course_registrations
         SET payment_status = 'PAID',
+            commission_status = CASE WHEN commission_percent > 0 THEN 'PAYABLE' ELSE commission_status END,
             payment_verified_at = NOW(),
             payment_verified_by = ${gate.auth.userId},
             confirmation_email_status = 'SENDING',
