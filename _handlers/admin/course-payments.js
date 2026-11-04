@@ -20,6 +20,7 @@ export default async function handler(req, res) {
           course_id, payment_submitted_at, created_at, pending_student_email_status,
           confirmation_email_status, confirmation_email_attempted_at, pending_student_email_attempted_at, payment_verified_at
         FROM course_registrations
+        WHERE deleted_at IS NULL
         ORDER BY payment_submitted_at DESC NULLS LAST, created_at DESC
         LIMIT 200
       `;
@@ -37,12 +38,13 @@ export default async function handler(req, res) {
       rows = await sql`
         UPDATE course_registrations
         SET payment_status = 'PAID',
+            commission_status = CASE WHEN commission_percent > 0 THEN 'PAYABLE' ELSE commission_status END,
             payment_verified_at = NOW(),
             payment_verified_by = ${gate.auth.userId},
             confirmation_email_status = 'SENDING',
             confirmation_email_attempted_at = NOW(),
             confirmation_email_error = ''
-        WHERE id = ${id} AND payment_status = 'PENDING_REVIEW'
+        WHERE id = ${id} AND deleted_at IS NULL AND payment_status = 'PENDING_REVIEW'
         RETURNING id, seat_number, full_name, email, preferred_language, course_id,
           price_jod, discount_jod, payment_provider, payment_reference,
           payment_status, confirmation_email_status, payment_verified_at
@@ -55,6 +57,7 @@ export default async function handler(req, res) {
             confirmation_email_attempted_at = NOW(),
             confirmation_email_error = ''
         WHERE id = ${id}
+          AND deleted_at IS NULL
           AND payment_status = 'PAID'
           AND confirmation_email_status <> 'SENT'
           AND (confirmation_email_status IN ('FAILED', 'NOT_SENT') OR (confirmation_email_status = 'SENDING' AND confirmation_email_attempted_at < NOW() - INTERVAL '10 minutes'))
@@ -70,6 +73,7 @@ export default async function handler(req, res) {
             pending_student_email_attempted_at = NOW(),
             pending_student_email_error = ''
         WHERE id = ${id}
+          AND deleted_at IS NULL
           AND payment_status = 'PENDING_REVIEW'
           AND pending_student_email_status <> 'SENT'
           AND (pending_student_email_status IN ('FAILED', 'NOT_SENT') OR (pending_student_email_status = 'SENDING' AND pending_student_email_attempted_at < NOW() - INTERVAL '10 minutes'))

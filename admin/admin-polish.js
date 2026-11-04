@@ -8,10 +8,16 @@
     clients: ["z7-native-clients"],
     files: ["z7-private-upload-panel", "z7-admin-file-library"],
     media: ["legacy-file-access-panel"],
-    admins: ["z7-admin-accounts"]
+    admins: ["z7-admin-accounts"],
+    academy: ["z7-academy-finance"]
   };
 
   const VIEW_COPY = {
+    academy: {
+      kicker: "CONTROL CENTER / ACADEMY",
+      title: "Academy Finance",
+      copy: "Manage course registrations, payment reviews, discount codes, affiliate commissions and financial reports."
+    },
     overview: {
       kicker: "ADMINISTRATION / OVERVIEW",
       title: "Administration Overview",
@@ -57,10 +63,11 @@
     "z7-native-clients",
     "z7-private-upload-panel",
     "z7-admin-file-library",
-    "legacy-file-access-panel"
+    "legacy-file-access-panel",
+    "z7-academy-finance"
   ];
 
-  let activeView = sessionStorage.getItem(STORAGE_KEY) || "overview";
+  let activeView = location.hash === "#academy" ? "academy" : (sessionStorage.getItem(STORAGE_KEY) || "overview");
   let scheduled = false;
 
   function normalizeView(view) {
@@ -126,11 +133,15 @@
       shell.className = "z7-admin-workspace-shell";
       shell.innerHTML = `
         <nav id="z7-admin-workspace-nav" class="z7-admin-workspace-nav" aria-label="Admin workspace">
-          <button type="button" data-z7-view="overview">Overview</button>
-          <button type="button" data-z7-view="clients">Clients</button>
-          <button type="button" data-z7-view="files">Files</button>
-          <button type="button" data-z7-view="media">Media</button>
-          <button type="button" data-z7-view="admins">Admins</button>
+          <div class="z7-workspace-nav-brand"><span class="z7-workspace-nav-mark">7Z</span><span><strong>7Z MAGIC</strong><small>CONTROL CENTER</small></span></div>
+          <div class="z7-workspace-nav-group">Workspace</div>
+          <button type="button" data-z7-view="overview"><span class="z7-workspace-nav-index">01</span><span>Overview</span></button>
+          <button type="button" data-z7-view="clients"><span class="z7-workspace-nav-index">02</span><span>Clients</span></button>
+          <button type="button" data-z7-view="files"><span class="z7-workspace-nav-index">03</span><span>Private files</span></button>
+          <button type="button" data-z7-view="media"><span class="z7-workspace-nav-index">04</span><span>Media access</span></button>
+          <button type="button" data-z7-view="admins"><span class="z7-workspace-nav-index">05</span><span>Administrators</span></button>
+          <div class="z7-workspace-nav-group z7-workspace-nav-group-academy">Academy</div>
+          <button type="button" data-z7-view="academy"><span class="z7-workspace-nav-index">06</span><span>Courses &amp; finance</span></button>
         </nav>
         <div id="z7-admin-workspace-search" class="z7-admin-workspace-search" hidden>
           <span class="z7-admin-workspace-search-icon" aria-hidden="true"></span>
@@ -145,6 +156,7 @@
               <button type="button" data-z7-shortcut="files"><span class="z7-overview-icon">02</span><strong>Private files</strong><small>Upload and organize protected files</small><b>Open section <span aria-hidden="true">↗</span></b></button>
               <button type="button" data-z7-shortcut="media"><span class="z7-overview-icon">03</span><strong>Media access</strong><small>Review client access to shared resources</small><b>Open section <span aria-hidden="true">↗</span></b></button>
               <button type="button" data-z7-shortcut="admins"><span class="z7-overview-icon">04</span><strong>Administrators</strong><small>Manage authorized dashboard operators</small><b>Open section <span aria-hidden="true">↗</span></b></button>
+              <button type="button" data-z7-shortcut="academy"><span class="z7-overview-icon">05</span><strong>Academy finances</strong><small>Review course registrations, payments and affiliate payouts</small><b>Open section <span aria-hidden="true">↗</span></b></button>
             </div>
             <div class="z7-overview-note"><span class="z7-overview-note-mark">7Z</span><span><strong>Administration workspace</strong><small>Changes here apply to portal access and protected client resources.</small></span></div>
           </section>
@@ -188,6 +200,7 @@
         if (!button) return;
         activeView = normalizeView(button.dataset.z7View);
         sessionStorage.setItem(STORAGE_KEY, activeView);
+        history.replaceState(null, "", activeView === "academy" ? `${location.pathname}#academy` : location.pathname);
         reconcile();
       });
     }
@@ -253,6 +266,8 @@
 
   function applyView(nav, search, searchInput, stage) {
     activeView = normalizeView(activeView);
+    const viewChanged = stage.dataset.z7AppliedView !== activeView;
+    stage.dataset.z7AppliedView = activeView;
     stage.dataset.z7View = activeView;
 
     const visibleIds = new Set(VIEW_PANELS[activeView]);
@@ -271,6 +286,7 @@
     });
 
     syncSearch(search, searchInput);
+    if (viewChanged) window.dispatchEvent(new CustomEvent("z7-admin-view-change", { detail: { view: activeView } }));
   }
 
   function ensureThemeToggle() {

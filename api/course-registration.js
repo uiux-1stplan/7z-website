@@ -4,6 +4,24 @@ import { neon } from "@neondatabase/serverless";
 
 const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: null }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200, capacity: null } });
 const DEFAULT_COURSE = "cinematic-film";
+export const DEFAULT_COURSE_COUPONS = Object.freeze({
+  "cinematic-film": Object.freeze({
+    HASSAN10: { discountPercent: 10, affiliateName: "حسن ريان", commissionPercent: 25 },
+    SHAS10: { discountPercent: 10, affiliateName: "شأس مطر", commissionPercent: 25 },
+    ABDULRAHMAN10: { discountPercent: 10, affiliateName: "عبدالرحمن محمد", commissionPercent: 25 },
+    "7Z10": { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
+    ALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
+  }),
+  "ai-engineering": Object.freeze({
+    AIENG10: { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
+    AIENGALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
+    AYA10: { discountPercent: 10, affiliateName: "Aya", commissionPercent: 20 },
+    ANAS10: { discountPercent: 10, affiliateName: "Anas Aide", commissionPercent: 20 },
+    ABD10: { discountPercent: 10, affiliateName: "Abedulrahman", commissionPercent: 20 },
+    "7ZM10": { discountPercent: 10, affiliateName: "7Z Magic", commissionPercent: 0 },
+    HR10: { discountPercent: 10, affiliateName: "Hasan Rayyan", commissionPercent: 0 },
+  }),
+});
 const RECIPIENT = "creative@7z-magic.com";
 const ALLOWED_ORIGINS = new Set(["https://7z-magic.com", "https://www.7z-magic.com"]);
 
@@ -46,6 +64,9 @@ export async function prepare(sql) {
     commission_percent INTEGER NOT NULL DEFAULT 0,
     commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
     commission_status TEXT NOT NULL DEFAULT 'NOT_APPLICABLE',
+    commission_paid_at TIMESTAMPTZ,
+    commission_paid_by TEXT NOT NULL DEFAULT '',
+    commission_payment_reference TEXT NOT NULL DEFAULT '',
     pending_student_email_status TEXT NOT NULL DEFAULT 'NOT_SENT',
     pending_student_email_sent_at TIMESTAMPTZ,
     pending_student_email_attempted_at TIMESTAMPTZ,
@@ -83,13 +104,64 @@ export async function prepare(sql) {
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_percent INTEGER NOT NULL DEFAULT 0`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_status TEXT NOT NULL DEFAULT 'NOT_APPLICABLE'`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_paid_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_paid_by TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_payment_reference TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS course_id TEXT NOT NULL DEFAULT 'cinematic-film'`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS price_jod NUMERIC(10,3) NOT NULL DEFAULT 250`;
-  await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_email_key ON course_registrations (course_id,lower(email))`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS deleted_by TEXT NOT NULL DEFAULT ''`;
+  await sql`DROP INDEX IF EXISTS course_registrations_course_email_key`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_email_active_key ON course_registrations (course_id,lower(email)) WHERE deleted_at IS NULL`;
   await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_seat_key ON course_registrations (course_id,seat_number)`;
   await sql`ALTER TABLE course_registrations DROP CONSTRAINT IF EXISTS course_registrations_email_key`;
   await sql`ALTER TABLE course_registrations DROP CONSTRAINT IF EXISTS course_registrations_seat_number_key`;
+  await sql`CREATE TABLE IF NOT EXISTS course_coupons (
+    id BIGSERIAL PRIMARY KEY, course_id TEXT NOT NULL CHECK (course_id IN ('cinematic-film','ai-engineering')),
+    code TEXT NOT NULL, discount_percent INTEGER NOT NULL CHECK (discount_percent BETWEEN 1 AND 100),
+    affiliate_name TEXT NOT NULL DEFAULT '', commission_percent INTEGER NOT NULL DEFAULT 0 CHECK (commission_percent BETWEEN 0 AND 100),
+    requires_previous_email BOOLEAN NOT NULL DEFAULT FALSE, active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_by TEXT NOT NULL DEFAULT '', updated_by TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(course_id, code)
+  )`;
+  await sql`ALTER TABLE course_coupons ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_coupons ADD COLUMN IF NOT EXISTS deleted_by TEXT NOT NULL DEFAULT ''`;
+  await sql`CREATE TABLE IF NOT EXISTS course_registration_adjustments (
+    registration_id BIGINT PRIMARY KEY,
+    course_id TEXT NOT NULL,
+    seat_number INTEGER NOT NULL,
+    payment_status TEXT NOT NULL,
+    list_price_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
+    discount_code TEXT NOT NULL DEFAULT '',
+    discount_percent INTEGER NOT NULL DEFAULT 0,
+    discount_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
+    amount_after_discount_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
+    affiliate_name TEXT NOT NULL DEFAULT '',
+    commission_percent INTEGER NOT NULL DEFAULT 0,
+    commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
+    commission_status TEXT NOT NULL DEFAULT '',
+    commission_already_paid_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
+    refund_due_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
+    refund_status TEXT NOT NULL DEFAULT 'NOT_REQUIRED',
+    deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_by TEXT NOT NULL DEFAULT ''
+  )`;
+  const couponSeeds = Object.entries(DEFAULT_COURSE_COUPONS).flatMap(([courseId, entries]) =>
+    Object.entries(entries).map(([code, coupon]) => ({
+      course_id: courseId, code, discount_percent: coupon.discountPercent,
+      affiliate_name: coupon.affiliateName, commission_percent: coupon.commissionPercent,
+      requires_previous_email: Boolean(coupon.requiresPreviousEmail),
+    }))
+  );
+  await sql`UPDATE course_registrations SET commission_status='PAYABLE' WHERE deleted_at IS NULL AND payment_status='PAID' AND commission_percent > 0 AND commission_status='PENDING_PAYMENT_REVIEW'`;
+  await sql`INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email)
+    SELECT course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email
+    FROM jsonb_to_recordset(${JSON.stringify(couponSeeds)}::jsonb) AS seeds(
+      course_id text, code text, discount_percent integer, affiliate_name text,
+      commission_percent integer, requires_previous_email boolean
+    ) ON CONFLICT(course_id,code) DO NOTHING`;
   await sql`CREATE TABLE IF NOT EXISTS course_checkout_intents (
     id BIGSERIAL PRIMARY KEY,
     token_hash TEXT NOT NULL UNIQUE,
@@ -145,7 +217,7 @@ export async function prepare(sql) {
       PERFORM pg_advisory_xact_lock(742060);
       UPDATE course_checkout_intents AS i SET status='EXPIRED' WHERE i.status='PENDING' AND i.expires_at <= NOW();
       IF p_course_id NOT IN ('ai-engineering','cinematic-film') OR p_price_jod <= 0 THEN RETURN QUERY SELECT 'invalid_course'::text,NULL::timestamptz; RETURN; END IF;
-      IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=p_course_id AND lower(email)=lower(p_email)) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::timestamptz; RETURN; END IF;
+      IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=p_course_id AND lower(email)=lower(p_email) AND deleted_at IS NULL) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::timestamptz; RETURN; END IF;
       IF EXISTS (SELECT 1 FROM course_checkout_intents WHERE course_id=p_course_id AND lower(email)=lower(p_email) AND status='PENDING') THEN RETURN QUERY SELECT 'pending'::text,NULL::timestamptz; RETURN; END IF;
       expires := NOW() + INTERVAL '30 minutes';
       INSERT INTO course_checkout_intents(token_hash,full_name,email,phone,location,experience,preferred_language,goal,course_id,price_jod,expires_at)
@@ -164,7 +236,7 @@ export async function prepare(sql) {
       IF intent.status <> 'PENDING' THEN RETURN QUERY SELECT 'invalid'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
       IF intent.expires_at <= NOW() THEN UPDATE course_checkout_intents SET status='EXPIRED' WHERE id=intent.id; RETURN QUERY SELECT 'expired'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
       IF intent.course_id NOT IN ('ai-engineering','cinematic-film') THEN RETURN QUERY SELECT 'invalid'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
-      IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=intent.course_id AND lower(email)=lower(intent.email)) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
+      IF EXISTS (SELECT 1 FROM course_registrations WHERE course_id=intent.course_id AND lower(email)=lower(intent.email) AND deleted_at IS NULL) THEN RETURN QUERY SELECT 'duplicate'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
             SELECT COALESCE(MAX(seat_number),0)+1 INTO next_seat FROM course_registrations WHERE course_id=intent.course_id;
       IF intent.payment_proof_pathname = '' OR intent.payment_proof_provider <> p_provider THEN RETURN QUERY SELECT 'proof_missing'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
       INSERT INTO course_registrations(seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,consent,payment_status,payment_provider,payment_reference,payment_proof_pathname,payment_proof_content_type,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,payment_submitted_at,course_id,price_jod)
@@ -329,7 +401,7 @@ export default async function handler(req, res) {
       const course = COURSES[courseId];
       if (!course) return res.status(400).json({ error: "Course not found." });
       await sql`UPDATE course_checkout_intents SET status='EXPIRED' WHERE status='PENDING' AND expires_at <= NOW()`;
-      const counts = await sql`SELECT (SELECT COUNT(*)::int FROM course_registrations WHERE course_id=${courseId}) AS registrations,(SELECT COUNT(*)::int FROM course_checkout_intents WHERE course_id=${courseId} AND status='PENDING' AND expires_at > NOW()) AS pending,(SELECT COUNT(*)::int FROM course_registrations) + (SELECT COUNT(*)::int FROM course_checkout_intents WHERE status='PENDING' AND expires_at > NOW()) AS academy_total`;
+      const counts = await sql`SELECT (SELECT COUNT(*)::int FROM course_registrations WHERE course_id=${courseId} AND deleted_at IS NULL) AS registrations,(SELECT COUNT(*)::int FROM course_checkout_intents WHERE course_id=${courseId} AND status='PENDING' AND expires_at > NOW()) AS pending,(SELECT COUNT(*)::int FROM course_registrations WHERE deleted_at IS NULL) + (SELECT COUNT(*)::int FROM course_checkout_intents WHERE status='PENDING' AND expires_at > NOW()) AS academy_total`;
       const registered = Number(counts[0]?.registrations || 0) + Number(counts[0]?.pending || 0);
       const configured = Boolean(process.env.ZOHO_SMTP_HOST && process.env.ZOHO_SMTP_APP_PASSWORD);
       const paymentConfigured = Boolean((process.env.COURSE_CLIQ_ALIAS?.trim() && process.env.COURSE_CLIQ_PHONE?.trim() && process.env.COURSE_CLIQ_INSTRUCTIONS?.trim()) || (process.env.COURSE_WU_BENEFICIARY?.trim() && process.env.COURSE_WU_INSTRUCTIONS?.trim()));

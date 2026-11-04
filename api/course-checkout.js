@@ -9,25 +9,6 @@ const DEFAULT_COURSE = "cinematic-film";
 const MAX_PROOF_BYTES = 5 * 1024 * 1024;
 const PROOF_TYPES = Object.freeze({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" });
 const ALLOWED_ORIGINS = new Set(["https://7z-magic.com", "https://www.7z-magic.com"]);
-const COURSE_COUPONS = Object.freeze({
-  "cinematic-film": Object.freeze({
-    HASSAN10: { discountPercent: 10, affiliateName: "حسن ريان", commissionPercent: 25 },
-    SHAS10: { discountPercent: 10, affiliateName: "شأس مطر", commissionPercent: 25 },
-    ABDULRAHMAN10: { discountPercent: 10, affiliateName: "عبدالرحمن محمد", commissionPercent: 25 },
-    "7Z10": { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
-    ALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
-  }),
-  "ai-engineering": Object.freeze({
-    AIENG10: { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
-    AIENGALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
-    AYA10: { discountPercent: 10, affiliateName: "Aya", commissionPercent: 20 },
-    ANAS10: { discountPercent: 10, affiliateName: "Anas Aide", commissionPercent: 20 },
-    ABD10: { discountPercent: 10, affiliateName: "Abedulrahman", commissionPercent: 20 },
-    "7ZM10": { discountPercent: 10, affiliateName: "7Z Magic", commissionPercent: 0 },
-    HR10: { discountPercent: 10, affiliateName: "Hasan Rayyan", commissionPercent: 0 },
-  }),
-});
-
 function money(value) { return Math.round((Number(value) + Number.EPSILON) * 1000) / 1000; }
 
 function matchesImageType(bytes, contentType) {
@@ -90,7 +71,13 @@ export default async function handler(req, res) {
     if (!intentMeta) return res.status(404).json({ error: "This checkout link is not valid." });
     const courseId = String(intentMeta.course_id || DEFAULT_COURSE), course = COURSES[courseId];
     if (!course) return res.status(400).json({ error: "Course not found." });
-    const courseCoupons = COURSE_COUPONS[courseId] ?? Object.freeze({});
+    const couponRows = await sql`SELECT code, discount_percent, affiliate_name, commission_percent, requires_previous_email FROM course_coupons WHERE course_id=${courseId} AND active=TRUE AND deleted_at IS NULL`;
+    const courseCoupons = Object.fromEntries(couponRows.map((row) => [String(row.code).toUpperCase(), {
+      discountPercent: Number(row.discount_percent),
+      affiliateName: String(row.affiliate_name || ""),
+      commissionPercent: Number(row.commission_percent || 0),
+      requiresPreviousEmail: Boolean(row.requires_previous_email),
+    }]));
     const CAPACITY = course.capacity;
     const priceJod = Number(intentMeta.price_jod ?? process.env.COURSE_PRICE_JOD);
     if (!Number.isFinite(priceJod) || priceJod <= 0 || methods.length === 0) return res.status(503).json({ error: "Checkout is not configured yet." });
@@ -204,7 +191,7 @@ export default async function handler(req, res) {
     let attachment;
     if (seat % 20 === 0) {
       const start = seat - 19;
-      const rows = await sql`SELECT seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,created_at,payment_status,payment_provider,payment_reference,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,course_id,price_jod FROM course_registrations WHERE course_id=${courseId} AND seat_number BETWEEN ${start} AND ${seat} ORDER BY seat_number`;
+      const rows = await sql`SELECT seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,created_at,payment_status,payment_provider,payment_reference,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,course_id,price_jod FROM course_registrations WHERE course_id=${courseId} AND seat_number BETWEEN ${start} AND ${seat} AND deleted_at IS NULL ORDER BY seat_number`;
       if (rows.length === 20) attachment = { name: `7Z-${courseId}-Registrations-${start}-${seat}.xlsx`, bytes: workbook(rows, start, seat) };
     }
     proofAttachment.name = `payment-proof-seat-${seat}.${PROOF_TYPES[registration.payment_proof_content_type]}`;

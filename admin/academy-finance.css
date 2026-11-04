@@ -1,0 +1,158 @@
+/* Unified 7Z admin workspace and academy finance */
+#z7-admin-workspace-shell{
+  display:grid!important;
+  grid-template-columns:minmax(210px,238px) minmax(0,1fr);
+  grid-template-rows:auto minmax(0,1fr);
+  align-items:start;
+  gap:12px 18px;
+  margin-bottom:20px!important;
+}
+#z7-admin-workspace-nav{
+  grid-column:1;
+  grid-row:1 / span 2;
+  position:sticky!important;
+  top:calc(var(--z7-admin-header-height,0px) + 14px)!important;
+  display:flex!important;
+  flex-direction:column;
+  gap:5px;
+  min-width:0;
+  padding:14px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:20px!important;
+  background:linear-gradient(165deg,rgba(16,21,31,.96),rgba(8,10,15,.96))!important;
+  box-shadow:0 20px 55px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+.z7-workspace-nav-brand{display:flex;align-items:center;gap:11px;padding:5px 4px 16px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+.z7-workspace-nav-mark{display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(79,140,255,.32);border-radius:14px;background:rgba(79,140,255,.1);color:#dce9ff;font-weight:800;font-size:15px}
+.z7-workspace-nav-brand strong,.z7-workspace-nav-brand small{display:block}
+.z7-workspace-nav-brand strong{font-size:13px;letter-spacing:.08em}
+.z7-workspace-nav-brand small{margin-top:3px;color:var(--muted);font-size:9px;letter-spacing:.13em}
+.z7-workspace-nav-group{padding:12px 9px 5px;color:#758197;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.z7-workspace-nav-group-academy{margin-top:5px;border-top:1px solid rgba(255,255,255,.07)}
+#z7-admin-workspace-nav button{display:flex!important;align-items:center;justify-content:flex-start;gap:11px;width:100%;min-height:42px!important;padding:0 10px!important;border:1px solid transparent!important;border-radius:12px!important;background:transparent!important;color:#aab2c1!important;text-align:left;font-size:12px!important;font-weight:600;letter-spacing:0!important;text-transform:none!important}
+#z7-admin-workspace-nav button:hover{background:rgba(255,255,255,.045)!important;color:#f5f7fb!important}
+#z7-admin-workspace-nav button.is-active{border-color:rgba(79,140,255,.23)!important;background:linear-gradient(100deg,rgba(79,140,255,.15),rgba(79,140,255,.055))!important;color:#dbe9ff!important}
+.z7-workspace-nav-index{display:grid;place-items:center;flex:0 0 26px;height:26px;border-radius:8px;background:rgba(255,255,255,.035);color:#768196;font-size:9px;font-variant-numeric:tabular-nums}
+#z7-admin-workspace-nav button.is-active .z7-workspace-nav-index{background:rgba(79,140,255,.16);color:#91b7ff}
+#z7-admin-workspace-search{grid-column:2;grid-row:1;width:100%;max-width:none!important;margin:0!important}
+#z7-admin-workspace-stage{grid-column:2;grid-row:2;min-width:0}
+#z7-admin-workspace-stage>.panel{margin-bottom:14px!important;border:1px solid rgba(255,255,255,.08);border-radius:18px!important;background:rgba(13,17,25,.8);box-shadow:0 16px 42px rgba(0,0,0,.18)}
+.z7-academy-finance{padding:20px!important}
+.z7-af-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}
+.z7-af-head h2{margin:4px 0 8px;font-size:22px!important;letter-spacing:0!important}
+.z7-af-head p,.z7-af-note{max-width:820px;color:var(--muted);font-size:12px;line-height:1.7}
+.z7-af-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.z7-af-actions select,.z7-af-actions input{min-height:40px;padding:8px 12px;border:1px solid var(--line2);border-radius:11px;background:var(--panel2);color:var(--text);font:inherit}
+.z7-af-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.z7-af-stat{min-width:0;padding:14px 15px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,rgba(20,27,39,.92),rgba(11,14,20,.85))}
+.z7-af-stat span,.z7-af-stat small{display:block;color:var(--muted);font-size:10px;line-height:1.5}
+.z7-af-stat strong{display:block;margin:7px 0 4px;font-size:21px;line-height:1.25;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.z7-af-tabs{display:flex;gap:6px;overflow-x:auto;margin:0 0 14px;padding:5px;border:1px solid var(--line);border-radius:13px;background:rgba(6,8,12,.65);scrollbar-width:none}
+.z7-af-tabs::-webkit-scrollbar{display:none}
+.z7-af-tabs button{flex:1 0 auto;min-height:36px;padding:0 13px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--muted);font:inherit;font-size:11px;font-weight:650;white-space:nowrap}
+.z7-af-tabs button:hover{background:rgba(255,255,255,.035);color:var(--text)}
+.z7-af-tabs button.is-active{border-color:rgba(79,140,255,.25);background:rgba(79,140,255,.12);color:#dbe9ff}
+.z7-af-view{min-width:0}
+.z7-af-view h3{margin:0 0 6px;font-size:16px}
+.z7-af-view>p{margin:0 0 13px;color:var(--muted);font-size:11px;line-height:1.65}
+.z7-af-table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:13px}
+.z7-af-table{width:100%;min-width:920px;border-collapse:collapse}
+.z7-af-table th,.z7-af-table td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.z7-af-table th{position:sticky;top:0;background:#111722;color:#9ca7ba;font-size:10px;font-weight:650;white-space:nowrap}
+.z7-af-table td{font-size:11px}
+.z7-af-table tr:last-child td{border-bottom:0}
+.z7-af-table .amount{font-variant-numeric:tabular-nums;white-space:nowrap}
+.z7-af-empty{padding:24px;color:var(--muted);text-align:center;font-size:12px}
+.z7-af-status{display:inline-flex;align-items:center;padding:4px 9px;border:1px solid var(--line2);border-radius:99px;background:rgba(255,255,255,.035);color:#bdc6d4;font-size:10px;white-space:nowrap}
+.z7-af-status.paid{border-color:rgba(85,217,145,.2);background:rgba(85,217,145,.08);color:#7be2ab}
+.z7-af-status.pending{border-color:rgba(244,190,87,.2);background:rgba(244,190,87,.08);color:#f4c66e}
+.z7-af-inline-note{color:var(--muted);font-size:10px}
+.z7-af-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.z7-af-controls .button{min-height:34px;padding:7px 10px;border-radius:9px;font-size:10px}
+.z7-af-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0;padding:15px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.018)}
+.z7-af-field label{display:block;margin-bottom:6px;color:#aeb6c4;font-size:11px}
+.z7-af-field input,.z7-af-field select{width:100%;min-height:38px;padding:8px 10px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);color:var(--text);font:inherit;font-size:12px}
+.z7-af-check{display:flex;align-items:center;gap:8px;color:#aeb6c4;font-size:11px}
+.z7-af-check input{width:auto}
+.z7-af-summary-note{margin:0 0 12px;padding:10px 12px;border:1px solid rgba(79,140,255,.18);border-radius:11px;background:rgba(79,140,255,.06);color:#b8c8e4;font-size:11px;line-height:1.65}
+.z7-af-error{padding:14px;border:1px solid rgba(255,91,104,.22);border-radius:12px;background:rgba(255,91,104,.07);color:#ff9aa3}
+.z7-af-empty[hidden],.z7-af-view[hidden]{display:none!important}
+@media(max-width:1100px){.z7-af-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){#z7-admin-workspace-shell{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:10px}#z7-admin-workspace-nav{grid-column:1;grid-row:1;position:sticky!important;top:calc(var(--z7-admin-header-height,0px) + 8px)!important;flex-direction:row;align-items:center;overflow-x:auto;scrollbar-width:none;padding:8px!important;z-index:80}#z7-admin-workspace-nav::-webkit-scrollbar{display:none}.z7-workspace-nav-brand,.z7-workspace-nav-group{display:none!important}#z7-admin-workspace-nav button{flex:0 0 auto;width:auto;min-width:max-content;min-height:38px!important;padding:0 12px!important}#z7-admin-workspace-search{grid-column:1;grid-row:2}#z7-admin-workspace-stage{grid-column:1;grid-row:3}}
+@media(max-width:620px){.z7-af-head{display:block}.z7-af-actions{margin-top:12px}.z7-af-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.z7-af-stat{padding:12px}.z7-af-stat strong{font-size:18px}.z7-academy-finance{padding:14px!important}.z7-af-form{grid-template-columns:1fr 1fr;gap:10px}}
+@media(max-width:380px){.z7-af-stats{grid-template-columns:1fr 1fr}.z7-af-form{grid-template-columns:1fr}}
+
+/* Administrative actions and clearer course management hierarchy */
+.z7-academy-finance{position:relative;overflow:hidden}
+.z7-af-head{padding:2px 2px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.z7-af-head>div:first-child{max-width:760px}
+.z7-af-head .eyebrow{color:#8db5ff}
+.z7-af-tabs{position:sticky;top:calc(var(--z7-admin-header-height,0px) + 64px);z-index:20;backdrop-filter:blur(14px)}
+.z7-af-view{padding:7px 2px 2px}
+.z7-af-view>.eyebrow{display:inline-block;margin-bottom:6px;color:#8db5ff}
+.z7-af-table tbody tr{transition:background .18s ease}
+.z7-af-table tbody tr:hover{background:rgba(102,151,244,.045)}
+.z7-af-table td{line-height:1.55}
+.z7-af-subhead{margin:24px 0 8px!important;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)}
+.z7-af-compact{min-width:760px}
+.z7-af-form{align-items:end;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.z7-af-form-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.z7-af-controls{gap:6px}
+.z7-af-controls .button{transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.z7-af-controls .button:hover{transform:translateY(-1px)}
+.z7-academy-finance .button-danger{min-height:32px;padding:7px 10px;border:1px solid rgba(255,106,120,.2);border-radius:9px;background:rgba(255,91,104,.075);color:#ffa0a8;font:inherit;font-size:10px;font-weight:650;white-space:nowrap}
+.z7-academy-finance .button-danger:hover{border-color:rgba(255,106,120,.4);background:rgba(255,91,104,.13);color:#ffd3d6}
+.z7-academy-finance button:focus-visible,.z7-academy-finance input:focus-visible,.z7-academy-finance select:focus-visible{outline:2px solid #75a4ff;outline-offset:2px}
+#af-registrations-body .button-danger{white-space:nowrap}
+@media(max-width:900px){.z7-af-tabs{top:8px}}
+@media(max-width:620px){
+  .z7-af-head{padding-bottom:12px}
+  .z7-af-tabs{position:relative;top:auto;margin-inline:-2px}
+  .z7-af-form-actions{grid-column:1/-1}
+  .z7-af-form-actions .button{flex:1}
+  .z7-af-subhead{margin-top:20px!important;padding-top:14px}
+}
+
+
+/* Compact academy toolbar and pagination controls */
+#z7-academy-finance .z7-af-actions{gap:8px}
+#z7-academy-finance .z7-af-actions .button,
+#z7-academy-finance .z7-af-actions button{
+  width:auto!important;min-width:94px;height:38px!important;min-height:38px!important;
+  padding:0 13px!important;border-radius:10px!important;font-size:10px!important;
+  line-height:1!important;letter-spacing:.08em!important;font-weight:650!important;
+  box-shadow:none!important;white-space:nowrap
+}
+#z7-academy-finance .z7-af-actions #af-export{min-width:132px}
+#z7-academy-finance .z7-af-actions select{
+  width:auto;min-width:150px;height:38px!important;min-height:38px!important;
+  padding:0 34px 0 12px!important;border-radius:10px!important;font-size:11px!important
+}
+#z7-academy-finance .pager{
+  display:grid;grid-template-columns:86px minmax(0,1fr) 86px;align-items:center;
+  gap:10px;margin:14px 0 0;padding:0
+}
+#z7-academy-finance .pager .button{
+  width:86px!important;height:36px!important;min-height:36px!important;
+  padding:0 10px!important;border-radius:10px!important;font-size:10px!important;
+  line-height:1!important;letter-spacing:.04em!important;font-weight:650!important;
+  box-shadow:none!important;white-space:nowrap
+}
+#z7-admin-workspace-stage #z7-academy-finance .pager #af-page-label{
+  min-width:0;text-align:center;font-size:11px;line-height:1.4;white-space:normal
+}
+#z7-academy-finance .pager .button:disabled{opacity:.42;cursor:not-allowed}
+@media(max-width:620px){
+  #z7-academy-finance .z7-af-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  #z7-academy-finance .z7-af-actions select{grid-column:1/-1;width:100%;min-width:0}
+  #z7-academy-finance .z7-af-actions .button{width:100%!important;min-width:0}
+  #z7-academy-finance .pager{grid-template-columns:72px minmax(0,1fr) 72px;gap:6px}
+  #z7-academy-finance .pager .button{width:72px!important;min-width:72px!important;padding:0 6px!important}
+  #z7-academy-finance .z7-af-actions .button,
+  #z7-academy-finance .z7-af-actions select,
+  #z7-academy-finance .pager .button{height:44px!important;min-height:44px!important}
+}
+@media(max-width:360px){
+  #z7-academy-finance .pager{grid-template-columns:64px minmax(0,1fr) 64px;gap:4px}
+  #z7-academy-finance .pager .button{width:64px!important;min-width:64px!important;font-size:9px!important}
+}
