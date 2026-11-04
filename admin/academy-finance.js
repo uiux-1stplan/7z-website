@@ -323,22 +323,41 @@
     return '"' + text.replaceAll('"', '""') + '"';
   }
 
-  function exportReport() {
+  async function exportReport() {
     if (!state) return;
-    const headings = ["Course", "Registration ID", "Student", "Email", "Payment status", "List price (JOD)", "Discount (%)", "Discount amount (JOD)", "Amount after discount (JOD)", "Discount code", "Affiliate", "Commission rate (%)", "Commission (JOD)", "Academy net (JOD)", "Commission status"];
-    const rows = (state.registrations || []).map((row) => [
-      courseName(row.course_id), row.seat_number, row.full_name, row.email, statusName(row.payment_status),
-      row.price_jod, row.discount_percent, row.discount_jod, netAfterDiscount(row), row.coupon_code,
-      row.affiliate_name, row.commission_percent, row.commission_jod, academyNet(row), statusName(row.commission_status)
-    ]);
-    const csv = "\uFEFF" + [headings, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
-    const anchor = document.createElement("a");
-    anchor.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-    anchor.download = "7z-academy-finance.csv";
-    anchor.click();
-    setTimeout(() => URL.revokeObjectURL(anchor.href), 0);
+    const button = $("#af-export");
+    if (button.disabled) return;
+    const originalLabel = button.textContent;
+    button.disabled = true;
+    button.textContent = "Preparing full report…";
+    try {
+      const course = $("#af-course-filter").value;
+      const allRows = [...(state.registrations || [])];
+      const pages = Number(state.pagination?.pages || 1);
+      for (let nextPage = 2; nextPage <= pages; nextPage += 1) {
+        const pageData = await request(`/api/admin/course-finance?course=${encodeURIComponent(course)}&page=${nextPage}`);
+        allRows.push(...(pageData.registrations || []));
+      }
+      const headings = ["Course", "Registration ID", "Student", "Email", "Payment status", "List price (JOD)", "Discount (%)", "Discount amount (JOD)", "Amount after discount (JOD)", "Discount code", "Affiliate", "Commission rate (%)", "Commission (JOD)", "Academy net (JOD)", "Commission status"];
+      const rows = allRows.map((row) => [
+        courseName(row.course_id), row.seat_number, row.full_name, row.email, statusName(row.payment_status),
+        row.price_jod, row.discount_percent, row.discount_jod, netAfterDiscount(row), row.coupon_code,
+        row.affiliate_name, row.commission_percent, row.commission_jod, academyNet(row), statusName(row.commission_status)
+      ]);
+      const csv = "\\uFEFF" + [headings, ...rows].map((row) => row.map(csvCell).join(",")).join("\\r\\n");
+      const anchor = document.createElement("a");
+      anchor.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      anchor.download = "7z-academy-finance.csv";
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(anchor.href), 0);
+      showToast(`Full report downloaded (${allRows.length} registrations).`);
+    } catch (error) {
+      showToast(translatedError(error.message), true);
+    } finally {
+      button.disabled = false;
+      button.textContent = originalLabel;
+    }
   }
-
   function selectSection(tab) {
     const next = tab.dataset.afTab;
     if (!next) return;
