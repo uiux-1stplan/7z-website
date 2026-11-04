@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     if (!intentMeta) return res.status(404).json({ error: "This checkout link is not valid." });
     const courseId = String(intentMeta.course_id || DEFAULT_COURSE), course = COURSES[courseId];
     if (!course) return res.status(400).json({ error: "Course not found." });
-    const couponRows = await sql`SELECT code, discount_percent, affiliate_name, commission_percent, requires_previous_email FROM course_coupons WHERE course_id=${courseId} AND active=TRUE`;
+    const couponRows = await sql`SELECT code, discount_percent, affiliate_name, commission_percent, requires_previous_email FROM course_coupons WHERE course_id=${courseId} AND active=TRUE AND deleted_at IS NULL`;
     const courseCoupons = Object.fromEntries(couponRows.map((row) => [String(row.code).toUpperCase(), {
       discountPercent: Number(row.discount_percent),
       affiliateName: String(row.affiliate_name || ""),
@@ -191,7 +191,7 @@ export default async function handler(req, res) {
     let attachment;
     if (seat % 20 === 0) {
       const start = seat - 19;
-      const rows = await sql`SELECT seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,created_at,payment_status,payment_provider,payment_reference,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,course_id,price_jod FROM course_registrations WHERE course_id=${courseId} AND seat_number BETWEEN ${start} AND ${seat} ORDER BY seat_number`;
+      const rows = await sql`SELECT seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,created_at,payment_status,payment_provider,payment_reference,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,course_id,price_jod FROM course_registrations WHERE course_id=${courseId} AND seat_number BETWEEN ${start} AND ${seat} AND deleted_at IS NULL ORDER BY seat_number`;
       if (rows.length === 20) attachment = { name: `7Z-${courseId}-Registrations-${start}-${seat}.xlsx`, bytes: workbook(rows, start, seat) };
     }
     proofAttachment.name = `payment-proof-seat-${seat}.${PROOF_TYPES[registration.payment_proof_content_type]}`;
