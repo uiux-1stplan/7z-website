@@ -6,7 +6,15 @@ const COURSES = Object.freeze({
   "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250 },
   "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200 },
 });
-const ORIGINS = new Set(["https://7z-magic.com", "https://www.7z-magic.com"]);
+function isSameOrigin(req) {
+  const origin = String(req.headers.origin || "");
+  const host = String(req.headers["x-forwarded-host"] || req.headers.host || "").split(",")[0].trim().toLowerCase();
+  const protocol = String(req.headers["x-forwarded-proto"] || "https").split(",")[0].trim().toLowerCase();
+  try {
+    const parsed = new URL(origin);
+    return protocol === "https" && parsed.protocol === "https:" && parsed.host.toLowerCase() === host;
+  } catch { return false; }
+}
 const clean = (value, max = 120) => String(value ?? "").trim().slice(0, max);
 const percent = (value) => Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 100;
 
@@ -16,7 +24,7 @@ export default async function handler(req, res) {
   try {
     const gate = await requireAdmin(toWebRequest(req));
     if (!gate.ok) return sendWebResponse(res, gate.response);
-    if (req.method === "POST" && !ORIGINS.has(String(req.headers.origin || ""))) return fail(res, 403, "Same-origin administrator request required.");
+    if (req.method === "POST" && !isSameOrigin(req)) return fail(res, 403, "Same-origin administrator request required.");
     if (!["GET", "POST"].includes(req.method)) return methodNotAllowed(res, ["GET", "POST"]);
 
     const sql = sqlClient();
