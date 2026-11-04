@@ -1,4 +1,4 @@
-import { issueSignedToken, presignUrl } from "@vercel/blob";
+import { del, issueSignedToken, presignUrl } from "@vercel/blob";
 import { prepare, sqlClient } from "../../api/course-registration.js";
 import { requireAdmin, writeAudit } from "../../lib/portal-runtime.mjs";
 import { toWebRequest, sendWebResponse, readJson, sendJson } from "../../lib/vercel-api.mjs";
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       if (req.query?.action === "proof") {
         const registrationId = Number(req.query?.registrationId);
         if (!Number.isSafeInteger(registrationId) || registrationId < 1) return fail(res, 400, "Registration not found.");
-        const rows = await sql`SELECT payment_proof_pathname,payment_proof_content_type FROM course_registrations WHERE id=${registrationId}`;
+        const rows = await sql`SELECT payment_proof_pathname,payment_proof_content_type FROM course_registrations WHERE id=${registrationId} AND deleted_at IS NULL`;
         const proofUrl = String(rows[0]?.payment_proof_pathname || "");
         if (!proofUrl) return fail(res, 404, "No receipt is attached to this registration.");
         let parsedProof;
@@ -60,19 +60,19 @@ export default async function handler(req, res) {
           commission_paid_at, commission_payment_reference, course_id, payment_submitted_at,
           created_at, payment_verified_at
         FROM course_registrations
-        WHERE (${courseId} = 'all' OR course_id = ${courseId})
+        WHERE deleted_at IS NULL AND (${courseId} = 'all' OR course_id = ${courseId})
         ORDER BY created_at DESC, id DESC
         LIMIT ${pageSize} OFFSET ${offset}
       `;
       const counts = await sql`
         SELECT COUNT(*)::int AS total FROM course_registrations
-        WHERE (${courseId} = 'all' OR course_id = ${courseId})
+        WHERE deleted_at IS NULL AND (${courseId} = 'all' OR course_id = ${courseId})
       `;
       const coupons = await sql`
         SELECT id, course_id, code, discount_percent, affiliate_name, commission_percent,
           requires_previous_email, active, created_at, updated_at
         FROM course_coupons
-        WHERE (${courseId} = 'all' OR course_id = ${courseId})
+        WHERE deleted_at IS NULL AND (${courseId} = 'all' OR course_id = ${courseId})
         ORDER BY course_id, active DESC, code
       `;
       const courseSummary = await sql`
@@ -88,6 +88,7 @@ export default async function handler(req, res) {
           COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID' AND commission_status = 'PAID'), 0)::numeric AS commission_paid,
           COALESCE(SUM(price_jod - discount_jod - commission_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS academy_net
         FROM course_registrations
+        WHERE deleted_at IS NULL
         GROUP BY course_id
       `;
       const commissionSummary = await sql`
@@ -99,7 +100,7 @@ export default async function handler(req, res) {
           COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID' AND commission_status = 'PAID'), 0)::numeric AS commission_paid,
           COALESCE(SUM(price_jod - discount_jod - commission_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS academy_net
         FROM course_registrations
-        WHERE commission_percent > 0
+        WHERE deleted_at IS NULL AND commission_percent > 0
         GROUP BY course_id, COALESCE(NULLIF(affiliate_name, ''), 'Direct / no affiliate')
         ORDER BY course_id, affiliate_name
       `;
@@ -108,9 +109,18 @@ export default async function handler(req, res) {
           COALESCE(SUM(discount_jod), 0)::numeric AS discount_total,
           COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS commission_total
         FROM course_registrations
-        WHERE coupon_code <> ''
+        WHERE deleted_at IS NULL AND coupon_code <> ''
         GROUP BY course_id, coupon_code
         ORDER BY course_id, coupon_code
+      `;
+      const refundAdjustments = await sql`
+        SELECT registration_id, course_id, seat_number, list_price_jod, discount_jod,
+          amount_after_discount_jod, affiliate_name, commission_jod, commission_already_paid_jod,
+          refund_due_jod, refund_status, deleted_at
+        FROM course_registration_adjustments
+        WHERE refund_due_jod > 0 AND (${courseId} = 'all' OR course_id = ${courseId})
+        ORDER BY deleted_at DESC, registration_id DESC
+        LIMIT 500
       `;
       return sendJson(res, 200, {
         ok: true,
@@ -121,11 +131,64 @@ export default async function handler(req, res) {
         courseSummary,
         commissionSummary,
         couponSummary,
+        refundAdjustments,
       });
     }
 
     const body = await readJson(req);
     const action = clean(body.action, 40);
+
+    if (action === "delete-registration") {
+      const registrationId = Number(body.registrationId);
+      if (!Number.isSafeInteger(registrationId) || registrationId < 1) return fail(res, 400, "Select a valid registration.");
+      const current = await sql`SELECT id,course_id,seat_number,payment_status,payment_proof_pathname FROM course_registrations WHERE id=${registrationId} AND deleted_at IS NULL`;
+      if (!current[0]) return fail(res, 404, "This registration was already removed or could not be found.");
+      const proofUrl = String(current[0].payment_proof_pathname || "");
+      if (proofUrl) {
+        let parsed;
+        try { parsed = new URL(proofUrl); } catch {}
+        if (!parsed || parsed.protocol !== "https:" || !parsed.hostname.endsWith(".private.blob.vercel-storage.com") || !parsed.pathname.startsWith("/course-payment-proofs/")) return fail(res, 409, "The attached receipt could not be verified for secure removal. No student data was changed.");
+        try { await del(proofUrl); }
+        catch (error) {
+          console.error("Student receipt deletion failed", error);
+          return fail(res, 503, "The receipt could not be securely deleted. The student record was left unchanged.");
+        }
+      }
+      const removed = await sql`
+        WITH source AS (
+          SELECT * FROM course_registrations WHERE id=${registrationId} AND deleted_at IS NULL FOR UPDATE
+        ), archived AS (
+          INSERT INTO course_registration_adjustments(
+            registration_id,course_id,seat_number,payment_status,list_price_jod,discount_code,
+            discount_percent,discount_jod,amount_after_discount_jod,affiliate_name,
+            commission_percent,commission_jod,commission_status,commission_already_paid_jod,
+            refund_due_jod,refund_status,deleted_by
+          )
+          SELECT id,course_id,seat_number,payment_status,price_jod,coupon_code,
+            discount_percent,discount_jod,price_jod-discount_jod,affiliate_name,
+            commission_percent,commission_jod,commission_status,
+            CASE WHEN commission_status='PAID' THEN commission_jod ELSE 0 END,
+            CASE WHEN payment_status='PAID' THEN price_jod-discount_jod ELSE 0 END,
+            CASE WHEN payment_status='PAID' THEN 'PENDING_REFUND' WHEN payment_status='REFUNDED' THEN 'ALREADY_REFUNDED' ELSE 'NOT_REQUIRED' END,
+            ${gate.auth.userId}
+          FROM source
+          ON CONFLICT(registration_id) DO NOTHING
+          RETURNING registration_id
+        )
+        UPDATE course_registrations AS r SET
+          full_name='Removed student',
+          email='removed+' || r.id::text || '@deleted.invalid',
+          phone='',location='',experience='',preferred_language='',
+          goal='',previous_course_email='',payment_reference='',
+          payment_proof_pathname='',payment_proof_content_type='',
+          deleted_at=NOW(),deleted_by=${gate.auth.userId}
+        FROM archived WHERE r.id=archived.registration_id
+        RETURNING r.id,r.course_id,r.seat_number,r.payment_status
+      `;
+      if (!removed[0]) return fail(res, 409, "The registration changed during removal. Refresh the dashboard before trying again.");
+      await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_REGISTRATION_REMOVED", targetType: "course_registration", targetId: String(registrationId), details: { courseId: removed[0].course_id, seatNumber: Number(removed[0].seat_number), previousPaymentStatus: removed[0].payment_status, receiptDeleted: Boolean(proofUrl), accountingSnapshot: true } });
+      return sendJson(res, 200, { ok: true, refundDue: removed[0].payment_status === "PAID" });
+    }
 
     if (action === "save-coupon") {
       const courseId = clean(body.courseId, 40);
@@ -133,20 +196,33 @@ export default async function handler(req, res) {
       const discountPercent = Number(body.discountPercent);
       const commissionPercent = Number(body.commissionPercent || 0);
       const affiliateName = clean(body.affiliateName, 120);
-      const requiresPreviousEmail = body.requiresPreviousEmail === true;
+      const requiresPreviousEmail = body.requiresPreviousEmail === true;\n      const couponId = body.couponId == null ? null : Number(body.couponId);
       if (!COURSES[courseId]) return fail(res, 400, "Choose a valid course.");
       if (!/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(code)) return fail(res, 400, "Use 2–24 English letters, numbers, or hyphens for the code.");
       if (!percent(discountPercent) || discountPercent === 0 || !percent(commissionPercent)) return fail(res, 400, "Discount and commission rates must be between 0% and 100%.");
       if (commissionPercent > 0 && !affiliateName) return fail(res, 400, "Enter an affiliate name when setting a commission.");
-      await sql`
-        INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email,active,created_by,updated_by)
-        VALUES(${courseId},${code},${discountPercent},${affiliateName},${commissionPercent},${requiresPreviousEmail},TRUE,${gate.auth.userId},${gate.auth.userId})
-        ON CONFLICT(course_id,code) DO UPDATE SET discount_percent=EXCLUDED.discount_percent,
-          affiliate_name=EXCLUDED.affiliate_name, commission_percent=EXCLUDED.commission_percent,
-          requires_previous_email=EXCLUDED.requires_previous_email, active=TRUE,
-          updated_by=EXCLUDED.updated_by, updated_at=NOW()
-      `;
-      await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_COUPON_SAVED", targetType: "course_coupon", targetId: `${courseId}:${code}`, details: { courseId, code, discountPercent, affiliateName, commissionPercent, requiresPreviousEmail } });
+      if (couponId !== null && (!Number.isSafeInteger(couponId) || couponId < 1)) return fail(res, 400, "The discount code update is invalid.");
+      if (couponId !== null) {
+        const conflict = await sql`SELECT id FROM course_coupons WHERE course_id=${courseId} AND code=${code} AND id<>${couponId} AND deleted_at IS NULL`;
+        if (conflict.length) return fail(res, 409, "That code already exists for this course.");
+        const updated = await sql`
+          UPDATE course_coupons SET course_id=${courseId},code=${code},discount_percent=${discountPercent},
+            affiliate_name=${affiliateName},commission_percent=${commissionPercent},
+            requires_previous_email=${requiresPreviousEmail},active=TRUE,updated_by=${gate.auth.userId},updated_at=NOW()
+          WHERE id=${couponId} AND deleted_at IS NULL RETURNING id
+        `;
+        if (!updated[0]) return fail(res, 404, "Discount code not found.");
+      } else {
+        await sql`
+          INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email,active,created_by,updated_by,deleted_at,deleted_by)
+          VALUES(${courseId},${code},${discountPercent},${affiliateName},${commissionPercent},${requiresPreviousEmail},TRUE,${gate.auth.userId},${gate.auth.userId},NULL,'')
+          ON CONFLICT(course_id,code) DO UPDATE SET discount_percent=EXCLUDED.discount_percent,
+            affiliate_name=EXCLUDED.affiliate_name, commission_percent=EXCLUDED.commission_percent,
+            requires_previous_email=EXCLUDED.requires_previous_email, active=TRUE, deleted_at=NULL, deleted_by='',
+            updated_by=EXCLUDED.updated_by, updated_at=NOW()
+        `;
+      }
+      await writeAudit({ actorUserId: gate.auth.userId, action: couponId === null ? "COURSE_COUPON_SAVED" : "COURSE_COUPON_EDITED", targetType: "course_coupon", targetId: `${courseId}:${code}`, details: { courseId, code, discountPercent, affiliateName, commissionPercent, requiresPreviousEmail } });
       return sendJson(res, 200, { ok: true });
     }
 
@@ -159,18 +235,45 @@ export default async function handler(req, res) {
       return sendJson(res, 200, { ok: true });
     }
 
+    if (action === "delete-coupon") {
+      const couponId = Number(body.couponId);
+      if (!Number.isSafeInteger(couponId) || couponId < 1) return fail(res, 400, "The discount code update is invalid.");
+      const rows = await sql`UPDATE course_coupons SET active=FALSE,deleted_at=NOW(),deleted_by=${gate.auth.userId},updated_by=${gate.auth.userId},updated_at=NOW() WHERE id=${couponId} AND deleted_at IS NULL RETURNING course_id,code,affiliate_name`;
+      if (!rows[0]) return fail(res, 404, "Discount code not found.");
+      await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_COUPON_DELETED", targetType: "course_coupon", targetId: `${rows[0].course_id}:${rows[0].code}`, details: rows[0] });
+      return sendJson(res, 200, { ok: true });
+    }
+
+    if (action === "edit-affiliate" || action === "delete-affiliate") {
+      const courseId = clean(body.courseId, 40);
+      const affiliateName = clean(body.affiliateName, 120);
+      if (!COURSES[courseId] || !affiliateName) return fail(res, 400, "Choose a valid course and affiliate.");
+      if (action === "edit-affiliate") {
+        const newName = clean(body.newName, 120);
+        if (newName.length < 2) return fail(res, 400, "Enter a valid affiliate name.");
+        const rows = await sql`UPDATE course_coupons SET affiliate_name=${newName},updated_by=${gate.auth.userId},updated_at=NOW() WHERE course_id=${courseId} AND affiliate_name=${affiliateName} AND deleted_at IS NULL RETURNING id`;
+        if (!rows.length) return fail(res, 404, "Affiliate not found for this course.");
+        await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_AFFILIATE_RENAMED", targetType: "course_affiliate", targetId: `${courseId}:${affiliateName}`, details: { courseId, previousName: affiliateName, newName, updatedCodes: rows.length } });
+        return sendJson(res, 200, { ok: true, updatedCodes: rows.length });
+      }
+      const rows = await sql`UPDATE course_coupons SET active=FALSE,deleted_at=NOW(),deleted_by=${gate.auth.userId},updated_by=${gate.auth.userId},updated_at=NOW() WHERE course_id=${courseId} AND affiliate_name=${affiliateName} AND deleted_at IS NULL RETURNING id`;
+      if (!rows.length) return fail(res, 404, "Affiliate not found for this course.");
+      await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_AFFILIATE_REMOVED", targetType: "course_affiliate", targetId: `${courseId}:${affiliateName}`, details: { courseId, affiliateName, removedCodes: rows.length } });
+      return sendJson(res, 200, { ok: true, removedCodes: rows.length });
+    }
+
     if (action === "mark-commission-paid") {
       const registrationId = Number(body.registrationId);
       const reference = clean(body.reference, 160);
       if (!Number.isSafeInteger(registrationId) || registrationId < 1 || reference.length < 3) return fail(res, 400, "Enter the transfer reference after paying the commission.");
       const rows = await sql`
         UPDATE course_registrations SET commission_status='PAID', commission_paid_at=NOW(),
-          commission_paid_by=${gate.auth.userId}, commission_payment_reference=${reference}
+          commission_paid_by=${gate.auth.userId}
         WHERE id=${registrationId} AND payment_status='PAID' AND commission_percent > 0 AND commission_status='PAYABLE'
         RETURNING id,course_id,seat_number,affiliate_name,commission_jod,commission_status
       `;
       if (!rows[0]) return fail(res, 409, "This commission is not currently payable. Refresh and check its status.");
-      await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_COMMISSION_MARKED_PAID", targetType: "course_registration", targetId: String(registrationId), details: { ...rows[0], reference } });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_COMMISSION_MARKED_PAID", targetType: "course_registration", targetId: String(registrationId), details: { ...rows[0], manualAccountingConfirmation: true } });
       return sendJson(res, 200, { ok: true });
     }
 
