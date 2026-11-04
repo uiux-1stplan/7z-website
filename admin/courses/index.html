@@ -13,8 +13,6 @@
 <style>
 html,body{min-height:100%;direction:rtl}
 body.z7-admin-theme{margin:0;min-height:100vh;overflow-x:hidden;font-family:"Segoe UI",Tahoma,Arial,sans-serif;text-align:start}
-#app.app{direction:rtl;grid-template-columns:250px minmax(0,1fr)!important}
-#app>.sidebar{display:flex!important;direction:rtl;position:sticky;top:var(--z7-admin-header-height,0px);height:calc(100vh - var(--z7-admin-header-height,0px));border-left:1px solid var(--line);border-right:0}
 #app>.main{direction:rtl;width:auto!important;max-width:none!important;margin:0!important;padding:34px clamp(20px,3vw,46px) 56px!important;min-width:0}
 #app .topbar{direction:rtl;align-items:flex-start;margin-bottom:26px}
 #app .topbar h1{font-size:clamp(28px,3.4vw,42px);letter-spacing:0;line-height:1.25;margin:8px 0}
@@ -22,15 +20,9 @@ body.z7-admin-theme{margin:0;min-height:100vh;overflow-x:hidden;font-family:"Seg
 #app .page-kicker,#app .eyebrow{letter-spacing:0;font-size:12px}
 #app #admin-copy{text-align:right}
 #app .admin-profile{direction:rtl}
-#app .nav-item{direction:rtl;text-align:right}
-#app .sidebar-footer{text-align:right}
 .finance-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:-5px 0 18px}
 .finance-toolbar .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .finance-toolbar select,.finance-toolbar input{min-height:42px;padding:9px 13px;border:1px solid var(--line2);border-radius:12px;background:var(--panel2);color:var(--text);font:inherit}
-.finance-tabs{display:flex;gap:8px;overflow-x:auto;padding:0 0 14px;margin-bottom:18px;border-bottom:1px solid var(--line)}
-.finance-tabs .tab{flex:0 0 auto;white-space:nowrap;border:1px solid transparent;border-radius:12px;padding:10px 15px;background:transparent;color:var(--muted);font:inherit;cursor:pointer}
-.finance-tabs .tab:hover{color:var(--text);background:rgba(255,255,255,.04)}
-.finance-tabs .tab.active{color:#fff;background:rgba(79,140,255,.12);border-color:rgba(79,140,255,.35)}
 .finance-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 18px}
 .finance-stats .stat{min-width:0;padding:17px 18px;border:1px solid var(--line);border-radius:18px;background:var(--panel)}
 .finance-stats .stat span{font-size:12px;letter-spacing:0;color:var(--muted)}
@@ -67,8 +59,8 @@ body.z7-admin-theme{margin:0;min-height:100vh;overflow-x:hidden;font-family:"Seg
 #denied .state-card h1{letter-spacing:0}
 .finance-toolbar .button{min-height:42px}
 @media(max-width:1050px){.finance-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:850px){#app.app{grid-template-columns:1fr!important}#app>.sidebar{position:static;height:auto;min-height:0;border-left:0;border-bottom:1px solid var(--line);padding:20px}#app .nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#app .sidebar-brand{padding-bottom:18px}#app>.main{padding:26px 18px 42px!important}#app .topbar{display:grid}.finance-toolbar{align-items:stretch;flex-direction:column}.finance-toolbar .controls{width:100%}.finance-toolbar select{flex:1}}
-@media(max-width:560px){#app .nav-item{padding:10px 8px;gap:8px}#app .nav-item small{display:none}.finance-stats{gap:8px}.finance-stats .stat{padding:13px}.finance-stats .stat strong{font-size:22px}#content>.panel{padding:15px}#content .panel-head{align-items:flex-start;flex-direction:column}#content .panel-head input{max-width:none;width:100%}.finance-tabs .tab{padding:9px 12px}}
+@media(max-width:850px){#app>.main{padding:26px 18px 42px!important}#app .topbar{display:grid}.finance-toolbar{align-items:stretch;flex-direction:column}.finance-toolbar .controls{width:100%}.finance-toolbar select{flex:1}}
+@media(max-width:560px){.z7-admin-workspace-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.finance-stats{gap:8px}.finance-stats .stat{padding:13px}.finance-stats .stat strong{font-size:22px}#content>.panel{padding:15px}#content .panel-head{align-items:flex-start;flex-direction:column}#content .panel-head input{max-width:none;width:100%}.finance-tabs .tab{padding:9px 12px}}
 </style>
 <script defer src="/admin/site-shell.js?v=7z-20260902-r1"></script>
 </head>
@@ -95,21 +87,13 @@ body.z7-admin-theme{margin:0;min-height:100vh;overflow-x:hidden;font-family:"Seg
 </main>
 <main id="denied" class="center-state hidden"><section class="state-card"><span class="eyebrow">صلاحيات الوصول</span><h1>هذا القسم للأدمن فقط</h1><p>الحساب الحالي لا يملك صلاحية إدارة الدورات.</p><button id="denied-signout" class="button button-primary" type="button">تسجيل الخروج</button></section></main>
 <div id="app" class="app hidden">
-  <aside class="sidebar">
-    <div class="sidebar-brand"><div class="brand-symbol">7Z</div><div><strong>7Z MAGIC</strong><span>إدارة الأكاديمية</span></div></div>
-    <nav class="nav" aria-label="التنقل الإداري">
-      <a class="nav-item" href="/admin/"><span class="nav-icon">01</span><span><strong>إدارة العملاء</strong><small>لوحة العملاء والملفات</small></span></a>
-      <a class="nav-item active" href="/admin/courses/"><span class="nav-icon">02</span><span><strong>إدارة الدورات</strong><small>التسجيلات والمالية</small></span></a>
-    </nav>
-    <div class="sidebar-footer"><div class="security-status"><span></span>جلسة إدارية آمنة</div><small>إدارة أكاديمية 7Z MAGIC</small></div>
-  </aside>
   <main class="main">
     <header class="topbar">
       <div><span class="page-kicker">لوحة العملاء / الأكاديمية</span><h1>إدارة الدورات</h1><p>التسجيلات والمدفوعات والخصومات والعمولات والتقارير في مساحة واحدة.</p></div>
-      <div class="admin-profile"><div id="admin-copy"><strong id="admin-name">مدير الأكاديمية</strong><span id="admin-email">صلاحية أدمن</span></div><button id="signout" class="button button-secondary" type="button">تسجيل الخروج</button></div>
+      <div class="admin-profile"><a class="button button-secondary" href="/admin/">لوحة العملاء</a><div id="admin-copy"><strong id="admin-name">مدير الأكاديمية</strong><span id="admin-email">صلاحية أدمن</span></div><button id="signout" class="button button-secondary" type="button">تسجيل الخروج</button></div>
     </header>
     <section class="finance-toolbar"><div class="eyebrow">تصفية وعرض</div><div class="controls"><select id="course-filter" aria-label="تصفية حسب الدورة"><option value="all">كل الدورات</option><option value="cinematic-film">صناعة الأفلام السينمائية</option><option value="ai-engineering">الذكاء الاصطناعي للمهندسين</option></select><button class="button button-secondary" id="refresh">تحديث البيانات</button></div></section>
-    <nav class="finance-tabs" aria-label="أقسام إدارة الدورات"><button class="tab active" data-section="registrations">التسجيلات</button><button class="tab" data-section="payments">المدفوعات</button><button class="tab" data-section="discounts">الخصومات</button><button class="tab" data-section="commissions">العمولات</button><button class="tab" data-section="reports">التقارير</button></nav>
+    <nav class="z7-admin-workspace-nav" aria-label="أقسام إدارة الدورات"><button class="tab is-active" data-section="registrations">التسجيلات</button><button class="tab" data-section="payments">المدفوعات</button><button class="tab" data-section="discounts">الخصومات</button><button class="tab" data-section="commissions">العمولات</button><button class="tab" data-section="reports">التقارير</button></nav>
     <div id="load-state" class="loading">جارٍ تحميل بيانات الإدارة…</div><div id="load-error" class="panel error hidden"></div>
   <section id="content" class="hidden">
     <div class="finance-stats"><article class="stat"><span>إجمالي التسجيلات</span><strong id="stat-registrations">—</strong><small>للدورة المحددة</small></article><article class="stat"><span>بانتظار مراجعة الدفع</span><strong id="stat-pending">—</strong><small>حوالات لم تعتمد بعد</small></article><article class="stat"><span>مبالغ محصلة</span><strong id="stat-net">—</strong><small>بعد الخصومات · دينار أردني</small></article><article class="stat"><span>عمولات مستحقة</span><strong id="stat-commission">—</strong><small>بعد اعتماد الدفع</small></article></div>
@@ -152,7 +136,7 @@ async function payCommission(id){const reference=prompt("أدخل مرجع ال�
 async function saveCoupon(e){e.preventDefault();const b=$("#save-coupon");b.disabled=true;try{await request("/api/admin/course-finance",{method:"POST",body:{action:"save-coupon",courseId:$("#coupon-course").value,code:$("#coupon-code").value.trim().toUpperCase(),discountPercent:Number($("#coupon-discount").value),affiliateName:$("#coupon-affiliate").value.trim(),commissionPercent:Number($("#coupon-commission").value),requiresPreviousEmail:$("#coupon-alumni").checked}});e.currentTarget.reset();$("#coupon-commission").value="0";showToast("تم حفظ الكود للدورة المحددة فقط.");await load()}catch(err){showToast(err.message,true)}finally{b.disabled=false}}
 function exportCsv(){const lines=[["الدورة","رقم التسجيل","اسم الطالب","البريد الإلكتروني","حالة الدفع","السعر بالدينار","الخصم بالدينار","كود الخصم","المسوّق","نسبة العمولة","العمولة بالدينار","حالة العمولة"],...(dataState.registrations||[]).map(r=>[courseName(r.course_id),r.seat_number,r.full_name,r.email,statusName(r.payment_status),r.price_jod,r.discount_jod,r.coupon_code,r.affiliate_name,r.commission_percent,r.commission_jod,statusName(r.commission_status)])];const csv="\uFEFF"+lines.map(row=>row.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(",")).join("\r\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="7z-course-finance.csv";a.click();URL.revokeObjectURL(a.href)}
 async function boot(){try{const cfg=await fetch("/api/portal/config",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("إعدادات تسجيل الدخول غير متاحة.");return r.json()});if(!cfg.publishableKey)throw Error("إعدادات Clerk ناقصة.");const domain=atob(cfg.publishableKey.split("_")[2]).slice(0,-1);await loadScript(`https://${domain}/npm/@clerk/ui@1/dist/ui.browser.js`);await loadScript(`https://${domain}/npm/@clerk/clerk-js@6/dist/clerk.browser.js`,{"data-clerk-publishable-key":cfg.publishableKey});clerk=window.Clerk;await clerk.load({ui:{ClerkUI:window.__internal_ClerkUICtor},signInFallbackRedirectUrl:"/admin/courses/"});if(!clerk.isSignedIn){clerk.mountSignIn($("#clerk-signin"),{routing:"hash",withSignUp:false,signInFallbackRedirectUrl:"/admin/courses/"});return}const me=await request("/api/portal/me");if(me.user?.role!=="admin"){$("#auth").classList.add("hidden");$("#denied").classList.remove("hidden");return}$("#auth").classList.add("hidden");$("#app").classList.remove("hidden");$("#signout").addEventListener("click",()=>clerk.signOut().then(()=>location.href="/admin/courses/"));await load()}catch(e){$("#load-state").classList.add("hidden");$("#load-error").textContent=e.message;$("#load-error").classList.remove("hidden")}}
-document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));section=t.dataset.section;document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("hidden",x.dataset.view!==section));if(section!=="reports")$("#search").classList.toggle("hidden",section!=="registrations")}));$("#course-filter").addEventListener("change",()=>{page=1;load()});$("#refresh").addEventListener("click",load);$("#prev-page").addEventListener("click",()=>{if(page>1){page--;load()}});$("#next-page").addEventListener("click",()=>{if(page<dataState.pagination.pages){page++;load()}});$("#search").addEventListener("input",render);$("#coupon-form").addEventListener("submit",saveCoupon);$("#export").addEventListener("click",exportCsv);document.addEventListener("click",e=>{const p=e.target.closest("[data-proof]");if(p)viewProof(p.dataset.proof);const c=e.target.closest("[data-confirm]");if(c)confirmPayment(c.dataset.confirm);const t=e.target.closest("[data-coupon]");if(t)toggleCoupon(t.dataset.coupon,t.dataset.active);const m=e.target.closest("[data-commission]");if(m)payCommission(m.dataset.commission)});boot();
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("is-active",x===t));section=t.dataset.section;document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("hidden",x.dataset.view!==section));if(section!=="reports")$("#search").classList.toggle("hidden",section!=="registrations")}));$("#course-filter").addEventListener("change",()=>{page=1;load()});$("#refresh").addEventListener("click",load);$("#prev-page").addEventListener("click",()=>{if(page>1){page--;load()}});$("#next-page").addEventListener("click",()=>{if(page<dataState.pagination.pages){page++;load()}});$("#search").addEventListener("input",render);$("#coupon-form").addEventListener("submit",saveCoupon);$("#export").addEventListener("click",exportCsv);document.addEventListener("click",e=>{const p=e.target.closest("[data-proof]");if(p)viewProof(p.dataset.proof);const c=e.target.closest("[data-confirm]");if(c)confirmPayment(c.dataset.confirm);const t=e.target.closest("[data-coupon]");if(t)toggleCoupon(t.dataset.coupon,t.dataset.active);const m=e.target.closest("[data-commission]");if(m)payCommission(m.dataset.commission)});boot();
 </script>
 
 <script>
