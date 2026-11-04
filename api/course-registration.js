@@ -4,6 +4,24 @@ import { neon } from "@neondatabase/serverless";
 
 const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: null }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200, capacity: null } });
 const DEFAULT_COURSE = "cinematic-film";
+export const DEFAULT_COURSE_COUPONS = Object.freeze({
+  "cinematic-film": Object.freeze({
+    HASSAN10: { discountPercent: 10, affiliateName: "حسن ريان", commissionPercent: 25 },
+    SHAS10: { discountPercent: 10, affiliateName: "شأس مطر", commissionPercent: 25 },
+    ABDULRAHMAN10: { discountPercent: 10, affiliateName: "عبدالرحمن محمد", commissionPercent: 25 },
+    "7Z10": { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
+    ALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
+  }),
+  "ai-engineering": Object.freeze({
+    AIENG10: { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
+    AIENGALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
+    AYA10: { discountPercent: 10, affiliateName: "Aya", commissionPercent: 20 },
+    ANAS10: { discountPercent: 10, affiliateName: "Anas Aide", commissionPercent: 20 },
+    ABD10: { discountPercent: 10, affiliateName: "Abedulrahman", commissionPercent: 20 },
+    "7ZM10": { discountPercent: 10, affiliateName: "7Z Magic", commissionPercent: 0 },
+    HR10: { discountPercent: 10, affiliateName: "Hasan Rayyan", commissionPercent: 0 },
+  }),
+});
 const RECIPIENT = "creative@7z-magic.com";
 const ALLOWED_ORIGINS = new Set(["https://7z-magic.com", "https://www.7z-magic.com"]);
 
@@ -46,6 +64,9 @@ export async function prepare(sql) {
     commission_percent INTEGER NOT NULL DEFAULT 0,
     commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
     commission_status TEXT NOT NULL DEFAULT 'NOT_APPLICABLE',
+    commission_paid_at TIMESTAMPTZ,
+    commission_paid_by TEXT NOT NULL DEFAULT '',
+    commission_payment_reference TEXT NOT NULL DEFAULT '',
     pending_student_email_status TEXT NOT NULL DEFAULT 'NOT_SENT',
     pending_student_email_sent_at TIMESTAMPTZ,
     pending_student_email_attempted_at TIMESTAMPTZ,
@@ -83,6 +104,9 @@ export async function prepare(sql) {
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_percent INTEGER NOT NULL DEFAULT 0`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_jod NUMERIC(10,3) NOT NULL DEFAULT 0`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_status TEXT NOT NULL DEFAULT 'NOT_APPLICABLE'`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_paid_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_paid_by TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_payment_reference TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS course_id TEXT NOT NULL DEFAULT 'cinematic-film'`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS price_jod NUMERIC(10,3) NOT NULL DEFAULT 250`;
@@ -90,6 +114,22 @@ export async function prepare(sql) {
   await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_seat_key ON course_registrations (course_id,seat_number)`;
   await sql`ALTER TABLE course_registrations DROP CONSTRAINT IF EXISTS course_registrations_email_key`;
   await sql`ALTER TABLE course_registrations DROP CONSTRAINT IF EXISTS course_registrations_seat_number_key`;
+  await sql`CREATE TABLE IF NOT EXISTS course_coupons (
+    id BIGSERIAL PRIMARY KEY, course_id TEXT NOT NULL CHECK (course_id IN ('cinematic-film','ai-engineering')),
+    code TEXT NOT NULL, discount_percent INTEGER NOT NULL CHECK (discount_percent BETWEEN 1 AND 100),
+    affiliate_name TEXT NOT NULL DEFAULT '', commission_percent INTEGER NOT NULL DEFAULT 0 CHECK (commission_percent BETWEEN 0 AND 100),
+    requires_previous_email BOOLEAN NOT NULL DEFAULT FALSE, active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_by TEXT NOT NULL DEFAULT '', updated_by TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(course_id, code)
+  `;
+  for (const [courseId, courseCoupons] of Object.entries(DEFAULT_COURSE_COUPONS)) {
+    for (const [code, coupon] of Object.entries(courseCoupons)) {
+      await sql`INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email)
+        VALUES(${courseId},${code},${coupon.discountPercent},${coupon.affiliateName},${coupon.commissionPercent},${Boolean(coupon.requiresPreviousEmail)})
+        ON CONFLICT(course_id,code) DO NOTHING`;
+    }
+  }
   await sql`CREATE TABLE IF NOT EXISTS course_checkout_intents (
     id BIGSERIAL PRIMARY KEY,
     token_hash TEXT NOT NULL UNIQUE,
