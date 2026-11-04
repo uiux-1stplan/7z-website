@@ -81,3 +81,34 @@
 @media(max-width:900px){#z7-admin-workspace-shell{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:10px}#z7-admin-workspace-nav{grid-column:1;grid-row:1;position:sticky!important;top:calc(var(--z7-admin-header-height,0px) + 8px)!important;flex-direction:row;align-items:center;overflow-x:auto;scrollbar-width:none;padding:8px!important;z-index:80}#z7-admin-workspace-nav::-webkit-scrollbar{display:none}.z7-workspace-nav-brand,.z7-workspace-nav-group{display:none!important}#z7-admin-workspace-nav button{flex:0 0 auto;width:auto;min-width:max-content;min-height:38px!important;padding:0 12px!important}#z7-admin-workspace-search{grid-column:1;grid-row:2}#z7-admin-workspace-stage{grid-column:1;grid-row:3}}
 @media(max-width:620px){.z7-af-head{display:block}.z7-af-actions{margin-top:12px}.z7-af-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.z7-af-stat{padding:12px}.z7-af-stat strong{font-size:18px}.z7-academy-finance{padding:14px!important}.z7-af-form{grid-template-columns:1fr 1fr;gap:10px}}
 @media(max-width:380px){.z7-af-stats{grid-template-columns:1fr 1fr}.z7-af-form{grid-template-columns:1fr}}
+
+/* Administrative actions and clearer course management hierarchy */
+.z7-academy-finance{position:relative;overflow:hidden}
+.z7-af-head{padding:2px 2px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.z7-af-head>div:first-child{max-width:760px}
+.z7-af-head .eyebrow{color:#8db5ff}
+.z7-af-tabs{position:sticky;top:calc(var(--z7-admin-header-height,0px) + 64px);z-index:20;backdrop-filter:blur(14px)}
+.z7-af-view{padding:7px 2px 2px}
+.z7-af-view>.eyebrow{display:inline-block;margin-bottom:6px;color:#8db5ff}
+.z7-af-table tbody tr{transition:background .18s ease}
+.z7-af-table tbody tr:hover{background:rgba(102,151,244,.045)}
+.z7-af-table td{line-height:1.55}
+.z7-af-subhead{margin:24px 0 8px!important;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)}
+.z7-af-compact{min-width:760px}
+.z7-af-form{align-items:end;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.z7-af-form-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.z7-af-controls{gap:6px}
+.z7-af-controls .button{transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.z7-af-controls .button:hover{transform:translateY(-1px)}
+.z7-academy-finance .button-danger{min-height:32px;padding:7px 10px;border:1px solid rgba(255,106,120,.2);border-radius:9px;background:rgba(255,91,104,.075);color:#ffa0a8;font:inherit;font-size:10px;font-weight:650;white-space:nowrap}
+.z7-academy-finance .button-danger:hover{border-color:rgba(255,106,120,.4);background:rgba(255,91,104,.13);color:#ffd3d6}
+.z7-academy-finance button:focus-visible,.z7-academy-finance input:focus-visible,.z7-academy-finance select:focus-visible{outline:2px solid #75a4ff;outline-offset:2px}
+#af-registrations-body .button-danger{white-space:nowrap}
+@media(max-width:900px){.z7-af-tabs{top:8px}}
+@media(max-width:620px){
+  .z7-af-head{padding-bottom:12px}
+  .z7-af-tabs{position:relative;top:auto;margin-inline:-2px}
+  .z7-af-form-actions{grid-column:1/-1}
+  .z7-af-form-actions .button{flex:1}
+  .z7-af-subhead{margin-top:20px!important;padding-top:14px}
+}
