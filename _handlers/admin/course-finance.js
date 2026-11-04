@@ -196,19 +196,20 @@ export default async function handler(req, res) {
       const discountPercent = Number(body.discountPercent);
       const commissionPercent = Number(body.commissionPercent || 0);
       const affiliateName = clean(body.affiliateName, 120);
-      const requiresPreviousEmail = body.requiresPreviousEmail === true;\n      const couponId = body.couponId == null ? null : Number(body.couponId);
+      const requiresPreviousEmail = body.requiresPreviousEmail === true;
+      const couponId = body.couponId == null ? null : Number(body.couponId);
       if (!COURSES[courseId]) return fail(res, 400, "Choose a valid course.");
       if (!/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(code)) return fail(res, 400, "Use 2–24 English letters, numbers, or hyphens for the code.");
       if (!percent(discountPercent) || discountPercent === 0 || !percent(commissionPercent)) return fail(res, 400, "Discount and commission rates must be between 0% and 100%.");
       if (commissionPercent > 0 && !affiliateName) return fail(res, 400, "Enter an affiliate name when setting a commission.");
       if (couponId !== null && (!Number.isSafeInteger(couponId) || couponId < 1)) return fail(res, 400, "The discount code update is invalid.");
       if (couponId !== null) {
-        const conflict = await sql`SELECT id FROM course_coupons WHERE course_id=${courseId} AND code=${code} AND id<>${couponId} AND deleted_at IS NULL`;
+        const conflict = await sql`SELECT id FROM course_coupons WHERE course_id=${courseId} AND code=${code} AND id<>${couponId}`;
         if (conflict.length) return fail(res, 409, "That code already exists for this course.");
         const updated = await sql`
           UPDATE course_coupons SET course_id=${courseId},code=${code},discount_percent=${discountPercent},
             affiliate_name=${affiliateName},commission_percent=${commissionPercent},
-            requires_previous_email=${requiresPreviousEmail},active=TRUE,updated_by=${gate.auth.userId},updated_at=NOW()
+            requires_previous_email=${requiresPreviousEmail},updated_by=${gate.auth.userId},updated_at=NOW()
           WHERE id=${couponId} AND deleted_at IS NULL RETURNING id
         `;
         if (!updated[0]) return fail(res, 404, "Discount code not found.");
@@ -229,7 +230,7 @@ export default async function handler(req, res) {
     if (action === "toggle-coupon") {
       const couponId = Number(body.couponId);
       if (!Number.isSafeInteger(couponId) || couponId < 1 || typeof body.active !== "boolean") return fail(res, 400, "The discount code update is invalid.");
-      const rows = await sql`UPDATE course_coupons SET active=${body.active},updated_by=${gate.auth.userId},updated_at=NOW() WHERE id=${couponId} RETURNING course_id,code,active`;
+      const rows = await sql`UPDATE course_coupons SET active=${body.active},updated_by=${gate.auth.userId},updated_at=NOW() WHERE id=${couponId} AND deleted_at IS NULL RETURNING course_id,code,active`;
       if (!rows[0]) return fail(res, 404, "Discount code not found.");
       await writeAudit({ actorUserId: gate.auth.userId, action: body.active ? "COURSE_COUPON_ACTIVATED" : "COURSE_COUPON_DEACTIVATED", targetType: "course_coupon", targetId: `${rows[0].course_id}:${rows[0].code}`, details: rows[0] });
       return sendJson(res, 200, { ok: true });
@@ -264,12 +265,11 @@ export default async function handler(req, res) {
 
     if (action === "mark-commission-paid") {
       const registrationId = Number(body.registrationId);
-      const reference = clean(body.reference, 160);
-      if (!Number.isSafeInteger(registrationId) || registrationId < 1 || reference.length < 3) return fail(res, 400, "Enter the transfer reference after paying the commission.");
+      if (!Number.isSafeInteger(registrationId) || registrationId < 1) return fail(res, 400, "The commission update is invalid.");
       const rows = await sql`
         UPDATE course_registrations SET commission_status='PAID', commission_paid_at=NOW(),
           commission_paid_by=${gate.auth.userId}
-        WHERE id=${registrationId} AND payment_status='PAID' AND commission_percent > 0 AND commission_status='PAYABLE'
+        WHERE id=${registrationId} AND deleted_at IS NULL AND payment_status='PAID' AND commission_percent > 0 AND commission_status='PAYABLE'
         RETURNING id,course_id,seat_number,affiliate_name,commission_jod,commission_status
       `;
       if (!rows[0]) return fail(res, 409, "This commission is not currently payable. Refresh and check its status.");
