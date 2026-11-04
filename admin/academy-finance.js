@@ -404,10 +404,283 @@
     finally { button.disabled = false; }
   }
 
-  function csvCell(raw) {
-    let text = String(raw ?? "");
-    if (/^[=+\-@\t\r]/.test(text)) text = "'" + text;
-    return '"' + text.replaceAll('"', '""') + '"';
+  function excelCell(value, style = 5) {
+    return value === null || value === undefined ? null : { value, style };
+  }
+
+  function excelColumn(number) {
+    let label = "";
+    while (number > 0) {
+      const remainder = (number - 1) % 26;
+      label = String.fromCharCode(65 + remainder) + label;
+      number = Math.floor((number - 1) / 26);
+    }
+    return label;
+  }
+
+  function excelDate(value) {
+    const time = new Date(value).getTime();
+    return Number.isFinite(time) ? (time - Date.UTC(1899, 11, 30)) / 86400000 : null;
+  }
+
+  function excelXml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;"
+    })[char]);
+  }
+
+  function crc32(bytes) {
+    let crc = 0xffffffff;
+    for (const byte of bytes) {
+      crc ^= byte;
+      for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+    }
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  function joinBytes(parts) {
+    const length = parts.reduce((sum, part) => sum + part.length, 0);
+    const joined = new Uint8Array(length);
+    let offset = 0;
+    for (const part of parts) { joined.set(part, offset); offset += part.length; }
+    return joined;
+  }
+
+  function zipWorkbook(entries) {
+    const encoder = new TextEncoder();
+    const localParts = [];
+    const centralParts = [];
+    let localOffset = 0;
+    for (const [name, content] of Object.entries(entries)) {
+      const filename = encoder.encode(name);
+      const data = encoder.encode(content);
+      const checksum = crc32(data);
+      const local = new Uint8Array(30);
+      const lv = new DataView(local.buffer);
+      lv.setUint32(0, 0x04034b50, true);
+      lv.setUint16(4, 20, true);
+      lv.setUint16(6, 0x0800, true);
+      lv.setUint16(8, 0, true);
+      lv.setUint32(14, checksum, true);
+      lv.setUint32(18, data.length, true);
+      lv.setUint32(22, data.length, true);
+      lv.setUint16(26, filename.length, true);
+      localParts.push(local, filename, data);
+
+      const central = new Uint8Array(46);
+      const cv = new DataView(central.buffer);
+      cv.setUint32(0, 0x02014b50, true);
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint16(8, 0x0800, true);
+      cv.setUint16(10, 0, true);
+      cv.setUint32(16, checksum, true);
+      cv.setUint32(20, data.length, true);
+      cv.setUint32(24, data.length, true);
+      cv.setUint16(28, filename.length, true);
+      cv.setUint32(42, localOffset, true);
+      centralParts.push(central, filename);
+      localOffset += local.length + filename.length + data.length;
+    }
+    const centralSize = centralParts.reduce((sum, part) => sum + part.length, 0);
+    const end = new Uint8Array(22);
+    const ev = new DataView(end.buffer);
+    ev.setUint32(0, 0x06054b50, true);
+    ev.setUint16(8, Object.keys(entries).length, true);
+    ev.setUint16(10, Object.keys(entries).length, true);
+    ev.setUint32(12, centralSize, true);
+    ev.setUint32(16, localOffset, true);
+    return joinBytes([...localParts, ...centralParts, end]);
+  }
+
+  function excelStylesXml() {
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<numFmts count="3"><numFmt numFmtId="164" formatCode="#,##0.000;[Red]-#,##0.000"/><numFmt numFmtId="165" formatCode="0&quot;%&quot;"/><numFmt numFmtId="166" formatCode="dd mmm yyyy hh:mm"/></numFmts>' +
+      '<fonts count="4"><font><sz val="10"/><color rgb="FF1C2A3C"/><name val="Aptos"/></font><font><b/><sz val="17"/><color rgb="FFFFFFFF"/><name val="Aptos Display"/></font><font><i/><sz val="10"/><color rgb="FF607087"/><name val="Aptos"/></font><font><b/><sz val="10"/><color rgb="FFFFFFFF"/><name val="Aptos"/></font></fonts>' +
+      '<fills count="6"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF101B2B"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FF365D95"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFEAF0F7"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF3F6FA"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+      '<borders count="3"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color rgb="FFE1E7EF"/></left><right style="thin"><color rgb="FFE1E7EF"/></right><top/><bottom style="thin"><color rgb="FFE1E7EF"/></bottom><diagonal/></border><border><left/><right/><top/><bottom style="medium"><color rgb="FF7895BB"/></bottom><diagonal/></border></borders>' +
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+      '<cellXfs count="14">' +
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+      '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>' +
+      '<xf numFmtId="0" fontId="2" fillId="4" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>' +
+      '<xf numFmtId="0" fontId="3" fillId="3" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>' +
+      '<xf numFmtId="0" fontId="3" fillId="2" borderId="2" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>' +
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>' +
+      '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>' +
+      '<xf numFmtId="165" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>' +
+      '<xf numFmtId="166" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment vertical="center"/></xf>' +
+      '<xf numFmtId="0" fontId="0" fillId="5" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>' +
+      '<xf numFmtId="164" fontId="0" fillId="5" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>' +
+      '<xf numFmtId="165" fontId="0" fillId="5" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>' +
+      '<xf numFmtId="3" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>' +
+      '<xf numFmtId="3" fontId="0" fillId="5" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>' +
+      '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  }
+
+  function excelSheetXml(sheet) {
+    const rowCount = sheet.rows.length;
+    const columnCount = Math.max(1, ...sheet.rows.map((row) => row.length));
+    const lastCell = excelColumn(columnCount) + rowCount;
+    const rowsXml = sheet.rows.map((row, rowIndex) => {
+      const rowNumber = rowIndex + 1;
+      const height = sheet.rowHeights?.[rowIndex];
+      const cells = row.map((cell, columnIndex) => {
+        if (!cell) return "";
+        const ref = excelColumn(columnIndex + 1) + rowNumber;
+        const style = Number.isInteger(cell.style) ? ' s="' + cell.style + '"' : "";
+        if (typeof cell.value === "number" && Number.isFinite(cell.value)) {
+          return '<c r="' + ref + '"' + style + '><v>' + cell.value + '</v></c>';
+        }
+        return '<c r="' + ref + '" t="inlineStr"' + style + '><is><t xml:space="preserve">' + excelXml(cell.value) + '</t></is></c>';
+      }).join("");
+      return '<row r="' + rowNumber + '"' + (height ? ' ht="' + height + '" customHeight="1"' : "") + '>' + cells + '</row>';
+    }).join("");
+    const columns = sheet.widths.map((width, index) => '<col min="' + (index + 1) + '" max="' + (index + 1) + '" width="' + width + '" customWidth="1"/>').join("");
+    const pane = sheet.freezeRows ? '<sheetViews><sheetView workbookViewId="0"><pane ySplit="' + sheet.freezeRows + '" topLeftCell="A' + (sheet.freezeRows + 1) + '" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A' + (sheet.freezeRows + 1) + '" sqref="A' + (sheet.freezeRows + 1) + '"/></sheetView></sheetViews>' : '<sheetViews><sheetView workbookViewId="0"/></sheetViews>';
+    const mergeXml = sheet.merges?.length ? '<mergeCells count="' + sheet.merges.length + '">' + sheet.merges.map((range) => '<mergeCell ref="' + range + '"/>').join("") + '</mergeCells>' : "";
+    const filterXml = sheet.filter ? '<autoFilter ref="' + sheet.filter + '"/>' : "";
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<dimension ref="A1:' + lastCell + '"/>' + pane + '<cols>' + columns + '</cols><sheetData>' + rowsXml + '</sheetData>' + filterXml + mergeXml + '</worksheet>';
+  }
+
+  function makeExcelWorkbook(sheets) {
+    const contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>' +
+      sheets.map((_, index) => '<Override PartName="/xl/worksheets/sheet' + (index + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join("") +
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
+    const rootRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+    const workbookRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      sheets.map((_, index) => '<Relationship Id="rId' + (index + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (index + 1) + '.xml"/>').join("") +
+      '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+    const workbookXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<bookViews><workbookView activeTab="0"/></bookViews><sheets>' +
+      sheets.map((sheet, index) => '<sheet name="' + excelXml(sheet.name) + '" sheetId="' + (index + 1) + '" r:id="rId' + (index + 1) + '"/>').join("") +
+      '</sheets><calcPr calcId="191029"/></workbook>';
+    const entries = {
+      "[Content_Types].xml": contentTypes,
+      "_rels/.rels": rootRels,
+      "xl/workbook.xml": workbookXml,
+      "xl/_rels/workbook.xml.rels": workbookRels,
+      "xl/styles.xml": excelStylesXml()
+    };
+    sheets.forEach((sheet, index) => { entries["xl/worksheets/sheet" + (index + 1) + ".xml"] = excelSheetXml(sheet); });
+    return zipWorkbook(entries);
+  }
+
+  function makeFinanceReportSheets(allRows, courseFilter) {
+    const selected = allRows.filter((row) => courseFilter === "all" || row.course_id === courseFilter);
+    const paid = selected.filter((row) => row.payment_status === "PAID");
+    const pending = selected.filter((row) => row.payment_status === "PENDING_REVIEW");
+    const selectedCourses = (state.courseSummary || []).filter((row) => courseFilter === "all" || row.course_id === courseFilter);
+    const selectedAffiliates = (state.commissionSummary || []).filter((row) => courseFilter === "all" || row.course_id === courseFilter);
+    const selectedCodes = (state.couponSummary || []).filter((row) => courseFilter === "all" || row.course_id === courseFilter);
+    const adjustments = (state.refundAdjustments || []).filter((row) => courseFilter === "all" || row.course_id === courseFilter);
+    const sum = (rows, key) => rows.reduce((total, row) => total + Number(row[key] || 0), 0);
+    const currency = (value, alternate = false) => excelCell(Number(value || 0), alternate ? 10 : 6);
+    const count = (value, alternate = false) => excelCell(Number(value || 0), alternate ? 13 : 12);
+    const percent = (value, alternate = false) => excelCell(Number(value || 0), alternate ? 11 : 7);
+    const textCell = (value, alternate = false) => excelCell(String(value ?? "—"), alternate ? 9 : 5);
+    const title = (label, cols, style) => [excelCell(label, style), ...Array(cols - 1).fill(null)];
+
+    const summaryRows = [
+      title("7Z MAGIC  |  ACADEMY FINANCE", 10, 1),
+      title("Financial reconciliation · All amounts in JOD · Filter: " + (courseFilter === "all" ? "All courses" : courseName(courseFilter)) + " · Generated " + new Date().toLocaleString("en-JO"), 10, 2),
+      Array(10).fill(null),
+      title("Executive overview", 10, 3),
+      ["Metric","Value","Metric","Value","Metric","Value","Metric","Value","Metric","Value"].map((value) => excelCell(value,4)),
+      [
+        textCell("Registrations"), count(selected.length), textCell("Paid"), count(paid.length),
+        textCell("Pending review"), count(pending.length), textCell("Collected after discount"), currency(sum(paid.map((row)=>({net:netAfterDiscount(row)})),"net")),
+        textCell("Commission due"), currency(sum(paid.filter((row)=>row.commission_status==="PAYABLE"),"commission_jod"))
+      ],
+      [
+        textCell("List value"), currency(sum(paid,"price_jod")), textCell("Discounts"), currency(sum(paid,"discount_jod")),
+        textCell("Commission earned"), currency(sum(paid,"commission_jod")), textCell("Commission recorded paid"), currency(sum(paid.filter((row)=>row.commission_status==="PAID"),"commission_jod")),
+        textCell("Academy net"), currency(paid.reduce((total,row)=>total+academyNet(row),0))
+      ],
+      Array(10).fill(null),
+      title("Course reconciliation", 10, 3),
+      ["Course","Registrations","Awaiting review","Paid","List value (JOD)","Discounts (JOD)","Collected (JOD)","Commission (JOD)","Commission due (JOD)","Academy net (JOD)"].map((value)=>excelCell(value,4))
+    ];
+    selectedCourses.forEach((row,index)=>{
+      const alt=index%2===1;
+      summaryRows.push([
+        textCell(courseName(row.course_id),alt),count(row.registrations,alt),count(row.pending_payments,alt),count(row.paid_registrations,alt),
+        currency(row.paid_list_value,alt),currency(row.discounts_applied,alt),currency(row.net_collected,alt),
+        currency(row.commission_total,alt),currency(row.commission_payable,alt),currency(row.academy_net,alt)
+      ]);
+    });
+    summaryRows.push(Array(10).fill(null), title("Affiliate reconciliation",10,3));
+    summaryRows.push(["Course","Affiliate","Paid registrations","Collected after discount (JOD)","Commission earned (JOD)","Recorded paid (JOD)","Still due (JOD)","Academy net (JOD)"].map((value)=>excelCell(value,4)));
+    selectedAffiliates.forEach((row,index)=>{
+      const alt=index%2===1;
+      summaryRows.push([
+        textCell(courseName(row.course_id),alt),textCell(row.affiliate_name,alt),count(row.paid_registrations,alt),
+        currency(row.paid_after_discount,alt),currency(row.commission_total,alt),currency(row.commission_paid,alt),
+        currency(row.commission_payable,alt),currency(row.academy_net,alt)
+      ]);
+    });
+    summaryRows.push(Array(10).fill(null), title("Discount code performance",10,3));
+    summaryRows.push(["Course","Code","Uses","Discount total (JOD)","Commission total (JOD)"].map((value)=>excelCell(value,4)));
+    selectedCodes.forEach((row,index)=>{
+      const alt=index%2===1;
+      summaryRows.push([textCell(courseName(row.course_id),alt),textCell(row.code,alt),count(row.uses,alt),currency(row.discount_total,alt),currency(row.commission_total,alt)]);
+    });
+    summaryRows.push(Array(10).fill(null), title("Removed registrations · Refund liabilities",10,3));
+    summaryRows.push(["Course","Registration","List price (JOD)","Discount (JOD)","Amount after discount (JOD)","Refund due (JOD)","Commission already paid (JOD)","Status","Removed at"].map((value)=>excelCell(value,4)));
+    adjustments.forEach((row,index)=>{
+      const alt=index%2===1;
+      summaryRows.push([
+        textCell(courseName(row.course_id),alt),count(row.seat_number,alt),currency(row.list_price_jod,alt),currency(row.discount_jod,alt),
+        currency(row.amount_after_discount_jod,alt),currency(row.refund_due_jod,alt),currency(row.commission_already_paid_jod,alt),
+        textCell(row.refund_status,alt),excelCell(excelDate(row.deleted_at),alt?9:8)
+      ]);
+    });
+
+    const detailRows=[
+      title("7Z MAGIC  |  REGISTRATION DETAIL",16,1),
+      title("All active registrations for " + (courseFilter==="all"?"all courses":courseName(courseFilter)) + " · Amounts in JOD · Generated " + new Date().toLocaleString("en-JO"),16,2),
+      Array(16).fill(null),
+      ["Course","Registration #","Student","Email","Payment status","List price (JOD)","Discount (%)","Discount (JOD)","After discount (JOD)","Discount code","Affiliate","Commission (%)","Commission (JOD)","Academy net (JOD)","Commission status","Registered at"].map((value)=>excelCell(value,4))
+    ];
+    selected.forEach((row,index)=>{
+      const alt=index%2===1;
+      detailRows.push([
+        textCell(courseName(row.course_id),alt),count(row.seat_number,alt),textCell(row.full_name,alt),textCell(row.email,alt),
+        textCell(statusName(row.payment_status),alt),currency(row.price_jod,alt),percent(row.discount_percent,alt),currency(row.discount_jod,alt),
+        currency(netAfterDiscount(row),alt),textCell(row.coupon_code||"—",alt),textCell(row.affiliate_name||"No affiliate",alt),
+        percent(row.commission_percent,alt),currency(row.commission_jod,alt),currency(academyNet(row),alt),
+        textCell(statusName(row.commission_status),alt),excelCell(excelDate(row.created_at),alt?9:8)
+      ]);
+    });
+
+    const adjustmentRows=[
+      title("7Z MAGIC  |  ACCOUNTING ADJUSTMENTS",9,1),
+      title("Non-identifying records retained for reconciliation · No refund is issued from this report · Amounts in JOD",9,2),
+      Array(9).fill(null),
+      ["Course","Registration #","List price (JOD)","Discount (JOD)","Amount after discount (JOD)","Refund due (JOD)","Commission already paid (JOD)","Refund status","Removed at"].map((value)=>excelCell(value,4))
+    ];
+    adjustments.forEach((row,index)=>{
+      const alt=index%2===1;
+      adjustmentRows.push([
+        textCell(courseName(row.course_id),alt),count(row.seat_number,alt),currency(row.list_price_jod,alt),currency(row.discount_jod,alt),
+        currency(row.amount_after_discount_jod,alt),currency(row.refund_due_jod,alt),currency(row.commission_already_paid_jod,alt),
+        textCell(row.refund_status,alt),excelCell(excelDate(row.deleted_at),alt?9:8)
+      ]);
+    });
+
+    return [
+      {name:"Summary",rows:summaryRows,widths:[28,18,24,18,22,18,28,20,25,20],rowHeights:{0:32,1:24},merges:["A1:J1","A2:J2"]},
+      {name:"Registrations",rows:detailRows,widths:[28,15,27,34,21,18,14,18,23,18,24,16,19,20,28,23],rowHeights:{0:32,1:24},merges:["A1:P1","A2:P2"],freezeRows:4,filter:"A4:P"+detailRows.length},
+      {name:"Adjustments",rows:adjustmentRows,widths:[28,15,18,18,25,18,27,23,23],rowHeights:{0:32,1:24},merges:["A1:I1","A2:I2"],freezeRows:4,filter:"A4:I"+adjustmentRows.length}
+    ];
   }
 
   async function exportReport() {
@@ -416,28 +689,27 @@
     if (button.disabled) return;
     const originalLabel = button.textContent;
     button.disabled = true;
-    button.textContent = "Preparing full report…";
+    button.textContent = "Building Excel report…";
     try {
       const course = $("#af-course-filter").value;
       const allRows = [...(state.registrations || [])];
       const pages = Number(state.pagination?.pages || 1);
       for (let nextPage = 2; nextPage <= pages; nextPage += 1) {
-        const pageData = await request(`/api/admin/course-finance?course=${encodeURIComponent(course)}&page=${nextPage}`);
+        const pageData = await request("/api/admin/course-finance?course=" + encodeURIComponent(course) + "&page=" + nextPage);
         allRows.push(...(pageData.registrations || []));
       }
-      const headings = ["Course", "Registration ID", "Student", "Email", "Payment status", "List price (JOD)", "Discount (%)", "Discount amount (JOD)", "Amount after discount (JOD)", "Discount code", "Affiliate", "Commission rate (%)", "Commission (JOD)", "Academy net (JOD)", "Commission status"];
-      const rows = allRows.map((row) => [
-        courseName(row.course_id), row.seat_number, row.full_name, row.email, statusName(row.payment_status),
-        row.price_jod, row.discount_percent, row.discount_jod, netAfterDiscount(row), row.coupon_code,
-        row.affiliate_name, row.commission_percent, row.commission_jod, academyNet(row), statusName(row.commission_status)
-      ]);
-      const csv = "\\uFEFF" + [headings, ...rows].map((row) => row.map(csvCell).join(",")).join("\\r\\n");
+      const sheets = makeFinanceReportSheets(allRows, course);
+      const workbook = makeExcelWorkbook(sheets);
+      const file = new Blob([workbook], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const anchor = document.createElement("a");
-      anchor.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-      anchor.download = "7z-academy-finance.csv";
+      anchor.href = URL.createObjectURL(file);
+      const date = new Date().toISOString().slice(0, 10);
+      anchor.download = "7z-academy-finance-" + (course === "all" ? "all-courses" : course) + "-" + date + ".xlsx";
+      document.body.appendChild(anchor);
       anchor.click();
-      setTimeout(() => URL.revokeObjectURL(anchor.href), 0);
-      showToast(`Full report downloaded (${allRows.length} registrations).`);
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(anchor.href), 1000);
+      showToast("Excel workbook downloaded · " + allRows.length + " registrations across " + sheets.length + " sheets.");
     } catch (error) {
       showToast(translatedError(error.message), true);
     } finally {
@@ -445,6 +717,7 @@
       button.textContent = originalLabel;
     }
   }
+
   function selectSection(tab) {
     const next = tab.dataset.afTab;
     if (!next) return;
