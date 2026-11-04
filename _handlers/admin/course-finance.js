@@ -57,7 +57,7 @@ export default async function handler(req, res) {
         SELECT id, seat_number, full_name, email, phone, location, payment_status,
           payment_provider, payment_reference, payment_proof_pathname, payment_proof_content_type, price_jod, discount_jod, discount_percent,
           coupon_code, affiliate_name, commission_percent, commission_jod, commission_status,
-          commission_paid_at, commission_payment_reference, course_id, payment_submitted_at,
+          commission_paid_at, course_id, payment_submitted_at,
           created_at, payment_verified_at
         FROM course_registrations
         WHERE deleted_at IS NULL AND (${courseId} = 'all' OR course_id = ${courseId})
