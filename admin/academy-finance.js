@@ -58,7 +58,7 @@
       "أدخل اسم المسوّق عند تحديد عمولة.": "Enter an affiliate name when setting a commission.",
       "بيانات تعديل الكود غير صحيحة.": "The discount code update is invalid.",
       "الكود غير موجود.": "Discount code not found.",
-      "أدخل مرجع تحويل العمولة بعد صرفها.": "Enter the transfer reference after paying the commission.",
+      "أدخل مرجع تحويل العمولة بعد صرفها.": "This commission update is invalid.",
       "هذه العمولة غير مستحقة للصرف حاليًا. حدّث القائمة وتحقق من حالتها.": "This commission is not currently payable. Refresh and check its status.",
       "الإجراء المطلوب غير صحيح.": "The requested action is invalid.",
       "يلزم تنفيذ الطلب من لوحة الإدارة.": "This action must be performed from the admin dashboard.",
@@ -119,6 +119,7 @@
         <td class="amount">${money(commission)}</td>
         <td class="amount"><strong>${money(academyNet(row))}</strong>${projected ? '<br><span class="z7-af-inline-note">Projected until payment is confirmed</span>' : ""}</td>
         <td>${escape(new Date(row.created_at).toLocaleDateString("en-JO"))}</td>
+        <td><button class="button button-danger" data-af-delete-registration="${escape(row.id)}" data-af-delete-name="${escape(row.full_name)}" data-af-delete-status="${escape(row.payment_status)}">Remove student</button></td>
       </tr>`;
     }).join("");
     $("#af-registrations-empty").hidden = rows.length > 0;
@@ -143,18 +144,36 @@
   function renderCoupons() {
     const course = $("#af-course-filter").value;
     const rows = (state.coupons || []).filter((row) => course === "all" || row.course_id === course);
-    const usage = new Map((state.couponSummary || []).map((row) => [`${row.course_id}:${row.code}`, row]));
+    const usage = new Map((state.couponSummary || []).map((row) => [String(row.course_id) + ":" + row.code, row]));
     $("#af-coupons-body").innerHTML = rows.map((coupon) => {
-      const summary = usage.get(`${coupon.course_id}:${coupon.code}`) || {};
-      return `<tr>
-        <td>${escape(courseName(coupon.course_id))}</td><td><strong>${escape(coupon.code)}</strong></td>
-        <td>${Number(coupon.discount_percent)}%</td><td>${escape(coupon.affiliate_name || "—")}</td>
-        <td>${Number(coupon.commission_percent)}%</td><td>${Number(summary.uses || 0)}</td>
-        <td class="amount">${money(summary.discount_total)}</td>
-        <td>${coupon.active ? '<span class="z7-af-status paid">Active</span>' : '<span class="z7-af-status">Inactive</span>'}</td>
-        <td><button class="button button-secondary" data-af-coupon="${escape(coupon.id)}" data-active="${coupon.active ? "false" : "true"}">${coupon.active ? "Deactivate" : "Activate"}</button></td>
-      </tr>`;
+      const summary = usage.get(String(coupon.course_id) + ":" + coupon.code) || {};
+      return '<tr><td>' + escape(courseName(coupon.course_id)) + '</td><td><strong>' + escape(coupon.code) +
+        '</strong></td><td>' + Number(coupon.discount_percent) + '%</td><td>' + escape(coupon.affiliate_name || "—") +
+        '</td><td>' + Number(coupon.commission_percent) + '%</td><td>' + Number(summary.uses || 0) +
+        '</td><td class="amount">' + money(summary.discount_total) + '</td><td>' +
+        (coupon.active ? '<span class="z7-af-status paid">Active</span>' : '<span class="z7-af-status">Inactive</span>') +
+        '</td><td><div class="z7-af-controls"><button class="button button-secondary" data-af-edit-coupon="' + escape(coupon.id) +
+        '">Edit</button><button class="button button-secondary" data-af-coupon="' + escape(coupon.id) +
+        '" data-active="' + (coupon.active ? "false" : "true") + '">' + (coupon.active ? "Deactivate" : "Activate") +
+        '</button><button class="button button-danger" data-af-delete-coupon="' + escape(coupon.id) + '">Delete</button></div></td></tr>';
     }).join("");
+    const grouped = new Map();
+    rows.filter((row) => row.affiliate_name).forEach((row) => {
+      const key = String(row.course_id) + ":" + String(row.affiliate_name);
+      if (!grouped.has(key)) grouped.set(key, { course_id: row.course_id, affiliate_name: row.affiliate_name, codes: [], rates: new Set() });
+      const item = grouped.get(key);
+      item.codes.push(row.code);
+      item.rates.add(Number(row.commission_percent));
+    });
+    const affiliates = [...grouped.values()];
+    $("#af-affiliate-directory").innerHTML = affiliates.map((item) =>
+      '<tr><td>' + escape(courseName(item.course_id)) + '</td><td><strong>' + escape(item.affiliate_name) +
+      '</strong></td><td>' + item.codes.length + '</td><td>' + [...item.rates].sort((a,b)=>a-b).map((rate)=>rate + "%").join(", ") +
+      '</td><td><div class="z7-af-controls"><button class="button button-secondary" data-af-edit-affiliate="' + escape(item.affiliate_name) +
+      '" data-course="' + escape(item.course_id) + '">Rename</button><button class="button button-danger" data-af-delete-affiliate="' +
+      escape(item.affiliate_name) + '" data-course="' + escape(item.course_id) + '">Remove marketer</button></div></td></tr>'
+    ).join("");
+    $("#af-affiliate-empty").hidden = affiliates.length > 0;
   }
 
   function renderCommissions() {
@@ -179,8 +198,7 @@
       <td>${escape(row.affiliate_name || "—")}</td><td>${escape(courseName(row.course_id))}</td>
       <td>${escape(row.full_name)} · #${escape(row.seat_number)}</td><td>${Number(row.commission_percent)}%</td>
       <td class="amount">${money(row.commission_jod)}</td><td>${badge(row.commission_status)}</td>
-      <td>${escape(row.commission_payment_reference || "—")}</td>
-      <td>${row.commission_status === "PAYABLE" ? `<button class="button button-secondary" data-af-payout="${escape(row.id)}">Record payout</button>` : "—"}</td>
+      <td>${row.commission_status === "PAYABLE" ? `<button class="button button-secondary" data-af-payout="${escape(row.id)}">Mark paid</button>` : "—"}</td>
     </tr>`).join("");
     $("#af-commission-ledger-empty").hidden = rows.length > 0;
   }
@@ -201,6 +219,14 @@
       <td>${escape(courseName(row.course_id))}</td><td>${escape(row.code)}</td><td>${Number(row.uses)}</td>
       <td class="amount">${money(row.discount_total)}</td><td class="amount">${money(row.commission_total)}</td>
     </tr>`).join("");
+    const adjustments = (state.refundAdjustments || []).filter((row) => course === "all" || row.course_id === course);
+    $("#af-refund-adjustments").innerHTML = adjustments.map((row) => `<tr>
+      <td>${escape(courseName(row.course_id))}</td><td>#${escape(row.seat_number)}</td>
+      <td class="amount">${money(row.list_price_jod)}</td><td class="amount">− ${money(row.discount_jod)}</td>
+      <td class="amount"><strong>${money(row.refund_due_jod)}</strong></td><td class="amount">${money(row.commission_already_paid_jod)}</td>
+      <td>${escape(row.refund_status)}</td><td>${escape(new Date(row.deleted_at).toLocaleDateString("en-JO"))}</td>
+    </tr>`).join("");
+    $("#af-refund-empty").hidden = adjustments.length > 0;
   }
 
   function render() {
@@ -286,11 +312,72 @@
   }
 
   async function recordPayout(id) {
-    const reference = prompt("Enter the transfer reference after you have paid this commission:");
-    if (!reference || reference.trim().length < 3) return;
+    if (!confirm("Mark this commission as paid in the accounting ledger? This only records your confirmation; it does not send money or use a transfer method.")) return;
     try {
-      await request("/api/admin/course-finance", { method: "POST", body: { action: "mark-commission-paid", registrationId: Number(id), reference: reference.trim() } });
-      showToast("Affiliate payout recorded.");
+      await request("/api/admin/course-finance", { method: "POST", body: { action: "mark-commission-paid", registrationId: Number(id) } });
+      showToast("Commission marked paid in the ledger.");
+      await load();
+    } catch (error) { showToast(translatedError(error.message), true); }
+  }
+
+  async function deleteRegistration(id, name, paymentStatus) {
+    const refundNote = paymentStatus === "PAID" ? " A refund adjustment will be created for the amount paid; no money will be sent." : "";
+    if (!confirm("Remove " + name + " from active student records? Personal details and the uploaded receipt will be deleted. A non-identifying accounting snapshot will remain." + refundNote)) return;
+    try {
+      const result = await request("/api/admin/course-finance", { method: "POST", body: { action: "delete-registration", registrationId: Number(id) } });
+      showToast(result.refundDue ? "Student removed. Refund liability added to reports." : "Student removed and personal details cleared.");
+      await load();
+    } catch (error) { showToast(translatedError(error.message), true); }
+  }
+
+  function editCoupon(id) {
+    const coupon = (state?.coupons || []).find((row) => Number(row.id) === Number(id));
+    if (!coupon) return;
+    $("#af-coupon-id").value = coupon.id;
+    $("#af-coupon-course").value = coupon.course_id;
+    $("#af-coupon-code").value = coupon.code;
+    $("#af-discount-percent").value = coupon.discount_percent;
+    $("#af-affiliate-name").value = coupon.affiliate_name || "";
+    $("#af-commission-percent").value = coupon.commission_percent;
+    $("#af-requires-alumni").checked = Boolean(coupon.requires_previous_email);
+    $("#af-save-coupon").textContent = "Update code";
+    $("#af-cancel-coupon-edit").hidden = false;
+    $("#af-coupon-form").scrollIntoView({ behavior: "smooth", block: "center" });
+    $("#af-coupon-code").focus();
+  }
+
+  function cancelCouponEdit() {
+    $("#af-coupon-form").reset();
+    $("#af-coupon-id").value = "";
+    $("#af-commission-percent").value = "0";
+    $("#af-save-coupon").textContent = "Save code";
+    $("#af-cancel-coupon-edit").hidden = true;
+  }
+
+  async function deleteCoupon(id) {
+    if (!confirm("Delete this discount code? It will stop working for new checkouts; previous registrations and accounting remain unchanged.")) return;
+    try {
+      await request("/api/admin/course-finance", { method: "POST", body: { action: "delete-coupon", couponId: Number(id) } });
+      showToast("Discount code deleted for future checkouts.");
+      await load();
+    } catch (error) { showToast(translatedError(error.message), true); }
+  }
+
+  async function editAffiliate(courseId, name) {
+    const newName = prompt("Enter the marketer's new name:", name);
+    if (!newName || newName.trim() === name) return;
+    try {
+      await request("/api/admin/course-finance", { method: "POST", body: { action: "edit-affiliate", courseId, affiliateName: name, newName: newName.trim() } });
+      showToast("Marketer name updated on active codes; historical registrations are unchanged.");
+      await load();
+    } catch (error) { showToast(translatedError(error.message), true); }
+  }
+
+  async function deleteAffiliate(courseId, name) {
+    if (!confirm("Remove " + name + " from " + courseName(courseId) + "? All active codes assigned to this marketer will stop working; historical records stay intact.")) return;
+    try {
+      await request("/api/admin/course-finance", { method: "POST", body: { action: "delete-affiliate", courseId, affiliateName: name } });
+      showToast("Marketer removed and their active codes disabled.");
       await load();
     } catch (error) { showToast(translatedError(error.message), true); }
   }
@@ -302,6 +389,7 @@
     try {
       await request("/api/admin/course-finance", { method: "POST", body: {
         action: "save-coupon",
+        couponId: $("#af-coupon-id").value ? Number($("#af-coupon-id").value) : null,
         courseId: $("#af-coupon-course").value,
         code: $("#af-coupon-code").value.trim().toUpperCase(),
         discountPercent: Number($("#af-discount-percent").value),
@@ -309,9 +397,8 @@
         commissionPercent: Number($("#af-commission-percent").value),
         requiresPreviousEmail: $("#af-requires-alumni").checked
       }});
-      event.currentTarget.reset();
-      $("#af-commission-percent").value = "0";
-      showToast("Discount code saved for this course only.");
+      cancelCouponEdit();
+      showToast("Discount code saved for this course only. Past registrations retain their saved values.");
       await load();
     } catch (error) { showToast(translatedError(error.message), true); }
     finally { button.disabled = false; }
@@ -372,6 +459,7 @@
   $("#af-export").addEventListener("click", exportReport);
   $("#af-search").addEventListener("input", renderRegistrationRows);
   $("#af-coupon-form").addEventListener("submit", saveCoupon);
+  $("#af-cancel-coupon-edit").addEventListener("click", cancelCouponEdit);
   $("#af-prev").addEventListener("click", () => { if (page > 1) { page -= 1; load(); } });
   $("#af-next").addEventListener("click", () => { if (state && page < state.pagination.pages) { page += 1; load(); } });
   all("[data-af-tab]").forEach((tab) => tab.addEventListener("click", () => selectSection(tab)));
@@ -380,10 +468,20 @@
     const confirmButton = event.target.closest("[data-af-confirm]");
     const coupon = event.target.closest("[data-af-coupon]");
     const payout = event.target.closest("[data-af-payout]");
+    const removeStudent = event.target.closest("[data-af-delete-registration]");
+    const editCode = event.target.closest("[data-af-edit-coupon]");
+    const deleteCode = event.target.closest("[data-af-delete-coupon]");
+    const editMarketer = event.target.closest("[data-af-edit-affiliate]");
+    const deleteMarketer = event.target.closest("[data-af-delete-affiliate]");
     if (receipt) viewReceipt(receipt.dataset.afProof);
     if (confirmButton) confirmPayment(confirmButton.dataset.afConfirm);
     if (coupon) toggleCoupon(coupon.dataset.afCoupon, coupon.dataset.active);
     if (payout) recordPayout(payout.dataset.afPayout);
+    if (removeStudent) deleteRegistration(removeStudent.dataset.afDeleteRegistration, removeStudent.dataset.afDeleteName, removeStudent.dataset.afDeleteStatus);
+    if (editCode) editCoupon(editCode.dataset.afEditCoupon);
+    if (deleteCode) deleteCoupon(deleteCode.dataset.afDeleteCoupon);
+    if (editMarketer) editAffiliate(editMarketer.dataset.course, editMarketer.dataset.afEditAffiliate);
+    if (deleteMarketer) deleteAffiliate(deleteMarketer.dataset.course, deleteMarketer.dataset.afDeleteAffiliate);
   });
   window.addEventListener("z7-admin-view-change", (event) => {
     if (event.detail?.view === "academy") scheduleLoad();
