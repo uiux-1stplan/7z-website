@@ -130,6 +130,7 @@ export async function prepare(sql) {
       requires_previous_email: Boolean(coupon.requiresPreviousEmail),
     }))
   );
+  await sql`UPDATE course_registrations SET commission_status='PAYABLE' WHERE payment_status='PAID' AND commission_percent > 0 AND commission_status='PENDING_PAYMENT_REVIEW'`;
   await sql`INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email)
     SELECT course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email
     FROM jsonb_to_recordset(${JSON.stringify(couponSeeds)}::jsonb) AS seeds(
