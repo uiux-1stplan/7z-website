@@ -123,13 +123,19 @@ export async function prepare(sql) {
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(course_id, code)
   `;
-  for (const [courseId, courseCoupons] of Object.entries(DEFAULT_COURSE_COUPONS)) {
-    for (const [code, coupon] of Object.entries(courseCoupons)) {
-      await sql`INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email)
-        VALUES(${courseId},${code},${coupon.discountPercent},${coupon.affiliateName},${coupon.commissionPercent},${Boolean(coupon.requiresPreviousEmail)})
-        ON CONFLICT(course_id,code) DO NOTHING`;
-    }
-  }
+  const couponSeeds = Object.entries(DEFAULT_COURSE_COUPONS).flatMap(([courseId, entries]) =>
+    Object.entries(entries).map(([code, coupon]) => ({
+      course_id: courseId, code, discount_percent: coupon.discountPercent,
+      affiliate_name: coupon.affiliateName, commission_percent: coupon.commissionPercent,
+      requires_previous_email: Boolean(coupon.requiresPreviousEmail),
+    }))
+  );
+  await sql`INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email)
+    SELECT course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email
+    FROM jsonb_to_recordset(${JSON.stringify(couponSeeds)}::jsonb) AS seeds(
+      course_id text, code text, discount_percent integer, affiliate_name text,
+      commission_percent integer, requires_previous_email boolean
+    ) ON CONFLICT(course_id,code) DO NOTHING`;
   await sql`CREATE TABLE IF NOT EXISTS course_checkout_intents (
     id BIGSERIAL PRIMARY KEY,
     token_hash TEXT NOT NULL UNIQUE,
