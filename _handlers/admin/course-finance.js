@@ -4,7 +4,7 @@ import { requireAdmin, writeAudit } from "../../lib/portal-runtime.mjs";
 import { toWebRequest, sendWebResponse, readJson, sendJson, methodNotAllowed } from "../../lib/vercel-api.mjs";
 
 const COURSES = Object.freeze({
-  "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250 },
+  "cinematic-film": { name: "صناعة الأفلام السينمائية بالذكاء الاصطناعي", priceJod: 250 },
   "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200 },
 });
 function isSameOrigin(req) {
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   try {
     const gate = await requireAdmin(toWebRequest(req));
     if (!gate.ok) return sendWebResponse(res, gate.response);
-    if (req.method === "POST" && !isSameOrigin(req)) return fail(res, 403, "Same-origin administrator request required.");
+    if (req.method === "POST" && !isSameOrigin(req)) return fail(res, 403, "يلزم تنفيذ الطلب من لوحة الإدارة.");
     if (!["GET", "POST"].includes(req.method)) return methodNotAllowed(res, ["GET", "POST"]);
 
     const sql = sqlClient();
@@ -34,13 +34,13 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
       if (req.query?.action === "proof") {
         const registrationId = Number(req.query?.registrationId);
-        if (!Number.isSafeInteger(registrationId) || registrationId < 1) return fail(res, 400, "Registration not found.");
+        if (!Number.isSafeInteger(registrationId) || registrationId < 1) return fail(res, 400, "التسجيل غير موجود.");
         const rows = await sql`SELECT payment_proof_pathname,payment_proof_content_type FROM course_registrations WHERE id=${registrationId}`;
         const proofUrl = String(rows[0]?.payment_proof_pathname || "");
-        if (!proofUrl) return fail(res, 404, "No payment receipt is attached to this registration.");
+        if (!proofUrl) return fail(res, 404, "لا يوجد إيصال مرفق بهذا التسجيل.");
         let parsedProof;
         try { parsedProof = new URL(proofUrl); } catch {}
-        if (!parsedProof || parsedProof.protocol !== "https:" || !parsedProof.hostname.endsWith(".private.blob.vercel-storage.com") || !parsedProof.pathname.startsWith("/course-payment-proofs/")) return fail(res, 404, "The payment receipt is unavailable.");
+        if (!parsedProof || parsedProof.protocol !== "https:" || !parsedProof.hostname.endsWith(".private.blob.vercel-storage.com") || !parsedProof.pathname.startsWith("/course-payment-proofs/")) return fail(res, 404, "الإيصال غير متاح حاليًا.");
         const pathname = decodeURIComponent(parsedProof.pathname.slice(1));
         const validUntil = Date.now() + 5 * 60 * 1000;
         const signedToken = await issueSignedToken({ pathname, operations: ["get"], validUntil });
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       }
       const rawCourse = clean(req.query?.course, 40);
       const courseId = rawCourse === "all" || !rawCourse ? "all" : rawCourse;
-      if (courseId !== "all" && !COURSES[courseId]) return fail(res, 400, "Course not found.");
+      if (courseId !== "all" && !COURSES[courseId]) return fail(res, 400, "الدورة غير موجودة.");
       const page = Math.max(1, Math.min(100000, Number.parseInt(req.query?.page, 10) || 1));
       const pageSize = 100;
       const offset = (page - 1) * pageSize;
@@ -128,10 +128,10 @@ export default async function handler(req, res) {
       const commissionPercent = Number(body.commissionPercent || 0);
       const affiliateName = clean(body.affiliateName, 120);
       const requiresPreviousEmail = body.requiresPreviousEmail === true;
-      if (!COURSES[courseId]) return fail(res, 400, "Choose a valid course.");
-      if (!/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(code)) return fail(res, 400, "Coupon code must be 2–24 characters using English letters, numbers, or hyphens.");
-      if (!percent(discountPercent) || discountPercent === 0 || !percent(commissionPercent)) return fail(res, 400, "Discount and commission rates must be between 0 and 100.");
-      if (commissionPercent > 0 && !affiliateName) return fail(res, 400, "An affiliate name is required when commission is above zero.");
+      if (!COURSES[courseId]) return fail(res, 400, "اختر دورة صحيحة.");
+      if (!/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(code)) return fail(res, 400, "يجب أن يتكون الكود من 2 إلى 24 حرفًا أو رقمًا إنجليزيًا أو شرطة.");
+      if (!percent(discountPercent) || discountPercent === 0 || !percent(commissionPercent)) return fail(res, 400, "نسبتا الخصم والعمولة يجب أن تكونا بين 0 و100.");
+      if (commissionPercent > 0 && !affiliateName) return fail(res, 400, "أدخل اسم المسوّق عند تحديد عمولة.");
       await sql`
         INSERT INTO course_coupons(course_id,code,discount_percent,affiliate_name,commission_percent,requires_previous_email,active,created_by,updated_by)
         VALUES(${courseId},${code},${discountPercent},${affiliateName},${commissionPercent},${requiresPreviousEmail},TRUE,${gate.auth.userId},${gate.auth.userId})
@@ -146,9 +146,9 @@ export default async function handler(req, res) {
 
     if (action === "toggle-coupon") {
       const couponId = Number(body.couponId);
-      if (!Number.isSafeInteger(couponId) || couponId < 1 || typeof body.active !== "boolean") return fail(res, 400, "Coupon update is invalid.");
+      if (!Number.isSafeInteger(couponId) || couponId < 1 || typeof body.active !== "boolean") return fail(res, 400, "بيانات تعديل الكود غير صحيحة.");
       const rows = await sql`UPDATE course_coupons SET active=${body.active},updated_by=${gate.auth.userId},updated_at=NOW() WHERE id=${couponId} RETURNING course_id,code,active`;
-      if (!rows[0]) return fail(res, 404, "Coupon not found.");
+      if (!rows[0]) return fail(res, 404, "الكود غير موجود.");
       await writeAudit({ actorUserId: gate.auth.userId, action: body.active ? "COURSE_COUPON_ACTIVATED" : "COURSE_COUPON_DEACTIVATED", targetType: "course_coupon", targetId: `${rows[0].course_id}:${rows[0].code}`, details: rows[0] });
       return sendJson(res, 200, { ok: true });
     }
@@ -156,22 +156,22 @@ export default async function handler(req, res) {
     if (action === "mark-commission-paid") {
       const registrationId = Number(body.registrationId);
       const reference = clean(body.reference, 160);
-      if (!Number.isSafeInteger(registrationId) || registrationId < 1 || reference.length < 3) return fail(res, 400, "Enter the commission transfer reference.");
+      if (!Number.isSafeInteger(registrationId) || registrationId < 1 || reference.length < 3) return fail(res, 400, "أدخل مرجع تحويل العمولة بعد صرفها.");
       const rows = await sql`
         UPDATE course_registrations SET commission_status='PAID', commission_paid_at=NOW(),
           commission_paid_by=${gate.auth.userId}, commission_payment_reference=${reference}
         WHERE id=${registrationId} AND payment_status='PAID' AND commission_percent > 0 AND commission_status='PAYABLE'
         RETURNING id,course_id,seat_number,affiliate_name,commission_jod,commission_status
       `;
-      if (!rows[0]) return fail(res, 409, "This commission is not currently payable. Refresh the list and check its status.");
+      if (!rows[0]) return fail(res, 409, "هذه العمولة غير مستحقة للصرف حاليًا. حدّث القائمة وتحقق من حالتها.");
       await writeAudit({ actorUserId: gate.auth.userId, action: "COURSE_COMMISSION_MARKED_PAID", targetType: "course_registration", targetId: String(registrationId), details: { ...rows[0], reference } });
       return sendJson(res, 200, { ok: true });
     }
 
-    return fail(res, 400, "Course finance action is not valid.");
+    return fail(res, 400, "الإجراء المطلوب غير صحيح.");
   } catch (error) {
     console.error("Course finance administration failed", error);
-    return fail(res, 500, "Course finance administration is temporarily unavailable.");
+    return fail(res, 500, "تعذر تحميل إدارة الدورات مؤقتًا. حاول مرة أخرى.");
   }
 }
 
