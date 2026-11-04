@@ -83,19 +83,25 @@ export default async function handler(req, res) {
           COALESCE(SUM(price_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS paid_list_value,
           COALESCE(SUM(discount_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS discounts_applied,
           COALESCE(SUM(price_jod - discount_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS net_collected,
+          COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS commission_total,
           COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID' AND commission_status = 'PAYABLE'), 0)::numeric AS commission_payable,
-          COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID' AND commission_status = 'PAID'), 0)::numeric AS commission_paid
+          COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID' AND commission_status = 'PAID'), 0)::numeric AS commission_paid,
+          COALESCE(SUM(price_jod - discount_jod - commission_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS academy_net
         FROM course_registrations
         GROUP BY course_id
       `;
       const commissionSummary = await sql`
-        SELECT course_id, COALESCE(NULLIF(affiliate_name, ''), 'بدون أفيلييت') AS affiliate_name,
-          commission_status, COUNT(*)::int AS registrations,
-          COALESCE(SUM(commission_jod), 0)::numeric AS amount
+        SELECT course_id, COALESCE(NULLIF(affiliate_name, ''), 'Direct / no affiliate') AS affiliate_name,
+          COUNT(*) FILTER (WHERE payment_status = 'PAID')::int AS paid_registrations,
+          COALESCE(SUM(price_jod - discount_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS paid_after_discount,
+          COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS commission_total,
+          COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID' AND commission_status = 'PAYABLE'), 0)::numeric AS commission_payable,
+          COALESCE(SUM(commission_jod) FILTER (WHERE payment_status = 'PAID' AND commission_status = 'PAID'), 0)::numeric AS commission_paid,
+          COALESCE(SUM(price_jod - discount_jod - commission_jod) FILTER (WHERE payment_status = 'PAID'), 0)::numeric AS academy_net
         FROM course_registrations
-        WHERE commission_percent > 0 AND payment_status = 'PAID'
-        GROUP BY course_id, COALESCE(NULLIF(affiliate_name, ''), 'بدون أفيلييت'), commission_status
-        ORDER BY course_id, affiliate_name, commission_status
+        WHERE commission_percent > 0
+        GROUP BY course_id, COALESCE(NULLIF(affiliate_name, ''), 'Direct / no affiliate')
+        ORDER BY course_id, affiliate_name
       `;
       const couponSummary = await sql`
         SELECT course_id, coupon_code AS code, COUNT(*)::int AS uses,
