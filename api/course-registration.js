@@ -122,7 +122,7 @@ export async function prepare(sql) {
     created_by TEXT NOT NULL DEFAULT '', updated_by TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(course_id, code)
-  `;
+  )`;
   const couponSeeds = Object.entries(DEFAULT_COURSE_COUPONS).flatMap(([courseId, entries]) =>
     Object.entries(entries).map(([code, coupon]) => ({
       course_id: courseId, code, discount_percent: coupon.discountPercent,
