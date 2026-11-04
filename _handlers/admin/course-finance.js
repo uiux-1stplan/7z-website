@@ -1,7 +1,7 @@
 import { issueSignedToken, presignUrl } from "@vercel/blob";
 import { prepare, sqlClient } from "../../api/course-registration.js";
 import { requireAdmin, writeAudit } from "../../lib/portal-runtime.mjs";
-import { toWebRequest, sendWebResponse, readJson, sendJson, methodNotAllowed } from "../../lib/vercel-api.mjs";
+import { toWebRequest, sendWebResponse, readJson, sendJson } from "../../lib/vercel-api.mjs";
 
 const COURSES = Object.freeze({
   "cinematic-film": { name: "صناعة الأفلام السينمائية بالذكاء الاصطناعي", priceJod: 250 },
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     const gate = await requireAdmin(toWebRequest(req));
     if (!gate.ok) return sendWebResponse(res, gate.response);
     if (req.method === "POST" && !isSameOrigin(req)) return fail(res, 403, "يلزم تنفيذ الطلب من لوحة الإدارة.");
-    if (!["GET", "POST"].includes(req.method)) return methodNotAllowed(res, ["GET", "POST"]);
+    if (!["GET", "POST"].includes(req.method)) return fail(res, 405, "طريقة الطلب غير مدعومة.");
 
     const sql = sqlClient();
     await prepare(sql);
