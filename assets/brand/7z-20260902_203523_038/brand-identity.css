@@ -1,0 +1,5 @@
+/* Approved 7Z artwork. Existing layout and animation rules remain. */
+img[src*="/assets/brand/7z-20260902_203523_038/"],
+img[src*="/media/main_logo/"] {
+  object-fit: contain !important;
+}
