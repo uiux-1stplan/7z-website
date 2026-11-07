@@ -1998,6 +1998,7 @@
     }
 
     const section = $("#websites");
+    if (!section) return;
     const root = $("[data-selected-experiences]", section);
     const dataNode = $("#selectedExperiencesData");
 
