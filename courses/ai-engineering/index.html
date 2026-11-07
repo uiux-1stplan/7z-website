@@ -109,6 +109,14 @@ body.z7-cinematic-home main > section.wrap-section > .quote {
   body.z7-cinematic-home main > section.wrap-section > .section-head { margin-bottom: 13px !important; }
 }
 
+/* The global site stylesheet gives .intro a full-viewport minimum height. On this page, intro is section copy, so keep it content-sized. */
+body.z7-cinematic-home main > section.wrap-section > .section-head .intro {
+  position: static !important;
+  isolation: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
 </style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/css/academy-course-shared.css?v=20261103-5"></head>
 <body class="subpage z7-cinematic-home" data-static-background="true">
 <header class="wrap top academy-header" aria-label="التنقل الرئيسي"><a class="brand" href="/courses/" aria-label="7Z MAGIC"><img src="/assets/brand/7z-20260902_203523_038/logo.png" alt=""><span>7Z MAGIC<small>AI CINEMATIC FILMMAKING</small></span></a><div class="tools"><a class="tool" href="/courses/" data-i="allCourses">كل الدورات</a><button class="tool" id="lang" type="button" aria-label="Switch language">EN</button><button class="tool" id="theme" type="button" data-i="theme">المظهر</button></div></header>
