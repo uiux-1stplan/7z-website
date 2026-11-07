@@ -2,7 +2,7 @@ import tls from "node:tls";
 import { createHash, randomBytes } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
 
-const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: 60 }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 200, capacity: 40 } });
+const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: 60 }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 250, capacity: 40 } });
 const DEFAULT_COURSE = "cinematic-film";
 const ACADEMY_CAPACITY = 100;
 const RECIPIENT = "creative@7z-magic.com";
