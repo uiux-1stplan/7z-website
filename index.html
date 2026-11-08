@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-z7-core>
+<html lang="en" data-z7-core data-z7-visual="spatial">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -63,6 +63,7 @@
   <a class="z7-visually-hidden" href="#mainContent">Skip to content</a>
 
   <div class="z7-loader" id="z7Loader" role="status" aria-live="polite" aria-label="Preparing 7Z Magic experience">
+    <span class="z7-loader__orb" aria-hidden="true"></span>
     <div class="z7-loader__inner">
       <div class="z7-loader__top">
         <img class="z7-loader__mark" src="/media/main_logo/7ZMagic-brand-canonical.png" width="210" height="80" alt="7Z Magic" decoding="async">
@@ -74,6 +75,7 @@
   </div>
 
   <div class="z7-transition" id="z7Transition" aria-hidden="true" hidden>
+    <span class="z7-transition__orb" aria-hidden="true"></span>
     <div class="z7-transition__inner">
       <p class="z7-transition__label" data-z7-transition-label>7Z Magic</p>
       <span class="z7-transition__index">NEXT SCENE / 7Z</span>
@@ -111,14 +113,14 @@
       </nav>
       <div class="z7-header__actions">
         <a class="z7-header__social" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer" aria-label="7Z Magic on Instagram">Instagram</a>
-        <a class="z7-header__contact" href="mailto:creative@7z-magic.com">Email us</a>
+        <a class="z7-header__contact magnetic" href="mailto:creative@7z-magic.com">Email us</a>
         <button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button>
       </div>
     </div>
   </header>
 
   <main class="z7-main z7-home" id="mainContent" tabindex="-1">
-          <section class="intro z7-cinema" id="intro" aria-label="7Z Magic — Interactive Digital Experience">
+          <section class="intro z7-cinema" id="intro" aria-label="7Z Magic — Interactive Digital Experience" data-z7-hero-stage>
             <div class="z7-cinema__background" aria-hidden="true"><video class="z7-cinema__ambient-video" data-src="/media/intro/hero.mp4" poster="/media/posters/film/1.jpg" muted loop playsinline preload="none" disablepictureinpicture></video><div class="z7-cinema__floor"></div><div class="z7-cinema__light"></div></div>
             <div class="z7-cinema__halo" aria-hidden="true"></div>
             <div class="z7-cinema__logo" role="img" aria-label="7Z"><div class="z7-cinema__logo-face"></div></div>
@@ -136,7 +138,7 @@
           </section>
 
 <section class="manifest" id="universe">
-        <div class="manifest__media manifest__media--cinema">
+        <div class="manifest__media manifest__media--cinema" data-z7-spatial>
           <div class="manifest__film-header" aria-hidden="true">
             <span class="manifest__film-kicker">Featured Film</span>
             <span class="manifest__film-type">Architecture × AI</span>
@@ -167,11 +169,11 @@
             <h2 data-z7-reveal>One vision. Five ways to make it unforgettable.</h2>
           </div>
           <nav class="service-orbit" aria-label="Explore our services">
-            <a class="service-card" href="#architecture" style="--i: 1; --service-image: url(/assets/img/charcoal-blue/architecture.webp)"><span>3D</span><strong>Spatial Stories</strong></a>
-            <a class="service-card" href="#websites" style="--i: 2; --service-image: url(/assets/img/charcoal-blue/websites.webp)"><span>UX</span><strong>Websites</strong></a>
-            <a class="service-card" href="#film" style="--i: 3; --service-image: url(/assets/img/charcoal-blue/film.webp)"><span>FM</span><strong>Campaign Films</strong></a>
-            <a class="service-card" href="#identity" style="--i: 4; --service-image: url(/media/id_design/1.png)"><span>ID</span><strong>Brand Identity</strong></a>
-            <a class="service-card" href="#product-design" style="--i: 5; --service-image: url(/assets/img/charcoal-blue/product.webp)"><span>PD</span><strong>Product Launches</strong></a>
+            <a class="service-card" data-z7-spatial href="#architecture" style="--i: 1; --service-image: url(/assets/img/charcoal-blue/architecture.webp)"><span>3D</span><strong>Spatial Stories</strong></a>
+            <a class="service-card" data-z7-spatial href="#websites" style="--i: 2; --service-image: url(/assets/img/charcoal-blue/websites.webp)"><span>UX</span><strong>Websites</strong></a>
+            <a class="service-card" data-z7-spatial href="#film" style="--i: 3; --service-image: url(/assets/img/charcoal-blue/film.webp)"><span>FM</span><strong>Campaign Films</strong></a>
+            <a class="service-card" data-z7-spatial href="#identity" style="--i: 4; --service-image: url(/media/id_design/1.png)"><span>ID</span><strong>Brand Identity</strong></a>
+            <a class="service-card" data-z7-spatial href="#product-design" style="--i: 5; --service-image: url(/assets/img/charcoal-blue/product.webp)"><span>PD</span><strong>Product Launches</strong></a>
           </nav>
         </div>
       </section>
@@ -222,7 +224,7 @@
       </section>
             <!-- 7Z_WEBSITES_PAGE_GATEWAY_V3 -->
       <section class="chapter chapter--web websites-gateway" id="websites">
-        <div class="web-stage">
+        <div class="web-stage" data-z7-spatial>
           <video class="web-stage__video z7-web-reel" muted playsinline loop preload="none" poster="/media/posters/website_project/1.jpg" data-src="/media/website_project/1.mp4" aria-hidden="true" tabindex="-1"></video>
           <div class="web-copy">
             <p class="chapter__number">03</p>
@@ -242,7 +244,7 @@
             and a stronger audience signal.
           </p>
         </div>
-        <div class="reach-metric">
+        <div class="reach-metric" data-z7-spatial>
           <span>Guaranteed minimum reach</span>
           <strong><span data-count="200000">0</span>+</strong>
           <em>Views</em>
@@ -266,7 +268,7 @@
           <p class="eyebrow">Film Production</p>
           <h2 data-z7-reveal>Commercial film language for brands that need atmosphere, story and authority.</h2>
         </div>
-        <div class="film-player magnetic">
+        <div class="film-player magnetic" data-z7-spatial>
           <video muted playsinline preload="none" data-src="media/film/1.mp4" poster="media/posters/film/1.jpg"></video>
           <button class="film-play magnetic" type="button" data-inline-video aria-label="Play film production showcase">Play Film</button>
         </div>
@@ -297,19 +299,19 @@
           </a>
         </div>
         <div class="studio-suite__grid">
-          <article class="studio-card studio-card--identity">
+          <article class="studio-card studio-card--identity" data-z7-spatial>
             <img class="studio-card__image" src="media/id_design/1.png" alt="Brand identity showcase" loading="lazy" decoding="async" />
             <span>Identity</span>
             <h3 data-z7-reveal>Brand Identity</h3>
             <p>Logo systems, visual language, launch rules and clear brand behavior.</p>
           </article>
-          <article class="studio-card studio-card--materials" id="advertising-materials">
+          <article class="studio-card studio-card--materials" id="advertising-materials" data-z7-spatial>
             <img class="studio-card__image" src="media/id_design/2.png" alt="Advertising materials showcase" loading="lazy" decoding="async" />
             <span>Campaign</span>
             <h3 data-z7-reveal>Advertising Materials</h3>
             <p>Social assets, outdoor formats, launch visuals and campaign-ready compositions.</p>
           </article>
-          <article class="studio-card studio-card--product" id="product-design">
+          <article class="studio-card studio-card--product" id="product-design" data-z7-spatial>
             <img class="studio-card__image" src="media/id_design/3.png" alt="Product design showcase" loading="lazy" decoding="async" />
             <span>Product</span>
             <h3 data-z7-reveal>Product Design</h3>
