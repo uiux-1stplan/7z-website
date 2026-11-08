@@ -273,6 +273,7 @@
       if (hero) gsap.to(hero, { scale: .96, borderRadius: "34px", ease: "none", scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top+=120", scrub: .9 } });
       if (heroAmbient) gsap.to(heroAmbient, { yPercent: 14, scale: 1.08, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .9 } });
       if (hero) gsap.to(hero.querySelectorAll("[data-z7-hero-reveal]"), { yPercent: -18, autoAlpha: .25, stagger: .035, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top+=20", scrub: .8 } });
+      if (hero) hero.querySelectorAll(".z7-cinema__card").forEach((card, index) => gsap.to(card, { y: -24 - index * 8, rotate: (index % 2 ? -1 : 1) * 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8 } }));
       const rail = document.querySelector(".comparison-scroll");
       const stage = rail?.querySelector(".comparison-stage");
       const progress = rail?.querySelector("[data-comparison-progress]");
