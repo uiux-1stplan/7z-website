@@ -212,6 +212,7 @@
 }
 
 html[data-z7-core][data-theme="light"] .z7-home .logo-hero { background:radial-gradient(ellipse at 50% 42%,rgba(15,23,42,.045),transparent 42%),var(--z7-bg); }
+html[data-z7-core][data-theme="light"] .z7-home .logo-hero__mark { filter:invert(1); }
 html[data-z7-core][data-theme="light"] .z7-home .manifest__media,
 html[data-z7-core][data-theme="light"] .z7-home .service-preview,
 html[data-z7-core][data-theme="light"] .z7-home .work-card,
@@ -224,3 +225,9 @@ html[data-z7-core][data-theme="light"] .z7-home .manifest__film-header { color:r
 html[data-z7-core][data-theme="light"] .z7-home .manifest__film-caption { color:#fff; }
 html[data-z7-core][data-theme="light"] .z7-home .button,
 html[data-z7-core][data-theme="light"] .z7-home .behance-cta { border-color:var(--z7-rule-strong); background:var(--z7-surface); color:var(--z7-text); }
+
+
+/* The service viewfinder only leaves its grid cell while following a pointer. */
+.z7-home .service-preview.is-following { position:fixed; z-index:80; left:0; top:0; width:250px; max-width:calc(100vw - 24px); margin:0; }
+.z7-home .service-preview.is-following .service-preview__media { aspect-ratio:1.25; }
+@media (max-width:1380px) { .z7-home .service-preview.is-following { display:none; } }

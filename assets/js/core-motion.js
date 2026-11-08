@@ -7,7 +7,8 @@
   const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/courses", "/courses/ai-engineering", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const desktop = matchMedia("(min-width: 1381px) and (pointer: fine)");
-  const compact = matchMedia("(max-width: 1380px)");
+  const smoothDesktop = matchMedia("(min-width: 768px) and (pointer: fine)");
+  const compact = matchMedia("(max-width: 1180px)");
   const lowData = Boolean(navigator.connection?.saveData);
   const gsap = window.gsap;
   const ST = window.ScrollTrigger;
@@ -33,7 +34,7 @@
     } catch { return false; }
   }
   function initScroll(state) {
-    if (!Lenis || reduced.matches || lowData || !desktop.matches) return;
+    if (!Lenis || reduced.matches || lowData || !smoothDesktop.matches) return;
     const lenis = new Lenis({ autoRaf: false, lerp: .1, smoothWheel: true, syncTouch: false });
     state.lenis = lenis;
     if (gsap) {
@@ -55,7 +56,7 @@
   }
   function refreshScroll(state) {
     if (state.destroyed) return;
-    if (state.lenis && (reduced.matches || lowData || !desktop.matches)) {
+    if (state.lenis && (reduced.matches || lowData || !smoothDesktop.matches)) {
       if (gsap && state.tick) gsap.ticker.remove(state.tick);
       if (state.raf) cancelAnimationFrame(state.raf);
       if (state.update) state.lenis.off("scroll", state.update);
@@ -350,8 +351,8 @@
             floaters.set(preview, move);
           }
           const offset = 18;
-          move.x(Math.min(innerWidth - preview.offsetWidth - 12, event.clientX + offset));
-          move.y(Math.min(innerHeight - preview.offsetHeight - 12, event.clientY + offset));
+          move.x(Math.max(12, Math.min(innerWidth - preview.offsetWidth - 12, event.clientX + offset)));
+          move.y(Math.max(12, Math.min(innerHeight - preview.offsetHeight - 12, event.clientY + offset)));
         }
       }
       const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
@@ -366,7 +367,10 @@
       if (row && !row.contains(event.relatedTarget)) {
         const scope = row.closest(".service-loop__stage,.services-map");
         const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
-        if (preview && !preview.matches(":hover")) preview.classList.remove("is-visible", "is-following");
+        if (preview) {
+          preview.classList.remove("is-visible", "is-following");
+          if (gsap) gsap.set(preview, { clearProps: "transform" });
+        }
       }
     }, { passive: true, signal: state.abort.signal });
   }
@@ -381,21 +385,20 @@
       const hero = document.querySelector(".logo-hero");
       const logo = hero?.querySelector(".logo-hero__mark");
       if (hero && logo) {
-        const pinHero = matchMedia("(min-width: 701px) and (pointer:fine)").matches;
         gsap.to(logo, {
-          "--logo-scroll-scale": 1.18,
-          "--logo-scroll-y": "-16px",
-          "--logo-scroll-opacity": .3,
-          "--logo-scroll-blur": "1px",
+          "--logo-scroll-scale": .96,
+          "--logo-scroll-y": "-8px",
+          "--logo-scroll-opacity": .82,
+          "--logo-scroll-blur": "0px",
           ease: "none",
-          scrollTrigger: { trigger: hero, start: "top top", end: pinHero ? "+=62%" : "bottom top", pin: pinHero, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true }
+          scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .7, invalidateOnRefresh: true }
         });
       }
       const homeSection = document.querySelector(".home-showcase");
       const homeViewport = homeSection?.querySelector(".home-showcase__viewport");
       const homeRail = homeSection?.querySelector(".home-showcase__track");
       const homeRailCards = homeRail ? [...homeRail.children] : [];
-      if (homeSection && homeViewport && homeRail && homeRailCards.length > 1 && matchMedia("(min-width: 761px) and (pointer: fine)").matches) {
+      if (homeSection && homeViewport && homeRail && homeRailCards.length > 1 && matchMedia("(min-width: 761px) and (pointer: fine)").matches && homeRail.scrollWidth - homeViewport.clientWidth > 80) {
         const travel = () => Math.max(0, homeRail.scrollWidth - homeViewport.clientWidth);
         const updateCurve = () => {
           const center = innerWidth / 2;
@@ -406,7 +409,7 @@
             gsap.set(card, { rotationY: -offset * 10, scale: 1 - distance * .07, z: -distance * 36, transformOrigin: "50% 50%" });
           });
         };
-        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeSection, start: "top top+=80", end: () => "+=" + Math.max(travel(), innerWidth * .7), pin: true, scrub: .8, invalidateOnRefresh: true, onUpdate: updateCurve, onRefresh: updateCurve } });
+        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeSection, start: "top top+=80", end: () => "+=" + Math.max(1, travel()), pin: true, scrub: .8, invalidateOnRefresh: true, onUpdate: updateCurve, onRefresh: updateCurve } });
       }
       const homeFounderImages = [...document.querySelectorAll(".home-founder__image")];
       homeFounderImages.forEach((image, index) => gsap.fromTo(image, { clipPath: index % 2 ? "inset(0 0 0 100% round 16px)" : "inset(0 100% 0 0 round 16px)" }, {
@@ -572,7 +575,7 @@
     initSpatial(state);
     initMotion(state);
     reduced.addEventListener("change", () => { refreshScroll(state); state.resumeCanvas?.(); }, { signal: state.abort.signal });
-    desktop.addEventListener("change", () => refreshScroll(state), { signal: state.abort.signal });
+    smoothDesktop.addEventListener("change", () => refreshScroll(state), { signal: state.abort.signal });
     window.addEventListener("pagehide", () => destroy(state), { once: true, signal: state.abort.signal });
     const arriving = takeArrival() || root.hasAttribute("data-z7-arriving");
     if (fromCache) { clearOverlay(state); clearLoader(state); }
