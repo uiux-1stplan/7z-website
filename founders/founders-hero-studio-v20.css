@@ -371,7 +371,7 @@
 .z7f20__eyebrow {
   margin: 0 0 19px;
 
-  color: #e7bd62;
+  color: #4f8cff;
 
   font-size: .66rem;
   font-weight: 900;
@@ -384,10 +384,10 @@
 
   color: #fff;
 
-  font-size: clamp(4rem, 6.15vw, 6.75rem);
-  font-weight: 830;
-  line-height: .85;
-  letter-spacing: -.062em;
+  font-size: clamp(1.75rem,2.6vw,2.5rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -.02em;
 }
 
 .z7f20__title span,
@@ -398,7 +398,7 @@
 .z7f20__title em {
   margin-top: .075em;
 
-  color: #e7bd62;
+  color: #4f8cff;
 
   font-family: Georgia, "Times New Roman", serif;
   font-size: .90em;
@@ -507,7 +507,7 @@
 
   border-radius: 2px;
 
-  background: #e7bd62;
+  background: #4f8cff;
 
   transform: translateX(-50%);
 
@@ -583,7 +583,7 @@
   }
 
   .z7f20__title {
-    font-size: clamp(3.55rem, 7vw, 5.7rem);
+    font-size: clamp(1.75rem,2.6vw,2.5rem);
   }
 
   .z7f20__signature {
@@ -736,7 +736,7 @@
   }
 
   .z7f20__title {
-    font-size: clamp(2.72rem, 12.9vw, 3.85rem);
+    font-size: clamp(1.75rem,2.6vw,2.5rem);
     line-height: .87;
     letter-spacing: -.058em;
   }
@@ -817,7 +817,7 @@
   }
 
   .z7f20__title {
-    font-size: clamp(2.46rem, 12.5vw, 3.35rem);
+    font-size: clamp(1.75rem,2.6vw,2.5rem);
   }
 
   .z7f20__description {
@@ -869,7 +869,7 @@
   }
 
   .z7f20__title {
-    font-size: clamp(2.15rem, 5.3vw, 3.15rem);
+    font-size: clamp(1.75rem,2.6vw,2.5rem);
   }
 
   .z7f20__description {
