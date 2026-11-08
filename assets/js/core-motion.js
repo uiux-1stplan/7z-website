@@ -159,7 +159,47 @@
     state.loader.hidden = true;
     state.loader.style.removeProperty("transform");
     state.loader.style.removeProperty("opacity");
+    state.loader.style.removeProperty("clip-path");
     revealHero(state);
+  }
+
+  function initSpatialUI(state) {
+    const selector = ".manifest__media,.service-card,.compare,.media-tile,.web-stage,.reach-metric,.film-player,.studio-card";
+    const hydrate = scope => {
+      if (scope?.matches?.(selector)) scope.classList.add("z7-spatial");
+      scope?.querySelectorAll?.(selector).forEach(element => element.classList.add("z7-spatial"));
+    };
+    hydrate(document);
+    state.spatialObserver = new MutationObserver(records => {
+      records.forEach(record => record.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) hydrate(node);
+      }));
+    });
+    state.spatialObserver.observe(document.body, { childList: true, subtree: true });
+
+    document.addEventListener("pointermove", event => {
+      if (!desktopPointer.matches) return;
+      const surface = event.target.closest?.(".z7-spatial");
+      if (surface) {
+        const rect = surface.getBoundingClientRect();
+        surface.style.setProperty("--z7-mx", `${event.clientX - rect.left}px`);
+        surface.style.setProperty("--z7-my", `${event.clientY - rect.top}px`);
+      }
+      const magnetic = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
+      if (!magnetic || reducedMotion.matches) return;
+      const rect = magnetic.getBoundingClientRect();
+      const x = (event.clientX - rect.left - rect.width / 2) * .12;
+      const y = (event.clientY - rect.top - rect.height / 2) * .16;
+      if (gsap) gsap.to(magnetic, { x, y, duration: .45, ease: "power3.out", overwrite: "auto" });
+      else magnetic.style.transform = `translate(${x}px,${y}px)`;
+    }, { signal: state.abort.signal, passive: true });
+
+    document.addEventListener("pointerout", event => {
+      const magnetic = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
+      if (!magnetic || magnetic.contains(event.relatedTarget)) return;
+      if (gsap) gsap.to(magnetic, { x: 0, y: 0, duration: .65, ease: "elastic.out(1,.45)", overwrite: "auto" });
+      else magnetic.style.removeProperty("transform");
+    }, { signal: state.abort.signal, passive: true });
   }
 
   function revealHero(state) {
@@ -222,16 +262,18 @@
     paint();
     if (gsap) {
       gsap.to(loader, {
-        yPercent: -101, duration: .58, ease: "power3.inOut",
+        clipPath: "inset(0 0 100% 0 round 0 0 48% 48%)",
+        yPercent: -8, duration: .76, ease: "power3.inOut",
         onComplete: () => clearLoader(state)
       });
     } else if (loader.animate) {
       const animation = loader.animate([
-        { transform: "translateY(0)" }, { transform: "translateY(-101%)" }
-      ], { duration: 580, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+        { clipPath: "inset(0 0 0 0 round 0 0 48px 48px)", transform: "translateY(0)" },
+        { clipPath: "inset(0 0 100% 0 round 0 0 48% 48%)", transform: "translateY(-8%)" }
+      ], { duration: 760, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(() => clearLoader(state));
     } else clearLoader(state);
-    scheduleTimeout(state, () => clearLoader(state), 750);
+    scheduleTimeout(state, () => clearLoader(state), 930);
   }
 
   function clearOverlay(state) {
@@ -240,6 +282,7 @@
     overlay.hidden = true;
     overlay.style.removeProperty("transform");
     overlay.style.removeProperty("visibility");
+    overlay.style.removeProperty("clip-path");
     root.removeAttribute("data-z7-arriving");
     revealHero(state);
   }
@@ -252,14 +295,18 @@
     overlay.style.visibility = "visible";
     overlay.style.transform = "translateY(0)";
     if (gsap) {
-      gsap.to(overlay, { yPercent: -101, duration: .55, ease: "power3.inOut", onComplete: () => clearOverlay(state) });
+      gsap.to(overlay, {
+        clipPath: "inset(0 0 100% 0 round 0 0 48% 48%)",
+        yPercent: -7, duration: .72, ease: "power3.inOut", onComplete: () => clearOverlay(state)
+      });
     } else if (overlay.animate) {
       const animation = overlay.animate([
-        { transform: "translateY(0)" }, { transform: "translateY(-101%)" }
-      ], { duration: 550, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+        { clipPath: "inset(0 0 0 0 round 0 0 48px 48px)", transform: "translateY(0)" },
+        { clipPath: "inset(0 0 100% 0 round 0 0 48% 48%)", transform: "translateY(-7%)" }
+      ], { duration: 720, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(() => clearOverlay(state));
     } else clearOverlay(state);
-    scheduleTimeout(state, () => clearOverlay(state), 700);
+    scheduleTimeout(state, () => clearOverlay(state), 880);
   }
 
   function beginNavigation(state, destination) {
@@ -279,19 +326,20 @@
     overlay.hidden = false;
     overlay.style.visibility = "visible";
     overlay.style.transform = "translateY(101%)";
+    overlay.style.clipPath = "inset(0 0 0 0 round 48% 48% 0 0)";
     let finished = false;
     const finish = () => { if (finished) return; finished = true; navigate(); };
     if (gsap) {
-      gsap.fromTo(overlay, { yPercent: 101 }, {
-        yPercent: 0, duration: .46, ease: "power3.inOut", onComplete: finish
+      gsap.fromTo(overlay, { yPercent: 105, scaleX: .88 }, {
+        yPercent: 0, scaleX: 1, duration: .62, ease: "power3.inOut", onComplete: finish
       });
     } else if (overlay.animate) {
       const animation = overlay.animate([
-        { transform: "translateY(101%)" }, { transform: "translateY(0)" }
-      ], { duration: 460, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+        { transform: "translateY(105%) scaleX(.88)" }, { transform: "translateY(0) scaleX(1)" }
+      ], { duration: 620, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(finish);
     } else finish();
-    scheduleTimeout(state, finish, 600);
+    scheduleTimeout(state, finish, 780);
   }
 
   function initLinks(state) {
@@ -325,6 +373,30 @@
           scrollTrigger: { trigger: element, start: "top 88%", once: true }
         });
       });
+      const hero = document.querySelector(".z7-cinema");
+      const heroMedia = hero?.querySelector(".z7-cinema__background video");
+      if (hero) {
+        gsap.to(hero, {
+          scale: .94,
+          borderRadius: "52px",
+          ease: "none",
+          scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top+=120", scrub: .8 }
+        });
+      }
+      if (heroMedia) {
+        gsap.fromTo(heroMedia, { scale: 1.06 }, {
+          scale: 1.16,
+          yPercent: 5,
+          ease: "none",
+          scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top", scrub: .9 }
+        });
+      }
+      document.querySelectorAll(".service-card,.studio-card,.media-tile").forEach((card, index) => {
+        gsap.fromTo(card, { autoAlpha: 0, y: 34, scale: .975 }, {
+          autoAlpha: 1, y: 0, scale: 1, duration: .85, delay: (index % 4) * .045,
+          ease: "power3.out", scrollTrigger: { trigger: card, start: "top 92%", once: true }
+        });
+      });
     }, document.body);
   }
 
@@ -339,6 +411,7 @@
     state.context?.revert();
     state.pageContext?.revert();
     state.heroContext?.revert();
+    state.spatialObserver?.disconnect();
     if (gsap) {
       if (state.tick) gsap.ticker.remove(state.tick);
       if (state.loader) gsap.killTweensOf(state.loader);
@@ -364,6 +437,7 @@
     initNavigation(state);
     initLinks(state);
     initScrolling(state);
+    initSpatialUI(state);
     initMotion(state);
     reducedMotion.addEventListener("change", () => refreshScrolling(state), { signal: state.abort.signal });
     desktopPointer.addEventListener("change", () => refreshScrolling(state), { signal: state.abort.signal });
