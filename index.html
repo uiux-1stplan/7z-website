@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-z7-core>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,181 +28,26 @@
 
 
 
-    <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#111111" />
-    <link rel="preload" href="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source" as="image" type="image/svg+xml" fetchpriority="high" />
-    <link rel="stylesheet" href="/assets/css/site-theme-2026-11.css?v=global-theme-v1" />
-    <link rel="stylesheet" href="assets/css/performance.css?v=20260728-video3" />
-
-
-
-    <link rel="stylesheet" href="/assets/css/navigation-overflow.css?v=20260805-nav9" />
-  <style id="z7-route-transition-critical">
-      html.z7-route-pending,
-      html.z7-route-pending body {
-        background: #070b12 !important;
-      }
-
-      html.z7-route-pending body::before {
-        position: fixed;
-        inset: 0;
-        z-index: 2147482000;
-        content: "";
-        background: #070b12;
-      }
-
-      .z7-route-transition {
-        position: fixed;
-        inset: 0;
-        z-index: 2147483000;
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      .z7-route-transition__mark {
-        width: 96px;
-        max-width: 26vw;
-        aspect-ratio: 1;
-        overflow: hidden;
-      }
-
-      .z7-route-transition__mark img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    </style>
-    <script id="z7-route-transition-bootstrap">
-      (() => {
-        try {
-          const raw = sessionStorage.getItem("z7:route-transition-v11");
-          if (!raw) return;
-          const data = JSON.parse(raw);
-          if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
-            document.documentElement.classList.add("z7-route-pending");
-          } else {
-            sessionStorage.removeItem("z7:route-transition-v11");
-          }
-        } catch {
-          document.documentElement.classList.remove("z7-route-pending");
-        }
-      })();
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#090A0C">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="preload" href="/media/posters/film/1.jpg" as="image" fetchpriority="high">
+    <link rel="stylesheet" href="/assets/css/core-system.css">
+    <link rel="stylesheet" href="/assets/css/home-editorial.css">
+    <script>
+      try {
+        const arrival = JSON.parse(sessionStorage.getItem("z7:core-arrival:v1") || "null");
+        if (arrival && arrival.path === "/" && Date.now() - arrival.time < 12000) document.documentElement.setAttribute("data-z7-arriving", "");
+      } catch {}
     </script>
-    <link rel="stylesheet" href="/assets/css/site-transition-2026-11.css?v=blue-v1" />
-    <script defer src="/assets/js/site-transition-2026-11.js?v=blue-v1"></script>
-      <link rel="stylesheet" href="/assets/css/universe-video.css?v=20261015-clsfix13" />
-      <link rel="stylesheet" href="/assets/css/static-media-hover.css?v=20260806-static13" media="print" onload="this.onload=null;this.media='all'" />
-<noscript><link rel="stylesheet" href="/assets/css/static-media-hover.css?v=20260806-static13" /></noscript>
-      <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
-      <link rel="stylesheet" href="/assets/css/all-videos-audio.css?v=20260806-allvideos15" />
-      <link rel="stylesheet" href="/assets/css/media-copy-overlay.css?v=20260806-mediaoverlay16" media="print" onload="this.onload=null;this.media='all'" />
-<noscript><link rel="stylesheet" href="/assets/css/media-copy-overlay.css?v=20260806-mediaoverlay16" /></noscript>
-<link rel="stylesheet" href="/assets/css/blueprint-access.css?v=20260813-private-access1" media="print" onload="this.onload=null;this.media='all'" />
-<noscript><link rel="stylesheet" href="/assets/css/blueprint-access.css?v=20260813-private-access1" /></noscript>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<style id="z7-home-static-copy-fix">
-/* Home copy visibility fix only. Do not touch app.js motion. */
-.manifest__copy,
-.manifest__copy *,
-.service-loop__intro,
-.service-loop__intro *,
-.chapter__intro,
-.chapter__intro *,
-.gallery-copy,
-.gallery-copy *,
-.pin-copy,
-.pin-copy *,
-.web-copy,
-.web-copy *,
-.reach-copy,
-.reach-copy *,
-.film-copy,
-.film-copy *,
-.ai-heading,
-.ai-heading *,
-.studio-suite__intro,
-.studio-suite__intro *,
-.section-kicker,
-.eyebrow,
-.chapter__number {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-  filter: none !important;
-}
-</style>
-
-
-
-
-<!-- Z7_HEADER_LOGO_ROOT_V27_START -->
-<link rel="stylesheet" href="/assets/css/brand-logo-v34.css?v=20260829-v34-single-source">
-<!-- Z7_HEADER_LOGO_ROOT_V27_END -->
-  <link rel="stylesheet" href="/assets/css/home-tablet-qa-fix-v37.css?v=b212139-p1-final" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 7Z approved brand -->
-<link rel="stylesheet" href="/assets/brand/7z-20260902_203523_038/brand-identity.css" />
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<meta property="og:image" content="https://7z-magic.com/assets/brand/7z-20260902_203523_038/og-7z.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="7Z Magic">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://7z-magic.com/assets/brand/7z-20260902_203523_038/og-7z.png">
-<meta name="twitter:image:alt" content="7Z Magic">
-  <style id="7Z_WEBSITES_GATEWAY_STYLE_V3">
-    .websites-gateway__visual{position:relative;display:block;overflow:hidden;border:1px solid rgba(255,255,255,.14);border-radius:28px;background:#08090b;min-height:240px;text-decoration:none}
-    .websites-gateway__visual img{display:block;width:100%;height:100%;min-height:240px;object-fit:cover;opacity:.72;transition:transform .6s ease,opacity .6s ease}
-    .websites-gateway__visual span{position:absolute;left:18px;bottom:16px;padding:10px 13px;border-radius:999px;background:rgba(0,0,0,.68);border:1px solid rgba(255,255,255,.18);color:#fff;font:700 10px Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
-    .websites-gateway__visual:hover img{transform:scale(1.02);opacity:.86}
-    @media(max-width:860px){.websites-gateway__visual,.websites-gateway__visual img{min-height:180px}}
-  </style>
-
-  <script defer src="/_vercel/insights/script.js"></script>
-  <link rel="stylesheet" href="/assets/css/home-hero.css?v=20261015-logo-webp">
-<style id="z7-hero-ambient-video-opacity">#intro.z7-cinema .z7-cinema__ambient-video { opacity: .28; }</style>
-  <link rel="stylesheet" href="/assets/css/home-theme.css?v=20261007-4">
-  <link rel="stylesheet" href="/assets/css/home-gallery.css?v=20261015-architecture-clean-v1" media="print" onload="this.onload=null;this.media='all'" />
-<noscript><link rel="stylesheet" href="/assets/css/home-gallery.css?v=20261014-phone-full-video-v1" /></noscript>
-  <script type="application/ld+json">
+    <noscript><style>.z7-loader,.z7-transition{display:none!important}.z7-nav{display:flex!important;position:static!important;max-height:none!important;flex-wrap:wrap!important}</style></noscript>
+    <script src="/assets/vendor/gsap.min.js" defer></script>
+    <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+    <script src="/assets/vendor/lenis.min.js" defer></script>
+    <script src="/assets/js/core-motion.js" defer></script>
+    <script src="/assets/js/home-content.js" defer></script>
+    <script src="/_vercel/insights/script.js" defer></script>
+    <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -213,88 +58,79 @@
     "sameAs": ["https://www.instagram.com/7z.magic"]
   }
   </script>
-<link rel="stylesheet" href="/assets/css/charcoal-blue-theme.css?v=20261013-grid-clear-v1">
-<link rel="stylesheet" href="/assets/css/cinematic-motion.css?v=scroll-blur-2" />
-</head>
-  <body data-static-background="true" class="z7-cinematic-home">
-    <div class="z7-route-transition" id="z7RouteTransition" aria-hidden="true">
-      <div class="z7-route-transition__panel z7-route-transition__panel--left"></div>
-      <div class="z7-route-transition__panel z7-route-transition__panel--right"></div>
-      <div class="z7-route-transition__stage">
-        <p class="z7-route-transition__micro">7Z Magic / Scene Change</p>
-        <div class="z7-route-transition__mark" aria-hidden="true">
-          <img src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source" alt="" />
-        </div>
-        <span class="z7-route-transition__line" aria-hidden="true"></span>
-        <p class="z7-route-transition__label" data-z7-route-label>7Z Magic</p>
+  </head>
+<body>
+  <a class="z7-visually-hidden" href="#mainContent">Skip to content</a>
+
+  <div class="z7-loader" id="z7Loader" role="status" aria-live="polite" aria-label="Preparing 7Z Magic experience">
+    <div class="z7-loader__inner">
+      <div class="z7-loader__top">
+        <img class="z7-loader__mark" src="/media/main_logo/7ZMagic-brand-canonical.png" width="210" height="80" alt="7Z Magic" decoding="async">
+        <span class="z7-loader__count" data-z7-count aria-hidden="true">00</span>
       </div>
+      <div class="z7-loader__line" aria-hidden="true"><span class="z7-loader__progress" data-z7-progress></span></div>
+      <div class="z7-loader__caption"><span>Preparing experience</span><span>7Z Magic</span></div>
     </div>
-    <canvas id="atmosphere" aria-hidden="true"></canvas>
-    <div class="grain" aria-hidden="true"></div>
-    <header class="site-header" aria-label="Primary">
-      <a class="brand magnetic" href="#intro" aria-label="7Z Magic home">
-        <img src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source" alt="" / id="z7-header-logo-root-v27">
+  </div>
+
+  <div class="z7-transition" id="z7Transition" aria-hidden="true" hidden>
+    <div class="z7-transition__inner">
+      <p class="z7-transition__label" data-z7-transition-label>7Z Magic</p>
+      <span class="z7-transition__index">NEXT SCENE / 7Z</span>
+    </div>
+  </div>
+
+  <header class="z7-header" aria-label="Primary">
+    <div class="z7-container z7-header__inner">
+      <a class="z7-brand" href="/" aria-label="7Z Magic home">
+        <img src="/media/main_logo/7ZMagic-brand-canonical.png" width="150" height="44" alt="7Z Magic" decoding="async">
       </a>
-      <nav class="main-nav" aria-label="Main navigation">
-        <a href="#intro">Home</a>
-        <div class="services-menu">
-          <button class="services-trigger" type="button" aria-expanded="false" aria-controls="servicesPanel">Services</button>
-          <div class="services-panel" id="servicesPanel" aria-label="Service sections" aria-hidden="true">
-            <a href="#architecture">Architectural Design</a>
-            <a href="#media">Marketing Media</a>
+      <nav class="z7-nav" id="z7MainNav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <div class="z7-services">
+          <button class="z7-services__trigger" id="z7ServicesTrigger" type="button" aria-expanded="false" aria-controls="z7ServicesPanel">Services</button>
+          <div class="z7-services__panel" id="z7ServicesPanel" aria-label="Service sections" hidden>
+            <a href="/#architecture">Architectural Design</a>
+            <a href="/#media">Marketing Media</a>
             <a href="/websites/">Website Design</a>
-            <a href="#identity">Brand Identity</a>
-            <a href="#advertising-materials">Advertising Materials</a>
-            <a href="#product-design">Product Design</a>
-            <a href="#advertising-7sanz">Advertising on 7SANZ</a>
-            <a href="#presentations">Interactive Presentations</a>
-            <a href="#film">Film Production</a>
+            <a href="/#identity">Brand Identity</a>
+            <a href="/#advertising-materials">Advertising Materials</a>
+            <a href="/#product-design">Product Design</a>
+            <a href="/#advertising-7sanz">Advertising on 7SANZ</a>
+            <a href="/#presentations">Interactive Presentations</a>
+            <a href="/#film">Film Production</a>
             <a href="/courses/">7Z Academy</a>
           </div>
         </div>
         <a href="/websites/">Websites</a>
-<a href="/about">About</a>
-        <a href="/founders">Founders</a>
-        <a href="/contact">Contact</a>
+        <a href="/about/">About</a>
+        <a href="/founders/">Founders</a>
+        <a href="/contact/">Contact</a>
         <a href="/partners/">Partners</a>
-        <a href="/private-access/">Private Access</a>
+        <a href="/private-access/" data-z7-no-transition>Private Access</a>
       </nav>
-      <div class="header-socials" aria-label="Social links">
-        <a class="magnetic social-icon" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="5" y="5" width="14" height="14" rx="4"></rect>
-            <circle cx="12" cy="12" r="3.2"></circle>
-            <circle cx="16.5" cy="7.5" r="0.9"></circle>
-          </svg>
-        </a>
-
-
-        <a class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com" aria-label="Email 7Z Magic">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="6" width="16" height="12" rx="2"></rect>
-            <path d="m5 8 7 5 7-5"></path>
-          </svg>
-        </a>
-
+      <div class="z7-header__actions">
+        <a class="z7-header__social" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer" aria-label="7Z Magic on Instagram">Instagram</a>
+        <a class="z7-header__contact" href="mailto:creative@7z-magic.com">Email us</a>
+        <button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main id="top">
-      <div class="z7-opening">
-        <div class="z7-opening__stage">
+  <main class="z7-main z7-home" id="mainContent" tabindex="-1">
           <section class="intro z7-cinema" id="intro" aria-label="7Z Magic — Interactive Digital Experience">
             <div class="z7-cinema__background" aria-hidden="true"><video class="z7-cinema__ambient-video" data-src="/media/intro/hero.mp4" poster="/media/posters/film/1.jpg" muted loop playsinline preload="none" disablepictureinpicture></video><div class="z7-cinema__floor"></div><div class="z7-cinema__light"></div></div>
             <div class="z7-cinema__halo" aria-hidden="true"></div>
             <div class="z7-cinema__logo" role="img" aria-label="7Z"><div class="z7-cinema__logo-face"></div></div>
-            <figure class="z7-cinema__card z7-cinema__card--1" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/arch_projects/9-16H/1-optimized.svg" alt="" width="240" height="150"><figcaption>Spatial stories <span>01</span></figcaption></div></figure>
-            <figure class="z7-cinema__card z7-cinema__card--2" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/film/1.jpg" alt="" width="240" height="150"><figcaption>Moving image <span>02</span></figcaption></div></figure>
-            <figure class="z7-cinema__card z7-cinema__card--3" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/website_project/1.jpg" alt="" width="240" height="150"><figcaption>Digital worlds <span>03</span></figcaption></div></figure>
-            <figure class="z7-cinema__card z7-cinema__card--4" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/id_design/1.png" alt="" width="240" height="150"><figcaption>Brand identity <span>04</span></figcaption></div></figure>
+            <figure class="z7-cinema__card z7-cinema__card--1" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/arch_projects/9-16H/1-optimized.svg" alt="" width="240" height="150" loading="lazy" decoding="async"><figcaption>Spatial stories <span>01</span></figcaption></div></figure>
+            <figure class="z7-cinema__card z7-cinema__card--2" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/film/1.jpg" alt="" width="240" height="150" loading="lazy" decoding="async"><figcaption>Moving image <span>02</span></figcaption></div></figure>
+            <figure class="z7-cinema__card z7-cinema__card--3" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/posters/website_project/1.jpg" alt="" width="240" height="150" loading="lazy" decoding="async"><figcaption>Digital worlds <span>03</span></figcaption></div></figure>
+            <figure class="z7-cinema__card z7-cinema__card--4" aria-hidden="true"><div class="z7-cinema__card-inner"><img src="/media/id_design/1.png" alt="" width="240" height="150" loading="lazy" decoding="async"><figcaption>Brand identity <span>04</span></figcaption></div></figure>
             <div class="z7-cinema__copy">
-              <p class="z7-cinema__eyebrow">7Z Magic / Interactive Digital Experience</p>
-              <h1>Creating digital experiences beyond <em>imagination.</em></h1>
-              <p class="z7-cinema__description">AI, architecture, web experiences and moving image. One creative universe. Infinite possibilities.</p>
-              <div class="z7-cinema__actions"><a href="#universe" class="z7-cinema__cta">Explore our universe <span aria-hidden="true">↗</span></a><a href="/contact" class="z7-cinema__cta z7-cinema__cta--secondary">Start a conversation</a></div>
+              <p class="z7-cinema__eyebrow" data-z7-hero-reveal>7Z Magic / Interactive Digital Experience</p>
+              <h1 data-z7-hero-reveal>Creating digital experiences beyond <em>imagination.</em></h1>
+              <p class="z7-cinema__description" data-z7-hero-reveal>AI, architecture, web experiences and moving image. One creative universe. Infinite possibilities.</p>
+              <div class="z7-cinema__actions" data-z7-hero-reveal><a href="#universe" class="z7-cinema__cta">Explore our universe <span aria-hidden="true">↗</span></a><a href="/contact" class="z7-cinema__cta z7-cinema__cta--secondary">Start a conversation</a></div>
             </div>
             <div class="z7-cinema__footer"><span>Independent minds. Extraordinary worlds.</span><a class="z7-cinema__scroll" href="#universe">Scroll to enter <span aria-hidden="true">↓</span></a></div>
           </section>
@@ -316,7 +152,7 @@
         </div>
         <div class="manifest__copy">
           <p class="eyebrow">7Z Magic Universe</p>
-          <h2>Where spatial design, artificial intelligence and moving image become one premium system.</h2>
+          <h2 data-z7-reveal>Where spatial design, artificial intelligence and moving image become one premium system.</h2>
           <p>
             We build experiences with the precision of an architectural studio and the velocity of a modern AI
             lab. Every project is designed to feel cinematic, memorable and commercially sharp.
@@ -324,14 +160,11 @@
         </div>
       </section>
 
-        </div>
-      </div>
-
       <section class="service-loop" aria-label="Digital services loop">
         <div class="service-loop__inner">
           <div class="service-loop__intro">
             <p class="eyebrow">Explore Our Worlds</p>
-            <h2>One vision. Five ways to make it unforgettable.</h2>
+            <h2 data-z7-reveal>One vision. Five ways to make it unforgettable.</h2>
           </div>
           <nav class="service-orbit" aria-label="Explore our services">
             <a class="service-card" href="#architecture" style="--i: 1; --service-image: url(/assets/img/charcoal-blue/architecture.webp)"><span>3D</span><strong>Spatial Stories</strong></a>
@@ -348,7 +181,7 @@
           <p class="chapter__number">01</p>
           <div>
             <p class="eyebrow">Architectural Design</p>
-            <h2>Immersive interiors, intelligent transformations and cinematic spatial storytelling.</h2>
+            <h2 data-z7-reveal>Immersive interiors, intelligent transformations and cinematic spatial storytelling.</h2>
           </div>
           <p>
             7Z Magic transforms raw spaces into high-value environments through refined visual direction,
@@ -369,7 +202,7 @@
         <div class="immersive-gallery">
           <div class="gallery-copy">
             <p class="eyebrow">Spatial Films</p>
-            <h3>Architecture presented with motion, scale and atmosphere.</h3>
+            <h3 data-z7-reveal>Architecture presented with motion, scale and atmosphere.</h3>
           </div>
           <div class="gallery-grid" id="architectureVideos"></div>
         </div>
@@ -379,7 +212,7 @@
         <div class="pin-copy">
           <p class="chapter__number">02</p>
           <p class="eyebrow">Marketing Media Production</p>
-          <h2>Campaign films engineered for attention, appetite and shareability.</h2>
+          <h2 data-z7-reveal>Campaign films engineered for attention, appetite and shareability.</h2>
           <p>
             From product-led reels to brand narratives, our media production turns digital moments into polished
             commercial assets built for modern platforms.
@@ -390,11 +223,11 @@
             <!-- 7Z_WEBSITES_PAGE_GATEWAY_V3 -->
       <section class="chapter chapter--web websites-gateway" id="websites">
         <div class="web-stage">
-          <video class="web-stage__video z7-web-reel" muted playsinline loop preload="none" poster="/media/websites//media/posters/website_project/1.jpg" data-src="/media/website_project/1.mp4" aria-hidden="true" tabindex="-1"></video>
+          <video class="web-stage__video z7-web-reel" muted playsinline loop preload="none" poster="/media/posters/website_project/1.jpg" data-src="/media/website_project/1.mp4" aria-hidden="true" tabindex="-1"></video>
           <div class="web-copy">
             <p class="chapter__number">03</p>
             <p class="eyebrow">Selected Digital Experiences</p>
-            <h2>Explore our websites in a dedicated live experience.</h2>
+            <h2 data-z7-reveal>Explore our websites in a dedicated live experience.</h2>
             <p>Focused project previews, desktop and mobile views, without loading client websites inside the main homepage.</p>
             <a class="button button--primary magnetic" href="/websites/"><span>Explore Websites</span></a>
           </div></div>
@@ -403,7 +236,7 @@
         <div class="reach-copy">
           <p class="chapter__number">07</p>
           <p class="eyebrow">Advertising on 7SANZ</p>
-          <h2>Premium placements with guaranteed minimum reach.</h2>
+          <h2 data-z7-reveal>Premium placements with guaranteed minimum reach.</h2>
           <p>
             Put your launch inside a high-visibility media environment built for brands that need scale, clarity
             and a stronger audience signal.
@@ -421,7 +254,7 @@
           <p class="chapter__number">08</p>
           <div>
             <p class="eyebrow">Interactive Presentations</p>
-            <h2>Presentation systems with cinematic pacing, clarity and premium movement.</h2>
+            <h2 data-z7-reveal>Presentation systems with cinematic pacing, clarity and premium movement.</h2>
           </div>
         </div>
         <div class="presentation-stack" id="presentationStack"></div>
@@ -431,7 +264,7 @@
         <div class="film-copy">
           <p class="chapter__number">09</p>
           <p class="eyebrow">Film Production</p>
-          <h2>Commercial film language for brands that need atmosphere, story and authority.</h2>
+          <h2 data-z7-reveal>Commercial film language for brands that need atmosphere, story and authority.</h2>
         </div>
         <div class="film-player magnetic">
           <video muted playsinline preload="none" data-src="media/film/1.mp4" poster="media/posters/film/1.jpg"></video>
@@ -443,7 +276,7 @@
         <div class="studio-suite__intro">
           <p class="chapter__number">11</p>
           <p class="eyebrow">Brand, Product & Advertising Systems</p>
-          <h2>Identity, product design and advertising materials inside one final studio system.</h2>
+          <h2 data-z7-reveal>Identity, product design and advertising materials inside one final studio system.</h2>
           <p>
             This section combines visual identity, product direction and campaign-ready materials so the brand
             feels consistent across launch, social, presentation and customer touchpoints.
@@ -467,90 +300,57 @@
           <article class="studio-card studio-card--identity">
             <img class="studio-card__image" src="media/id_design/1.png" alt="Brand identity showcase" loading="lazy" decoding="async" />
             <span>Identity</span>
-            <h3>Brand Identity</h3>
+            <h3 data-z7-reveal>Brand Identity</h3>
             <p>Logo systems, visual language, launch rules and clear brand behavior.</p>
           </article>
           <article class="studio-card studio-card--materials" id="advertising-materials">
             <img class="studio-card__image" src="media/id_design/2.png" alt="Advertising materials showcase" loading="lazy" decoding="async" />
             <span>Campaign</span>
-            <h3>Advertising Materials</h3>
+            <h3 data-z7-reveal>Advertising Materials</h3>
             <p>Social assets, outdoor formats, launch visuals and campaign-ready compositions.</p>
           </article>
           <article class="studio-card studio-card--product" id="product-design">
             <img class="studio-card__image" src="media/id_design/3.png" alt="Product design showcase" loading="lazy" decoding="async" />
             <span>Product</span>
-            <h3>Product Design</h3>
+            <h3 data-z7-reveal>Product Design</h3>
             <p>Interfaces, product concepts, premium presentation flows and launch systems.</p>
           </article>
         </div>
       </section>
-    </main>
 
-    <footer class="footer" id="contact">
-      <div class="footer__inner">
-        <div class="footer__brand">
-          <img src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source" alt="7Z Magic" loading="lazy" decoding="async" />
-          <div>
-            <p class="section-kicker">7Z Magic</p>
-            <h2>Premium creative systems for spaces, screens and modern brands.</h2>
-            <p>
-              Architecture, AI, media production, websites and brand experience shaped with cinematic precision.
-            </p>
-          </div>
-        </div>
-        <nav class="footer__links" aria-label="Footer navigation">
-          <a href="#architecture">Architecture</a>
-          <a href="#media">Media Production</a>
-          <a href="/websites/">Website Design</a>
-          <a href="#identity">Brand Identity</a>
-          <a href="/about">About Us</a>
-          <a href="/founders">Founders</a>
-          <a href="/contact">Contact Us</a>
-        </nav>
-        <div class="footer__contact">
-          <p>Ready to start a polished digital experience?</p>
-          <a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
+  </main>
 
-          <div class="socials" aria-label="Social links">
-            <a class="magnetic social-icon" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="5" y="5" width="14" height="14" rx="4"></rect>
-                <circle cx="12" cy="12" r="3.2"></circle>
-                <circle cx="16.5" cy="7.5" r="0.9"></circle>
-              </svg>
-            </a>
-
-
-            <a class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com" aria-label="Email 7Z Magic">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="6" width="16" height="12" rx="2"></rect>
-            <path d="m5 8 7 5 7-5"></path>
-          </svg>
-        </a>
-
-          </div>
+  <footer class="z7-footer" id="contact">
+    <div class="z7-container z7-footer__main">
+      <div class="z7-footer__brand">
+        <img src="/media/main_logo/7ZMagic-brand-canonical.png" width="220" height="65" alt="7Z Magic" loading="lazy" decoding="async">
+        <h2>Premium creative systems for spaces, screens and modern brands.</h2>
+        <p>Architecture, AI, media production, websites and brand experience shaped with cinematic precision.</p>
+      </div>
+      <nav class="z7-footer__links" aria-label="Footer navigation">
+        <span class="z7-footer__label">Explore</span>
+        <a href="/#architecture">Architecture</a>
+        <a href="/#media">Media Production</a>
+        <a href="/websites/">Website Design</a>
+        <a href="/#identity">Brand Identity</a>
+        <a href="/about/">About Us</a>
+        <a href="/founders/">Founders</a>
+        <a href="/contact/">Contact Us</a>
+      </nav>
+      <div class="z7-footer__contact">
+        <span class="z7-footer__label">Contact</span>
+        <p>Ready to start a polished digital experience?</p>
+        <a class="z7-footer__email" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
+        <div class="z7-footer__socials">
+          <a href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="mailto:creative@7z-magic.com">Email</a>
         </div>
       </div>
-      <div class="footer__bottom">
-        <small>Copyright &copy; 2026 7Z Magic. All rights reserved.</small>
-        <a href="#intro">Home</a>
-      </div>
-    </footer>
-
-    <script defer src="assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
-    <script defer src="assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
-    <script defer src="assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
-    <script defer src="assets/js/performance.js?v=20261015-live-smooth-v1"></script>
-
-    <script defer src="/assets/js/site-app-2026-11.js?v=restore-v1"></script>
-      <script defer src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
-      <script defer src="/assets/js/universe-video.js?v=20260806-video12"></script>
-      <script defer src="/assets/js/content-protection.js?v=20260831-rootfix-v6"></script>
-      <script defer src="/assets/js/all-videos-audio.js?v=20261015-live-smooth-v1"></script>
-<script defer src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
-
-  <script defer src="/assets/js/home-hero.js?v=20261015-mobile-video-lazy"></script>
-  <script defer src="/assets/js/home-web-reel.js?v=20261007-1"></script>
-<script src="/assets/js/cinematic-motion.js?v=scroll-blur-2" defer></script>
+    </div>
+    <div class="z7-container z7-footer__bottom">
+      <small>Copyright &copy; 2026 7Z Magic. All rights reserved.</small>
+      <a href="/">Home</a>
+    </div>
+  </footer>
 </body>
 </html>
