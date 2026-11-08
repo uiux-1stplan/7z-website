@@ -270,27 +270,27 @@
       }));
       const hero = document.querySelector(".z7-cinema");
       const heroAmbient = hero?.querySelector(".z7-cinema__ambient");
-      if (hero) gsap.to(hero, { scale: .96, borderRadius: "34px", ease: "none", scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top+=120", scrub: .9 } });
-      if (heroAmbient) gsap.to(heroAmbient, { yPercent: 14, scale: 1.08, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .9 } });
-      if (hero) gsap.to(hero.querySelectorAll("[data-z7-hero-reveal]"), { yPercent: -18, autoAlpha: .25, stagger: .035, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top+=20", scrub: .8 } });
-      if (hero) hero.querySelectorAll(".z7-cinema__card").forEach((card, index) => gsap.to(card, { y: -24 - index * 8, rotate: (index % 2 ? -1 : 1) * 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8 } }));
+      if (hero) gsap.to(hero, { scale: .96, borderRadius: "34px", ease: "none", scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top+=120", scrub: .7 } });
+      if (heroAmbient) gsap.to(heroAmbient, { yPercent: 14, scale: 1.08, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .7 } });
+      if (hero) gsap.to(hero.querySelectorAll("[data-z7-hero-reveal]"), { yPercent: -18, autoAlpha: .25, stagger: .035, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top+=20", scrub: .7 } });
+      if (hero) hero.querySelectorAll(".z7-cinema__card").forEach((card, index) => gsap.to(card, { y: -24 - index * 8, rotate: (index % 2 ? -1 : 1) * 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .7 } }));
       const homeRail = document.querySelector(".home-showcase__track");
       const homeRailCards = homeRail ? [...homeRail.children] : [];
       if (homeRail && homeRailCards.length > 1 && matchMedia("(min-width: 761px) and (pointer: fine)").matches) {
         const travel = () => Math.max(0, homeRail.scrollWidth - homeRail.clientWidth);
-        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeRail, start: "top top+=130", end: () => "+=" + travel(), pin: true, scrub: .8, invalidateOnRefresh: true } });
+        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeRail, start: "top top+=130", end: () => "+=" + travel(), pin: true, scrub: .7, invalidateOnRefresh: true } });
       }
       const websiteCards = [...document.querySelectorAll(".website-work")];
       if (websiteCards.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
         websiteCards.forEach((card, index) => {
           card.style.zIndex = String(index + 1);
-          gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=40", end: "top top+=120", scrub: .8 } });
-          if (index < websiteCards.length - 1) gsap.to(card, { scale: .955, autoAlpha: .64, filter: "brightness(.7)", ease: "none", scrollTrigger: { trigger: websiteCards[index + 1], start: "top bottom+=150", end: "top top+=100", scrub: .8 } });
+          gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=40", end: "top top+=120", scrub: .7 } });
+          if (index < websiteCards.length - 1) gsap.to(card, { scale: .955, autoAlpha: .64, filter: "brightness(.7)", ease: "none", scrollTrigger: { trigger: websiteCards[index + 1], start: "top bottom+=150", end: "top top+=100", scrub: .7 } });
           const media = card.querySelector(".website-work__media");
-          if (media) gsap.fromTo(media, { y: 18 }, { y: -14, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .8 } });
+          if (media) gsap.fromTo(media, { y: 18 }, { y: -14, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .7 } });
         });
       }
-      document.querySelectorAll(".home-founder__image img").forEach(image => gsap.fromTo(image, { yPercent: 5, scale: 1.02 }, { yPercent: -5, scale: 1.09, ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top bottom", end: "bottom top", scrub: .8 } }));
+      document.querySelectorAll(".home-founder__image img").forEach(image => gsap.fromTo(image, { yPercent: 5, scale: 1.02 }, { yPercent: -5, scale: 1.09, ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top bottom", end: "bottom top", scrub: .7 } }));
       const rail = document.querySelector(".comparison-scroll");
       const stage = rail?.querySelector(".comparison-stage");
       const progress = rail?.querySelector("[data-comparison-progress]");
@@ -300,7 +300,7 @@
           x: () => -travel(), ease: "none",
           scrollTrigger: {
             trigger: rail, start: "top top+=112", end: () => "+=" + travel(), pin: true,
-            scrub: .9, invalidateOnRefresh: true,
+            scrub: .7, invalidateOnRefresh: true,
             onUpdate: self => { if (progress) gsap.set(progress, { scaleX: self.progress }); }
           }
         });
@@ -323,19 +323,19 @@
         serviceCards.forEach((card, index) => {
           const media = card.querySelector(".comparison-scroll,.media-rail,.web-stage,.reach-metric,.presentation-stack,.film-player,.studio-suite__grid");
           card.style.zIndex = String(index + 1);
-          gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=70", end: "top top+=115", scrub: .8 } });
+          gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=70", end: "top top+=115", scrub: .7 } });
           if (index < serviceCards.length - 1) gsap.to(card, {
             scale: .965, autoAlpha: .68, filter: "brightness(.72)", transformOrigin: "center top", ease: "none",
-            scrollTrigger: { trigger: serviceCards[index + 1], start: "top bottom+=180", end: "top top+=110", scrub: .8 }
+            scrollTrigger: { trigger: serviceCards[index + 1], start: "top bottom+=180", end: "top top+=110", scrub: .7 }
           });
-          if (media) gsap.fromTo(media, { y: 26 }, { y: -18, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .8 } });
+          if (media) gsap.fromTo(media, { y: 26 }, { y: -18, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .7 } });
         });
       }
       const homeServiceRows = [...document.querySelectorAll(".z7-home .service-card")];
       if (homeServiceRows.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
         homeServiceRows.forEach((row, index) => gsap.fromTo(row, { x: 24, autoAlpha: .55 }, {
           x: 0, autoAlpha: 1, ease: "none",
-          scrollTrigger: { trigger: row, start: "top bottom-=30", end: "top center+=80", scrub: .8 }
+          scrollTrigger: { trigger: row, start: "top bottom-=30", end: "top center+=80", scrub: .7 }
         }));
       }
     }, document.body);
