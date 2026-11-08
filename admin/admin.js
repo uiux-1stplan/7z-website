@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   "use strict";
 
   const state = {
@@ -189,6 +189,13 @@
     show("#auth-screen");
 
     const slot = $("#clerk-signin");
+    const tokens = getComputedStyle(document.documentElement);
+    const themeColor = (name, fallback) => tokens.getPropertyValue(name).trim() || fallback;
+    const surface = themeColor("--surface", "#12141A");
+    const surfaceRaised = themeColor("--surface-2", surface);
+    const foreground = themeColor("--text", "#f5f6f8");
+    const muted = themeColor("--muted", "#a6abb6");
+    const accent = themeColor("--accent", "#c9a969");
 
     state.clerk.mountSignIn(slot, {
       routing: "hash",
@@ -203,15 +210,15 @@
       appearance: {
 
         variables: {
-          colorPrimary: "#d6b25e",
-          colorBackground: "#080808",
-          colorForeground: "#f4f4f4",
-          colorMutedForeground: "#8a8a8a",
+          colorPrimary: accent,
+          colorBackground: surface,
+          colorForeground: foreground,
+          colorMutedForeground: muted,
 
-          colorInputBackground: "#0d0d0d",
-          colorInputForeground: "#f4f4f4",
+          colorInputBackground: surfaceRaised,
+          colorInputForeground: foreground,
 
-          colorNeutral: "#ffffff",
+          colorNeutral: foreground,
 
           borderRadius: "10px",
 
@@ -237,7 +244,7 @@
             width: "100%",
             maxWidth: "330px",
             padding: "22px",
-            background: "#080808",
+            background: surface,
             border:
               "1px solid rgba(214,178,94,.16)",
             boxShadow:
@@ -249,7 +256,7 @@
           },
 
           headerTitle: {
-            color: "#f4f4f4",
+            color: foreground,
             fontSize: "18px",
             fontWeight: "650"
           },
@@ -261,7 +268,7 @@
 
           socialButtonsBlockButton: {
             minHeight: "38px",
-            background: "#0d0d0d",
+            background: surfaceRaised,
             border:
               "1px solid rgba(255,255,255,.10)",
             color: "#dddddd",
@@ -291,7 +298,7 @@
           formFieldInput: {
             minHeight: "40px",
             background: "#0d0d0d",
-            color: "#f4f4f4",
+            color: foreground,
             border:
               "1px solid rgba(255,255,255,.11)",
             boxShadow: "none"
@@ -299,15 +306,15 @@
 
           formButtonPrimary: {
             minHeight: "40px",
-            background: "#d6b25e",
-            color: "#090909",
+            background: accent,
+            color: "#17140e",
             fontSize: "10px",
             fontWeight: "700",
             boxShadow: "none"
           },
 
           footer: {
-            background: "#080808"
+            background: surface
           },
 
           footerActionText: {
@@ -316,13 +323,13 @@
           },
 
           footerActionLink: {
-            color: "#d6b25e",
+            color: accent,
             fontSize: "9px",
             fontWeight: "650"
           },
 
           footerPages: {
-            background: "#080808"
+            background: surface
           }
         }
       }
