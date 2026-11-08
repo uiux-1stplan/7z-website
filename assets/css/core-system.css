@@ -37,7 +37,7 @@ html[data-z7-core] .z7-visually-hidden { position: absolute; width: 1px; height:
 .z7-header { position: fixed; z-index: 40; inset: 0 0 auto; height: var(--z7-header-height); background: var(--z7-bg); border-bottom: 1px solid var(--z7-line); }
 .z7-header__inner { display: grid; grid-template-columns: minmax(150px, 1fr) auto minmax(150px, 1fr); gap: 20px; align-items: center; height: 100%; }
 .z7-brand { display: inline-flex; align-items: center; width: fit-content; min-width: 0; }
-.z7-brand img { display: block; width: auto; max-width: 150px; height: 44px; object-fit: contain; object-position: left center; }
+html[data-z7-core] .z7-brand img { display: block; width: 150px; max-width: 150px; height: 54px; object-fit: contain; object-position: left center; }
 .z7-nav { display: flex; align-items: center; gap: clamp(14px, 1.45vw, 25px); white-space: nowrap; }
 .z7-nav > a, .z7-services__trigger { display: inline-flex; align-items: center; min-height: 44px; padding: 0; color: var(--z7-muted); background: none; border: 0; cursor: pointer; font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: .095em; text-transform: uppercase; transition: color .2s ease; }
 .z7-nav > a:hover, .z7-services__trigger:hover, .z7-nav > a[aria-current="page"], .z7-services__trigger[aria-expanded="true"] { color: var(--z7-text); }
@@ -84,7 +84,7 @@ html[data-z7-arriving] .z7-loader { display: none; }
 
 .z7-footer { border-top: 1px solid var(--z7-line); background: var(--z7-bg); }
 .z7-footer__main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(180px, .65fr) minmax(220px, .85fr); gap: clamp(30px, 6vw, 100px); padding-top: clamp(72px, 10vw, 140px); padding-bottom: clamp(72px, 10vw, 140px); }
-.z7-footer__brand img { display: block; width: auto; max-width: 220px; height: 65px; object-fit: contain; object-position: left center; margin-bottom: 34px; }
+html[data-z7-core] .z7-footer__brand img { display: block; width: 220px; max-width: 220px; height: 65px; object-fit: contain; object-position: left center; margin-bottom: 34px; }
 .z7-footer__brand h2 { max-width: 590px; margin: 0 0 20px; font-size: clamp(30px, 3.4vw, 54px); font-weight: 500; line-height: 1.08; letter-spacing: -.055em; }
 .z7-footer__brand p, .z7-footer__contact p { max-width: 440px; margin: 0; color: var(--z7-muted); font-size: 14px; line-height: 1.65; }
 .z7-footer__label { display: block; margin-bottom: 23px; color: var(--z7-muted); font: 10px var(--z7-mono); letter-spacing: .13em; text-transform: uppercase; }
