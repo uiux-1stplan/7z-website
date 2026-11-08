@@ -119,3 +119,9 @@ html[data-z7-core] .z7-brand img { width: 36px; height: 38px; }
   .z7-footer::before { inset-inline: 10px; }.z7-footer__main { grid-template-columns: 1fr; gap: 50px; }.z7-footer__bottom { flex-direction: column; }.z7-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
 }
 @media (prefers-reduced-motion:reduce) { html[data-z7-core] { scroll-behavior: auto; }.z7-loader,.z7-transition { will-change: auto; }.z7-header a,.z7-header button,.z7-footer a { transition: none; } }
+
+/* Shared atmospheric canvas layer for the two cinematic routes. */
+html[data-z7-core] body:has(> #ambient-canvas) { background: transparent; }
+#ambient-canvas { position: fixed; z-index: 0; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; opacity: .68; }
+html[data-z7-core] body:has(> #ambient-canvas) > .z7-main { position: relative; z-index: 1; }
+html[data-z7-core] body:has(> #ambient-canvas) > .z7-footer { position: relative; z-index: 1; }

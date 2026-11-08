@@ -75,7 +75,7 @@
     const fragment = document.createDocumentFragment();
     items.forEach((item, index) => {
       const tile = document.createElement("article");
-      tile.className = `media-tile ${item.layout || ""}`.trim();
+      tile.className = `media-tile ${item.layout || ""} z7-spatial`.trim();
       const video = document.createElement("video");
       video.dataset.src = item.src;
       video.muted = true;
@@ -98,14 +98,9 @@
       mute.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg><span>Sound off</span>';
       const title = document.createElement("span");
       title.textContent = item.title;
+      tile.dataset.railIndex = String(index + 1).padStart(2, "0");
       tile.append(video, mute, title);
-      if (selector === "#mediaRail" || selector === "#homeVideoRail") {
-        const slot = document.createElement("div");
-        slot.className = "media-fan-slot";
-        slot.dataset.fanIndex = String(index);
-        slot.append(tile);
-        fragment.append(slot);
-      } else fragment.append(tile);
+      fragment.append(tile);
     });
     container.replaceChildren(fragment);
   }
@@ -141,36 +136,65 @@
 
   function initServicePreview() {
     const cards = $$(".service-card");
-    const preview = $(".service-preview");
-    const image = $("[data-service-preview]");
+    const preview = $(".service-preview[data-follow-preview]") || $(".service-preview");
+    const video = $("[data-service-preview]");
     const title = $("[data-service-title]");
     const index = $("[data-service-index]");
     const shell = $(".service-loop");
-    if (!cards.length || !preview || !image) return;
+    if (!cards.length || !preview || !video) return;
     let sequence = 0;
-    const activate = card => {
-      if (card.classList.contains("is-active")) return;
+    const activate = (card, follow = true) => {
       cards.forEach(item => item.classList.toggle("is-active", item === card));
       shell?.style.setProperty("--service-tint", card.dataset.tint || "79,140,255");
       preview.classList.add("is-switching");
+      preview.classList.toggle("is-following", follow);
+      preview.classList.toggle("is-visible", !follow);
       const token = ++sequence;
-      const nextSrc = card.dataset.preview;
-      const preload = new Image();
-      preload.decoding = "async";
-      preload.onload = () => {
-        if (token !== sequence) return;
-        image.src = nextSrc;
-        if (title) title.textContent = card.querySelector("strong")?.textContent || "";
-        if (index) index.textContent = card.querySelector("span")?.textContent || "";
-        requestAnimationFrame(() => preview.classList.remove("is-switching"));
-      };
-      preload.onerror = () => preview.classList.remove("is-switching");
-      preload.src = nextSrc;
+      const src = card.dataset.preview;
+      if (src && preview.getClientRects().length && video.dataset.src !== src) {
+        video.pause();
+        video.removeAttribute("src");
+        video.dataset.src = src;
+        video.poster = card.dataset.poster || "";
+        video.load();
+        video.src = src;
+        video.play().catch(() => {});
+      }
+      if (title) title.textContent = card.querySelector("strong")?.textContent || "";
+      if (index) index.textContent = card.querySelector("span")?.textContent || "";
+      requestAnimationFrame(() => { if (token === sequence) preview.classList.remove("is-switching"); });
+      window.dispatchEvent(new CustomEvent("z7:service-preview", { detail: { src, title: title?.textContent || "", index: index?.textContent || "" } }));
     };
     cards.forEach(card => {
-      card.addEventListener("pointerenter", () => activate(card), { signal: abort.signal });
-      card.addEventListener("focus", () => activate(card), { signal: abort.signal });
-      card.addEventListener("click", () => activate(card), { signal: abort.signal });
+      card.addEventListener("pointerenter", () => activate(card, true), { signal: abort.signal });
+      card.addEventListener("focus", () => activate(card, false), { signal: abort.signal });
+      card.addEventListener("click", () => activate(card, false), { signal: abort.signal });
+    });
+    window.addEventListener("z7:activate-service", event => {
+      const card = event.detail?.card;
+      if (card && cards.includes(card)) activate(card, false);
+    }, { signal: abort.signal });
+  }
+
+  function initPartnerMarquees() {
+    const source = $$(".home-partners__grid .home-partner img");
+    if (!source.length) return;
+    $$('[data-z7-partner-track]').forEach(track => {
+      const reverse = track.dataset.z7PartnerTrack === "reverse";
+      const logos = reverse ? [...source].reverse() : source;
+      const fragment = document.createDocumentFragment();
+      for (let repeat = 0; repeat < 2; repeat++) {
+        logos.forEach((sourceImage, index) => {
+          const image = document.createElement("img");
+          image.src = sourceImage.currentSrc || sourceImage.src;
+          image.alt = "";
+          image.loading = repeat === 0 && index < 6 ? "eager" : "lazy";
+          image.decoding = "async";
+          image.setAttribute("aria-hidden", "true");
+          fragment.append(image);
+        });
+      }
+      track.replaceChildren(fragment);
     });
   }
 
@@ -187,24 +211,35 @@
     }
   }
   function initHero() {
-    const ambient = $("[data-z7-ambient]");
-    const hero = $(".z7-cinema");
-    if (!ambient || !hero || !matchMedia("(pointer:fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let frame = 0, x = 0, y = 0, tx = 0, ty = 0;
+    const hero = $(".hero-depth");
+    const frameset = $$(".hero-depth__plane", hero || document);
+    if (!hero || !frameset.length || !matchMedia("(pointer:fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0, px = 0, py = 0, tx = 0, ty = 0;
     const onMove = event => {
       const rect = hero.getBoundingClientRect();
-      tx = ((event.clientX - rect.left) / rect.width - .5) * 12;
-      ty = ((event.clientY - rect.top) / rect.height - .5) * 10;
+      tx = (event.clientX - rect.left) / rect.width - .5;
+      ty = (event.clientY - rect.top) / rect.height - .5;
       if (!frame) frame = requestAnimationFrame(function paint() {
         frame = 0;
-        x += (tx - x) * .08; y += (ty - y) * .08;
-        ambient.style.transform = `translate3d(${x}px,${y}px,0)`;
-        if (Math.abs(tx - x) + Math.abs(ty - y) > .08) frame = requestAnimationFrame(paint);
+        px += (tx - px) * .09; py += (ty - py) * .09;
+        hero.style.setProperty("--hero-glow-x", `${50 + px * 10}%`);
+        hero.style.setProperty("--hero-glow-y", `${46 + py * 10}%`);
+        hero.style.setProperty("--hero-rotate-x", `${py * -1.2}deg`);
+        hero.style.setProperty("--hero-rotate-y", `${px * 1.4}deg`);
+        frameset.forEach(node => {
+          const depth = Number(node.dataset.depth || 1);
+          node.style.setProperty("--depth-x", `${px * -18 * depth}px`);
+          node.style.setProperty("--depth-y", `${py * -14 * depth}px`);
+          node.style.setProperty("--depth-rx", `${py * 3.2 * depth}deg`);
+          node.style.setProperty("--depth-ry", `${px * -4.4 * depth}deg`);
+        });
+        if (Math.abs(tx - px) + Math.abs(ty - py) > .015) frame = requestAnimationFrame(paint);
       });
     };
     hero.addEventListener("pointermove", onMove, { passive: true, signal: abort.signal });
     window.addEventListener("pagehide", () => { if (frame) cancelAnimationFrame(frame); }, { once: true, signal: abort.signal });
   }
+
   function initMedia() {
     const videos = $$(".z7-home video,.z7-services-page video");
     videos.forEach(video => {
@@ -291,7 +326,8 @@
     renderTiles("#mediaRail", campaigns);
     renderTiles("#presentationStack", presentations);
     initComparisons();
-    if (document.querySelector(".z7-home")) initServicePreview();
+    if (document.querySelector(".z7-home,.z7-services-page")) initServicePreview();
+    initPartnerMarquees();
     if (document.querySelector(".z7-home")) initHero();
     initMedia();
     initCounters();
@@ -299,7 +335,7 @@
       abort.abort();
       observers.forEach(observer => observer.disconnect());
       frames.forEach(cancelAnimationFrame);
-      $$(".z7-home video").forEach(video => video.pause());
+      $$(".z7-home video,.z7-services-page video").forEach(video => video.pause());
     }, { once: true });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });

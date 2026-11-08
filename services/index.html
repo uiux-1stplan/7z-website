@@ -38,7 +38,7 @@
     <script>
       try {
         const arrival = JSON.parse(sessionStorage.getItem("z7:core-arrival:v1") || "null");
-        if (arrival && arrival.path === "/" && Date.now() - arrival.time < 12000) document.documentElement.setAttribute("data-z7-arriving", "");
+        if (arrival && arrival.path === "/services" && Date.now() - arrival.time < 12000) document.documentElement.setAttribute("data-z7-arriving", "");
       } catch {}
     </script>
     <noscript><style>.z7-loader,.z7-transition{display:none!important}.z7-nav{display:flex!important;position:static!important;max-height:none!important;flex-wrap:wrap!important}</style></noscript>
@@ -61,6 +61,7 @@
   </script>
   </head>
 <body>
+  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
   <a class="z7-visually-hidden" href="#mainContent">Skip to content</a>
 
   <div class="z7-loader" id="z7Loader" role="status" aria-live="polite" aria-label="Preparing 7Z Magic experience">
@@ -106,7 +107,7 @@
     </div>
   </header>
 
-  <main class="z7-main z7-services-page" id="mainContent" tabindex="-1">
+  <main class="z7-main z7-services-page services-page" id="mainContent" tabindex="-1">
     <section class="services-intro">
       <div class="services-intro__inner">
         <p class="eyebrow">Explore Our Worlds</p>
@@ -119,6 +120,22 @@
           <span>Architecture</span><i></i><span>AI Experiences</span><i></i><span>Moving Image</span><i></i><span>Web Design</span><i></i><span>Brand Identity</span><i></i><span>Product Design</span><i></i>
           <span aria-hidden="true">Architecture</span><i aria-hidden="true"></i><span aria-hidden="true">AI Experiences</span><i aria-hidden="true"></i><span aria-hidden="true">Moving Image</span><i aria-hidden="true"></i><span aria-hidden="true">Web Design</span><i aria-hidden="true"></i><span aria-hidden="true">Brand Identity</span><i aria-hidden="true"></i><span aria-hidden="true">Product Design</span><i aria-hidden="true"></i>
         </div>
+      </section>
+      <section class="services-map" aria-label="Service index">
+        <div class="services-map__copy"><p class="eyebrow">Capabilities</p><p>Choose a discipline to explore its work.</p></div>
+        <div class="services-map__rows">
+          <a class="service-card" href="#architecture" data-preview="/media/arch_projects/9-16H/1.mp4" data-poster="/media/posters/arch_projects/9-16H/1-optimized.svg"><span>01</span><strong>Architectural Design</strong><i aria-hidden="true">↗</i></a>
+          <a class="service-card" href="#media" data-preview="/media/media_projects/Media (1).mp4" data-poster="/media/posters/media_projects/Media (1).jpg"><span>02</span><strong>Marketing Media Production</strong><i aria-hidden="true">↗</i></a>
+          <a class="service-card" href="#websites" data-preview="/media/website_project/1.mp4" data-poster="/media/posters/website_project/1.jpg"><span>03</span><strong>Selected Digital Experiences</strong><i aria-hidden="true">↗</i></a>
+          <a class="service-card" href="#advertising-7sanz" data-preview="/media/media_projects/Media (2).mp4" data-poster="/media/posters/media_projects/Media (2).jpg"><span>07</span><strong>Advertising on 7SANZ</strong><i aria-hidden="true">↗</i></a>
+          <a class="service-card" href="#presentations" data-preview="/media/prop/1.mp4" data-poster="/media/posters/prop/1.jpg"><span>08</span><strong>Interactive Presentations</strong><i aria-hidden="true">↗</i></a>
+          <a class="service-card" href="#film" data-preview="/media/film/1.mp4" data-poster="/media/posters/film/1.jpg"><span>09</span><strong>Film Production</strong><i aria-hidden="true">↗</i></a>
+          <a class="service-card" href="#identity" data-preview="/media/media_projects/Media (3).mp4" data-poster="/media/posters/media_projects/Media (3).jpg"><span>11</span><strong>Brand, Product &amp; Advertising Systems</strong><i aria-hidden="true">↗</i></a>
+        </div>
+        <figure class="service-preview services-map__preview" data-follow-preview>
+          <div class="service-preview__media"><video data-service-preview autoplay loop muted playsinline preload="none" data-src="/media/arch_projects/9-16H/1.mp4" poster="/media/posters/arch_projects/9-16H/1-optimized.svg"></video></div>
+          <figcaption><span data-service-index>01</span><strong data-service-title>Architectural Design</strong></figcaption>
+        </figure>
       </section>
       <section class="chapter chapter--architecture service-stack-card" id="architecture">
         <div class="chapter__intro">
@@ -149,7 +166,7 @@
             <p class="eyebrow">Spatial Films</p>
             <h3 data-z7-reveal>Architecture presented with motion, scale and atmosphere.</h3>
           </div>
-          <div class="gallery-grid" id="architectureVideos"></div>
+          <div class="film-track film-track--architecture" id="architectureVideos"></div>
         </div>
       </section>
 
@@ -163,7 +180,7 @@
             commercial assets built for modern platforms.
           </p>
         </div>
-        <div class="media-rail" id="mediaRail"></div>
+        <div class="film-track film-track--campaign" id="mediaRail"></div>
       </section>
             <!-- 7Z_WEBSITES_PAGE_GATEWAY_V3 -->
       <section class="chapter chapter--web websites-gateway service-stack-card" id="websites">
@@ -202,7 +219,7 @@
             <h2 data-z7-reveal>Presentation systems with cinematic pacing, clarity and premium movement.</h2>
           </div>
         </div>
-        <div class="presentation-stack" id="presentationStack"></div>
+        <div class="film-track film-track--presentations" id="presentationStack"></div>
       </section>
 
       <section class="chapter chapter--film service-stack-card" id="film">
@@ -241,7 +258,7 @@
             <i aria-hidden="true"></i>
           </a>
         </div>
-        <div class="studio-suite__grid">
+        <div class="studio-suite__list">
           <article class="studio-card studio-card--identity" data-z7-spatial>
             <img class="studio-card__image" src="media/id_design/1.png" alt="Brand identity showcase" loading="lazy" decoding="async" />
             <span>Identity</span>

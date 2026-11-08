@@ -66,6 +66,78 @@
     } else if (!state.lenis) initScroll(state);
     ST?.refresh(true);
   }
+  function initAmbientCanvas(state) {
+    const canvas = document.getElementById("ambient-canvas");
+    const ctx = canvas?.getContext("2d", { alpha: true, desynchronized: true });
+    if (!canvas || !ctx) return;
+    const field = { width: 0, height: 0, ratio: 1, pointerX: .5, pointerY: .42, targetX: .5, targetY: .42, scroll: 0, lastScroll: scrollY, lastTime: 0, time: 0 };
+    const resize = () => {
+      field.ratio = Math.min(devicePixelRatio || 1, 1.4);
+      field.width = innerWidth;
+      field.height = innerHeight;
+      canvas.width = Math.round(field.width * field.ratio);
+      canvas.height = Math.round(field.height * field.ratio);
+      canvas.style.width = field.width + "px";
+      canvas.style.height = field.height + "px";
+      ctx.setTransform(field.ratio, 0, 0, field.ratio, 0, 0);
+      draw(performance.now(), true);
+    };
+    const move = event => {
+      field.targetX = event.clientX / Math.max(1, field.width);
+      field.targetY = event.clientY / Math.max(1, field.height);
+    };
+    const scroll = () => {
+      const next = scrollY;
+      field.scroll = Math.max(-30, Math.min(30, next - field.lastScroll));
+      field.lastScroll = next;
+    };
+    const spacing = () => field.width < 700 ? 44 : 38;
+    function draw(now, force = false) {
+      state.canvasRaf = 0;
+      if (state.destroyed || (document.hidden && !force)) return;
+      if (!force && now - field.lastTime < 32) { state.canvasRaf = requestAnimationFrame(draw); return; }
+      field.lastTime = now;
+      field.time += .002;
+      field.pointerX += (field.targetX - field.pointerX) * .045;
+      field.pointerY += (field.targetY - field.pointerY) * .045;
+      field.scroll *= .88;
+      const { width, height } = field;
+      ctx.clearRect(0, 0, width, height);
+      const cx = field.pointerX * width + Math.sin(field.time) * 14;
+      const cy = field.pointerY * height - field.scroll * 2;
+      const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(width, height) * .52);
+      glow.addColorStop(0, "rgba(79,140,255,.065)");
+      glow.addColorStop(.45, "rgba(112,133,155,.025)");
+      glow.addColorStop(1, "rgba(9,10,12,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, width, height);
+      const gap = spacing();
+      for (let y = gap * .5; y < height; y += gap) {
+        for (let x = gap * .5; x < width; x += gap) {
+          const dx = x - cx, dy = y - cy;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const pull = Math.max(0, 1 - distance / 230);
+          const warpX = x + dx * pull * -.045;
+          const warpY = y + dy * pull * -.045 - field.scroll * pull * .12;
+          const alpha = .055 + pull * .12;
+          ctx.fillStyle = `rgba(184,197,209,${alpha})`;
+          ctx.fillRect(warpX, warpY, 1.15 + pull * .35, 1.15 + pull * .35);
+        }
+      }
+      if (!reduced.matches) state.canvasRaf = requestAnimationFrame(draw);
+    }
+    state.abort.signal.addEventListener("abort", () => { if (state.canvasRaf) cancelAnimationFrame(state.canvasRaf); }, { once: true });
+    state.resumeCanvas = () => { if (!reduced.matches && !document.hidden && !state.canvasRaf) state.canvasRaf = requestAnimationFrame(draw); };
+    window.addEventListener("resize", resize, { passive: true, signal: state.abort.signal });
+    window.addEventListener("pointermove", move, { passive: true, signal: state.abort.signal });
+    window.addEventListener("scroll", scroll, { passive: true, signal: state.abort.signal });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && state.canvasRaf) { cancelAnimationFrame(state.canvasRaf); state.canvasRaf = 0; }
+      else if (!document.hidden && !reduced.matches && !state.canvasRaf) state.canvasRaf = requestAnimationFrame(draw);
+    }, { signal: state.abort.signal });
+    resize();
+  }
+
   function setMenu(state, open) {
     if (!state.menu || !state.nav) return;
     const expanded = compact.matches && open;
@@ -244,12 +316,34 @@
       if (node.nodeType === 1) apply(node);
     })));
     state.mutations.observe(document.body, { childList: true, subtree: true });
+    const floaters = new WeakMap();
     document.addEventListener("pointermove", event => {
       const surface = event.target.closest?.(".z7-spatial");
       if (surface && desktop.matches) {
         const rect = surface.getBoundingClientRect();
         surface.style.setProperty("--z7-mx", (event.clientX - rect.left) + "px");
         surface.style.setProperty("--z7-my", (event.clientY - rect.top) + "px");
+      }
+      const row = event.target.closest?.(".service-card");
+      if (row) {
+        const rect = row.getBoundingClientRect();
+        row.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
+        row.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
+        const scope = row.closest(".service-loop__stage,.services-map");
+        const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
+        if (preview && desktop.matches && gsap && !reduced.matches) {
+          preview.classList.add("is-visible", "is-following");
+          let move = floaters.get(preview);
+          if (!move) {
+            preview.style.left = "0px";
+            preview.style.top = "0px";
+            move = { x: gsap.quickTo(preview, "x", { duration: .42, ease: "power3.out" }), y: gsap.quickTo(preview, "y", { duration: .42, ease: "power3.out" }) };
+            floaters.set(preview, move);
+          }
+          const offset = 18;
+          move.x(Math.min(innerWidth - preview.offsetWidth - 12, event.clientX + offset));
+          move.y(Math.min(innerHeight - preview.offsetHeight - 12, event.clientY + offset));
+        }
       }
       const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
       if (!button || !desktop.matches || reduced.matches || !gsap) return;
@@ -259,8 +353,15 @@
     document.addEventListener("pointerout", event => {
       const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
       if (button && !button.contains(event.relatedTarget) && gsap) gsap.to(button, { x: 0, y: 0, duration: .5, ease: "power3.out", overwrite: "auto" });
+      const row = event.target.closest?.(".service-card");
+      if (row && !row.contains(event.relatedTarget)) {
+        const scope = row.closest(".service-loop__stage,.services-map");
+        const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
+        if (preview && !preview.matches(":hover")) preview.classList.remove("is-visible", "is-following");
+      }
     }, { passive: true, signal: state.abort.signal });
   }
+
   function initMotion(state) {
     if (!gsap || !ST || reduced.matches) return;
     state.pageContext = gsap.context(() => {
@@ -268,18 +369,37 @@
         autoAlpha: 1, y: 0, duration: .72, ease: "power2.out",
         scrollTrigger: { trigger: element, start: "top 88%", once: true }
       }));
-      const hero = document.querySelector(".z7-cinema");
-      const heroAmbient = hero?.querySelector(".z7-cinema__ambient");
-      if (hero) gsap.to(hero, { scale: .96, borderRadius: "34px", ease: "none", scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top+=120", scrub: .7 } });
-      if (heroAmbient) gsap.to(heroAmbient, { yPercent: 14, scale: 1.08, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .7 } });
-      if (hero) gsap.to(hero.querySelectorAll("[data-z7-hero-reveal]"), { yPercent: -18, autoAlpha: .25, stagger: .035, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top+=20", scrub: .7 } });
-      if (hero) hero.querySelectorAll(".z7-cinema__card").forEach((card, index) => gsap.to(card, { y: -24 - index * 8, rotate: (index % 2 ? -1 : 1) * 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .7 } }));
-      const homeRail = document.querySelector(".home-showcase__track");
-      const homeRailCards = homeRail ? [...homeRail.children] : [];
-      if (homeRail && homeRailCards.length > 1 && matchMedia("(min-width: 761px) and (pointer: fine)").matches) {
-        const travel = () => Math.max(0, homeRail.scrollWidth - homeRail.clientWidth);
-        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeRail, start: "top top+=130", end: () => "+=" + travel(), pin: true, scrub: .7, invalidateOnRefresh: true } });
+      const hero = document.querySelector(".hero-depth");
+      const heroFrames = hero ? [...hero.querySelectorAll("[data-hero-frame]")] : [];
+      if (hero && heroFrames.length && matchMedia("(min-width: 701px) and (pointer:fine)").matches) {
+        const heroTimeline = gsap.timeline({ scrollTrigger: { trigger: hero, start: "top top", end: "+=72%", pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
+        heroFrames.forEach((frame, index) => heroTimeline.to(frame, { x: (index % 2 ? -1 : 1) * (70 + index * 12), y: (index < 2 ? 1 : -1) * 38, scale: 1.16, rotation: 0, autoAlpha: .78, ease: "none" }, 0));
+        heroTimeline.to(hero.querySelector(".hero-depth__copy"), { y: -24, autoAlpha: .32, ease: "none" }, .34);
+        heroTimeline.to(hero.querySelector(".hero-depth__field"), { scale: 1.06, opacity: .7, ease: "none" }, 0);
+      } else if (hero) {
+        gsap.to(hero.querySelector(".hero-depth__copy"), { y: -28, autoAlpha: .35, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8 } });
       }
+      const homeSection = document.querySelector(".home-showcase");
+      const homeViewport = homeSection?.querySelector(".home-showcase__viewport");
+      const homeRail = homeSection?.querySelector(".home-showcase__track");
+      const homeRailCards = homeRail ? [...homeRail.children] : [];
+      if (homeSection && homeViewport && homeRail && homeRailCards.length > 1 && matchMedia("(min-width: 761px) and (pointer: fine)").matches) {
+        const travel = () => Math.max(0, homeRail.scrollWidth - homeViewport.clientWidth);
+        const updateCurve = () => {
+          const center = innerWidth / 2;
+          homeRailCards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const offset = (rect.left + rect.width / 2 - center) / Math.max(1, innerWidth / 2);
+            const distance = Math.min(1, Math.abs(offset));
+            gsap.set(card, { rotationY: -offset * 10, scale: 1 - distance * .07, z: -distance * 36, transformOrigin: "50% 50%" });
+          });
+        };
+        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeSection, start: "top top+=80", end: () => "+=" + Math.max(travel(), innerWidth * .7), pin: true, scrub: .8, invalidateOnRefresh: true, onUpdate: updateCurve, onRefresh: updateCurve } });
+      }
+      const homeFounderImages = [...document.querySelectorAll(".home-founder__image")];
+      homeFounderImages.forEach((image, index) => gsap.fromTo(image, { clipPath: index % 2 ? "inset(0 0 0 100% round 16px)" : "inset(0 100% 0 0 round 16px)" }, {
+        clipPath: "inset(0 0% 0 0% round 16px)", ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top 80%", end: "center 48%", scrub: .8 }
+      }));
       const websiteCards = [...document.querySelectorAll(".website-work")];
       if (websiteCards.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
         websiteCards.forEach((card, index) => {
@@ -305,23 +425,29 @@
           }
         });
       }
-      const marquee = document.querySelector("[data-z7-marquee-track]");
-      if (marquee) {
-        const loop = gsap.to(marquee, { xPercent: -50, duration: 28, ease: "none", repeat: -1 });
+      document.querySelectorAll(".kinetic-strip__track,[data-z7-partner-track]").forEach(track => {
+        const reverse = track.dataset.z7PartnerTrack === "reverse";
+        const loop = gsap.to(track, { xPercent: reverse ? 50 : -50, duration: reverse ? 32 : 27, ease: "none", repeat: -1 });
         const velocityTrigger = ST.create({ onUpdate: self => {
           const speed = Math.abs(self.getVelocity());
-          gsap.to(loop, { timeScale: Math.min(2.2, .7 + speed / 1800), duration: .35, overwrite: true });
+          const direction = self.direction < 0 ? -1 : 1;
+          gsap.to(loop, { timeScale: (reverse ? -1 : 1) * direction * Math.min(2.1, .72 + speed / 2200), duration: .3, overwrite: true });
         }});
-        state.marqueeTrigger = velocityTrigger;
-      }
-      document.querySelectorAll(".service-card,.studio-card,.media-tile,.services-page .stats-strip > div,.services-page .reach-metric,.services-page .film-player").forEach((node, index) => gsap.fromTo(node, { autoAlpha: 0, y: 24 }, {
-        autoAlpha: 1, y: 0, duration: .7, delay: index % 4 * .04, ease: "power2.out",
-        scrollTrigger: { trigger: node, start: "top 92%", once: true }
+        state.marqueeTriggers.push(velocityTrigger);
+      });
+      document.querySelectorAll(".service-card,.studio-card,.media-tile,.services-page .stats-strip > div,.services-page .reach-metric,.services-page .film-player").forEach((node, index) => gsap.fromTo(node, { autoAlpha: 0, y: 14 }, {
+        autoAlpha: 1, y: 0, duration: .55, delay: index % 4 * .025, ease: "power2.out",
+        scrollTrigger: { trigger: node, start: "top 94%", once: true }
+      }));
+      document.querySelectorAll(".services-map .service-card,.z7-home .service-card").forEach(card => ST.create({
+        trigger: card, start: "top 60%", end: "bottom 40%",
+        onEnter: () => window.dispatchEvent(new CustomEvent("z7:activate-service", { detail: { card } })),
+        onEnterBack: () => window.dispatchEvent(new CustomEvent("z7:activate-service", { detail: { card } }))
       }));
       const serviceCards = [...document.querySelectorAll(".services-page .service-stack-card")];
       if (serviceCards.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
         serviceCards.forEach((card, index) => {
-          const media = card.querySelector(".comparison-scroll,.media-rail,.web-stage,.reach-metric,.presentation-stack,.film-player,.studio-suite__grid");
+          const media = card.querySelector(".comparison-scroll,.film-track,.web-stage,.reach-metric,.film-player,.studio-suite__list");
           card.style.zIndex = String(index + 1);
           gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=70", end: "top top+=115", scrub: .7 } });
           if (index < serviceCards.length - 1) gsap.to(card, {
@@ -346,12 +472,13 @@
     state.abort.abort();
     state.timers.forEach(clearTimeout);
     if (state.raf) cancelAnimationFrame(state.raf);
+    if (state.canvasRaf) cancelAnimationFrame(state.canvasRaf);
     if (state.loaderRaf) cancelAnimationFrame(state.loaderRaf);
     state.loaderContext?.revert();
     state.pageContext?.revert();
     state.heroContext?.revert();
     state.mutations?.disconnect();
-    if (state.marqueeTrigger) state.marqueeTrigger.kill();
+    state.marqueeTriggers?.forEach(trigger => trigger.kill());
     if (gsap) {
       if (state.tick) gsap.ticker.remove(state.tick);
       if (state.loader) gsap.killTweensOf(state.loader);
@@ -368,15 +495,16 @@
     const state = {
       abort: new AbortController(), timers: new Set(), destroyed: false, navigating: false,
       loader: document.getElementById("z7Loader"), overlay: document.getElementById("z7Transition"),
-      lenis: null, tick: null, update: null, raf: 0, loaderRaf: 0, heroDone: false
+      lenis: null, tick: null, update: null, raf: 0, canvasRaf: 0, loaderRaf: 0, heroDone: false, marqueeTriggers: []
     };
     live = state;
     initNavigation(state);
     initLinks(state);
     initScroll(state);
+    initAmbientCanvas(state);
     initSpatial(state);
     initMotion(state);
-    reduced.addEventListener("change", () => refreshScroll(state), { signal: state.abort.signal });
+    reduced.addEventListener("change", () => { refreshScroll(state); state.resumeCanvas?.(); }, { signal: state.abort.signal });
     desktop.addEventListener("change", () => refreshScroll(state), { signal: state.abort.signal });
     window.addEventListener("pagehide", () => destroy(state), { once: true, signal: state.abort.signal });
     const arriving = takeArrival() || root.hasAttribute("data-z7-arriving");
