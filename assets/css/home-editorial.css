@@ -231,3 +231,8 @@ html[data-z7-core][data-theme="light"] .z7-home .behance-cta { border-color:var(
 .z7-home .service-preview.is-following { position:fixed; z-index:80; left:0; top:0; width:250px; max-width:calc(100vw - 24px); margin:0; }
 .z7-home .service-preview.is-following .service-preview__media { aspect-ratio:1.25; }
 @media (max-width:1380px) { .z7-home .service-preview.is-following { display:none; } }
+
+/* The reel scrolls naturally; no pinned viewport or synthetic page-length spacer. */
+.home-showcase__viewport { overflow-x:auto; overflow-y:hidden; padding:4px 2px 12px; scroll-snap-type:x proximity; overscroll-behavior-inline:contain; scrollbar-width:thin; scrollbar-color:var(--z7-rule-strong) transparent; }
+.home-showcase__track > .media-tile { scroll-snap-align:start; }
+.home-showcase__track > .media-tile::after,.service-card::after,.studio-card::after,.media-tile::after { position:absolute; z-index:3; inset:0; border:1px solid transparent; border-radius:inherit; background:radial-gradient(220px circle at var(--mouse-x,50%) var(--mouse-y,50%),rgba(79,140,255,.15),transparent 72%); content:""; pointer-events:none; }

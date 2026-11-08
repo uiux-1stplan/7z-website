@@ -394,23 +394,12 @@
           scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .7, invalidateOnRefresh: true }
         });
       }
-      const homeSection = document.querySelector(".home-showcase");
-      const homeViewport = homeSection?.querySelector(".home-showcase__viewport");
-      const homeRail = homeSection?.querySelector(".home-showcase__track");
-      const homeRailCards = homeRail ? [...homeRail.children] : [];
-      if (homeSection && homeViewport && homeRail && homeRailCards.length > 1 && matchMedia("(min-width: 761px) and (pointer: fine)").matches && homeRail.scrollWidth - homeViewport.clientWidth > 80) {
-        const travel = () => Math.max(0, homeRail.scrollWidth - homeViewport.clientWidth);
-        const updateCurve = () => {
-          const center = innerWidth / 2;
-          homeRailCards.forEach(card => {
-            const rect = card.getBoundingClientRect();
-            const offset = (rect.left + rect.width / 2 - center) / Math.max(1, innerWidth / 2);
-            const distance = Math.min(1, Math.abs(offset));
-            gsap.set(card, { rotationY: -offset * 10, scale: 1 - distance * .07, z: -distance * 36, transformOrigin: "50% 50%" });
-          });
-        };
-        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeSection, start: "top top+=80", end: () => "+=" + Math.max(1, travel()), pin: true, scrub: .8, invalidateOnRefresh: true, onUpdate: updateCurve, onRefresh: updateCurve } });
-      }
+      document.querySelectorAll(".home-showcase__track > .media-tile").forEach(card => {
+        gsap.fromTo(card, { scale: .94, y: 28, autoAlpha: .5 }, {
+          scale: 1, y: 0, autoAlpha: 1, ease: "none",
+          scrollTrigger: { trigger: card, start: "top 92%", end: "center 58%", scrub: .5 }
+        });
+      });
       const homeFounderImages = [...document.querySelectorAll(".home-founder__image")];
       homeFounderImages.forEach((image, index) => gsap.fromTo(image, { clipPath: index % 2 ? "inset(0 0 0 100% round 16px)" : "inset(0 100% 0 0 round 16px)" }, {
         clipPath: "inset(0 0% 0 0% round 16px)", ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top 80%", end: "center 48%", scrub: .8 }
@@ -426,20 +415,6 @@
         });
       }
       document.querySelectorAll(".home-founder__image img").forEach(image => gsap.fromTo(image, { yPercent: 5, scale: 1.02 }, { yPercent: -5, scale: 1.09, ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top bottom", end: "bottom top", scrub: .7 } }));
-      const rail = document.querySelector(".comparison-scroll");
-      const stage = rail?.querySelector(".comparison-stage");
-      const progress = rail?.querySelector("[data-comparison-progress]");
-      if (rail && stage && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
-        const travel = () => Math.max(0, stage.scrollWidth - rail.clientWidth);
-        if (travel() > 0) gsap.to(stage, {
-          x: () => -travel(), ease: "none",
-          scrollTrigger: {
-            trigger: rail, start: "top top+=112", end: () => "+=" + travel(), pin: true,
-            scrub: .7, invalidateOnRefresh: true,
-            onUpdate: self => { if (progress) gsap.set(progress, { scaleX: self.progress }); }
-          }
-        });
-      }
       document.querySelectorAll(".kinetic-strip__track,[data-z7-partner-track]").forEach(track => {
         const reverse = track.dataset.z7PartnerTrack === "reverse";
         const loop = gsap.to(track, { xPercent: reverse ? 50 : -50, duration: reverse ? 32 : 27, ease: "none", repeat: -1 });
