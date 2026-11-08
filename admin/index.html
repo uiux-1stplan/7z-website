@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem("z7-theme")||"dark"}catch{}</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
@@ -10,7 +11,7 @@
 <link rel="stylesheet" href="/admin/admin-auth-polish.css?v=639234581960308959">
 </head>
 
-<body>
+<body class="z7-admin-shell">
 
 <div
   id="site-header-slot"
@@ -140,6 +141,13 @@
 
     </nav>
 
+    <div class="academy-admin-nav" aria-label="Academy">
+      <span class="academy-admin-nav__label">ACADEMY</span>
+      <a href="/courses/">Course catalogue <span aria-hidden="true">↗</span></a>
+      <a href="/courses/ai-engineering/">AI for Engineers <span aria-hidden="true">↗</span></a>
+      <a href="/course-registration/">Enrollment page <span aria-hidden="true">↗</span></a>
+    </div>
+
     <div class="sidebar-footer">
       <div class="security-status">
         <span></span>
@@ -170,7 +178,7 @@
         </p>
       </div>
 
-      <div class="admin-profile">
+      <div class="admin-profile"><button class="admin-theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme" title="Switch theme"><span aria-hidden="true">◐</span></button>
         <div id="admin-copy">
           <strong id="admin-name">Administrator</strong>
           <span id="admin-email"></span>
@@ -181,6 +189,18 @@
 
     </header>
 
+
+    <section class="academy-admin-overview" aria-labelledby="academy-admin-title">
+      <div class="academy-admin-overview__head">
+        <div><span class="eyebrow">ACADEMY / LIVE PAGES</span><h2 id="academy-admin-title">Course workspace</h2></div>
+        <a class="academy-admin-overview__link" href="/courses/">Open catalogue <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="academy-admin-overview__items">
+        <a href="/courses/" class="academy-admin-course"><span class="academy-admin-course__index">01</span><span><strong>AI Cinematic Filmmaking</strong><small>Course catalogue page</small></span><b aria-hidden="true">↗</b></a>
+        <a href="/courses/ai-engineering/" class="academy-admin-course"><span class="academy-admin-course__index">02</span><span><strong>AI for Engineers</strong><small>Course detail page</small></span><b aria-hidden="true">↗</b></a>
+      </div>
+      <p class="academy-admin-overview__note">Enrollment and checkout continue through the existing Academy flow.</p>
+    </section>
 
     <section class="stats">
 
@@ -458,5 +478,6 @@
   <script src="/admin/admin-polish.js"></script>
   <script src="/admin/admin-accounts.js"></script>
 <script src="/admin/admin-auth-polish.js?v=639234581960308959"></script>
+<script src="/assets/js/site-theme.js" defer></script>
 </body>
 </html>

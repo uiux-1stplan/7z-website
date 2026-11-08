@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
 
-<html lang="en">
-<head>
+<html lang="en" data-theme="dark">
+<head><script>try{document.documentElement.dataset.theme=localStorage.getItem("z7-theme")||"dark"}catch{}</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta name="description" content="7Z Magic private access hub for protected presentations, documents and client experiences." />
@@ -115,8 +115,11 @@ document.documentElement.classList.add('z7icx-preauth');
   flashing before Inner Circle initializes.
 */
 
-html.z7icx-preauth body {
+html.z7icx-preauth:not([data-theme="light"]) body {
   background: #030303 !important;
+}
+html.z7icx-preauth[data-theme="light"] body {
+  background: #e9e9e5 !important;
 }
 
 /* OLD PRIVATE ACCESS CONTENT */
@@ -195,7 +198,7 @@ html.z7icx-preauth .z7pa-library {
 <a href="/contact">Contact</a>
 <a href="/private-access/" class="is-active" aria-current="page">Private Access</a>
 </nav>
-<div aria-label="Social links" class="header-socials">
+<div aria-label="Social links" class="header-socials"><button class="private-theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme" title="Switch theme"><span aria-hidden="true">◐</span></button>
 <a aria-label="Instagram" class="magnetic social-icon" href="https://www.instagram.com/7z.magic" rel="noopener" target="_blank">
 <svg aria-hidden="true" viewbox="0 0 24 24">
 <rect height="14" rx="4" width="14" x="5" y="5"></rect>
@@ -719,5 +722,5 @@ html.z7icx-preauth .z7pa-library {
 <script src="/private-access/session-button-bridge.js?v=1787773580108"></script>
 
 <script src="/private-access/portal-files.js?v=1787783247962"></script>
-</body>
+<script src="/assets/js/site-theme.js" defer></script></body>
 </html>

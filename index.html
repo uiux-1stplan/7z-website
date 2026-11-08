@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-z7-core data-z7-visual="spatial">
   <head>
+    <script>try{document.documentElement.dataset.theme=localStorage.getItem("z7-theme")||localStorage.getItem("7z-course-theme")||"dark"}catch{}</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>document.documentElement.classList.add("z7-js");</script>
@@ -103,7 +104,7 @@
       <div class="z7-header__actions">
         <a class="z7-header__social" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer" aria-label="7Z Magic on Instagram">Instagram</a>
         <a class="z7-header__contact magnetic" href="mailto:creative@7z-magic.com">Email us</a>
-        <button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button>
+        <button class="z7-theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme" title="Switch theme"><span aria-hidden="true">◐</span></button><button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button>
       </div>
     </div>
   </header>
@@ -197,6 +198,12 @@
         <a href="/founders/">Founders</a>
         <a href="/contact/">Contact Us</a>
       </nav>
+
+      <nav class="z7-footer__links z7-footer__academy" aria-label="Academy">
+        <span class="z7-footer__label">Academy</span>
+        <a href="/courses/">All courses</a>
+        <a href="/courses/ai-engineering/">AI for Engineers</a>
+      </nav>
       <div class="z7-footer__contact">
         <span class="z7-footer__label">Contact</span>
         <p>Ready to start a polished digital experience?</p>
@@ -212,5 +219,5 @@
       <a href="/">Home</a>
     </div>
   </footer>
-</body>
+<script src="/assets/js/site-theme.js" defer></script></body>
 </html>

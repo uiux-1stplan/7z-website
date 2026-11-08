@@ -465,3 +465,32 @@
 .cl-card{
   z-index:21!important;
 }
+
+
+/* 7Z administration: refined workspace surfaces and persistent theme. */
+:root { --admin-blue:#4f8cff; }
+.admin-theme-toggle { display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px; border:1px solid var(--line); border-radius:50%; background:var(--panel); color:var(--text); cursor:pointer; }
+.academy-admin-nav { display:grid; gap:7px; padding-top:18px; border-top:1px solid var(--line); }
+.academy-admin-nav__label { color:var(--muted); font-size:9px; letter-spacing:.15em; }
+.academy-admin-nav a { display:flex; justify-content:space-between; align-items:center; min-height:36px; padding:0 11px; border:1px solid transparent; border-radius:10px; color:var(--muted); font-size:.78rem; text-decoration:none; }
+.academy-admin-nav a:hover { border-color:var(--line); background:var(--panel); color:var(--text); }
+.academy-admin-overview { display:grid; gap:15px; padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--panel); box-shadow:inset 0 1px 0 rgba(255,255,255,.08); }
+.academy-admin-overview__head { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.academy-admin-overview__head h2 { margin:5px 0 0; font-size:1.15rem; }
+.academy-admin-overview__link { color:var(--text); font-size:.76rem; text-decoration:none; }
+.academy-admin-overview__items { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.academy-admin-course { display:grid; grid-template-columns:32px minmax(0,1fr) 16px; align-items:center; gap:10px; min-height:66px; padding:10px 12px; border:1px solid var(--line); border-radius:13px; color:var(--text); background:rgba(255,255,255,.025); text-decoration:none; }
+.academy-admin-course:hover { border-color:rgba(79,140,255,.5); background:rgba(79,140,255,.07); }
+.academy-admin-course__index { color:var(--admin-blue); font:10px ui-monospace,monospace; }
+.academy-admin-course strong,.academy-admin-course small { display:block; }
+.academy-admin-course strong { font-size:.82rem; font-weight:600; }
+.academy-admin-course small,.academy-admin-overview__note { color:var(--muted); font-size:.7rem; }
+.academy-admin-overview__note { margin:0; }
+html[data-theme="light"] { color-scheme:light; --bg:#eef0f3; --panel:rgba(255,255,255,.82); --panel-strong:#fff; --line:rgba(22,35,52,.13); --text:#182332; --muted:rgba(24,35,50,.65); --cyan:#3e78c7; --gold:#4f8cff; --danger:#b8384c; }
+html[data-theme="light"] body { color:var(--text); background:linear-gradient(120deg,rgba(79,140,255,.05),transparent 36%),linear-gradient(180deg,#f5f6f8,#e9edf1); }
+html[data-theme="light"] :is(.sidebar,.topbar,.stat,.panel,.modal-card,.state-card,.login-panel,.auth-shell) { background:#fff!important; color:var(--text); box-shadow:0 18px 50px rgba(26,43,65,.07); }
+html[data-theme="light"] :is(input,select,textarea) { color:var(--text); background:#f7f8fa; }
+html[data-theme="light"] .academy-admin-course { background:#f7f9fc; }
+html[data-theme="light"] .academy-admin-course strong { color:#182332; }
+.admin-profile { display:flex; align-items:center; gap:12px; }
+@media (max-width:760px) { .academy-admin-overview__items { grid-template-columns:1fr; } .academy-admin-overview__head { align-items:flex-start; flex-direction:column; } }

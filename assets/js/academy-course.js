@@ -82,7 +82,7 @@
   const themeButton = document.getElementById('theme');
   function apply() {
     const lang = localStorage.getItem('7z-course-lang') === 'en' ? 'en' : 'ar';
-    const theme = localStorage.getItem('7z-course-theme') === 'light' ? 'light' : 'dark';
+    const theme = (localStorage.getItem('z7-theme') || localStorage.getItem('7z-course-theme')) === 'light' ? 'light' : 'dark';
     root.lang = lang; root.dir = lang === 'ar' ? 'rtl' : 'ltr'; root.dataset.theme = theme;
     for (const { node, original } of nodes) {
       const key = original.trim();
@@ -103,6 +103,6 @@
     });
   }
   langButton?.addEventListener('click', () => { localStorage.setItem('7z-course-lang', root.lang === 'ar' ? 'en' : 'ar'); apply(); });
-  themeButton?.addEventListener('click', () => { localStorage.setItem('7z-course-theme', root.dataset.theme === 'dark' ? 'light' : 'dark'); apply(); });
+  themeButton?.addEventListener('click', () => { localStorage.setItem('7z-course-theme', root.dataset.theme === 'dark' ? 'light' : 'dark'); localStorage.setItem('z7-theme', root.dataset.theme === 'dark' ? 'light' : 'dark'); apply(); });
   apply();
 })();
