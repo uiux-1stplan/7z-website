@@ -178,15 +178,23 @@
   function revealHero(state) {
     if (state.heroDone) return;
     state.heroDone = true;
-    const nodes = [...document.querySelectorAll("[data-z7-hero-reveal]")];
-    if (!nodes.length) return;
+    const logo = document.querySelector(".logo-hero__mark[data-z7-hero-reveal]");
+    const nodes = [...document.querySelectorAll("[data-z7-hero-reveal]")].filter(node => node !== logo);
+    if (!logo && !nodes.length) return;
     if (!gsap || reduced.matches) {
+      if (logo) logo.style.removeProperty("opacity");
       nodes.forEach(node => { node.style.opacity = "1"; node.style.transform = "none"; });
       return;
     }
-    state.heroContext = gsap.context(() => gsap.fromTo(nodes, { autoAlpha: 0, y: 18 }, {
-      autoAlpha: 1, y: 0, duration: .68, stagger: .07, ease: "power2.out"
-    }));
+    state.heroContext = gsap.context(() => {
+      if (logo) gsap.fromTo(logo, { clipPath: "inset(46% 46% 46% 46% round 50%)", autoAlpha: 0, scale: .72, filter: "blur(14px)" }, {
+        clipPath: "inset(0% 0% 0% 0% round 0%)", autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 1.05, ease: "power3.out",
+        onComplete: () => gsap.set(logo, { clearProps: "transform,clipPath,filter,opacity,visibility" })
+      });
+      if (nodes.length) gsap.fromTo(nodes, { autoAlpha: 0, y: 18 }, {
+        autoAlpha: 1, y: 0, duration: .68, stagger: .07, ease: "power2.out"
+      });
+    });
   }
   function clearLoader(state) {
     if (!state.loader || state.loader.hidden) return;
@@ -369,17 +377,18 @@
         autoAlpha: 1, y: 0, duration: .72, ease: "power2.out",
         scrollTrigger: { trigger: element, start: "top 88%", once: true }
       }));
-      const hero = document.querySelector(".hero-depth");
-      const heroFrames = hero ? [...hero.querySelectorAll("[data-hero-frame]")] : [];
-      if (hero && heroFrames.length && matchMedia("(min-width: 701px) and (pointer:fine)").matches) {
-        const heroTimeline = gsap.timeline({ scrollTrigger: { trigger: hero, start: "top top", end: "+=72%", pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
-        const scene = hero.querySelector(".hero-depth__scene");
-        heroFrames.forEach((frame, index) => heroTimeline.to(frame, { x: (index % 2 ? -1 : 1) * (18 + index * 5), y: (index < 2 ? 1 : -1) * 13, scale: 1.045, autoAlpha: .94, ease: "none" }, 0));
-        if (scene) heroTimeline.to(scene, { y: -12, scale: 1.055, rotationY: -1.5, ease: "none" }, 0);
-        heroTimeline.to(hero.querySelector(".hero-depth__copy"), { y: -18, autoAlpha: .48, ease: "none" }, .28);
-        heroTimeline.to(hero.querySelector(".hero-depth__field"), { scale: 1.025, opacity: .8, ease: "none" }, 0);
-      } else if (hero) {
-        gsap.to(hero.querySelector(".hero-depth__copy"), { y: -28, autoAlpha: .35, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8 } });
+      const hero = document.querySelector(".logo-hero");
+      const logo = hero?.querySelector(".logo-hero__mark");
+      if (hero && logo) {
+        const pinHero = matchMedia("(min-width: 701px) and (pointer:fine)").matches;
+        gsap.to(logo, {
+          "--logo-scroll-scale": 1.18,
+          "--logo-scroll-y": "-16px",
+          "--logo-scroll-opacity": .3,
+          "--logo-scroll-blur": "1px",
+          ease: "none",
+          scrollTrigger: { trigger: hero, start: "top top", end: pinHero ? "+=62%" : "bottom top", pin: pinHero, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true }
+        });
       }
       const homeSection = document.querySelector(".home-showcase");
       const homeViewport = homeSection?.querySelector(".home-showcase__viewport");

@@ -211,9 +211,9 @@
     }
   }
   function initHero() {
-    const hero = $(".hero-depth");
-    const frameset = $$(".hero-depth__plane", hero || document);
-    if (!hero || !frameset.length || !matchMedia("(pointer:fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const hero = $(".logo-hero");
+    const logo = $(".logo-hero__mark", hero || document);
+    if (!hero || !logo || !matchMedia("(pointer:fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let frame = 0, px = 0, py = 0, tx = 0, ty = 0;
     const onMove = event => {
       const rect = hero.getBoundingClientRect();
@@ -222,21 +222,13 @@
       if (!frame) frame = requestAnimationFrame(function paint() {
         frame = 0;
         px += (tx - px) * .09; py += (ty - py) * .09;
-        hero.style.setProperty("--hero-glow-x", `${50 + px * 10}%`);
-        hero.style.setProperty("--hero-glow-y", `${46 + py * 10}%`);
-        hero.style.setProperty("--hero-rotate-x", `${py * -1.2}deg`);
-        hero.style.setProperty("--hero-rotate-y", `${px * 1.4}deg`);
-        frameset.forEach(node => {
-          const depth = Number(node.dataset.depth || 1);
-          node.style.setProperty("--depth-x", `${px * -18 * depth}px`);
-          node.style.setProperty("--depth-y", `${py * -14 * depth}px`);
-          node.style.setProperty("--depth-rx", `${py * 3.2 * depth}deg`);
-          node.style.setProperty("--depth-ry", `${px * -4.4 * depth}deg`);
-        });
+        logo.style.setProperty("--logo-rx", `${py * -2.2}deg`);
+        logo.style.setProperty("--logo-ry", `${px * 2.6}deg`);
         if (Math.abs(tx - px) + Math.abs(ty - py) > .015) frame = requestAnimationFrame(paint);
       });
     };
     hero.addEventListener("pointermove", onMove, { passive: true, signal: abort.signal });
+    hero.addEventListener("pointerleave", () => { tx = 0; ty = 0; onMove({ clientX: hero.getBoundingClientRect().left + hero.clientWidth / 2, clientY: hero.getBoundingClientRect().top + hero.clientHeight / 2 }); }, { signal: abort.signal });
     window.addEventListener("pagehide", () => { if (frame) cancelAnimationFrame(frame); }, { once: true, signal: abort.signal });
   }
 
