@@ -373,9 +373,11 @@
       const heroFrames = hero ? [...hero.querySelectorAll("[data-hero-frame]")] : [];
       if (hero && heroFrames.length && matchMedia("(min-width: 701px) and (pointer:fine)").matches) {
         const heroTimeline = gsap.timeline({ scrollTrigger: { trigger: hero, start: "top top", end: "+=72%", pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
-        heroFrames.forEach((frame, index) => heroTimeline.to(frame, { x: (index % 2 ? -1 : 1) * (70 + index * 12), y: (index < 2 ? 1 : -1) * 38, scale: 1.16, rotation: 0, autoAlpha: .78, ease: "none" }, 0));
-        heroTimeline.to(hero.querySelector(".hero-depth__copy"), { y: -24, autoAlpha: .32, ease: "none" }, .34);
-        heroTimeline.to(hero.querySelector(".hero-depth__field"), { scale: 1.06, opacity: .7, ease: "none" }, 0);
+        const scene = hero.querySelector(".hero-depth__scene");
+        heroFrames.forEach((frame, index) => heroTimeline.to(frame, { x: (index % 2 ? -1 : 1) * (18 + index * 5), y: (index < 2 ? 1 : -1) * 13, scale: 1.045, autoAlpha: .94, ease: "none" }, 0));
+        if (scene) heroTimeline.to(scene, { y: -12, scale: 1.055, rotationY: -1.5, ease: "none" }, 0);
+        heroTimeline.to(hero.querySelector(".hero-depth__copy"), { y: -18, autoAlpha: .48, ease: "none" }, .28);
+        heroTimeline.to(hero.querySelector(".hero-depth__field"), { scale: 1.025, opacity: .8, ease: "none" }, 0);
       } else if (hero) {
         gsap.to(hero.querySelector(".hero-depth__copy"), { y: -28, autoAlpha: .35, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8 } });
       }
