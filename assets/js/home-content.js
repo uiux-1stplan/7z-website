@@ -3,24 +3,24 @@
   if (!document.documentElement.hasAttribute("data-z7-core") || !document.querySelector(".z7-home")) return;
 
   const $ = (selector, scope = document) => scope.querySelector(selector);
-  const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+  const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
   const abort = new AbortController();
   const observers = [];
-  const rafs = new Set();
+  const frames = new Set();
   const comparisons = [
     ["/media/arch_projects/bef_af/1.1.jpeg", "/media/arch_projects/bef_af/1.2.png"],
     ["/media/arch_projects/bef_af/2.1.png", "/media/arch_projects/bef_af/2.2.png"],
     ["/media/arch_projects/bef_af/3.1.jpeg", "/media/arch_projects/bef_af/3.2.jpeg"]
   ];
-  const architectureVideos = [
+  const architecture = [
     { src: "/media/arch_projects/16-9V/1.mp4", poster: "/media/posters/arch_projects/16-9V/1.jpg", title: "Vertical Interior Film", layout: "is-tall" },
     { src: "/media/arch_projects/9-16H/1.mp4", poster: "/media/posters/arch_projects/9-16H/1.jpg", title: "Architectural Atmosphere", layout: "is-wide" },
     { src: "/media/arch_projects/9-16H/2.mp4", poster: "/media/posters/arch_projects/9-16H/2.jpg", title: "Residence Walkthrough", layout: "is-wide" }
   ];
-  const mediaProjects = Array.from({ length: 12 }, (_, index) => ({
-    src: `/media/media_projects/Media (${index + 1}).mp4`,
-    poster: `/media/posters/media_projects/Media (${index + 1}).jpg`,
-    title: `Campaign Film ${String(index + 1).padStart(2, "0")}`
+  const campaigns = Array.from({ length: 12 }, (_, i) => ({
+    src: `/media/media_projects/Media (${i + 1}).mp4`,
+    poster: `/media/posters/media_projects/Media (${i + 1}).jpg`,
+    title: `Campaign Film ${String(i + 1).padStart(2, "0")}`
   }));
   const presentations = [
     { src: "/media/prop/1.mp4", poster: "/media/posters/prop/1.jpg", title: "Interactive Presentation 01" },
@@ -35,17 +35,15 @@
       const card = document.createElement("article");
       card.className = "compare";
       card.style.setProperty("--split", "50%");
-      const first = document.createElement("img");
-      first.src = before;
-      first.alt = `Architecture project ${index + 1} before`;
-      first.loading = "lazy";
-      first.decoding = "async";
-      const second = document.createElement("img");
-      second.src = after;
-      second.alt = `Architecture project ${index + 1} after`;
-      second.className = "compare__after";
-      second.loading = "lazy";
-      second.decoding = "async";
+      for (const [src, className, suffix] of [[before, "", "before"], [after, "compare__after", "after"]]) {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = `Architecture project ${index + 1} ${suffix}`;
+        img.loading = "lazy";
+        img.decoding = "async";
+        if (className) img.className = className;
+        card.append(img);
+      }
       const divider = document.createElement("span");
       divider.className = "compare__divider";
       divider.setAttribute("aria-hidden", "true");
@@ -60,12 +58,12 @@
       handle.setAttribute("aria-valuenow", "50");
       const labels = document.createElement("div");
       labels.className = "compare__labels";
-      const beforeLabel = document.createElement("span");
-      const afterLabel = document.createElement("span");
-      beforeLabel.textContent = "Before";
-      afterLabel.textContent = "After";
-      labels.append(beforeLabel, afterLabel);
-      card.append(first, second, divider, handle, labels);
+      const first = document.createElement("span");
+      const second = document.createElement("span");
+      first.textContent = "Before";
+      second.textContent = "After";
+      labels.append(first, second);
+      card.append(divider, handle, labels);
       fragment.append(card);
     });
     stage.replaceChildren(fragment);
@@ -83,7 +81,7 @@
       video.muted = true;
       video.playsInline = true;
       video.preload = "none";
-      if (item.poster) video.poster = item.poster;
+      video.poster = item.poster;
       video.setAttribute("playsinline", "");
       const button = document.createElement("button");
       button.type = "button";
@@ -110,46 +108,76 @@
       const handle = $(".compare__handle", card);
       let value = 50;
       const set = next => {
-        value = Math.max(8, Math.min(92, next));
-        card.style.setProperty("--split", `${value}%`);
+        value = Math.min(92, Math.max(8, next));
+        card.style.setProperty("--split", value + "%");
         handle.setAttribute("aria-valuenow", String(Math.round(value)));
       };
-      const onMove = event => {
+      const update = event => {
         const rect = card.getBoundingClientRect();
         if (rect.width) set((event.clientX - rect.left) / rect.width * 100);
       };
       card.addEventListener("pointerdown", event => {
-        if (event.target.closest("a")) return;
         handle.setPointerCapture?.(event.pointerId);
-        onMove(event);
+        update(event);
       }, { signal: abort.signal });
       handle.addEventListener("pointermove", event => {
-        if (handle.hasPointerCapture?.(event.pointerId)) onMove(event);
+        if (handle.hasPointerCapture?.(event.pointerId)) update(event);
       }, { signal: abort.signal });
       handle.addEventListener("keydown", event => {
-        const step = event.key === "ArrowRight" ? 4 : event.key === "ArrowLeft" ? -4 : 0;
-        if (!step && event.key !== "Home" && event.key !== "End") return;
+        const delta = event.key === "ArrowRight" ? 4 : event.key === "ArrowLeft" ? -4 : 0;
+        if (!delta && event.key !== "Home" && event.key !== "End") return;
         event.preventDefault();
-        set(event.key === "Home" ? 8 : event.key === "End" ? 92 : value + step);
+        set(event.key === "Home" ? 8 : event.key === "End" ? 92 : value + delta);
       }, { signal: abort.signal });
     });
   }
 
-  function attachSource(video) {
+  function initServicePreview() {
+    const cards = $$(".service-card");
+    const preview = $(".service-preview");
+    const image = $("[data-service-preview]");
+    const title = $("[data-service-title]");
+    const index = $("[data-service-index]");
+    const shell = $(".service-loop");
+    if (!cards.length || !preview || !image) return;
+    let sequence = 0;
+    const activate = card => {
+      if (card.classList.contains("is-active")) return;
+      cards.forEach(item => item.classList.toggle("is-active", item === card));
+      shell?.style.setProperty("--service-tint", card.dataset.tint || "79,140,255");
+      preview.classList.add("is-switching");
+      const token = ++sequence;
+      const nextSrc = card.dataset.preview;
+      const preload = new Image();
+      preload.decoding = "async";
+      preload.onload = () => {
+        if (token !== sequence) return;
+        image.src = nextSrc;
+        if (title) title.textContent = card.querySelector("strong")?.textContent || "";
+        if (index) index.textContent = card.querySelector("span")?.textContent || "";
+        requestAnimationFrame(() => preview.classList.remove("is-switching"));
+      };
+      preload.onerror = () => preview.classList.remove("is-switching");
+      preload.src = nextSrc;
+    };
+    cards.forEach(card => {
+      card.addEventListener("pointerenter", () => activate(card), { signal: abort.signal });
+      card.addEventListener("focus", () => activate(card), { signal: abort.signal });
+      card.addEventListener("click", () => activate(card), { signal: abort.signal });
+    });
+  }
+
+  function attach(video) {
     if (!video || video.src || !video.dataset.src) return;
     video.src = video.dataset.src;
     video.load();
   }
-
-  function initHeroVideo() {
+  function initHero() {
     const video = $(".z7-cinema__ambient-video");
     if (!video) return;
-    video.muted = true;
-    video.loop = true;
-    video.playsInline = true;
     const start = () => {
       if (navigator.connection?.saveData || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      attachSource(video);
+      attach(video);
       video.play().catch(() => {});
     };
     if (document.readyState === "complete") start();
@@ -159,26 +187,21 @@
       else if (video.src && !navigator.connection?.saveData) video.play().catch(() => {});
     }, { signal: abort.signal });
   }
-
   function initMedia() {
     const ambient = $(".z7-cinema__ambient-video");
     const reel = $(".z7-web-reel");
     if (reel && "IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !navigator.connection?.saveData) {
-            attachSource(reel);
-            reel.play().catch(() => {});
-          } else reel.pause();
-        });
-      }, { rootMargin: "150px", threshold: .05 });
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (entry.isIntersecting && !navigator.connection?.saveData) { attach(reel); reel.play().catch(() => {}); }
+        else reel.pause();
+      }), { rootMargin: "160px", threshold: .05 });
       observer.observe(reel);
       observers.push(observer);
     }
     document.addEventListener("click", event => {
       const button = event.target.closest?.("[data-inline-video]");
       if (!button) return;
-      const card = button.closest(".media-tile, .manifest__media, .film-player");
+      const card = button.closest(".media-tile,.manifest__media,.film-player");
       const video = card?.querySelector("video");
       if (!video) return;
       event.preventDefault();
@@ -186,10 +209,10 @@
       $$(".z7-home video").forEach(other => {
         if (other !== video && other !== ambient && other !== reel && !other.paused) {
           other.pause();
-          other.closest(".media-tile, .manifest__media, .film-player")?.classList.remove("is-playing");
+          other.closest(".media-tile,.manifest__media,.film-player")?.classList.remove("is-playing");
         }
       });
-      attachSource(video);
+      attach(video);
       video.controls = true;
       video.muted = false;
       video.play().then(() => {
@@ -197,22 +220,16 @@
         button.textContent = "Pause";
       }).catch(() => {
         video.muted = true;
-        video.play().then(() => {
-          card.classList.add("is-playing");
-          button.textContent = "Pause";
-        }).catch(() => {});
+        video.play().then(() => { card.classList.add("is-playing"); button.textContent = "Pause"; }).catch(() => {});
       });
     }, { signal: abort.signal });
-    $$(".z7-home video:not(.z7-cinema__ambient-video):not(.z7-web-reel)").forEach(video => {
-      video.addEventListener("ended", () => {
-        const card = video.closest(".media-tile, .manifest__media, .film-player");
-        card?.classList.remove("is-playing");
-        const button = card?.querySelector("[data-inline-video]");
-        if (button) button.textContent = "Play";
-      }, { signal: abort.signal });
-    });
+    $$(".z7-home video:not(.z7-cinema__ambient-video):not(.z7-web-reel)").forEach(video => video.addEventListener("ended", () => {
+      const card = video.closest(".media-tile,.manifest__media,.film-player");
+      card?.classList.remove("is-playing");
+      const button = card?.querySelector("[data-inline-video]");
+      if (button) button.textContent = "Play";
+    }, { signal: abort.signal }));
   }
-
   function initCounters() {
     const nodes = $$("[data-count]");
     const reveal = node => {
@@ -220,15 +237,15 @@
       if (!Number.isFinite(total)) return;
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) { node.textContent = String(total); return; }
       const start = performance.now();
-      let frameId = 0;
+      let id = 0;
       const tick = now => {
-        rafs.delete(frameId);
-        const t = Math.min(1, (now - start) / 850);
-        node.textContent = String(Math.round(total * (1 - (1 - t) ** 3)));
-        if (t < 1) { frameId = requestAnimationFrame(tick); rafs.add(frameId); }
+        frames.delete(id);
+        const progress = Math.min(1, (now - start) / 800);
+        node.textContent = String(Math.round(total * (1 - (1 - progress) ** 3)));
+        if (progress < 1) { id = requestAnimationFrame(tick); frames.add(id); }
       };
-      frameId = requestAnimationFrame(tick);
-      rafs.add(frameId);
+      id = requestAnimationFrame(tick);
+      frames.add(id);
     };
     if (!("IntersectionObserver" in window)) { nodes.forEach(reveal); return; }
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -239,24 +256,23 @@
     nodes.forEach(node => observer.observe(node));
     observers.push(observer);
   }
-
   function boot() {
     renderComparisons();
-    renderTiles("#architectureVideos", architectureVideos);
-    renderTiles("#mediaRail", mediaProjects);
+    renderTiles("#architectureVideos", architecture);
+    renderTiles("#mediaRail", campaigns);
     renderTiles("#presentationStack", presentations);
     initComparisons();
-    initHeroVideo();
+    initServicePreview();
+    initHero();
     initMedia();
     initCounters();
     window.addEventListener("pagehide", () => {
       abort.abort();
       observers.forEach(observer => observer.disconnect());
-      rafs.forEach(cancelAnimationFrame);
+      frames.forEach(cancelAnimationFrame);
       $$(".z7-home video").forEach(video => video.pause());
     }, { once: true });
   }
-
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();
 })();
