@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-z7-core>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090A0C">
+  <title>7Z Magic</title>
+  <script>
+    try {
+      const arrival = JSON.parse(sessionStorage.getItem("z7:core-arrival:v1") || "null");
+      const path = location.pathname.replace(/\/+$/, "") || "/";
+      if (arrival && arrival.path === path && Date.now() - arrival.time < 12000) {
+        document.documentElement.setAttribute("data-z7-arriving", "");
+      }
+    } catch {}
+  </script>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/assets/css/core-system.css">
+  <noscript><style>.z7-loader,.z7-transition{display:none!important}.z7-nav{display:flex!important;position:static!important;max-height:none!important;flex-wrap:wrap!important}</style></noscript>
+  <script src="/assets/vendor/gsap.min.js" defer></script>
+  <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="/assets/vendor/lenis.min.js" defer></script>
+  <script src="/assets/js/core-motion.js" defer></script>
+</head>
+<body>
+  <a class="z7-visually-hidden" href="#mainContent">Skip to content</a>
+
+  <div class="z7-loader" id="z7Loader" role="status" aria-live="polite" aria-label="Preparing 7Z Magic experience">
+    <div class="z7-loader__inner">
+      <div class="z7-loader__top">
+        <img class="z7-loader__mark" src="/media/main_logo/7ZMagic-brand-canonical.png" width="210" height="80" alt="7Z Magic" decoding="async">
+        <span class="z7-loader__count" data-z7-count aria-hidden="true">00</span>
+      </div>
+      <div class="z7-loader__line" aria-hidden="true"><span class="z7-loader__progress" data-z7-progress></span></div>
+      <div class="z7-loader__caption"><span>Preparing experience</span><span>7Z Magic</span></div>
+    </div>
+  </div>
+
+  <div class="z7-transition" id="z7Transition" aria-hidden="true" hidden>
+    <div class="z7-transition__inner">
+      <p class="z7-transition__label" data-z7-transition-label>7Z Magic</p>
+      <span class="z7-transition__index">NEXT SCENE / 7Z</span>
+    </div>
+  </div>
+
+  <header class="z7-header" aria-label="Primary">
+    <div class="z7-container z7-header__inner">
+      <a class="z7-brand" href="/" aria-label="7Z Magic home">
+        <img src="/media/main_logo/7ZMagic-brand-canonical.png" width="150" height="44" alt="7Z Magic" decoding="async">
+      </a>
+      <nav class="z7-nav" id="z7MainNav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <div class="z7-services">
+          <button class="z7-services__trigger" id="z7ServicesTrigger" type="button" aria-expanded="false" aria-controls="z7ServicesPanel">Services</button>
+          <div class="z7-services__panel" id="z7ServicesPanel" aria-label="Service sections" hidden>
+            <a href="/#architecture">Architectural Design</a>
+            <a href="/#media">Marketing Media</a>
+            <a href="/websites/">Website Design</a>
+            <a href="/#identity">Brand Identity</a>
+            <a href="/#advertising-materials">Advertising Materials</a>
+            <a href="/#product-design">Product Design</a>
+            <a href="/#advertising-7sanz">Advertising on 7SANZ</a>
+            <a href="/#presentations">Interactive Presentations</a>
+            <a href="/#film">Film Production</a>
+            <a href="/courses/">7Z Academy</a>
+          </div>
+        </div>
+        <a href="/websites/">Websites</a>
+        <a href="/about/">About</a>
+        <a href="/founders/">Founders</a>
+        <a href="/contact/">Contact</a>
+        <a href="/partners/">Partners</a>
+        <a href="/private-access/" data-z7-no-transition>Private Access</a>
+      </nav>
+      <div class="z7-header__actions">
+        <a class="z7-header__social" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer" aria-label="7Z Magic on Instagram">Instagram</a>
+        <a class="z7-header__contact" href="mailto:creative@7z-magic.com">Email us</a>
+        <button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="z7-main" id="mainContent" tabindex="-1"></main>
+
+  <footer class="z7-footer" id="contact-footer">
+    <div class="z7-container z7-footer__main">
+      <div class="z7-footer__brand">
+        <img src="/media/main_logo/7ZMagic-brand-canonical.png" width="220" height="65" alt="7Z Magic" loading="lazy" decoding="async">
+        <h2>Premium creative systems for spaces, screens and modern brands.</h2>
+        <p>Architecture, AI, media production, websites and brand experience shaped with cinematic precision.</p>
+      </div>
+      <nav class="z7-footer__links" aria-label="Footer navigation">
+        <span class="z7-footer__label">Explore</span>
+        <a href="/#architecture">Architecture</a>
+        <a href="/#media">Media Production</a>
+        <a href="/websites/">Website Design</a>
+        <a href="/#identity">Brand Identity</a>
+        <a href="/about/">About Us</a>
+        <a href="/founders/">Founders</a>
+        <a href="/contact/">Contact Us</a>
+      </nav>
+      <div class="z7-footer__contact">
+        <span class="z7-footer__label">Contact</span>
+        <p>Ready to start a polished digital experience?</p>
+        <a class="z7-footer__email" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
+        <div class="z7-footer__socials">
+          <a href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="mailto:creative@7z-magic.com">Email</a>
+        </div>
+      </div>
+    </div>
+    <div class="z7-container z7-footer__bottom">
+      <small>Copyright &copy; 2026 7Z Magic. All rights reserved.</small>
+      <a href="/">Home</a>
+    </div>
+  </footer>
+</body>
+</html>
