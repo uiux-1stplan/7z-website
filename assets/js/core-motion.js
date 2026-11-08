@@ -159,6 +159,26 @@
     state.loader.hidden = true;
     state.loader.style.removeProperty("transform");
     state.loader.style.removeProperty("opacity");
+    revealHero(state);
+  }
+
+  function revealHero(state) {
+    if (state.heroRevealed) return;
+    state.heroRevealed = true;
+    const elements = Array.from(document.querySelectorAll("[data-z7-hero-reveal]"));
+    if (!elements.length) return;
+    if (reducedMotion.matches || !gsap) {
+      elements.forEach(element => {
+        element.style.opacity = "1";
+        element.style.transform = "none";
+      });
+      return;
+    }
+    state.heroContext = gsap.context(() => {
+      gsap.fromTo(elements, { autoAlpha: 0, y: 20 }, {
+        autoAlpha: 1, y: 0, duration: .7, stagger: .08, ease: "power2.out"
+      });
+    });
   }
 
   async function showPreloader(state) {
@@ -221,10 +241,11 @@
     overlay.style.removeProperty("transform");
     overlay.style.removeProperty("visibility");
     root.removeAttribute("data-z7-arriving");
+    revealHero(state);
   }
 
   function revealArrival(state) {
-    clearLoader(state);
+    if (state.loader) state.loader.hidden = true;
     const overlay = state.overlay;
     if (!overlay || reducedMotion.matches) { clearOverlay(state); return; }
     overlay.hidden = false;
@@ -317,6 +338,7 @@
     if (state.loaderRaf) cancelAnimationFrame(state.loaderRaf);
     state.context?.revert();
     state.pageContext?.revert();
+    state.heroContext?.revert();
     if (gsap) {
       if (state.tick) gsap.ticker.remove(state.tick);
       if (state.loader) gsap.killTweensOf(state.loader);
@@ -329,13 +351,14 @@
     active = null;
   }
 
-  function boot() {
+  function boot(fromCache = false) {
     if (active) return;
     const state = {
       abort: new AbortController(), timers: new Set(), destroyed: false,
       navigating: false, loader: document.getElementById("z7Loader"),
       overlay: document.getElementById("z7Transition"), raf: 0, loaderRaf: 0,
-      lenis: null, tick: null, scrollUpdate: null, context: null, pageContext: null
+      lenis: null, tick: null, scrollUpdate: null, context: null, pageContext: null,
+      heroContext: null, heroRevealed: false
     };
     active = state;
     initNavigation(state);
@@ -346,11 +369,12 @@
     desktopPointer.addEventListener("change", () => refreshScrolling(state), { signal: state.abort.signal });
     window.addEventListener("pagehide", () => destroy(state), { once: true, signal: state.abort.signal });
     const arrival = readArrival();
-    if (arrival || root.hasAttribute("data-z7-arriving")) revealArrival(state);
+    if (fromCache) { clearOverlay(state); clearLoader(state); revealHero(state); }
+    else if (arrival || root.hasAttribute("data-z7-arriving")) revealArrival(state);
     else showPreloader(state);
   }
 
-  window.addEventListener("pageshow", event => { if (event.persisted && !active) boot(); });
+  window.addEventListener("pageshow", event => { if (event.persisted && !active) boot(true); });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();
 })();
