@@ -168,13 +168,26 @@
             <p class="eyebrow">Explore Our Worlds</p>
             <h2 data-z7-reveal>One vision. Five ways to make it unforgettable.</h2>
           </div>
-          <nav class="service-orbit" aria-label="Explore our services">
-            <a class="service-card" data-z7-spatial href="#architecture" style="--i: 1; --service-image: url(/assets/img/charcoal-blue/architecture.webp)"><span>3D</span><strong>Spatial Stories</strong></a>
-            <a class="service-card" data-z7-spatial href="#websites" style="--i: 2; --service-image: url(/assets/img/charcoal-blue/websites.webp)"><span>UX</span><strong>Websites</strong></a>
-            <a class="service-card" data-z7-spatial href="#film" style="--i: 3; --service-image: url(/assets/img/charcoal-blue/film.webp)"><span>FM</span><strong>Campaign Films</strong></a>
-            <a class="service-card" data-z7-spatial href="#identity" style="--i: 4; --service-image: url(/media/id_design/1.png)"><span>ID</span><strong>Brand Identity</strong></a>
-            <a class="service-card" data-z7-spatial href="#product-design" style="--i: 5; --service-image: url(/assets/img/charcoal-blue/product.webp)"><span>PD</span><strong>Product Launches</strong></a>
-          </nav>
+          <div class="service-loop__stage">
+            <nav class="service-orbit" aria-label="Explore our services">
+              <a class="service-card is-active" href="#architecture" data-preview="/assets/img/charcoal-blue/architecture.webp" data-tint="79,140,255"><span>01 / 3D</span><strong>Spatial Stories</strong><i aria-hidden="true">↗</i></a>
+              <a class="service-card" href="#websites" data-preview="/assets/img/charcoal-blue/websites.webp" data-tint="114,145,172"><span>02 / UX</span><strong>Websites</strong><i aria-hidden="true">↗</i></a>
+              <a class="service-card" href="#film" data-preview="/assets/img/charcoal-blue/film.webp" data-tint="128,112,98"><span>03 / FM</span><strong>Campaign Films</strong><i aria-hidden="true">↗</i></a>
+              <a class="service-card" href="#identity" data-preview="/media/id_design/1.png" data-tint="91,112,142"><span>04 / ID</span><strong>Brand Identity</strong><i aria-hidden="true">↗</i></a>
+              <a class="service-card" href="#product-design" data-preview="/assets/img/charcoal-blue/product.webp" data-tint="99,128,119"><span>05 / PD</span><strong>Product Launches</strong><i aria-hidden="true">↗</i></a>
+            </nav>
+            <figure class="service-preview" aria-hidden="true">
+              <div class="service-preview__media"><img src="/assets/img/charcoal-blue/architecture.webp" alt="" width="720" height="540" decoding="async" data-service-preview></div>
+              <figcaption><span data-service-index>01 / 3D</span><strong data-service-title>Spatial Stories</strong></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="kinetic-strip" aria-label="7Z Magic capabilities">
+        <div class="kinetic-strip__track" data-z7-marquee-track>
+          <span>Architecture</span><i></i><span>AI Experiences</span><i></i><span>Moving Image</span><i></i><span>Web Design</span><i></i><span>Brand Identity</span><i></i><span>Product Design</span><i></i>
+          <span aria-hidden="true">Architecture</span><i aria-hidden="true"></i><span aria-hidden="true">AI Experiences</span><i aria-hidden="true"></i><span aria-hidden="true">Moving Image</span><i aria-hidden="true"></i><span aria-hidden="true">Web Design</span><i aria-hidden="true"></i><span aria-hidden="true">Brand Identity</span><i aria-hidden="true"></i><span aria-hidden="true">Product Design</span><i aria-hidden="true"></i>
         </div>
       </section>
 
@@ -197,8 +210,9 @@
           <div><strong data-count="360">0</strong><span>Degree direction</span></div>
         </div>
 
-        <div class="comparison-scroll" id="comparisonScroll">
+        <div class="comparison-scroll" id="comparisonScroll" aria-label="Pinned architecture transformations">
           <div class="comparison-stage" id="comparisonStage"></div>
+          <div class="comparison-progress" aria-hidden="true"><span data-comparison-progress></span></div>
         </div>
 
         <div class="immersive-gallery">
