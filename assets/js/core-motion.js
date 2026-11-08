@@ -475,6 +475,61 @@
           scrollTrigger: { trigger: row, start: "top bottom-=30", end: "top center+=80", scrub: .7 }
         }));
       }
+
+      const aboutRows = [...document.querySelectorAll(".z7x-page--about .z7x-capability-grid article")];
+      aboutRows.forEach((row, index) => gsap.fromTo(row, {
+        clipPath: index % 2 ? "inset(0 0 0 14%)" : "inset(0 14% 0 0)",
+        autoAlpha: .35,
+        x: index % 2 ? 12 : -12
+      }, {
+        clipPath: "inset(0 0 0 0)", autoAlpha: 1, x: 0, ease: "none",
+        scrollTrigger: { trigger: row, start: "top 84%", end: "center 55%", scrub: .7 }
+      }));
+
+      document.querySelectorAll(".z7x-founder-profile__media").forEach((frame, index) => {
+        const image = frame.querySelector("img");
+        gsap.fromTo(frame, {
+          clipPath: index % 2 ? "inset(0 0 0 24% round 18px)" : "inset(0 24% 0 0 round 18px)",
+          autoAlpha: .55
+        }, {
+          clipPath: "inset(0 0 0 0 round 18px)", autoAlpha: 1, ease: "none",
+          scrollTrigger: { trigger: frame, start: "top 86%", end: "center 52%", scrub: .8 }
+        });
+        if (image) gsap.fromTo(image, { yPercent: 4, scale: 1.035 }, {
+          yPercent: -4, scale: 1.08, ease: "none",
+          scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: .8 }
+        });
+      });
+
+      document.querySelectorAll(".z7p-partner__media").forEach((frame, index) => gsap.fromTo(frame, {
+        autoAlpha: .35, y: index % 2 ? 12 : -12, rotateX: index % 2 ? -3 : 3
+      }, {
+        autoAlpha: 1, y: 0, rotateX: 0, ease: "none",
+        scrollTrigger: { trigger: frame, start: "top 90%", end: "center 62%", scrub: .65 }
+      }));
+
+      const inquiryRows = [...document.querySelectorAll(".z7x-contact-brief li")];
+      inquiryRows.forEach((row, index) => gsap.fromTo(row, { x: 22, autoAlpha: .4 }, {
+        x: 0, autoAlpha: 1, ease: "none",
+        scrollTrigger: { trigger: row, start: "top 88%", end: "center 62%", scrub: .65, delay: index * .025 }
+      }));
+
+      document.querySelectorAll(".academy .course-card__visual, body:has(.wrap.hero) .hero-art").forEach((frame, index) => {
+        gsap.fromTo(frame, {
+          clipPath: index % 2 ? "inset(0 0 0 18% round 18px)" : "inset(0 18% 0 0 round 18px)",
+          autoAlpha: .55
+        }, {
+          clipPath: "inset(0 0 0 0 round 18px)", autoAlpha: 1, ease: "none",
+          scrollTrigger: { trigger: frame, start: "top 86%", end: "center 55%", scrub: .8 }
+        });
+      });
+
+      document.querySelectorAll("body:has(.wrap.hero) .stage").forEach((row, index) => gsap.fromTo(row, {
+        x: index % 2 ? 18 : -18, autoAlpha: .42
+      }, {
+        x: 0, autoAlpha: 1, ease: "none",
+        scrollTrigger: { trigger: row, start: "top 90%", end: "center 62%", scrub: .7 }
+      }));
     }, document.body);
   }
   function destroy(state) {
