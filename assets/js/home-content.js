@@ -80,19 +80,26 @@
       video.dataset.src = item.src;
       video.muted = true;
       video.playsInline = true;
+      video.autoplay = true;
+      video.loop = true;
       video.preload = "none";
       video.poster = item.poster;
+      video.setAttribute("autoplay", "");
+      video.setAttribute("loop", "");
+      video.setAttribute("muted", "");
       video.setAttribute("playsinline", "");
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "play-badge";
-      button.dataset.inlineVideo = "";
-      button.setAttribute("aria-label", `Play ${item.title}`);
-      button.textContent = "Play";
+      video.removeAttribute("controls");
+      const mute = document.createElement("button");
+      mute.type = "button";
+      mute.className = "z7-video-mute";
+      mute.dataset.videoMute = "";
+      mute.setAttribute("aria-label", `Unmute ${item.title}`);
+      mute.setAttribute("aria-pressed", "false");
+      mute.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg><span>Sound off</span>';
       const title = document.createElement("span");
       title.textContent = item.title;
-      tile.append(video, button, title);
-      if (selector === "#mediaRail") {
+      tile.append(video, mute, title);
+      if (selector === "#mediaRail" || selector === "#homeVideoRail") {
         const slot = document.createElement("div");
         slot.className = "media-fan-slot";
         slot.dataset.fanIndex = String(index);
@@ -168,9 +175,16 @@
   }
 
   function attach(video) {
-    if (!video || video.src || !video.dataset.src) return;
-    video.src = video.dataset.src;
-    video.load();
+    if (!video) return;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.controls = false;
+    video.muted = true;
+    if (!video.src && video.dataset.src) {
+      video.src = video.dataset.src;
+      video.load();
+    }
   }
   function initHero() {
     const ambient = $("[data-z7-ambient]");
@@ -192,46 +206,57 @@
     window.addEventListener("pagehide", () => { if (frame) cancelAnimationFrame(frame); }, { once: true, signal: abort.signal });
   }
   function initMedia() {
-    const reel = $(".z7-web-reel");
-    if (reel && "IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-        if (entry.isIntersecting && !navigator.connection?.saveData) { attach(reel); reel.play().catch(() => {}); }
-        else reel.pause();
-      }), { rootMargin: "160px", threshold: .05 });
-      observer.observe(reel);
-      observers.push(observer);
-    }
-    document.addEventListener("click", event => {
-      const button = event.target.closest?.("[data-inline-video]");
-      if (!button) return;
-      const card = button.closest(".media-tile,.manifest__media,.film-player");
-      const video = card?.querySelector("video");
-      if (!video) return;
-      event.preventDefault();
-      if (!video.paused) { video.pause(); button.textContent = "Play"; card.classList.remove("is-playing"); return; }
-      $$(".z7-home video,.z7-services-page video").forEach(other => {
-        if (other !== video && other !== reel && !other.paused) {
-          other.pause();
-          other.closest(".media-tile,.manifest__media,.film-player")?.classList.remove("is-playing");
-        }
-      });
+    const videos = $$(".z7-home video,.z7-services-page video");
+    videos.forEach(video => {
+      video.removeAttribute("controls");
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute("autoplay", "");
+      video.setAttribute("loop", "");
+      video.setAttribute("muted", "");
+      video.setAttribute("playsinline", "");
+      const host = video.closest(".media-tile,.manifest__media,.film-player,.web-stage") || video.parentElement;
+      if (host && !host.querySelector("[data-video-mute]")) {
+        const mute = document.createElement("button");
+        mute.type = "button";
+        mute.className = "z7-video-mute";
+        mute.dataset.videoMute = "";
+        mute.setAttribute("aria-label", "Unmute video");
+        mute.setAttribute("aria-pressed", "false");
+        mute.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg><span>Sound off</span>';
+        host.append(mute);
+      }
+    });
+    const playVisible = video => {
+      if (document.hidden || navigator.connection?.saveData) return;
       attach(video);
-      video.controls = true;
-      video.muted = false;
-      video.play().then(() => {
-        card.classList.add("is-playing");
-        button.textContent = "Pause";
-      }).catch(() => {
-        video.muted = true;
-        video.play().then(() => { card.classList.add("is-playing"); button.textContent = "Pause"; }).catch(() => {});
-      });
+      video.play().catch(() => { video.muted = true; video.play().catch(() => {}); });
+    };
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        const video = entry.target;
+        if (entry.isIntersecting) playVisible(video);
+      }), { rootMargin: "180px", threshold: .06 });
+      videos.forEach(video => observer.observe(video));
+      observers.push(observer);
+    } else videos.forEach(playVisible);
+    document.addEventListener("click", event => {
+      const button = event.target.closest?.("[data-video-mute]");
+      if (!button) return;
+      const video = button.closest(".media-tile,.manifest__media,.film-player,.web-stage")?.querySelector("video") || button.parentElement?.querySelector("video");
+      if (!video) return;
+      video.muted = !video.muted;
+      if (!video.muted) video.volume = .7;
+      button.setAttribute("aria-pressed", String(!video.muted));
+      button.setAttribute("aria-label", video.muted ? "Unmute video" : "Mute video");
+      const label = button.querySelector("span");
+      if (label) label.textContent = video.muted ? "Sound off" : "Sound on";
+      const icon = button.querySelector("svg");
+      if (icon) icon.classList.toggle("is-muted", video.muted);
+      if (!video.paused) video.play().catch(() => {});
     }, { signal: abort.signal });
-    $$(".z7-home video:not(.z7-web-reel)").forEach(video => video.addEventListener("ended", () => {
-      const card = video.closest(".media-tile,.manifest__media,.film-player");
-      card?.classList.remove("is-playing");
-      const button = card?.querySelector("[data-inline-video]");
-      if (button) button.textContent = "Play";
-    }, { signal: abort.signal }));
   }
   function initCounters() {
     const nodes = $$("[data-count]");
@@ -262,6 +287,7 @@
   function boot() {
     renderComparisons();
     renderTiles("#architectureVideos", architecture);
+    renderTiles("#homeVideoRail", architecture);
     renderTiles("#mediaRail", campaigns);
     renderTiles("#presentationStack", presentations);
     initComparisons();

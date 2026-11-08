@@ -101,7 +101,7 @@ html[data-z7-core] .z7-footer__brand img { display: block; width: 76px; max-widt
 .z7-footer__socials { display: flex; gap: 10px; margin-top: 28px; color: var(--z7-muted); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }.z7-footer__socials a { padding: 7px 11px; border: 1px solid var(--z7-line); border-radius: var(--z7-pill); }
 .z7-footer__bottom { display: flex; justify-content: space-between; gap: 20px; padding-block: 22px; border-top: 1px solid var(--z7-line); color: var(--z7-muted); font: 10px var(--z7-mono); letter-spacing: .1em; text-transform: uppercase; }
 
-@media (max-width:1180px) {
+@media (max-width:1380px) {
   .z7-header__inner { grid-template-columns: minmax(110px,1fr) auto; }
   .z7-nav { position: fixed; top: 96px; right: var(--z7-gutter); left: var(--z7-gutter); max-height: calc(100svh - 116px); overflow: auto; display: flex; flex-direction: column; align-items: stretch; gap: 2px; padding: 14px; border: 1px solid rgba(255,255,255,.11); border-radius: var(--z7-radius-lg); background: rgba(12,14,17,.94); box-shadow: var(--z7-specular),var(--z7-elevation); backdrop-filter: blur(26px); }
   .z7-nav:not(.is-open), .z7-nav[hidden] { display: none; }

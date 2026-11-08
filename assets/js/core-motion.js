@@ -4,10 +4,10 @@
   if (!root.hasAttribute("data-z7-core")) return;
 
   const KEY = "z7:core-arrival:v1";
-  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/courses", "/courses/ai-engineering"]);
+  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/courses", "/courses/ai-engineering", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-  const desktop = matchMedia("(min-width: 1181px) and (pointer: fine)");
-  const compact = matchMedia("(max-width: 1180px)");
+  const desktop = matchMedia("(min-width: 1381px) and (pointer: fine)");
+  const compact = matchMedia("(max-width: 1380px)");
   const lowData = Boolean(navigator.connection?.saveData);
   const gsap = window.gsap;
   const ST = window.ScrollTrigger;
@@ -18,7 +18,7 @@
   const pathOf = url => url.pathname.replace(/\/+$/, "") || "/";
   const labelFor = url => ({
     "/": "Home", "/about": "About", "/founders": "Founders", "/partners": "Partners",
-    "/contact": "Contact", "/services": "Services", "/courses": "7Z Academy", "/courses/ai-engineering": "AI Engineering"
+    "/contact": "Contact", "/services": "Services", "/courses": "7Z Academy", "/courses/ai-engineering": "AI Engineering", "/websites": "Websites"
   }[pathOf(url)] || "7Z Magic");
   function timer(state, fn, delay) {
     const id = setTimeout(() => { state.timers.delete(id); fn(); }, delay);
@@ -234,7 +234,7 @@
     }, { signal: state.abort.signal });
   }
   function initSpatial(state) {
-    const selector = ".manifest__media,.service-card,.compare,.media-tile,.web-stage,.reach-metric,.film-player,.studio-card";
+    const selector = ".manifest__media,.service-card,.compare,.media-tile,.web-stage,.reach-metric,.film-player,.studio-card,.website-work,.home-founder,.home-partner";
     const apply = node => {
       if (node.matches?.(selector)) node.classList.add("z7-spatial");
       node.querySelectorAll?.(selector).forEach(el => el.classList.add("z7-spatial"));
@@ -274,6 +274,23 @@
       if (heroAmbient) gsap.to(heroAmbient, { yPercent: 14, scale: 1.08, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .9 } });
       if (hero) gsap.to(hero.querySelectorAll("[data-z7-hero-reveal]"), { yPercent: -18, autoAlpha: .25, stagger: .035, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top+=20", scrub: .8 } });
       if (hero) hero.querySelectorAll(".z7-cinema__card").forEach((card, index) => gsap.to(card, { y: -24 - index * 8, rotate: (index % 2 ? -1 : 1) * 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8 } }));
+      const homeRail = document.querySelector(".home-showcase__track");
+      const homeRailCards = homeRail ? [...homeRail.children] : [];
+      if (homeRail && homeRailCards.length > 1 && matchMedia("(min-width: 761px) and (pointer: fine)").matches) {
+        const travel = () => Math.max(0, homeRail.scrollWidth - homeRail.clientWidth);
+        gsap.to(homeRail, { x: () => -travel(), ease: "none", scrollTrigger: { trigger: homeRail, start: "top top+=130", end: () => "+=" + travel(), pin: true, scrub: .8, invalidateOnRefresh: true } });
+      }
+      const websiteCards = [...document.querySelectorAll(".website-work")];
+      if (websiteCards.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
+        websiteCards.forEach((card, index) => {
+          card.style.zIndex = String(index + 1);
+          gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=40", end: "top top+=120", scrub: .8 } });
+          if (index < websiteCards.length - 1) gsap.to(card, { scale: .955, autoAlpha: .64, filter: "brightness(.7)", ease: "none", scrollTrigger: { trigger: websiteCards[index + 1], start: "top bottom+=150", end: "top top+=100", scrub: .8 } });
+          const media = card.querySelector(".website-work__media");
+          if (media) gsap.fromTo(media, { y: 18 }, { y: -14, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .8 } });
+        });
+      }
+      document.querySelectorAll(".home-founder__image img").forEach(image => gsap.fromTo(image, { yPercent: 5, scale: 1.02 }, { yPercent: -5, scale: 1.09, ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top bottom", end: "bottom top", scrub: .8 } }));
       const rail = document.querySelector(".comparison-scroll");
       const stage = rail?.querySelector(".comparison-stage");
       const progress = rail?.querySelector("[data-comparison-progress]");
