@@ -6,3 +6,6 @@
 .z7-video-mute svg.is-muted path:nth-child(2) { opacity: .28; }
 video { display: block; }
 video::-webkit-media-controls { display: none!important; }
+
+html[data-z7-core][data-theme="light"] .z7-video-mute { border-color:var(--z7-rule-strong); background:rgba(255,255,255,.86); color:var(--z7-text); box-shadow:0 5px 16px rgba(15,23,42,.08); }
+html[data-z7-core][data-theme="light"] .z7-video-mute:hover { border-color:rgba(15,23,42,.2); background:#fff; }

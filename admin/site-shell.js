@@ -127,7 +127,7 @@
             "stylesheet";
 
         link.href =
-            "/assets/css/styles.css";
+            "/assets/css/core-system.css";
 
         link.dataset.z7SiteTheme =
             "true";

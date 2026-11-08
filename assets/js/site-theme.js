@@ -28,7 +28,18 @@
   document.addEventListener('click', event => {
     const button = event.target.closest('[data-theme-toggle]');
     if (!button) return;
+    if (root.hasAttribute('data-academy-ui') && button.id === 'theme') return;
     apply(root.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
+  document.addEventListener('click', event => {
+    const menu = event.target.closest('#z7MenuToggle');
+    if (!menu || menu.dataset.z7MotionBound === 'true') return;
+    const nav = document.getElementById('z7MainNav');
+    if (!nav) return;
+    const open = menu.getAttribute('aria-expanded') !== 'true';
+    menu.setAttribute('aria-expanded', String(open));
+    menu.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    nav.classList.toggle('is-open', open);
   });
   window.addEventListener('storage', event => {
     if (event.key === key && valid(event.newValue)) apply(event.newValue);

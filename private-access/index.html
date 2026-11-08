@@ -1,87 +1,20 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-z7-core>
 <head><script>try{document.documentElement.dataset.theme=localStorage.getItem("z7-theme")||"dark"}catch{}</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta name="description" content="7Z Magic private access hub for protected presentations, documents and client experiences." />
 <title>Private Access | 7Z Magic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/css/core-system.css">
 
 
 
 
 <link href="/site.webmanifest" rel="manifest"/>
-<meta content="#111111" name="theme-color"/>
-<link as="image" href="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source" rel="preload"/>
-
-
-
-<link href="/assets/css/site-theme-2026-11.css?v=global-theme-v1" rel="stylesheet"/>
-<link href="/assets/css/performance.css?v=20260728-video3" rel="stylesheet"/>
-<link href="/assets/css/premium-refinement.css?v=20260811-premium1" rel="stylesheet"/>
-<link href="/assets/css/site-pages-2026-11.css?v=blue-subpages-v1" rel="stylesheet"/>
-    <link rel="stylesheet" href="/assets/css/navigation-overflow.css?v=20260805-nav9" />
-  <style id="z7-route-transition-critical">
-      html.z7-route-pending,
-      html.z7-route-pending body {
-        background: #030303 !important;
-      }
-
-      html.z7-route-pending body::before {
-        position: fixed;
-        inset: 0;
-        z-index: 2147482000;
-        content: "";
-        background: #030303;
-      }
-
-      .z7-route-transition {
-        position: fixed;
-        inset: 0;
-        z-index: 2147483000;
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      .z7-route-transition__mark {
-        width: 96px;
-        max-width: 26vw;
-        aspect-ratio: 1;
-        overflow: hidden;
-      }
-
-      .z7-route-transition__mark img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    </style>
-    <script id="z7-route-transition-bootstrap">
-      (() => {
-        try {
-          const raw = sessionStorage.getItem("z7:route-transition-v11");
-          if (!raw) return;
-          const data = JSON.parse(raw);
-          if (data && Number.isFinite(data.time) && Date.now() - data.time < 15000) {
-            document.documentElement.classList.add("z7-route-pending");
-          } else {
-            sessionStorage.removeItem("z7:route-transition-v11");
-          }
-        } catch {
-          document.documentElement.classList.remove("z7-route-pending");
-        }
-      })();
-    </script>
-    <link rel="stylesheet" href="/assets/css/site-transition-2026-11.css?v=blue-v1" />
-    <script defer src="/assets/js/site-transition-2026-11.js?v=blue-v1"></script>
-      <link rel="stylesheet" href="/assets/css/content-protection.css?v=20260806-protect14" />
-      <link rel="stylesheet" href="/assets/css/all-videos-audio.css?v=20260806-allvideos15" />
-<link rel="stylesheet" href="/assets/css/blueprint-access.css?v=20260813-private-access1" />
+<meta content="#090A0C" name="theme-color"/>
+<link rel="icon" type="image/png" href="/assets/brand/7z-official.png"><link rel="apple-touch-icon" href="/assets/brand/7z-official.png">
+<link as="image" href="/assets/brand/7z-official.png" rel="preload"/>
 
 
 
@@ -91,61 +24,15 @@
 
 
 
-      <link rel="icon" href="/favicon.ico?v=20260806-favicon19" sizes="any" />
-    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=20260806-favicon19" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260806-favicon19" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=20260806-favicon19" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20260806-favicon19" />
+
     <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
   <link rel="stylesheet" href="/private-access/private-access.css?v=20260822-watermark-opacity-25" />
-  <link rel="stylesheet" href="/assets/css/private-access-control.css?v=20260822-static-text-recovery" />
 <link rel="stylesheet" href="/private-access/portal-files.css?v=20260824">
 <!-- 7Z INNER CIRCLE CRITICAL PAINT START -->
 
 <script>
 document.documentElement.classList.add('z7icx-preauth');
 </script>
-
-<style>
-
-/*
-  CRITICAL FIRST-PAINT RULES
-
-  Prevent the old Private Access hero/content from
-  flashing before Inner Circle initializes.
-*/
-
-html.z7icx-preauth:not([data-theme="light"]) body {
-  background: #030303 !important;
-}
-html.z7icx-preauth[data-theme="light"] body {
-  background: #e9e9e5 !important;
-}
-
-/* OLD PRIVATE ACCESS CONTENT */
-html.z7icx-preauth .z7pa-hero,
-html.z7icx-preauth .z7pa-section-head,
-html.z7icx-preauth .z7pa-grid {
-  display: none !important;
-}
-
-/*
-  Inner Circle is allowed to exist immediately.
-  Header/navigation remains untouched.
-*/
-html.z7icx-preauth [data-z7icx-live] {
-  display: block !important;
-}
-
-/*
-  Prevent accidental white/transparent flash.
-*/
-html.z7icx-preauth .z7pa-library {
-  background: #030303 !important;
-  min-height: 100svh !important;
-}
-
-</style>
 
 <!-- 7Z INNER CIRCLE CRITICAL PAINT END -->
 
@@ -155,87 +42,14 @@ html.z7icx-preauth .z7pa-library {
 
 <!-- Z7_HEADER_LOGO_V31_START -->
 <!-- Z7_HEADER_LOGO_V31_END -->
-<link rel="stylesheet" href="/assets/css/brand-logo-v34.css?v=20260829-v34-single-source" />
 </head>
-<body class="subpage" data-static-background="true">
-<div aria-hidden="true" class="z7-route-transition" id="z7RouteTransition">
-<div class="z7-route-transition__panel z7-route-transition__panel--left"></div>
-<div class="z7-route-transition__panel z7-route-transition__panel--right"></div>
-<div class="z7-route-transition__stage">
-<p class="z7-route-transition__micro">7Z Magic / Scene Change</p>
-<div aria-hidden="true" class="z7-route-transition__mark">
-<img alt="" src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source"/>
-</div>
-<span aria-hidden="true" class="z7-route-transition__line"></span>
-<p class="z7-route-transition__label" data-z7-route-label="">7Z Magic</p>
-</div>
-</div>
+<body class="z7pa-page" data-z7-core>
+<div class="z7-loader" id="z7Loader" role="status" aria-live="polite" aria-label="Preparing 7Z Magic experience"><div class="z7-loader__inner"><div class="z7-loader__top"><img class="z7-loader__mark" src="/assets/brand/7z-official.png" width="210" height="80" alt="7Z Magic" decoding="async"><span class="z7-loader__count" data-z7-count aria-hidden="true">00</span></div><div class="z7-loader__line" aria-hidden="true"><span class="z7-loader__progress" data-z7-progress></span></div><div class="z7-loader__caption"><span>Preparing experience</span><span>7Z Magic</span></div></div></div><div class="z7-transition" id="z7Transition" aria-hidden="true" hidden><div class="z7-transition__inner"><p class="z7-transition__label" data-z7-transition-label>7Z Magic</p><span class="z7-transition__index">NEXT SCENE / 7Z</span></div></div>
+
+
 <canvas aria-hidden="true" id="atmosphere"></canvas>
 <div aria-hidden="true" class="grain"></div>
-<header aria-label="Primary" class="site-header">
-<a aria-label="7Z Magic home" class="brand magnetic" href="/">
-<img id="z7-brand-logo-v34" src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source" alt="7Z Magic" decoding="async" />
-</a>
-<nav aria-label="Main navigation" class="main-nav">
-<a href="/">Home</a>
-<div class="services-menu">
-<button aria-controls="servicesPanel" aria-expanded="false" class="services-trigger" type="button">Services</button>
-<div aria-hidden="true" aria-label="Service sections" class="services-panel" id="servicesPanel">
-<a href="/#architecture">Architectural Design</a>
-<a href="/#media">Marketing Media</a>
-<a href="/#websites">Website Design</a>
-<a href="/#identity">Brand Identity</a>
-<a href="/#advertising-materials">Advertising Materials</a>
-<a href="/#product-design">Product Design</a>
-<a href="/#advertising-7sanz">Advertising on 7SANZ</a>
-<a href="/#presentations">Interactive Presentations</a>
-<a href="/#film">Film Production</a>
-<a href="/#ai-masterclass">AI Masterclass</a>
-</div>
-</div>
-<a href="/about">About</a>
-<a href="/founders">Founders</a>
-<a href="/contact">Contact</a>
-<a href="/private-access/" class="is-active" aria-current="page">Private Access</a>
-</nav>
-<div aria-label="Social links" class="header-socials"><button class="private-theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme" title="Switch theme"><span aria-hidden="true">◐</span></button>
-<a aria-label="Instagram" class="magnetic social-icon" href="https://www.instagram.com/7z.magic" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="14" rx="4" width="14" x="5" y="5"></rect>
-<circle cx="12" cy="12" r="3.2"></circle>
-<circle cx="16.5" cy="7.5" r="0.9"></circle>
-</svg>
-</a>
-<a aria-label="Behance" class="magnetic social-icon social-icon--behance" href="https://www.behance.net/hassanrayyan3" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M5.2 8.1h4.2c1.8 0 3 .9 3 2.3 0 1-.5 1.7-1.4 2 1.1.3 1.8 1.1 1.8 2.4 0 1.8-1.4 3-3.5 3H5.2V8.1Z"></path>
-<path d="M7.3 10.1h1.9c.7 0 1.1.3 1.1.9s-.4.9-1.1.9H7.3v-1.8Z"></path>
-<path d="M7.3 13.6h2.1c.8 0 1.2.4 1.2 1s-.4 1-1.2 1H7.3v-2Z"></path>
-<path d="M14.5 11h4.4"></path>
-<path d="M14.5 14.6c.2-1.8 1.2-3 3.1-3 2.1 0 3.1 1.5 3 3.7h-4.1c.2.8.7 1.2 1.6 1.2.7 0 1.1-.2 1.5-.7"></path>
-</svg>
-</a>
-<a aria-label="Facebook" class="magnetic social-icon" href="https://web.facebook.com/7sanzi/" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
-</svg>
-</a>
-<a aria-label="Email 7Z Magic" class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="12" rx="2" width="16" x="4" y="6"></rect>
-<path d="m5 8 7 5 7-5"></path>
-</svg>
-</a>
-<a aria-label="LinkedIn" class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M6.3 9.5v8.2"></path>
-<path d="M6.3 6.4v.1"></path>
-<path d="M10.3 17.7v-8.2"></path>
-<path d="M10.3 12.5c.6-1.8 1.8-3.1 3.8-3.1 2.3 0 3.6 1.5 3.6 4.2v4.1"></path>
-</svg>
-</a>
-</div>
-</header>
+<header class="z7-header" aria-label="Primary"><div class="z7-container z7-header__inner"><a class="z7-brand" href="/" aria-label="7Z Magic home"><img src="/assets/brand/7z-official.png" width="150" height="44" alt="7Z Magic" decoding="async"></a><nav class="z7-nav" id="z7MainNav" aria-label="Main navigation"><a href="/">Home</a><a href="/services/">Services</a><a href="/websites/">Websites</a><a href="/about/">About</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact</a><a href="/private-access/" data-z7-no-transition>Private Access</a></nav><div class="z7-header__actions"><a class="z7-header__social" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer" aria-label="7Z Magic on Instagram">Instagram</a><a class="z7-header__contact" href="mailto:creative@7z-magic.com">Email us</a><button class="z7-theme-toggle" id="theme" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme"><span aria-hidden="true">◐</span></button><button class="z7-lang-toggle" id="lang" type="button" aria-label="Switch language">EN</button><button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button></div></div></header>
 <main class="subpage-main z7pa-page" id="top">
   <section class="z7pa-hero">
     <div class="z7pa-shell z7pa-hero__layout">
@@ -272,227 +86,22 @@ html.z7icx-preauth .z7pa-library {
         <p>Choose an experience below. Existing 7Z Private Access authentication will handle the rest.</p>
       </div>
 
-            <section
-  class="z7icx"
-  data-z7pa-login-panel
-  data-z7icx-live>
-
-  <div class="z7icx__ambient" aria-hidden="true"></div>
-  <div class="z7icx__light-pass" aria-hidden="true"></div>
-
-  <header class="z7icx__topbar">
-
-    <span>
-      <strong>7Z MAGIC</strong>
-      <i>/</i>
-      PRIVATE CLIENT OFFICE
-    </span>
-
-    <span>
-      BY INVITATION ONLY
-    </span>
-
-  </header>
-
-
-  <main class="z7icx__scene">
-
-    <div
-      class="z7icx__divider"
-      aria-hidden="true">
-    </div>
-
-
-    <section class="z7icx__brand">
-
-      <div
-        class="z7icx__brand-aura"
-        aria-hidden="true">
-      </div>
-
-
-      <div class="z7icx__logo-shell">
-
-        <img
-          class="z7icx__logo"
-          src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source"
-          alt="7Z Magic">
-
-        <span
-          class="z7icx__logo-reflection"
-          aria-hidden="true">
-        </span>
-
-      </div>
-
-
-      <div class="z7icx__kicker">
-        PRIVATE ACCESS
-      </div>
-
-
-      <h1>
-        The Inner
-        <br>
-        Circle.
-      </h1>
-
-
-      <p class="z7icx__brand-copy">
-        Private access reserved for invited clients,
-        partners, and members of the 7Z network.
-      </p>
-
-
-      <button
-        type="button"
-        class="z7icx__seat"
-        id="z7InnerCircleSeat" onclick="event.preventDefault();event.stopPropagation();const p=window.document.querySelector('[data-z7pa-login-panel]');if(!p)return false;p.hidden=false;p.removeAttribute('hidden');p.setAttribute('aria-hidden','false');p.classList.remove('is-authorized','is-denied');p.classList.add('is-opening','is-open');this.setAttribute('aria-expanded','true');window.setTimeout(()=>p.classList.remove('is-opening'),1100);window.setTimeout(()=>window.document.querySelector('#z7HubClientId')?.focus(),450);return false;" aria-expanded="false">
-
-        <span>
-          TAKE YOUR SEAT
-        </span>
-
-        <b aria-hidden="true">
-          &rarr;
-        </b>
-
-      </button>
-
-    </section>
-
-
-
-    <section class="z7icx__auth">
-
-      <div class="z7icx__auth-inner">
-
-        <div class="z7icx__form-kicker">
-          MEMBERS ONLY
-        </div>
-
-
-        <h2>
-          Welcome
-          <br>
-          inside.
-        </h2>
-
-
-        <p class="z7icx__intro">
-          Use the credentials assigned to your
-          private 7Z experience.
-        </p>
-
-
-        <form
-          class="z7pa-login__form z7icx__form"
-          id="z7PrivateAccessLoginForm"
-          autocomplete="on">
-
-          <label class="z7icx__field">
-
-            <span>
-              MEMBER ID
-            </span>
-
-            <input
-              id="z7HubClientId"
-              name="clientId"
-              type="text"
-              autocomplete="username"
-              maxlength="256"
-              placeholder="Enter member ID"
-              required>
-
-          </label>
-
-
-          <label class="z7icx__field">
-
-            <span>
-              PASSCODE
-            </span>
-
-            <input
-              id="z7HubAccessKey"
-              name="accessKey"
-              type="password"
-              autocomplete="current-password"
-              maxlength="256"
-              placeholder="Enter passcode"
-              required>
-
-          </label>
-
-
-          <button
-            type="submit"
-            class="z7icx__submit">
-
-            <span data-z7icx-submit-label>
-              ENTER THE CIRCLE
-            </span>
-
-            <b aria-hidden="true">
-              &rarr;
-            </b>
-
-          </button>
-
-
-          <p
-            class="z7pa-login__message z7icx__message"
-            id="z7HubLoginMessage"
-            role="status"
-            aria-live="polite">
-          </p>
-
-        </form>
-
-
-        <div class="z7icx__meta">
-          PRIVATE
-          <i></i>
-          SECURE
-          <i></i>
-          7Z MAGIC
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <div
-    class="z7icx__welcome"
-    aria-hidden="true">
-
-    <span>
-      Welcome Inside.
-    </span>
-
+<section class="z7icx z7-login-vault" data-z7pa-login-panel data-z7icx-live aria-label="Private Client Portal">
+  <div class="z7-login-vault__aura" aria-hidden="true"></div>
+  <div class="z7-login-vault__card">
+    <div class="z7-login-vault__brand"><a href="/" class="z7-login-vault__mark" aria-label="7Z Magic home"><img src="/assets/brand/7z-official.png" width="64" height="70" alt="7Z Magic" decoding="async"></a><span class="z7-login-vault__badge"><i aria-hidden="true"></i> Private Client Portal</span></div>
+    <p class="z7icx__form-kicker">MEMBERS ONLY</p>
+    <h1 class="z7-login-vault__title">Your private workspace.</h1>
+    <p class="z7icx__intro">Use the credentials assigned to your private 7Z experience.</p>
+    <form class="z7pa-login__form z7icx__form" id="z7PrivateAccessLoginForm" autocomplete="on">
+      <label class="z7icx__field"><span>MEMBER ID</span><input id="z7HubClientId" name="clientId" type="text" autocomplete="username" maxlength="256" placeholder="Enter member ID" required></label>
+      <label class="z7icx__field"><span>PASSCODE</span><input id="z7HubAccessKey" name="accessKey" type="password" autocomplete="current-password" maxlength="256" placeholder="Enter passcode" required></label>
+      <button type="submit" class="z7icx__submit"><span data-z7icx-submit-label>Sign in securely</span><b aria-hidden="true">↗</b></button>
+      <p class="z7pa-login__message z7icx__message" id="z7HubLoginMessage" role="status" aria-live="polite"></p>
+    </form>
+    <div class="z7-login-vault__security"><span aria-hidden="true">●</span> Private session · Encrypted access</div>
   </div>
-
-
-  <footer class="z7icx__signature">
-
-    7Z MAGIC
-
-    <i>/</i>
-
-    <b>AMMAN</b>
-
-    <i>/</i>
-
-    PRIVATE CLIENT NETWORK
-
-  </footer>
-
 </section>
-
 
       <div class="z7pa-grid" data-z7-stagger data-z7pa-grid>
         <a class="z7pa-card magnetic" data-z7pa-resource="silla" href="/silla-hall-presentation/">
@@ -635,86 +244,12 @@ html.z7icx-preauth .z7pa-library {
     </div>
   </section>
 </main>
-<footer class="footer" id="contact-footer">
-<div class="footer__inner">
-<div class="footer__brand">
-<img alt="7Z Magic" src="/media/main_logo/7ZMagic-brand-canonical.png?v=20260829-v34-single-source"/>
-<div>
-<p class="section-kicker">7Z Magic</p>
-<h2>Premium creative systems for spaces, screens and modern brands.</h2>
-<p>Architecture, AI, media production, websites and brand experience shaped with cinematic precision.</p>
-</div>
-</div>
-<nav aria-label="Footer navigation" class="footer__links">
-<a href="/#architecture">Architecture</a>
-<a href="/#media">Media Production</a>
-<a href="/#websites">Website Design</a>
-<a href="/#identity">Brand Identity</a>
-<a href="/about">About Us</a>
-<a href="/founders">Founders</a>
-<a href="/contact">Contact Us</a>
-</nav>
-<div class="footer__contact">
-<p>Ready to start a polished digital experience?</p>
-<a class="footer__cta magnetic" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a>
-
-<div aria-label="Social links" class="socials">
-<a aria-label="Instagram" class="magnetic social-icon" href="https://www.instagram.com/7z.magic" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="14" rx="4" width="14" x="5" y="5"></rect>
-<circle cx="12" cy="12" r="3.2"></circle>
-<circle cx="16.5" cy="7.5" r="0.9"></circle>
-</svg>
-</a>
-<a aria-label="Behance" class="magnetic social-icon social-icon--behance" href="https://www.behance.net/hassanrayyan3" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M5.2 8.1h4.2c1.8 0 3 .9 3 2.3 0 1-.5 1.7-1.4 2 1.1.3 1.8 1.1 1.8 2.4 0 1.8-1.4 3-3.5 3H5.2V8.1Z"></path>
-<path d="M7.3 10.1h1.9c.7 0 1.1.3 1.1.9s-.4.9-1.1.9H7.3v-1.8Z"></path>
-<path d="M7.3 13.6h2.1c.8 0 1.2.4 1.2 1s-.4 1-1.2 1H7.3v-2Z"></path>
-<path d="M14.5 11h4.4"></path>
-<path d="M14.5 14.6c.2-1.8 1.2-3 3.1-3 2.1 0 3.1 1.5 3 3.7h-4.1c.2.8.7 1.2 1.6 1.2.7 0 1.1-.2 1.5-.7"></path>
-</svg>
-</a>
-<a aria-label="Facebook" class="magnetic social-icon" href="https://web.facebook.com/7sanzi/" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M14.2 8.1h2.2V5.3c-.4-.1-1.6-.2-3-.2-3 0-5 1.8-5 5.2v2.9H5.2v3.2h3.2v7h3.7v-7h3.1l.5-3.2h-3.6v-2.6c0-.9.3-1.5 2.1-1.5Z"></path>
-</svg>
-</a>
-<a aria-label="Email 7Z Magic" class="magnetic social-icon social-icon--email" href="mailto:creative@7z-magic.com">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<rect height="12" rx="2" width="16" x="4" y="6"></rect>
-<path d="m5 8 7 5 7-5"></path>
-</svg>
-</a>
-<a aria-label="LinkedIn" class="magnetic social-icon social-icon--linkedin" href="https://jo.linkedin.com/in/hassan-rayyan-386234202" rel="noopener" target="_blank">
-<svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M6.3 9.5v8.2"></path>
-<path d="M6.3 6.4v.1"></path>
-<path d="M10.3 17.7v-8.2"></path>
-<path d="M10.3 12.5c.6-1.8 1.8-3.1 3.8-3.1 2.3 0 3.6 1.5 3.6 4.2v4.1"></path>
-</svg>
-</a>
-</div>
-</div>
-</div>
-<div class="footer__bottom">
-<small>Copyright © 2026 7Z Magic. All rights reserved.</small>
-<a href="/">Home</a>
-</div>
-</footer>
-
-<script src="/assets/vendor/gsap.min.js?v=20260715-rebuild1"></script>
-<script src="/assets/vendor/ScrollTrigger.min.js?v=20260715-rebuild1"></script>
-<script src="/assets/vendor/lenis.min.js?v=20260715-rebuild1"></script>
-<script src="/assets/js/performance.js?v=20260728-video3"></script>
-
-<script src="/assets/js/site-app-2026-11.js?v=restore-v1"></script>
-<script src="/assets/js/pages.js?v=20260804-prod8"></script>
-    <script src="/assets/js/navigation-overflow.js?v=20260805-nav9"></script>
-      <script src="/assets/js/content-protection.js?v=20260806-protect14"></script>
-      <script src="/assets/js/all-videos-audio.js?v=20260806-allvideos15"></script>
-<script src="/assets/js/blueprint-access.js?v=20260813-private-access1"></script>
-<script defer src="/assets/js/premium-refinement.js?v=20260811-premium1"></script>
+<footer class="z7-footer" id="contact-footer"><span class="z7-footer__anchor" id="contact" aria-hidden="true"></span><div class="z7-container z7-footer__main"><div class="z7-footer__brand"><img src="/assets/brand/7z-official.png" width="220" height="65" alt="7Z Magic" loading="lazy" decoding="async"><h2>Premium creative systems for spaces, screens and modern brands.</h2><p>Architecture, AI, media production, websites and brand experience shaped with cinematic precision.</p></div><nav class="z7-footer__links" aria-label="Explore"><span class="z7-footer__label">Explore</span><a href="/services/">Services</a><a href="/websites/">Website Design</a><a href="/about/">About Us</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact Us</a></nav><nav class="z7-footer__links z7-footer__academy" aria-label="Academy"><span class="z7-footer__label">Academy</span><a href="/courses/">All courses</a><a href="/courses/ai-engineering/">AI for Engineers</a></nav><div class="z7-footer__contact"><span class="z7-footer__label">Contact</span><p>Ready to start a polished digital experience?</p><a class="z7-footer__email" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a><div class="z7-footer__socials"><a href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:creative@7z-magic.com">Email</a></div></div></div><div class="z7-container z7-footer__bottom"><small>Copyright &copy; 2026 7Z Magic. All rights reserved.</small><a href="/">Home</a></div></footer>
+<script src="/assets/vendor/gsap.min.js" defer></script>
+<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/vendor/lenis.min.js" defer></script>
+<script src="/assets/js/core-motion.js" defer></script>
+<script src="/assets/js/performance.js?v=20260728-video3" defer></script>
 
 <script src="/private-access/private-access.js?v=1787773580108"></script>
 

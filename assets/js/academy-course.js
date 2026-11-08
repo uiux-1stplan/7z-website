@@ -91,7 +91,7 @@
       node.nodeValue = original.slice(0, start) + (lang === 'en' ? translations[key] : key) + original.slice(start + key.length);
     }
     if (langButton) { langButton.textContent = lang === 'ar' ? 'EN' : 'عربي'; langButton.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'); }
-    if (themeButton) { themeButton.textContent = lang === 'ar' ? (theme === 'dark' ? 'فاتح' : 'داكن') : (theme === 'dark' ? 'Light' : 'Dark'); themeButton.setAttribute('aria-pressed', String(theme === 'light')); }
+    if (themeButton) { const icon = themeButton.querySelector('[aria-hidden="true"]'); if (icon) icon.textContent = theme === 'dark' ? '◐' : '☼'; themeButton.setAttribute('aria-label', lang === 'ar' ? (theme === 'dark' ? 'التبديل إلى الوضع الفاتح' : 'التبديل إلى الوضع الداكن') : (theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme')); themeButton.setAttribute('aria-pressed', String(theme === 'light')); }
     const pageCopy = titles[page];
     if (pageCopy) {
       document.title = pageCopy[lang];

@@ -152,6 +152,7 @@
   }
   function initNavigation(state) {
     state.menu = document.getElementById("z7MenuToggle");
+    if (state.menu) state.menu.dataset.z7MotionBound = "true";
     state.nav = document.getElementById("z7MainNav");
     state.services = document.getElementById("z7ServicesTrigger");
     state.panel = document.getElementById("z7ServicesPanel");

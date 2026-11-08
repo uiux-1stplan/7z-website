@@ -210,3 +210,17 @@
   .studio-suite__list .studio-card__image { width: 65px; height: 50px; grid-row: span 2; }
   .studio-suite__list .studio-card p { grid-column: 2; }
 }
+
+html[data-z7-core][data-theme="light"] .z7-home .logo-hero { background:radial-gradient(ellipse at 50% 42%,rgba(15,23,42,.045),transparent 42%),var(--z7-bg); }
+html[data-z7-core][data-theme="light"] .z7-home .manifest__media,
+html[data-z7-core][data-theme="light"] .z7-home .service-preview,
+html[data-z7-core][data-theme="light"] .z7-home .work-card,
+html[data-z7-core][data-theme="light"] .z7-home .home-founder__image,
+html[data-z7-core][data-theme="light"] .z7-home .home-founder__portrait { border-color:var(--z7-rule); background:var(--z7-surface); box-shadow:var(--z7-shadow); }
+html[data-z7-core][data-theme="light"] .z7-home .service-card { color:var(--z7-muted); }
+html[data-z7-core][data-theme="light"] .z7-home .service-card.is-active,
+html[data-z7-core][data-theme="light"] .z7-home .service-card:hover { color:var(--z7-text); }
+html[data-z7-core][data-theme="light"] .z7-home .manifest__film-header { color:rgba(15,23,42,.68); }
+html[data-z7-core][data-theme="light"] .z7-home .manifest__film-caption { color:#fff; }
+html[data-z7-core][data-theme="light"] .z7-home .button,
+html[data-z7-core][data-theme="light"] .z7-home .behance-cta { border-color:var(--z7-rule-strong); background:var(--z7-surface); color:var(--z7-text); }
