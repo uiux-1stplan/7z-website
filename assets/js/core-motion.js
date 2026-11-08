@@ -316,7 +316,7 @@
     }, { signal: state.abort.signal });
   }
   function initSpatial(state) {
-    const selector = ".manifest__media,.service-card,.compare,.media-tile,.web-stage,.reach-metric,.film-player,.studio-card,.website-work,.home-founder,.home-partner";
+    const selector = ".logo-hero__stage,.manifest__media,.service-card,.compare,.media-tile,.web-stage,.reach-metric,.film-player,.studio-card,.website-work,.home-founder,.home-partner";
     const apply = node => {
       if (node.matches?.(selector)) node.classList.add("z7-spatial");
       node.querySelectorAll?.(selector).forEach(el => el.classList.add("z7-spatial"));
@@ -384,6 +384,8 @@
       }));
       const hero = document.querySelector(".logo-hero");
       const logo = hero?.querySelector(".logo-hero__mark");
+      const heroCopy = hero?.querySelector(".logo-hero__copy");
+      const heroReel = hero?.querySelector("[data-z7-hero-reel]");
       if (hero && logo) {
         gsap.to(logo, {
           "--logo-scroll-scale": .96,
@@ -394,10 +396,33 @@
           scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .7, invalidateOnRefresh: true }
         });
       }
+      if (hero && heroReel) {
+        gsap.to(heroReel, {
+          scale: 1.035,
+          borderRadius: "12px",
+          y: -14,
+          ease: "none",
+          scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8, invalidateOnRefresh: true }
+        });
+      }
+      if (hero && heroCopy) {
+        gsap.to(heroCopy, {
+          y: -24,
+          autoAlpha: .28,
+          ease: "none",
+          scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8, invalidateOnRefresh: true }
+        });
+      }
       document.querySelectorAll(".home-showcase__track > .media-tile").forEach(card => {
         gsap.fromTo(card, { scale: .94, y: 28, autoAlpha: .5 }, {
           scale: 1, y: 0, autoAlpha: 1, ease: "none",
           scrollTrigger: { trigger: card, start: "top 92%", end: "center 58%", scrub: .5 }
+        });
+        const video = card.querySelector("video");
+        if (video) gsap.fromTo(video, { yPercent: -3 }, {
+          yPercent: 3,
+          ease: "none",
+          scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .6 }
         });
       });
       const homeFounderImages = [...document.querySelectorAll(".home-founder__image")];

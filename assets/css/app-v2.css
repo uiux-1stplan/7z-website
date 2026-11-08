@@ -228,6 +228,213 @@ html[data-theme="light"] .z7pa-login__form input { border-radius: 12px; backgrou
 html[data-theme="light"] .z7pa-login__form button { border-radius: 999px; border-color: rgba(37, 99, 235, .22); background: #2563EB; color: #FFFFFF; }
 html[data-theme="light"] .z7pa-logout { background: #FFFFFF; }
 
+/* Spatial opening and magnetic service index. */
+html[data-z7-core] .z7-home .logo-hero {
+  position: relative;
+  min-height: 100svh;
+  padding: clamp(104px, 13vh, 142px) 24px 58px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 28%, rgba(79, 140, 255, .09), transparent 42%),
+    var(--bg-primary);
+  perspective: 1200px;
+}
+
+html[data-z7-core] .z7-home .logo-hero__stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(22px, 4vh, 34px);
+  width: min(100%, 1140px);
+  min-height: 0;
+  margin-inline: auto;
+  isolation: isolate;
+}
+
+html[data-z7-core] .z7-home .logo-hero__stage::before {
+  position: absolute;
+  z-index: -1;
+  inset: -20% -15%;
+  background: radial-gradient(ellipse 34% 28% at var(--z7-mx, 50%) var(--z7-my, 25%), rgba(79, 140, 255, .14), transparent 100%);
+  content: "";
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+html[data-z7-core] .z7-home .logo-hero__copy {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+html[data-z7-core] .z7-home .logo-hero__mark {
+  width: 56px;
+  max-height: 62px;
+  margin-bottom: 12px;
+}
+
+html[data-z7-core] .z7-home .logo-hero__copy .eyebrow {
+  margin: 0 0 10px;
+  color: var(--text-secondary);
+}
+
+html[data-z7-core] .z7-home .logo-hero__copy h1 {
+  max-width: 680px;
+  margin: 0;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+html[data-z7-core] .z7-home .logo-hero__halo {
+  position: absolute;
+  z-index: -1;
+  top: 3%;
+  left: 50%;
+  width: min(62vw, 680px);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  mask-image: radial-gradient(circle, transparent 43%, #000 44%, #000 44.2%, transparent 44.5%);
+  pointer-events: none;
+}
+
+html[data-z7-core] .z7-home .logo-hero__reel {
+  width: min(100%, 850px);
+  min-height: 0;
+  aspect-ratio: 1.9;
+  margin: 0;
+  border-radius: 20px;
+  transform: translateZ(0) scale(.96);
+  transform-origin: center top;
+  will-change: transform, border-radius;
+}
+
+html[data-z7-core] .z7-home .manifest {
+  display: grid;
+  grid-template-columns: minmax(0, 700px);
+  justify-content: center;
+  min-height: 38svh;
+  padding-block: clamp(52px, 7vw, 82px);
+  text-align: center;
+}
+
+html[data-z7-core] .z7-home .manifest__copy { max-width: 680px; }
+html[data-z7-core] .z7-home .manifest__copy > p:last-child { margin-inline: auto; }
+
+html[data-z7-core] :is(.z7-home, .z7-services-page) .service-loop__stage,
+html[data-z7-core] .services-map__rows {
+  position: relative;
+}
+
+html[data-z7-core] .z7-home .service-card,
+html[data-z7-core] .services-map .service-card {
+  min-height: 68px;
+  border-radius: 0;
+  background-image: radial-gradient(220px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(79, 140, 255, .105), transparent 76%);
+  transition: color .25s ease, padding .32s cubic-bezier(.2, .75, .25, 1), opacity .25s ease, filter .25s ease, background-color .25s ease;
+}
+
+html[data-z7-core] .z7-home .service-card strong,
+html[data-z7-core] .services-map .service-card strong {
+  font-size: clamp(.95rem, 1.25vw, 1.08rem);
+  letter-spacing: -.02em;
+  transition: transform .32s cubic-bezier(.2, .75, .25, 1), letter-spacing .32s ease;
+}
+
+html[data-z7-core] .z7-home .service-card:hover strong,
+html[data-z7-core] .z7-home .service-card.is-active strong,
+html[data-z7-core] .services-map .service-card:hover strong,
+html[data-z7-core] .services-map .service-card.is-active strong {
+  transform: translateX(5px);
+  letter-spacing: -.035em;
+}
+
+html[data-z7-core] .services-map--magnetic {
+  grid-template-columns: 145px minmax(0, 1fr);
+  align-items: start;
+}
+
+html[data-z7-core] .services-map--magnetic .services-map__preview {
+  position: fixed;
+  z-index: 80;
+  top: 24vh;
+  right: clamp(18px, 7vw, 120px);
+  left: auto;
+  width: clamp(210px, 19vw, 270px);
+  opacity: 0;
+  visibility: hidden;
+  display: block;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+
+html[data-z7-core] .services-map--magnetic .services-map__preview.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+html[data-z7-core] .services-map--magnetic .services-map__preview.is-following {
+  top: 0;
+  right: auto;
+}
+
+html[data-z7-core] .z7-home .service-loop__stage:has(.service-card:hover) .service-card:not(:hover),
+html[data-z7-core] .z7-home .service-loop__stage:has(.service-card.is-active) .service-card:not(.is-active),
+html[data-z7-core] .services-map__rows:has(.service-card:hover) .service-card:not(:hover),
+html[data-z7-core] .services-map__rows:has(.service-card.is-active) .service-card:not(.is-active) {
+  opacity: .48;
+  filter: blur(.25px);
+}
+
+html[data-z7-core] .home-showcase__viewport {
+  overflow-x: auto;
+  perspective: 1100px;
+}
+
+html[data-z7-core] .home-showcase__track > .media-tile {
+  transform-origin: center center;
+  box-shadow: var(--shadow-card);
+}
+
+html[data-z7-core] .home-showcase__track > .media-tile:nth-child(4n + 1) { margin-top: 0; rotate: -1deg; }
+html[data-z7-core] .home-showcase__track > .media-tile:nth-child(4n + 2) { margin-top: 22px; rotate: .8deg; }
+html[data-z7-core] .home-showcase__track > .media-tile:nth-child(4n + 3) { margin-top: -10px; rotate: -.55deg; }
+html[data-z7-core] .home-showcase__track > .media-tile:nth-child(4n) { margin-top: 14px; rotate: 1deg; }
+
+html[data-z7-core] :is(.logo-hero__reel, .home-showcase__track > .media-tile, .services-map__preview)::after {
+  background: radial-gradient(240px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(79, 140, 255, .18), transparent 72%);
+}
+
+html[data-z7-core] :is(.z7-home, .z7-services-page) .button,
+html[data-z7-core] .z7-home .behance-cta {
+  will-change: transform;
+}
+
+html[data-z7-core][data-theme="light"] .logo-hero__halo {
+  border-color: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+@media (max-width: 900px) {
+  html[data-z7-core] .services-map--magnetic { grid-template-columns: 110px minmax(0, 1fr); }
+}
+
+@media (min-width: 701px) and (max-width: 1380px) and (pointer: fine) {
+  html[data-z7-core] .z7-home .service-preview.is-following { display: block; }
+}
+
+@media (max-width: 700px) {
+  html[data-z7-core] .z7-home .logo-hero { min-height: 0; padding: 112px 18px 38px; }
+  html[data-z7-core] .z7-home .logo-hero__stage { gap: 22px; }
+  html[data-z7-core] .z7-home .logo-hero__mark { width: 44px; max-height: 50px; margin-bottom: 8px; }
+  html[data-z7-core] .z7-home .logo-hero__reel { width: 100%; aspect-ratio: 1.25; border-radius: 16px; }
+  html[data-z7-core] .z7-home .logo-hero__halo { width: 100vw; top: -4%; }
+  html[data-z7-core] .z7-home .manifest { min-height: 0; }
+  html[data-z7-core] .services-map--magnetic { grid-template-columns: 1fr; }
+  html[data-z7-core] .services-map--magnetic .services-map__preview { display: none; }
+  html[data-z7-core] .home-showcase__track > .media-tile { rotate: 0deg; margin-top: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html[data-z7-core] *, html[data-z7-core] *::before, html[data-z7-core] *::after {
     scroll-behavior: auto !important;
