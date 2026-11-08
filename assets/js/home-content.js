@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  if (!document.documentElement.hasAttribute("data-z7-core") || !document.querySelector(".z7-home")) return;
+  if (!document.documentElement.hasAttribute("data-z7-core") || (!document.querySelector(".z7-home") && !document.querySelector(".z7-services-page"))) return;
 
   const $ = (selector, scope = document) => scope.querySelector(selector);
   const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
@@ -173,22 +173,25 @@
     video.load();
   }
   function initHero() {
-    const video = $(".z7-cinema__ambient-video");
-    if (!video) return;
-    const start = () => {
-      if (navigator.connection?.saveData || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      attach(video);
-      video.play().catch(() => {});
+    const ambient = $("[data-z7-ambient]");
+    const hero = $(".z7-cinema");
+    if (!ambient || !hero || !matchMedia("(pointer:fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0, x = 0, y = 0, tx = 0, ty = 0;
+    const onMove = event => {
+      const rect = hero.getBoundingClientRect();
+      tx = ((event.clientX - rect.left) / rect.width - .5) * 12;
+      ty = ((event.clientY - rect.top) / rect.height - .5) * 10;
+      if (!frame) frame = requestAnimationFrame(function paint() {
+        frame = 0;
+        x += (tx - x) * .08; y += (ty - y) * .08;
+        ambient.style.transform = `translate3d(${x}px,${y}px,0)`;
+        if (Math.abs(tx - x) + Math.abs(ty - y) > .08) frame = requestAnimationFrame(paint);
+      });
     };
-    if (document.readyState === "complete") start();
-    else window.addEventListener("load", start, { once: true, signal: abort.signal });
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) video.pause();
-      else if (video.src && !navigator.connection?.saveData) video.play().catch(() => {});
-    }, { signal: abort.signal });
+    hero.addEventListener("pointermove", onMove, { passive: true, signal: abort.signal });
+    window.addEventListener("pagehide", () => { if (frame) cancelAnimationFrame(frame); }, { once: true, signal: abort.signal });
   }
   function initMedia() {
-    const ambient = $(".z7-cinema__ambient-video");
     const reel = $(".z7-web-reel");
     if (reel && "IntersectionObserver" in window) {
       const observer = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -206,8 +209,8 @@
       if (!video) return;
       event.preventDefault();
       if (!video.paused) { video.pause(); button.textContent = "Play"; card.classList.remove("is-playing"); return; }
-      $$(".z7-home video").forEach(other => {
-        if (other !== video && other !== ambient && other !== reel && !other.paused) {
+      $$(".z7-home video,.z7-services-page video").forEach(other => {
+        if (other !== video && other !== reel && !other.paused) {
           other.pause();
           other.closest(".media-tile,.manifest__media,.film-player")?.classList.remove("is-playing");
         }
@@ -223,7 +226,7 @@
         video.play().then(() => { card.classList.add("is-playing"); button.textContent = "Pause"; }).catch(() => {});
       });
     }, { signal: abort.signal });
-    $$(".z7-home video:not(.z7-cinema__ambient-video):not(.z7-web-reel)").forEach(video => video.addEventListener("ended", () => {
+    $$(".z7-home video:not(.z7-web-reel)").forEach(video => video.addEventListener("ended", () => {
       const card = video.closest(".media-tile,.manifest__media,.film-player");
       card?.classList.remove("is-playing");
       const button = card?.querySelector("[data-inline-video]");
@@ -262,8 +265,8 @@
     renderTiles("#mediaRail", campaigns);
     renderTiles("#presentationStack", presentations);
     initComparisons();
-    initServicePreview();
-    initHero();
+    if (document.querySelector(".z7-home")) initServicePreview();
+    if (document.querySelector(".z7-home")) initHero();
     initMedia();
     initCounters();
     window.addEventListener("pagehide", () => {

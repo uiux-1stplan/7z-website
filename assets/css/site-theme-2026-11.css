@@ -4479,7 +4479,7 @@ img[src*="7ZMagic-official-logo-20260822.png"] {
   display: inline-block !important;
   opacity: 1 !important;
   visibility: visible !important;
-  background-image: url("/assets/brand/7z-20260902_203523_038/compat/media/main_logo/7ZMagic-signature-logo-20260828.png") !important;
+  background-image: url("/assets/brand/7z-official.png") !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
@@ -4691,7 +4691,7 @@ header img.logo-mask,
 */
 
 /* The actual new logo artwork */
-img[src*="7ZMagic-signature-logo-20260828.png"] {
+img[src*="7z-official.png"] {
   background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -4907,13 +4907,13 @@ img[src*="7ZMagic-signature-logo-20260828.png"] {
   [class*="brand"],
   [class*="mark"],
   [class*="emblem"]
-):has(> img[src*="7ZMagic-signature-logo-20260828.png"]) {
+):has(> img[src*="7z-official.png"]) {
   border-color: transparent !important;
   background-color: transparent !important;
   box-shadow: none !important;
 }
 
-.footer__brand img[src*="7ZMagic-signature-logo-20260828.png"] {
+.footer__brand img[src*="7z-official.png"] {
   object-fit: contain !important;
   mix-blend-mode: screen !important;
 }

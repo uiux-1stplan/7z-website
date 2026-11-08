@@ -4,7 +4,7 @@
   if (!root.hasAttribute("data-z7-core")) return;
 
   const KEY = "z7:core-arrival:v1";
-  const ROUTES = new Set(["/", "/about", "/founders", "/partners", "/contact", "/courses", "/courses/ai-engineering"]);
+  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/courses", "/courses/ai-engineering"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const desktop = matchMedia("(min-width: 1181px) and (pointer: fine)");
   const compact = matchMedia("(max-width: 1180px)");
@@ -18,7 +18,7 @@
   const pathOf = url => url.pathname.replace(/\/+$/, "") || "/";
   const labelFor = url => ({
     "/": "Home", "/about": "About", "/founders": "Founders", "/partners": "Partners",
-    "/contact": "Contact", "/courses": "7Z Academy", "/courses/ai-engineering": "AI Engineering"
+    "/contact": "Contact", "/services": "Services", "/courses": "7Z Academy", "/courses/ai-engineering": "AI Engineering"
   }[pathOf(url)] || "7Z Magic");
   function timer(state, fn, delay) {
     const id = setTimeout(() => { state.timers.delete(id); fn(); }, delay);
@@ -269,9 +269,10 @@
         scrollTrigger: { trigger: element, start: "top 88%", once: true }
       }));
       const hero = document.querySelector(".z7-cinema");
-      const heroVideo = hero?.querySelector(".z7-cinema__background video");
+      const heroAmbient = hero?.querySelector(".z7-cinema__ambient");
       if (hero) gsap.to(hero, { scale: .96, borderRadius: "34px", ease: "none", scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top+=120", scrub: .9 } });
-      if (heroVideo) gsap.fromTo(heroVideo, { scale: 1.04 }, { scale: 1.12, yPercent: 4, ease: "none", scrollTrigger: { trigger: hero, start: "top top+=104", end: "bottom top", scrub: .9 } });
+      if (heroAmbient) gsap.to(heroAmbient, { yPercent: 14, scale: 1.08, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .9 } });
+      if (hero) gsap.to(hero.querySelectorAll("[data-z7-hero-reveal]"), { yPercent: -18, autoAlpha: .25, stagger: .035, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top+=20", scrub: .8 } });
       const rail = document.querySelector(".comparison-scroll");
       const stage = rail?.querySelector(".comparison-stage");
       const progress = rail?.querySelector("[data-comparison-progress]");
@@ -295,10 +296,30 @@
         }});
         state.marqueeTrigger = velocityTrigger;
       }
-      document.querySelectorAll(".service-card,.studio-card,.media-tile").forEach((node, index) => gsap.fromTo(node, { autoAlpha: 0, y: 24 }, {
+      document.querySelectorAll(".service-card,.studio-card,.media-tile,.services-page .stats-strip > div,.services-page .reach-metric,.services-page .film-player").forEach((node, index) => gsap.fromTo(node, { autoAlpha: 0, y: 24 }, {
         autoAlpha: 1, y: 0, duration: .7, delay: index % 4 * .04, ease: "power2.out",
         scrollTrigger: { trigger: node, start: "top 92%", once: true }
       }));
+      const serviceCards = [...document.querySelectorAll(".services-page .service-stack-card")];
+      if (serviceCards.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
+        serviceCards.forEach((card, index) => {
+          const media = card.querySelector(".comparison-scroll,.media-rail,.web-stage,.reach-metric,.presentation-stack,.film-player,.studio-suite__grid");
+          card.style.zIndex = String(index + 1);
+          gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=70", end: "top top+=115", scrub: .8 } });
+          if (index < serviceCards.length - 1) gsap.to(card, {
+            scale: .965, autoAlpha: .68, filter: "brightness(.72)", transformOrigin: "center top", ease: "none",
+            scrollTrigger: { trigger: serviceCards[index + 1], start: "top bottom+=180", end: "top top+=110", scrub: .8 }
+          });
+          if (media) gsap.fromTo(media, { y: 26 }, { y: -18, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .8 } });
+        });
+      }
+      const homeServiceRows = [...document.querySelectorAll(".z7-home .service-card")];
+      if (homeServiceRows.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
+        homeServiceRows.forEach((row, index) => gsap.fromTo(row, { x: 24, autoAlpha: .55 }, {
+          x: 0, autoAlpha: 1, ease: "none",
+          scrollTrigger: { trigger: row, start: "top bottom-=30", end: "top center+=80", scrub: .8 }
+        }));
+      }
     }, document.body);
   }
   function destroy(state) {
