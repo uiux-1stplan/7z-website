@@ -2,7 +2,7 @@
 
 <html lang="en" data-theme="dark" data-z7-core>
 <head><script>try{document.documentElement.dataset.theme=localStorage.getItem("z7-theme")||"dark"}catch{}</script>
-<script>try{const arrival=JSON.parse(sessionStorage.getItem("z7:core-arrival:v1")||"null");const path=location.pathname.replace(/\/+$/g,"")||"/";if(arrival&&arrival.path===path&&Date.now()-arrival.time<12000)document.documentElement.setAttribute("data-z7-arriving","")}catch{}</script>
+<script>try{const root=document.documentElement;const here=location.pathname.replace(/\/+$/g,"")||"/";const arrival=JSON.parse(sessionStorage.getItem("z7:core-arrival:v1")||"null");const marked=arrival&&arrival.path===here&&Date.now()-arrival.time<12000;const referrer=new URL(document.referrer);const internal=referrer.origin===location.origin&&(referrer.pathname.replace(/\/+$/g,"")||"/")!==here;if(marked||internal)root.setAttribute("data-z7-arriving","")}catch{}</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta name="description" content="7Z Magic private access hub for protected presentations, documents and client experiences." />
