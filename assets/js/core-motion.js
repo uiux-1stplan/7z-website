@@ -465,17 +465,7 @@
       homeFounderImages.forEach((image, index) => gsap.fromTo(image, { clipPath: index % 2 ? "inset(0 0 0 100% round 16px)" : "inset(0 100% 0 0 round 16px)" }, {
         clipPath: "inset(0 0% 0 0% round 16px)", ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top 80%", end: "center 48%", scrub: .8 }
       }));
-      const websiteCards = [...document.querySelectorAll(".website-work")];
-      if (websiteCards.length && matchMedia("(min-width: 701px) and (pointer: fine)").matches) {
-        websiteCards.forEach((card, index) => {
-          card.style.zIndex = String(index + 1);
-          gsap.fromTo(card, { scale: .975, y: 18 }, { scale: 1, y: 0, ease: "none", scrollTrigger: { trigger: card, start: "top bottom-=40", end: "top top+=120", scrub: .7 } });
-          if (index < websiteCards.length - 1) gsap.to(card, { scale: .955, autoAlpha: .64, filter: "brightness(.7)", ease: "none", scrollTrigger: { trigger: websiteCards[index + 1], start: "top bottom+=150", end: "top top+=100", scrub: .7 } });
-          const media = card.querySelector(".website-work__media");
-          if (media) gsap.fromTo(media, { y: 18 }, { y: -14, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .7 } });
-        });
-      }
-      document.querySelectorAll(".home-founder__image img").forEach(image => gsap.fromTo(image, { yPercent: 5, scale: 1.02 }, { yPercent: -5, scale: 1.09, ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top bottom", end: "bottom top", scrub: .7 } }));
+      document.querySelectorAll(".website-work").forEach(card => gsap.fromTo(card, { y: 12, autoAlpha: .9 }, { y: 0, autoAlpha: 1, duration: .45, ease: "power2.out", scrollTrigger: { trigger: card, start: "top 88%", once: true } }));
       document.querySelectorAll(".kinetic-strip__track,[data-z7-partner-track]").forEach(track => {
         const reverse = track.dataset.z7PartnerTrack === "reverse";
         const loop = gsap.to(track, { xPercent: reverse ? 50 : -50, duration: reverse ? 32 : 27, ease: "none", repeat: -1 });
@@ -529,16 +519,13 @@
       document.querySelectorAll(".z7x-founder-profile__media").forEach((frame, index) => {
         const image = frame.querySelector("img");
         gsap.fromTo(frame, {
-          clipPath: index % 2 ? "inset(0 0 0 24% round 18px)" : "inset(0 24% 0 0 round 18px)",
-          autoAlpha: .55
+          clipPath: index % 2 ? "inset(0 0 0 6% round 18px)" : "inset(0 6% 0 0 round 18px)",
+          autoAlpha: .65, filter: "blur(8px)"
         }, {
-          clipPath: "inset(0 0 0 0 round 18px)", autoAlpha: 1, ease: "none",
-          scrollTrigger: { trigger: frame, start: "top 86%", end: "center 52%", scrub: .8 }
+          clipPath: "inset(0 0 0 0 round 18px)", autoAlpha: 1, filter: "blur(0px)", duration: .48, ease: "power2.out",
+          scrollTrigger: { trigger: frame, start: "top 88%", once: true }
         });
-        if (image) gsap.fromTo(image, { yPercent: 4, scale: 1.035 }, {
-          yPercent: -4, scale: 1.08, ease: "none",
-          scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: .8 }
-        });
+        if (image) gsap.set(image, { clearProps: "transform" });
       });
 
       document.querySelectorAll(".z7p-partner__media").forEach((frame, index) => gsap.fromTo(frame, {

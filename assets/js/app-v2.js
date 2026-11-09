@@ -59,6 +59,11 @@
     bindDeviceShowcases();
     bindProjectConfigurator();
     animateCampaignStage();
+    bindCampaignWheel();
+    bindBrowserTilt();
+    bindHeroBackdrop();
+    bindFoundersReveal();
+    polishAdminSignIn();
     buildFilmLanes();
     animateFilmLanes();
   }
@@ -235,12 +240,11 @@
     const reel = hero?.querySelector(".logo-hero__reel");
     if (!hero || !stage) return;
     initConstellation();
-    if (!reel) return;
-    const cards = [...reel.querySelectorAll("[data-hero-bento]")];
+    const cards = reel ? [...reel.querySelectorAll("[data-hero-bento]")] : [];
     let tiltX = null, tiltY = null;
     const gsap = window.gsap;
     const pointerFine = desktopPointer.matches && !reducedMotion.matches;
-    if (gsap && pointerFine) {
+    if (gsap && pointerFine && reel) {
       tiltX = gsap.quickTo(reel, "rotationX", { duration: .55, ease: "power3.out" });
       tiltY = gsap.quickTo(reel, "rotationY", { duration: .55, ease: "power3.out" });
     }
@@ -254,7 +258,7 @@
       hero.style.setProperty("--hero-light-x", `${50 + x * 18}%`);
       hero.style.setProperty("--hero-light-y", `${34 + y * 15}%`);
       if (tiltX) { tiltX(y * -4.2); tiltY(x * 5.2); }
-      else {
+      else if (reel) {
         reel.style.setProperty("--reel-rx", `${y * -4.2}deg`);
         reel.style.setProperty("--reel-ry", `${x * 5.2}deg`);
       }
@@ -263,11 +267,12 @@
     }, { passive: true, signal: abort.signal });
     hero.addEventListener("pointerleave", () => {
       if (tiltX) { tiltX(0); tiltY(0); }
-      reel.style.setProperty("--reel-rx", "0deg");
-      reel.style.setProperty("--reel-ry", "0deg");
+      reel?.style.setProperty("--reel-rx", "0deg");
+      reel?.style.setProperty("--reel-ry", "0deg");
     }, { signal: abort.signal });
     if (gsap && window.ScrollTrigger && !reducedMotion.matches) {
-      gsap.to(reel, { y: -28, scale: .94, rotateX: 0, rotateY: 0, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .72, invalidateOnRefresh: true } });
+      gsap.to(stage, { y: -22, scale: .985, opacity: .7, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .6 } });
+      if (reel) gsap.to(reel, { y: -28, scale: .94, rotateX: 0, rotateY: 0, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .72, invalidateOnRefresh: true } });
       cards.forEach((card, index) => {
         gsap.to(card, { y: (index - 1) * -20, x: (index - 1) * 18, scale: .92, rotateY: (index - 1) * -5, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .72, invalidateOnRefresh: true } });
       });
@@ -345,6 +350,88 @@
       });
       filmTriggers.push(tween.scrollTrigger);
     });
+  }
+
+  function bindCampaignWheel() {
+    const rail = document.querySelector(".campaign-stage .film-track");
+    if (!rail || !desktopPointer.matches) return;
+    rail.addEventListener("wheel", event => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX) || !event.deltaY) return;
+      const max = rail.scrollWidth - rail.clientWidth;
+      if (max < 2 || (event.deltaY < 0 && rail.scrollLeft <= 0) || (event.deltaY > 0 && rail.scrollLeft >= max - 1)) return;
+      event.preventDefault();
+      rail.scrollLeft += event.deltaY;
+    }, { passive: false, signal: abort.signal });
+  }
+
+  function bindBrowserTilt() {
+    if (!desktopPointer.matches || reducedMotion.matches) return;
+    document.querySelectorAll("[data-browser-tilt]").forEach(browser => {
+      browser.addEventListener("pointermove", event => {
+        const rect = browser.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - .5;
+        const y = (event.clientY - rect.top) / rect.height - .5;
+        browser.style.transform = `perspective(900px) rotateX(${-y * 4}deg) rotateY(${x * 5}deg)`;
+      }, { passive: true, signal: abort.signal });
+      browser.addEventListener("pointerleave", () => { browser.style.transform = ""; }, { signal: abort.signal });
+    });
+  }
+
+  function bindHeroBackdrop() {
+    const container = document.querySelector("[data-seamless-backdrop]");
+    const videos = container && [...container.querySelectorAll("video")];
+    if (!videos || videos.length !== 2) return;
+    if (reducedMotion.matches || navigator.connection?.saveData) { videos[0].pause(); return; }
+    let active = 0;
+    let changing = false;
+    const source = videos[0].currentSrc || videos[0].src;
+    const observe = () => {
+      const current = videos[active];
+      if (changing || !Number.isFinite(current.duration) || current.duration < 2 || current.currentTime < current.duration - .85) return;
+      changing = true;
+      const next = videos[1 - active];
+      if (!next.src) next.src = source;
+      next.currentTime = 0;
+      next.play().then(() => {
+        next.classList.add("is-live");
+        current.classList.remove("is-live");
+        window.setTimeout(() => {
+          current.pause();
+          current.currentTime = 0;
+          active = 1 - active;
+          changing = false;
+        }, 870);
+      }).catch(() => { changing = false; });
+    };
+    videos.forEach(video => video.addEventListener("timeupdate", observe, { signal: abort.signal }));
+    abort.signal.addEventListener("abort", () => videos.forEach(video => video.pause()), { once: true });
+  }
+
+  function bindFoundersReveal() {
+    const images = [...document.querySelectorAll(".home-founder__image img")];
+    if (!images.length || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      entry.target.classList.toggle("is-in-view", entry.isIntersecting);
+    }), { threshold: .45 });
+    images.forEach(image => observer.observe(image));
+    abort.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
+  }
+
+  function polishAdminSignIn() {
+    const slot = document.getElementById("clerk-signin");
+    if (!slot) return;
+    const polish = () => {
+      slot.querySelectorAll('[class*="socialButtons"],[class*="dividerRow"]').forEach(node => { node.hidden = true; node.setAttribute("aria-hidden", "true"); });
+      const walker = document.createTreeWalker(slot, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (/clerk-claret-miroro/i.test(node.nodeValue || "")) node.nodeValue = node.nodeValue.replace(/continue\s+to\s+clerk-claret-miroro/gi, "Admin access").replace(/clerk-claret-miroro/gi, "7Z Magic");
+      }
+    };
+    const observer = new MutationObserver(polish);
+    observer.observe(slot, { childList: true, subtree: true, characterData: true });
+    polish();
+    abort.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
   }
 
   function teardown() {

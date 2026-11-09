@@ -203,15 +203,15 @@
       appearance: {
 
         variables: {
-          colorPrimary: "#d6b25e",
-          colorBackground: "#080808",
-          colorForeground: "#f4f4f4",
-          colorMutedForeground: "#8a8a8a",
+          colorPrimary: "var(--accent)",
+          colorBackground: "var(--panel)",
+          colorForeground: "var(--text)",
+          colorMutedForeground: "var(--muted)",
 
-          colorInputBackground: "#0d0d0d",
-          colorInputForeground: "#f4f4f4",
+          colorInputBackground: "var(--bg-raised)",
+          colorInputForeground: "var(--text)",
 
-          colorNeutral: "#ffffff",
+          colorNeutral: "var(--text)",
 
           borderRadius: "10px",
 
@@ -237,7 +237,7 @@
             width: "100%",
             maxWidth: "330px",
             padding: "22px",
-            background: "#080808",
+            background: "var(--panel)",
             border:
               "1px solid rgba(214,178,94,.16)",
             boxShadow:
@@ -249,22 +249,22 @@
           },
 
           headerTitle: {
-            color: "#f4f4f4",
+            color: "var(--text)",
             fontSize: "18px",
             fontWeight: "650"
           },
 
           headerSubtitle: {
-            color: "#7f7f7f",
+            color: "var(--muted)",
             fontSize: "10px"
           },
 
           socialButtonsBlockButton: {
             minHeight: "38px",
-            background: "#0d0d0d",
+            background: "var(--bg-raised)",
             border:
               "1px solid rgba(255,255,255,.10)",
-            color: "#dddddd",
+            color: "var(--text)",
             boxShadow: "none"
           },
 
@@ -284,14 +284,14 @@
           },
 
           formFieldLabel: {
-            color: "#bcbcbc",
+            color: "var(--text)",
             fontSize: "9px"
           },
 
           formFieldInput: {
             minHeight: "40px",
-            background: "#0d0d0d",
-            color: "#f4f4f4",
+            background: "var(--bg-raised)",
+            color: "var(--text)",
             border:
               "1px solid rgba(255,255,255,.11)",
             boxShadow: "none"
@@ -307,7 +307,7 @@
           },
 
           footer: {
-            background: "#080808"
+            background: "var(--panel)"
           },
 
           footerActionText: {
@@ -322,7 +322,7 @@
           },
 
           footerPages: {
-            background: "#080808"
+            background: "var(--panel)"
           }
         }
       }

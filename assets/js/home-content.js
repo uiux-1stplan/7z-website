@@ -26,6 +26,18 @@
     { src: "/media/prop/1.mp4", poster: "/media/posters/prop/1.jpg", title: "Interactive Presentation 01" },
     { src: "/media/prop/2.mp4", poster: "/media/posters/prop/2.jpg", title: "Interactive Presentation 02" }
   ];
+  const selectedWork = [
+    ...architecture,
+    ...campaigns,
+    ...presentations,
+    { src: "/media/prop/3.mp4", poster: "/media/posters/prop/3.jpg", title: "Interactive Presentation 03" },
+    { src: "/media/film/1.mp4", poster: "/media/posters/film/1.jpg", title: "Film Production" },
+    ...[1, 2, 26].map((number, index) => ({
+      src: `/media/website_project/${number}.mp4`,
+      poster: `/media/posters/website_project/${number}.jpg`,
+      title: `Digital Experience ${String(index + 1).padStart(2, "0")}`
+    }))
+  ];
 
   function renderComparisons() {
     const stage = $("#comparisonStage");
@@ -235,7 +247,7 @@
   }
 
   function initMedia() {
-    const videos = $$(".z7-home video,.z7-services-page video");
+    const videos = $$(".z7-home video:not([data-decorative-video]),.z7-services-page video");
     videos.forEach(video => {
       video.removeAttribute("controls");
       video.autoplay = true;
@@ -267,6 +279,7 @@
       const observer = new IntersectionObserver(entries => entries.forEach(entry => {
         const video = entry.target;
         if (entry.isIntersecting) playVisible(video);
+        else if (!video.paused) video.pause();
       }), { rootMargin: "180px", threshold: .06 });
       videos.forEach(video => observer.observe(video));
       observers.push(observer);
@@ -316,7 +329,7 @@
   function boot() {
     renderComparisons();
     renderTiles("#architectureVideos", architecture);
-    renderTiles("#homeVideoRail", architecture);
+    renderTiles("#homeVideoRail", selectedWork);
     renderTiles("#mediaRail", campaigns);
     renderTiles("#presentationStack", presentations);
     initComparisons();
