@@ -420,7 +420,6 @@ html[data-z7-core] .home-founder { overflow: hidden; }
 html[data-z7-core] .home-founder__image { min-height: 310px; height: clamp(310px,36vw,450px); display: grid; place-items: center; }
 html[data-z7-core] .home-founder__image img { width: 100%; height: 100%; object-fit: contain !important; object-position: center top !important; filter: grayscale(1); transition: filter .45s ease; }
 html[data-z7-core] .home-founder:is(:hover,:focus-within) .home-founder__image img { filter: grayscale(0); }
-html[data-z7-core] .home-founder__image img.is-in-view { filter: grayscale(0); }
 
 /* Services: compact cinematic opening, clear moving image and tactile sections. */
 html[data-z7-core] .services-intro { min-height: 0 !important; display: grid; grid-template-columns: minmax(0,1fr) minmax(270px,.84fr); align-items: center; gap: 28px; width: min(1140px,calc(100% - 40px)); margin: 90px auto 18px; padding: 30px; border: 1px solid var(--border-subtle); border-radius: 26px; background: var(--bg-surface); box-shadow: var(--shadow-card); }
@@ -551,6 +550,40 @@ html[data-z7-core][data-theme="light"] body.z7-admin-shell :is(.auth-shell,.cl-c
  html[data-z7-core][data-academy-ui] .academy-intro--course { display: block; }
  html[data-z7-core][data-academy-ui] .academy-local-nav>div a { font-size: .64rem; }
 }
+
+/* Compact, illuminated service opening; preserve the original spatial layout. */
+html[data-z7-core] .services-intro {
+  min-height: 0 !important;
+  margin: 78px auto 16px !important;
+  padding: clamp(20px, 2.6vw, 32px) !important;
+  background: radial-gradient(ellipse at 82% 4%, rgba(115, 151, 220, .12), transparent 48%), var(--bg-surface) !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,.2), inset 0 1px rgba(255,255,255,.045) !important;
+}
+html[data-z7-core] .services-intro__panel { box-shadow: 0 14px 36px rgba(0,0,0,.28), 0 0 24px rgba(132,164,224,.09) !important; }
+html[data-z7-core] .services-map .service-card,
+html[data-z7-core] .services-page .chapter {
+  box-shadow: inset 0 1px rgba(255,255,255,.025), 0 16px 38px rgba(0,0,0,.12);
+}
+html[data-z7-core][data-theme="light"] .services-intro {
+  background: radial-gradient(ellipse at 82% 4%, rgba(90,127,197,.10), transparent 48%), var(--bg-surface) !important;
+  box-shadow: 0 18px 48px rgba(20,25,30,.08), inset 0 1px rgba(255,255,255,.9) !important;
+}
+html[data-z7-core][data-theme="light"] .services-intro__panel { box-shadow: 0 14px 36px rgba(20,25,30,.16), 0 0 24px rgba(90,127,197,.08) !important; }
+
+/* Website project stages flow naturally; each stage keeps its own device frames. */
+html[data-z7-core] .websites-page { padding-top: 88px; }
+html[data-z7-core] .website-work { position: relative; top: auto; }
+html[data-z7-core] .device-showcase__site > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+html[data-z7-core] .device-showcase__site:has(> video) > :not(video) { display: none !important; }
+html[data-z7-core] .device-showcase__site:has(> video) { position: relative; overflow: hidden; }
+html[data-z7-core] .device-showcase__mobile .device-showcase__site:has(> video) { height: auto; min-height: 0; aspect-ratio: 9 / 19.5; padding: 0; }
+
+/* Clearer partner marks with comfortable breathing room. */
+html[data-z7-core] [data-z7-page="partners"] .z7p-partner { min-height: 126px; padding: 14px 18px; }
+html[data-z7-core] [data-z7-page="partners"] .z7p-partner__media { min-height: 92px; }
+html[data-z7-core] [data-z7-page="partners"] .z7p-partner img { width: min(90%, 220px); height: 76px; opacity: .82; }
+html[data-z7-core][data-theme="light"] [data-z7-page="partners"] .z7p-partner img { filter: grayscale(1) brightness(.48) contrast(1.08); opacity: .88; }
+
 @media (prefers-reduced-motion: reduce) {
  html[data-z7-core] .hero-backdrop__layer,html[data-z7-core] .logo-hero__copy::before { animation: none; transition: none; }
 }

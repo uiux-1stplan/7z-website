@@ -404,8 +404,11 @@
   function initMotion(state) {
     if (!gsap || !ST || reduced.matches) return;
     state.pageContext = gsap.context(() => {
-      document.querySelectorAll("[data-z7-reveal]").forEach(element => gsap.fromTo(element, { autoAlpha: 0, y: 18 }, {
-        autoAlpha: 1, y: 0, duration: .72, ease: "power2.out",
+      const foundersReveal = Boolean(document.querySelector('[data-z7-page="founders"]'));
+      document.querySelectorAll("[data-z7-reveal]").forEach(element => gsap.fromTo(element, {
+        autoAlpha: 0, y: foundersReveal ? 12 : 18, ...(foundersReveal ? { filter: "blur(8px)" } : {})
+      }, {
+        autoAlpha: 1, y: 0, ...(foundersReveal ? { filter: "blur(0px)" } : {}), duration: foundersReveal ? .48 : .72, ease: "power2.out",
         scrollTrigger: { trigger: element, start: "top 88%", once: true }
       }));
       const hero = document.querySelector(".logo-hero[data-hero-variant='home-spatial']");
@@ -461,10 +464,6 @@
           scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: .6 }
         });
       });
-      const homeFounderImages = [...document.querySelectorAll(".home-founder__image")];
-      homeFounderImages.forEach((image, index) => gsap.fromTo(image, { clipPath: index % 2 ? "inset(0 0 0 100% round 16px)" : "inset(0 100% 0 0 round 16px)" }, {
-        clipPath: "inset(0 0% 0 0% round 16px)", ease: "none", scrollTrigger: { trigger: image.closest(".home-founder"), start: "top 80%", end: "center 48%", scrub: .8 }
-      }));
       document.querySelectorAll(".website-work").forEach(card => gsap.fromTo(card, { y: 12, autoAlpha: .9 }, { y: 0, autoAlpha: 1, duration: .45, ease: "power2.out", scrollTrigger: { trigger: card, start: "top 88%", once: true } }));
       document.querySelectorAll(".kinetic-strip__track,[data-z7-partner-track]").forEach(track => {
         const reverse = track.dataset.z7PartnerTrack === "reverse";

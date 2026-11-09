@@ -62,7 +62,6 @@
     bindCampaignWheel();
     bindBrowserTilt();
     bindHeroBackdrop();
-    bindFoundersReveal();
     polishAdminSignIn();
     buildFilmLanes();
     animateFilmLanes();
@@ -405,16 +404,6 @@
     };
     videos.forEach(video => video.addEventListener("timeupdate", observe, { signal: abort.signal }));
     abort.signal.addEventListener("abort", () => videos.forEach(video => video.pause()), { once: true });
-  }
-
-  function bindFoundersReveal() {
-    const images = [...document.querySelectorAll(".home-founder__image img")];
-    if (!images.length || !("IntersectionObserver" in window)) return;
-    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-      entry.target.classList.toggle("is-in-view", entry.isIntersecting);
-    }), { threshold: .45 });
-    images.forEach(image => observer.observe(image));
-    abort.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
   }
 
   function polishAdminSignIn() {
