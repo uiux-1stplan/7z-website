@@ -238,11 +238,11 @@
     state.loaderContext?.revert();
     value.n = 100;
     paint();
-    if (gsap) gsap.to(loader, { clipPath: "inset(0 0 100% 0 round 0 0 45% 45%)", yPercent: -6, duration: .7, ease: "power3.inOut", onComplete: () => clearLoader(state) });
+    if (gsap) gsap.to(loader, { clipPath: "ellipse(140% 0% at 50% 0%)", yPercent: -7, duration: .76, ease: "power3.inOut", onComplete: () => clearLoader(state) });
     else if (loader.animate) {
       const animation = loader.animate([
-        { clipPath: "inset(0 0 0 0 round 0 0 40px 40px)", transform: "translateY(0)" },
-        { clipPath: "inset(0 0 100% 0 round 0 0 45% 45%)", transform: "translateY(-6%)" }
+        { clipPath: "ellipse(140% 100% at 50% 0%)", transform: "translateY(0)" },
+        { clipPath: "ellipse(140% 0% at 50% 0%)", transform: "translateY(-7%)" }
       ], { duration: 700, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(() => clearLoader(state));
     } else clearLoader(state);
@@ -334,7 +334,7 @@
         surface.style.setProperty("--z7-mx", (event.clientX - rect.left) + "px");
         surface.style.setProperty("--z7-my", (event.clientY - rect.top) + "px");
       }
-      const bespokeHero = event.target.closest?.("[data-hero-variant]");
+      const bespokeHero = event.target.closest?.("[data-hero-variant]:not([data-hero-variant='home-bento-stage'])");
       if (bespokeHero && finePointer.matches && gsap && !reduced.matches) {
         const rect = bespokeHero.getBoundingClientRect();
         const x = (event.clientX - rect.left) / Math.max(1, rect.width) - .5;
@@ -392,7 +392,7 @@
           if (gsap) gsap.set(preview, { clearProps: "transform" });
         }
       }
-      const hero = event.target.closest?.("[data-hero-variant]");
+      const hero = event.target.closest?.("[data-hero-variant]:not([data-hero-variant='home-bento-stage'])");
       if (hero && !hero.contains(event.relatedTarget)) {
         const visual = hero.querySelector(".logo-hero__reel,.z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
         const tilt = visual && floaters.get(visual);
@@ -408,7 +408,7 @@
         autoAlpha: 1, y: 0, duration: .72, ease: "power2.out",
         scrollTrigger: { trigger: element, start: "top 88%", once: true }
       }));
-      const hero = document.querySelector(".logo-hero");
+      const hero = document.querySelector(".logo-hero[data-hero-variant='home-spatial']");
       const logo = hero?.querySelector(".logo-hero__mark");
       const heroCopy = hero?.querySelector(".logo-hero__copy");
       const heroReel = hero?.querySelector("[data-z7-hero-reel]");

@@ -89,27 +89,34 @@
   <header class="z7-header" aria-label="Primary"><div class="z7-container z7-header__inner"><a class="z7-brand" href="/" aria-label="7Z Magic home"><img src="/assets/brand/7z-official.png" width="150" height="44" alt="7Z Magic" decoding="async"></a><nav class="z7-nav" id="z7MainNav" aria-label="Main navigation"><a href="/">Home</a><a href="/services/">Services</a><a href="/websites/">Websites</a><a href="/about/">About</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact</a><a href="/private-access/" data-z7-no-transition>Private Access</a></nav><div class="z7-header__actions"><a class="z7-header__social" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer" aria-label="7Z Magic on Instagram">Instagram</a><a class="z7-header__contact" href="mailto:creative@7z-magic.com">Email us</a><button class="z7-theme-toggle" id="theme" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme"><span aria-hidden="true">◐</span></button><button class="z7-lang-toggle" id="lang" type="button" aria-label="Switch language">EN</button><button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button></div></div></header>
 
   <main class="z7-main z7-home" id="mainContent" tabindex="-1">
-          <section class="logo-hero" id="intro" aria-label="7Z Magic" data-z7-hero-stage data-hero-variant="home-spatial" data-z7-spatial>
-            <div class="logo-hero__stage" data-z7-spatial>
-              <div class="logo-hero__copy">
-                <img class="logo-hero__mark" src="/assets/brand/7z-official.png" width="390" height="433" alt="7Z Magic" fetchpriority="high" decoding="async" data-z7-hero-reveal>
-                <p class="eyebrow">Architecture × AI × Moving Image</p>
-                <h1 data-z7-hero-reveal>Where spatial design, artificial intelligence and moving image become one premium system.</h1>
-              </div>
-              <div class="logo-hero__halo" aria-hidden="true"></div>
-              <div class="logo-hero__reel manifest__media manifest__media--cinema z7-spatial" data-z7-hero-reel data-z7-spatial>
-          <div class="manifest__film-header" aria-hidden="true">
-            <span class="manifest__film-kicker">Featured Film</span>
-            <span class="manifest__film-type">Architecture × AI</span>
-          </div>
-          <video autoplay loop muted playsinline preload="none" data-src="/media/arch_projects/9-16H/1.mp4" poster="/media/posters/arch_projects/9-16H/1-optimized.svg"></video>
-                    <div class="manifest__film-caption" aria-hidden="true">
-            <span>7Z Original</span>
-            <strong>Architecture in Motion</strong>
-          </div>
-              </div>
-            </div>
-          </section>
+          <section class="logo-hero" id="intro" aria-label="7Z Magic interactive stage" data-z7-hero-stage data-hero-variant="home-bento-stage" data-z7-spatial>
+  <canvas id="hero-constellation" aria-hidden="true"></canvas>
+  <div class="logo-hero__stage" data-z7-spatial>
+    <div class="logo-hero__copy">
+      <img class="logo-hero__mark" src="/assets/brand/7z-official.png" width="390" height="433" alt="7Z Magic" fetchpriority="high" decoding="async" data-z7-hero-reveal>
+      <p class="eyebrow" data-live-status>Architecture × AI × Moving Image</p>
+      <h1 data-z7-hero-reveal>Where spatial design, artificial intelligence and moving image become one premium system.</h1>
+    </div>
+    <div class="logo-hero__halo" aria-hidden="true"></div>
+    <div class="logo-hero__reel" data-z7-hero-reel aria-label="7Z Magic selected moving image">
+      <figure class="hero-bento-tile" data-hero-bento>
+        <video autoplay loop muted playsinline preload="none" data-src="/media/arch_projects/9-16H/1.mp4" poster="/media/posters/arch_projects/9-16H/1-optimized.svg"></video>
+        <button class="z7-video-mute" type="button" data-video-mute aria-label="Unmute architecture film" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg><span>Sound off</span></button>
+        <figcaption>Architecture in Motion</figcaption>
+      </figure>
+      <figure class="hero-bento-tile" data-hero-bento>
+        <video autoplay loop muted playsinline preload="none" data-src="/media/website_project/1.mp4" poster="/media/posters/website_project/1.jpg"></video>
+        <button class="z7-video-mute" type="button" data-video-mute aria-label="Unmute website film" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg><span>Sound off</span></button>
+        <figcaption>Digital Experiences</figcaption>
+      </figure>
+      <figure class="hero-bento-tile" data-hero-bento>
+        <video autoplay loop muted playsinline preload="none" data-src="/media/media_projects/Media%20(1).mp4" poster="/media/posters/media_projects/Media%20(1).jpg"></video>
+        <button class="z7-video-mute" type="button" data-video-mute aria-label="Unmute campaign film" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg><span>Sound off</span></button>
+        <figcaption>Campaign Films</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
 <section class="manifest" id="universe">
         <div class="manifest__copy">
@@ -129,12 +136,27 @@
           </div>
           <div class="service-loop__stage">
             <div class="service-orbit" aria-label="Service areas">
-              <button class="service-card is-active" type="button" data-preview="/media/arch_projects/9-16H/1.mp4" data-poster="/media/posters/arch_projects/9-16H/1-optimized.svg" data-tint="79,140,255"><span>01 / 3D</span><strong>Spatial Stories</strong><i aria-hidden="true">↗</i></button>
-              <button class="service-card" type="button" data-preview="/media/website_project/1.mp4" data-poster="/media/posters/website_project/1.jpg" data-tint="114,145,172"><span>02 / UX</span><strong>Websites</strong><i aria-hidden="true">↗</i></button>
-              <button class="service-card" type="button" data-preview="/media/media_projects/Media (1).mp4" data-poster="/media/posters/media_projects/Media (1).jpg" data-tint="128,112,98"><span>03 / FM</span><strong>Campaign Films</strong><i aria-hidden="true">↗</i></button>
-              <button class="service-card" type="button" data-preview="/media/film/1.mp4" data-poster="/media/posters/film/1.jpg" data-tint="91,112,142"><span>04 / ID</span><strong>Brand Identity</strong><i aria-hidden="true">↗</i></button>
-              <button class="service-card" type="button" data-preview="/media/prop/1.mp4" data-poster="/media/posters/prop/1.jpg" data-tint="99,128,119"><span>05 / PD</span><strong>Product Launches</strong><i aria-hidden="true">↗</i></button>
-            </div>
+<article class="service-card is-active" tabindex="0" role="button" aria-label="Preview Spatial Stories" data-preview="/media/arch_projects/9-16H/1.mp4" data-poster="/media/posters/arch_projects/9-16H/1-optimized.svg" data-tint="79,140,255">
+  <video autoplay loop muted playsinline preload="none" data-src="/media/arch_projects/9-16H/1.mp4" poster="/media/posters/arch_projects/9-16H/1-optimized.svg"></video>
+  <span>01 / 3D</span><strong>Spatial Stories</strong><i aria-hidden="true">↗</i>
+</article>
+<article class="service-card" tabindex="0" role="button" aria-label="Preview Websites" data-preview="/media/website_project/1.mp4" data-poster="/media/posters/website_project/1.jpg" data-tint="114,145,172">
+  <video autoplay loop muted playsinline preload="none" data-src="/media/website_project/1.mp4" poster="/media/posters/website_project/1.jpg"></video>
+  <span>02 / UX</span><strong>Websites</strong><i aria-hidden="true">↗</i>
+</article>
+<article class="service-card" tabindex="0" role="button" aria-label="Preview Campaign Films" data-preview="/media/media_projects/Media%20(1).mp4" data-poster="/media/posters/media_projects/Media%20(1).jpg" data-tint="128,112,98">
+  <video autoplay loop muted playsinline preload="none" data-src="/media/media_projects/Media%20(1).mp4" poster="/media/posters/media_projects/Media%20(1).jpg"></video>
+  <span>03 / FM</span><strong>Campaign Films</strong><i aria-hidden="true">↗</i>
+</article>
+<article class="service-card" tabindex="0" role="button" aria-label="Preview Brand Identity" data-preview="/media/film/1.mp4" data-poster="/media/posters/film/1.jpg" data-tint="91,112,142">
+  <video autoplay loop muted playsinline preload="none" data-src="/media/film/1.mp4" poster="/media/posters/film/1.jpg"></video>
+  <span>04 / ID</span><strong>Brand Identity</strong><i aria-hidden="true">↗</i>
+</article>
+<article class="service-card" tabindex="0" role="button" aria-label="Preview Product Launches" data-preview="/media/prop/1.mp4" data-poster="/media/posters/prop/1.jpg" data-tint="99,128,119">
+  <video autoplay loop muted playsinline preload="none" data-src="/media/prop/1.mp4" poster="/media/posters/prop/1.jpg"></video>
+  <span>05 / PD</span><strong>Product Launches</strong><i aria-hidden="true">↗</i>
+</article>
+</div>
             <figure class="service-preview z7-spatial" data-follow-preview>
               <div class="service-preview__media"><video data-service-preview autoplay loop muted playsinline preload="none" data-src="/media/arch_projects/9-16H/1.mp4" poster="/media/posters/arch_projects/9-16H/1-optimized.svg"></video></div>
               <figcaption><span data-service-index>01 / 3D</span><strong data-service-title>Spatial Stories</strong></figcaption>
@@ -146,7 +168,7 @@
 
       <section class="home-showcase" id="selected-work" aria-labelledby="home-work-title">
         <div class="home-section-head" data-z7-reveal><div><p class="eyebrow">Selected Moving Image</p><h2 id="home-work-title">Stories shaped in motion.</h2></div><a class="button button--primary" href="/services/#media"><span>Explore our work</span><i aria-hidden="true">↗</i></a></div>
-        <div class="home-showcase__viewport" aria-label="Selected 7Z Magic video work"><div class="home-showcase__track" id="homeVideoRail"></div></div>
+        <div class="home-showcase__viewport" aria-label="Selected 7Z Magic video work"><div class="home-showcase__track" id="homeVideoRail"><div class="home-showcase__lane" data-film-lane="forward"></div><div class="home-showcase__lane" data-film-lane="reverse"></div></div></div>
       </section>
       <section class="home-partners" id="partners" aria-labelledby="home-partners-title">
         <div class="home-section-head" data-z7-reveal><div><p class="eyebrow">7Z Magic Network</p><h2 id="home-partners-title">Built through trusted collaboration.</h2><p class="home-copy">A growing network of brands, businesses and collaborators connected through projects, ideas and creative production.</p></div><a class="button button--primary" href="/partners/"><span>Meet our partners</span><i aria-hidden="true">↗</i></a></div>

@@ -30,6 +30,12 @@ if (!fs.existsSync(cssPath)) {
   if (!css.includes('[data-theme="light"]') || !css.includes('[data-theme="dark"]')) {
     errors.push(`Both [data-theme="dark"] and [data-theme="light"] tokens must be fully defined in ${cssPath}`);
   }
+  for (const token of ['#hero-constellation', '.hero-bento-tile', '.service-card:hover', '.home-showcase__lane', '.z7-loader__count::after']) {
+    if (!css.includes(token)) errors.push(`Missing implemented visual system selector in ${cssPath}: ${token}`);
+  }
+  if (!/radial-gradient\(450px circle at var\(--mouse-x/.test(css)) {
+    errors.push(`Spotlight must use a visible pointer-following radial field in ${cssPath}`);
+  }
   if (!css.includes('--mouse-x') || !css.includes('--mouse-y')) {
     errors.push(`Missing interactive cursor spotlight CSS variables (--mouse-x, --mouse-y) in ${cssPath}`);
   }
@@ -40,7 +46,7 @@ if (!fs.existsSync(jsPath)) {
   errors.push(`Missing unified motion engine: ${jsPath}`);
 } else {
   const js = fs.readFileSync(jsPath, 'utf8');
-  for (const token of ['Lenis', 'ScrollTrigger', 'gsap', 'localStorage', 'data-theme']) {
+  for (const token of ['Lenis', 'ScrollTrigger', 'gsap', 'localStorage', 'data-theme', 'initConstellation', 'bindHeroStage', 'animateFilmLanes', 'scrub: .5']) {
     if (!js.includes(token)) errors.push(`Motion engine ${jsPath} is missing required interactive implementation for: ${token}`);
   }
 }
@@ -52,6 +58,12 @@ for (const page of allPages) {
   }
   const html = fs.readFileSync(page, 'utf8');
   if (/<style[\s>]/i.test(html)) errors.push(`Forbidden inline <style> in ${page} — all styles must live in ${cssPath}`);
+  if (page === 'index.html') {
+    const bentoTiles = (html.match(/data-hero-bento/g) || []).length;
+    if (!html.includes('id="hero-constellation"') || bentoTiles < 3) errors.push(`Home hero must contain its live constellation canvas and three rendered Bento video tiles`);
+    if ((html.match(/class="service-card/g) || []).length < 5) errors.push(`Home must contain the five actual interactive service tiles`);
+    if (!html.includes('id="homeVideoRail"')) errors.push(`Home must include the live film-strip mount point`);
+  }
   if (/jungle|forest/i.test(html)) errors.push(`Forbidden legacy jungle video reference in ${page}`);
   const videos = html.match(/<video[^>]*>/gi) || [];
   for (const video of videos) {
