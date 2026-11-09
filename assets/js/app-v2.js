@@ -10,6 +10,7 @@
   let heroFrame = 0;
   let canvasFrame = 0;
   let filmTriggers = [];
+  const mediaObservers = new Set();
   let live = true;
 
   function restoreThemePreference() {
@@ -108,7 +109,8 @@
           if (!document.hidden && video.getClientRects().length && !navigator.connection?.saveData) video.play().catch(() => { video.muted = true; video.play().catch(() => {}); });
         };
         if ("IntersectionObserver" in window) {
-          const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { play(); observer.disconnect(); } }), { rootMargin: "180px", threshold: .04 });
+          const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { play(); observer.disconnect(); mediaObservers.delete(observer); } }), { rootMargin: "180px", threshold: .04 });
+          mediaObservers.add(observer);
           observer.observe(video);
         } else play();
       }
@@ -302,6 +304,8 @@
     if (heroFrame) cancelAnimationFrame(heroFrame);
     if (canvasFrame) cancelAnimationFrame(canvasFrame);
     filmTriggers.forEach(trigger => trigger?.kill());
+    mediaObservers.forEach(observer => observer.disconnect());
+    mediaObservers.clear();
     abort.abort();
   }
 
