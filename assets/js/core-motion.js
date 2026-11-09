@@ -6,7 +6,7 @@
   const KEY = "z7:core-arrival:v1";
   const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/courses", "/courses/ai-engineering", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-  const desktop = matchMedia("(min-width: 1381px) and (pointer: fine)");
+  const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)");
   const smoothDesktop = matchMedia("(min-width: 768px) and (pointer: fine)");
   const compact = matchMedia("(max-width: 1180px)");
   const lowData = Boolean(navigator.connection?.saveData);
@@ -316,7 +316,7 @@
     }, { signal: state.abort.signal });
   }
   function initSpatial(state) {
-    const selector = ".logo-hero__stage,.manifest__media,.service-card,.compare,.media-tile,.web-stage,.reach-metric,.film-player,.studio-card,.website-work,.home-founder,.home-partner";
+    const selector = "[data-hero-variant],.logo-hero__stage,.manifest__media,.service-card,.compare,.media-tile,.web-stage,.reach-metric,.film-player,.studio-card,.website-work,.home-founder,.home-partner";
     const apply = node => {
       if (node.matches?.(selector)) node.classList.add("z7-spatial");
       node.querySelectorAll?.(selector).forEach(el => el.classList.add("z7-spatial"));
@@ -329,10 +329,30 @@
     const floaters = new WeakMap();
     document.addEventListener("pointermove", event => {
       const surface = event.target.closest?.(".z7-spatial");
-      if (surface && desktop.matches) {
+      if (surface && finePointer.matches) {
         const rect = surface.getBoundingClientRect();
         surface.style.setProperty("--z7-mx", (event.clientX - rect.left) + "px");
         surface.style.setProperty("--z7-my", (event.clientY - rect.top) + "px");
+      }
+      const bespokeHero = event.target.closest?.("[data-hero-variant]");
+      if (bespokeHero && finePointer.matches && gsap && !reduced.matches) {
+        const rect = bespokeHero.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / Math.max(1, rect.width) - .5;
+        const y = (event.clientY - rect.top) / Math.max(1, rect.height) - .5;
+        const visual = bespokeHero.querySelector(".logo-hero__reel,.z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
+        if (visual) {
+          let tilt = floaters.get(visual);
+          if (!tilt) {
+            gsap.set(visual, { transformPerspective: 1000, transformStyle: "preserve-3d" });
+            tilt = {
+              x: gsap.quickTo(visual, "rotationX", { duration: .5, ease: "power3.out" }),
+              y: gsap.quickTo(visual, "rotationY", { duration: .5, ease: "power3.out" })
+            };
+            floaters.set(visual, tilt);
+          }
+          tilt.x(y * -3.2);
+          tilt.y(x * 4.2);
+        }
       }
       const row = event.target.closest?.(".service-card");
       if (row) {
@@ -341,7 +361,7 @@
         row.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
         const scope = row.closest(".service-loop__stage,.services-map");
         const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
-        if (preview && desktop.matches && gsap && !reduced.matches) {
+        if (preview && finePointer.matches && gsap && !reduced.matches) {
           preview.classList.add("is-visible", "is-following");
           let move = floaters.get(preview);
           if (!move) {
@@ -356,7 +376,7 @@
         }
       }
       const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
-      if (!button || !desktop.matches || reduced.matches || !gsap) return;
+      if (!button || !finePointer.matches || reduced.matches || !gsap) return;
       const rect = button.getBoundingClientRect();
       gsap.to(button, { x: (event.clientX - rect.left - rect.width / 2) * .1, y: (event.clientY - rect.top - rect.height / 2) * .13, duration: .4, ease: "power3.out", overwrite: "auto" });
     }, { passive: true, signal: state.abort.signal });
@@ -371,6 +391,12 @@
           preview.classList.remove("is-visible", "is-following");
           if (gsap) gsap.set(preview, { clearProps: "transform" });
         }
+      }
+      const hero = event.target.closest?.("[data-hero-variant]");
+      if (hero && !hero.contains(event.relatedTarget)) {
+        const visual = hero.querySelector(".logo-hero__reel,.z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
+        const tilt = visual && floaters.get(visual);
+        if (tilt) { tilt.x(0); tilt.y(0); }
       }
     }, { passive: true, signal: state.abort.signal });
   }
@@ -413,6 +439,16 @@
           scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: .8, invalidateOnRefresh: true }
         });
       }
+      document.querySelectorAll("[data-hero-variant]:not([data-hero-variant='home-spatial'])").forEach(scene => {
+        const visual = scene.querySelector(".z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
+        if (!visual) return;
+        gsap.fromTo(visual, { y: 10, scale: .985 }, {
+          y: -9,
+          scale: 1.012,
+          ease: "none",
+          scrollTrigger: { trigger: scene, start: "top top", end: "bottom top", scrub: .6, invalidateOnRefresh: true }
+        });
+      });
       document.querySelectorAll(".home-showcase__track > .media-tile").forEach(card => {
         gsap.fromTo(card, { scale: .94, y: 28, autoAlpha: .5 }, {
           scale: 1, y: 0, autoAlpha: 1, ease: "none",

@@ -139,7 +139,7 @@ header .z7-clean-header-logo__img {
   object-fit: contain !important;
   padding: 0 !important;
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
   background: transparent !important;
   background-image: none !important;
   box-shadow: none !important;
@@ -168,7 +168,7 @@ header .z7-arabic-header-logo {
   min-height: 0 !important;
   padding: 0 !important;
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
   outline: 0 !important;
   background: transparent !important;
   background-image: none !important;
@@ -201,7 +201,7 @@ header .z7-arabic-header-logo__img {
   object-fit: contain !important;
   padding: 0 !important;
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
   background: transparent !important;
   background-image: none !important;
   box-shadow: none !important;

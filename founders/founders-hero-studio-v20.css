@@ -914,7 +914,7 @@
 
     overflow: visible !important;
 
-    border-radius: 0 !important;
+    border-radius: 16px !important;
     border: 0 !important;
 
     background: transparent !important;
@@ -1039,7 +1039,7 @@
 
     overflow: visible !important;
 
-    border-radius: 0 !important;
+    border-radius: 16px !important;
     border: 0 !important;
 
     background: transparent !important;

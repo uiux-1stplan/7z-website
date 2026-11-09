@@ -4694,7 +4694,7 @@ header img.logo-mask,
 img[src*="7z-official.png"] {
   background: transparent !important;
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
   outline: 0 !important;
   box-shadow: none !important;
 
@@ -4720,7 +4720,7 @@ img[src*="7z-official.png"] {
   overflow: visible !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4734,7 +4734,7 @@ img[src*="7z-official.png"] {
   object-fit: contain !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4755,7 +4755,7 @@ img[src*="7z-official.png"] {
   object-fit: contain !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4783,7 +4783,7 @@ img[src*="7z-official.png"] {
   overflow: visible !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4805,7 +4805,7 @@ img[src*="7z-official.png"] {
   object-fit: contain !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4830,7 +4830,7 @@ img[src*="7z-official.png"] {
   object-fit: contain !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4854,7 +4854,7 @@ img[src*="7z-official.png"] {
   overflow: visible !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4880,7 +4880,7 @@ img[src*="7z-official.png"] {
   opacity: .92 !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   background: transparent !important;
   box-shadow: none !important;
@@ -4962,7 +4962,7 @@ img[src*="7z-official.png"] {
   overflow: visible !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   outline: 0 !important;
   background: transparent !important;
@@ -4992,7 +4992,7 @@ img[src*="7z-official.png"] {
   object-position: center !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   outline: 0 !important;
   background: transparent !important;
@@ -5039,7 +5039,7 @@ header.site-header > a.brand {
   overflow: visible !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   outline: 0 !important;
   background: transparent !important;
@@ -5070,7 +5070,7 @@ header.site-header > a.brand > img {
   object-position: center !important;
 
   border: 0 !important;
-  border-radius: 0 !important;
+  border-radius: 16px !important;
 
   outline: 0 !important;
   background: transparent !important;

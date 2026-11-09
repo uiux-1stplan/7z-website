@@ -42,7 +42,7 @@
 .service-loop__intro h2 { max-width: 600px; margin: 0; }
 .service-loop__stage { display: grid; grid-template-columns: minmax(0,1fr) 250px; gap: clamp(24px,5vw,72px); align-items: center; min-height: 270px; }
 .service-orbit { display: flex; flex-direction: column; width: 100%; border-top: 1px solid var(--z7-rule); }
-.z7-home .service-card, .services-map .service-card { position: relative; display: grid; grid-template-columns: 56px minmax(0,1fr) 24px; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 0 4px; border: 0; border-bottom: 1px solid var(--z7-rule); border-radius: 0; color: rgba(232,232,228,.55); background: transparent; text-align: start; cursor: pointer; transition: color .25s ease,padding .3s var(--z7-ease),background .25s ease; }
+.z7-home .service-card, .services-map .service-card { position: relative; display: grid; grid-template-columns: 56px minmax(0,1fr) 24px; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 0 4px; border: 0; border-bottom: 1px solid var(--z7-rule); border-radius: 16px; color: rgba(232,232,228,.55); background: transparent; text-align: start; cursor: pointer; transition: color .25s ease,padding .3s var(--z7-ease),background .25s ease; }
 .z7-home .service-card > span, .services-map .service-card > span { color: var(--z7-faint); font: 8px var(--z7-mono); letter-spacing: .09em; }
 .z7-home .service-card strong, .services-map .service-card strong { font-size: .93rem; font-weight: 450; }
 .z7-home .service-card i, .services-map .service-card i { font-style: normal; opacity: .35; transition: opacity .25s ease,transform .25s ease; }
