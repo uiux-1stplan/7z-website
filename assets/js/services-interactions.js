@@ -78,6 +78,7 @@
     let cards = [];
     let rotation = 0;
     let velocity = 0;
+    let motionEnergy = 0.08;
     let frame = 0;
     let targetFrame = 0;
     let activePointer = null;
@@ -93,6 +94,11 @@
     const paint = () => {
       if (!ring) return;
       ring.style.setProperty("--mirror-rotation", `${rotation}deg`);
+      const energy = Math.min(.82, Math.max(.08, motionEnergy, Math.abs(velocity) / 13 * .78));
+      campaignRail.style.setProperty("--mirror-water-alpha", (.16 + energy * .18).toFixed(2));
+      campaignRail.style.setProperty("--mirror-line-alpha", (.04 + energy * .08).toFixed(2));
+      campaignRail.style.setProperty("--mirror-glow", `${34 + energy * 36}px`);
+      campaignRail.style.setProperty("--mirror-ripple-shift", `${Math.sin(rotation * Math.PI / 180) * energy * 13}px`);
       const selected = activeIndex();
       cards.forEach((card, index) => {
         if (index === selected) card.setAttribute("aria-current", "true");
@@ -107,6 +113,7 @@
     };
     const nearestRotation = () => Math.round(rotation / stepAngle()) * stepAngle();
     const settle = () => {
+      motionEnergy = .08;
       if (reduced) { rotation = nearestRotation(); paint(); return; }
       const start = rotation;
       const end = nearestRotation();
@@ -124,7 +131,8 @@
     };
     const coast = () => {
       rotation += velocity;
-      velocity *= .92;
+      velocity *= .94;
+      motionEnergy = Math.max(.08, Math.abs(velocity) / 13 * .78);
       paint();
       if (Math.abs(velocity) > .12) frame = requestAnimationFrame(coast);
       else { frame = 0; settle(); }
@@ -135,13 +143,15 @@
       const start = rotation;
       const began = performance.now();
       const duration = 430;
+      motionEnergy = .58;
       const tick = now => {
         const t = Math.min(1, (now - began) / duration);
         const eased = 1 - Math.pow(1 - t, 3);
         rotation = start + (target - start) * eased;
+        motionEnergy = .58 * (1 - t) + .08;
         paint();
         if (t < 1) targetFrame = requestAnimationFrame(tick);
-        else targetFrame = 0;
+        else { targetFrame = 0; motionEnergy = .08; paint(); }
       };
       targetFrame = requestAnimationFrame(tick);
     };
@@ -182,11 +192,6 @@
           video.playsInline = true;
           video.preload = "none";
         }
-        const reflection = document.createElement("span");
-        reflection.className = "svc-mirror-reflection";
-        reflection.setAttribute("aria-hidden", "true");
-        if (video?.poster) reflection.style.backgroundImage = `linear-gradient(180deg,rgba(124,173,222,.2),rgba(5,9,14,.72)),url("${video.poster}")`;
-        card.append(reflection);
       });
       if (window.gsap?.killTweensOf) {
         window.gsap.killTweensOf(cards);
@@ -237,6 +242,7 @@
         campaignRail.classList.add("is-dragging");
         rotation += dx * .34;
         velocity = Math.max(-13, Math.min(13, dx / Math.max(1, now - lastTime) * 16 * .34));
+        motionEnergy = .2 + Math.min(.58, Math.abs(velocity) / 13 * .58);
         paint();
       }
       lastX = event.clientX;
