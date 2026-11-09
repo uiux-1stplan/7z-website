@@ -67,6 +67,15 @@
       <div class="z7-loader__caption"><span>Preparing experience</span><span>7Z Magic</span></div>
     </div>
   </div>
+  <script>
+    window.setTimeout(() => {
+      const loader = document.getElementById("z7Loader");
+      if (!loader || loader.hidden) return;
+      loader.hidden = true;
+      loader.style.removeProperty("clip-path");
+      loader.style.removeProperty("transform");
+    }, 2600);
+  </script>
 
   <div class="z7-transition" id="z7Transition" aria-hidden="true" hidden>
     <span class="z7-transition__orb" aria-hidden="true"></span>
