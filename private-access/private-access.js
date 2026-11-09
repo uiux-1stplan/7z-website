@@ -74,58 +74,10 @@
       "[data-z7pa-access-label]"
     );
 
-  const siteHeader =
-    window.document.querySelector(
-      ".site-header"
-    );
-
-  const headerSocials =
-    window.document.querySelector(
-      ".header-socials"
-    );
-
   let currentAuthenticated = false;
 
-
-  /* --------------------------------------------------------
-     HEADER SESSION BUTTON
-  -------------------------------------------------------- */
-
-  let accessButton =
-    window.document.getElementById(
-      "z7paHeaderAccessButton"
-    );
-
-  if (!accessButton) {
-
-    accessButton =
-      window.document.createElement(
-        "button"
-      );
-
-    accessButton.type =
-      "button";
-
-    accessButton.className =
-      "z7pa-header-access magnetic";
-
-    accessButton.id =
-      "z7paHeaderAccessButton";
-
-    accessButton.innerHTML = `
-      <span>LOGIN</span>
-      <b aria-hidden="true">↗</b>
-    `;
-
-    if (siteHeader) {
-
-      siteHeader.insertBefore(
-        accessButton,
-        headerSocials || null
-      );
-    }
-  }
-
+  // The access form is presented in the vault itself; no Login control is injected into the global header.
+  const accessButton = window.document.getElementById("z7paHeaderAccessButton");
 
   function normalizeAllowed(
     payload

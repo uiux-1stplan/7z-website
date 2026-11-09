@@ -1,0 +1,165 @@
+/* Private Access — cinematic client vault, scoped to this route. */
+html[data-z7-core] .z7pa-page {
+  --vault-accent: #82aaff;
+  --vault-glow: rgba(89, 143, 255, .16);
+  position: relative;
+  overflow: clip;
+  background:
+    radial-gradient(ellipse at 76% 18%, var(--vault-glow), transparent 33rem),
+    radial-gradient(ellipse at 8% 48%, rgba(114, 224, 220, .07), transparent 30rem),
+    var(--z7-bg);
+}
+html[data-z7-core][data-theme="light"] .z7pa-page {
+  --vault-accent: #275bcc;
+  --vault-glow: rgba(74, 125, 226, .10);
+  background:
+    radial-gradient(ellipse at 76% 18%, var(--vault-glow), transparent 34rem),
+    radial-gradient(ellipse at 8% 48%, rgba(54, 164, 157, .07), transparent 30rem),
+    var(--z7-bg);
+}
+html[data-z7-core] .z7pa-page::before {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none; content: "";
+  opacity: .2;
+  background-image: radial-gradient(var(--z7-faint) .55px, transparent .7px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 65%);
+}
+html[data-z7-core] .z7pa-page > * { position: relative; z-index: 1; }
+html[data-z7-core] .z7pa-page .z7pa-shell { width: min(1320px, calc(100% - 2 * var(--z7-gutter))); }
+html[data-z7-core] .z7pa-page .z7pa-hero {
+  min-height: 0 !important;
+  padding: clamp(118px, 14vh, 164px) 0 30px !important;
+}
+html[data-z7-core] .z7pa-page .z7pa-hero__layout {
+  width: min(1320px, calc(100% - 2 * var(--z7-gutter))) !important;
+  max-width: none;
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, .65fr) !important;
+  gap: clamp(28px, 6vw, 100px) !important;
+  align-items: end;
+}
+html[data-z7-core] .z7pa-page .z7pa-hero__copy .section-kicker,
+html[data-z7-core] .z7pa-page .z7pa-section-head .section-kicker,
+html[data-z7-core] .z7pa-page .z7pa-policy .section-kicker {
+  color: var(--vault-accent);
+  font: 600 10px/1.4 var(--z7-mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+html[data-z7-core] .z7pa-page .z7pa-hero__copy h1 {
+  max-width: 850px;
+  color: var(--z7-text);
+  font-size: clamp(3.25rem, 7vw, 7rem) !important;
+  line-height: .92 !important;
+  letter-spacing: -.075em !important;
+}
+html[data-z7-core] .z7pa-page .z7pa-hero__copy h1 span { color: var(--z7-muted); }
+html[data-z7-core] .z7pa-page .z7pa-lead {
+  max-width: 620px; margin-top: 22px; color: var(--z7-muted); font-size: clamp(.95rem, 1.3vw, 1.08rem); line-height: 1.75;
+}
+html[data-z7-core] .z7pa-page .z7pa-status {
+  position: relative; padding: 22px 0 18px; border-block: 1px solid var(--z7-rule-strong);
+}
+html[data-z7-core] .z7pa-page .z7pa-status__top { color: var(--z7-faint); font: 9px var(--z7-mono); letter-spacing: .14em; }
+html[data-z7-core] .z7pa-page .z7pa-status__top strong { color: var(--z7-text); font-size: 20px; font-weight: 400; letter-spacing: -.04em; }
+html[data-z7-core] .z7pa-page .z7pa-status__state { margin: 18px 0 8px; color: var(--z7-text); font: 600 9px var(--z7-mono); letter-spacing: .12em; }
+html[data-z7-core] .z7pa-page .z7pa-status__state i,
+html[data-z7-core] .z7pa-page .z7pa-card__lock i { background: #50d6c1; box-shadow: 0 0 14px rgba(80,214,193,.56); }
+html[data-z7-core] .z7pa-page .z7pa-status > p { color: var(--z7-muted); font-size: 12px; line-height: 1.65; }
+
+html[data-z7-core] .z7pa-page .z7-login-vault {
+  width: min(1320px, calc(100% - 2 * var(--z7-gutter))) !important;
+  max-width: none !important;
+  min-height: 0;
+  margin: clamp(28px, 4vw, 56px) auto clamp(82px, 10vw, 132px);
+  overflow: hidden;
+  border: 1px solid var(--z7-rule-strong) !important;
+  border-radius: 28px !important;
+  background: linear-gradient(115deg, color-mix(in srgb, var(--z7-surface) 94%, transparent), color-mix(in srgb, var(--z7-bg-raised) 86%, transparent)) !important;
+  box-shadow: 0 35px 100px -60px rgba(0,0,0,.7), inset 0 1px rgba(255,255,255,.07) !important;
+  backdrop-filter: blur(18px);
+}
+html[data-z7-core] .z7pa-page .z7-login-vault::before {
+  position: absolute; inset: 0; pointer-events: none; content: "";
+  background: radial-gradient(ellipse at 16% 30%, var(--vault-glow), transparent 32rem), linear-gradient(90deg, transparent 49.9%, var(--z7-rule) 50%, transparent 50.1%);
+}
+html[data-z7-core] .z7pa-page .z7-login-vault__aura {
+  position: absolute; width: 27rem; aspect-ratio: 1; right: 12%; top: 50%; border: 1px solid color-mix(in srgb, var(--vault-accent) 22%, transparent); border-radius: 50%; transform: translateY(-50%); opacity: .45; pointer-events: none;
+}
+html[data-z7-core] .z7pa-page .z7-login-vault__aura::before,
+html[data-z7-core] .z7pa-page .z7-login-vault__aura::after { position:absolute; inset: 9%; border:1px solid color-mix(in srgb, var(--vault-accent) 20%, transparent); border-radius:50%; content:""; }
+html[data-z7-core] .z7pa-page .z7-login-vault__aura::after { inset:20%; }
+html[data-z7-core] .z7pa-page .z7-login-vault__card {
+  position: relative; z-index: 1; display: grid; width: 100%; max-width: none; padding: clamp(26px, 5vw, 68px) !important;
+  grid-template-columns: minmax(0, .9fr) minmax(300px, .72fr);
+  grid-template-areas: "brand brand" "kicker form" "title form" "intro form" "security form";
+  column-gap: clamp(32px, 9vw, 150px); align-content: center; align-items: center; border-radius: 0 !important; text-align: left;
+}
+html[data-z7-core] .z7pa-page .z7-login-vault__brand { grid-area: brand; display:flex; align-items:center; gap:18px; margin-bottom: clamp(34px, 5vw, 66px); }
+html[data-z7-core] .z7pa-page .z7-login-vault__mark { display:grid; width:44px; height:48px; place-items:center; }
+html[data-z7-core] .z7pa-page .z7-login-vault__mark img { width:34px; height:40px; object-fit:contain; }
+html[data-z7-core] .z7pa-page .z7-login-vault__badge { color:var(--z7-muted); font:9px var(--z7-mono); letter-spacing:.14em; text-transform:uppercase; }
+html[data-z7-core] .z7pa-page .z7-login-vault__badge i { display:inline-block; width:6px; height:6px; margin-right:9px; border-radius:50%; background:#50d6c1; box-shadow:0 0 13px rgba(80,214,193,.5); }
+html[data-z7-core] .z7pa-page .z7icx__form-kicker { grid-area:kicker; margin:0 0 14px; color:var(--vault-accent); font:600 9px var(--z7-mono); letter-spacing:.18em; }
+html[data-z7-core] .z7pa-page .z7-login-vault__title { grid-area:title; max-width:500px; margin:0; color:var(--z7-text); font-size:clamp(2.5rem,4vw,4.5rem) !important; font-weight:500; line-height:.98; letter-spacing:-.07em; }
+html[data-z7-core] .z7pa-page .z7icx__intro { grid-area:intro; max-width:400px; margin:18px 0 25px; color:var(--z7-muted); font-size:.93rem; line-height:1.7; }
+html[data-z7-core] .z7pa-page .z7pa-login__form { grid-area:form; display:grid; gap:18px; text-align:left; }
+html[data-z7-core] .z7pa-page .z7icx__field { display:grid; gap:8px; }
+html[data-z7-core] .z7pa-page .z7icx__field > span { color:var(--z7-faint); font:600 9px var(--z7-mono); letter-spacing:.15em; }
+html[data-z7-core] .z7pa-page .z7icx__field input {
+  width:100%; min-height:54px; padding:0 16px; border:1px solid var(--z7-rule-strong) !important; border-radius:12px !important;
+  background:color-mix(in srgb, var(--z7-bg) 75%, transparent) !important; color:var(--z7-text) !important; font-size:14px;
+  transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+html[data-z7-core] .z7pa-page .z7icx__field input::placeholder { color:var(--z7-faint); }
+html[data-z7-core] .z7pa-page .z7icx__field input:focus { border-color:var(--vault-accent) !important; background:var(--z7-bg) !important; box-shadow:0 0 0 3px color-mix(in srgb,var(--vault-accent) 15%,transparent) !important; outline:0; }
+html[data-z7-core] .z7pa-page .z7icx__submit { display:flex; width:100%; min-height:54px; align-items:center; justify-content:space-between; padding:0 18px; border:1px solid color-mix(in srgb,var(--vault-accent) 45%,var(--z7-rule)); border-radius:12px; background:linear-gradient(105deg,color-mix(in srgb,var(--vault-accent) 18%,var(--z7-surface)),var(--z7-surface)); color:var(--z7-text); cursor:pointer; font:600 10px var(--z7-mono); letter-spacing:.1em; text-transform:uppercase; transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease; }
+html[data-z7-core] .z7pa-page .z7icx__submit:hover { transform:translateY(-2px); border-color:var(--vault-accent); box-shadow:0 12px 36px -20px var(--vault-accent); }
+html[data-z7-core] .z7pa-page .z7icx__submit b { font-size:17px; font-weight:400; }
+html[data-z7-core] .z7pa-page .z7icx__message { min-height:18px; margin:0; color:var(--z7-muted); font-size:12px; }
+html[data-z7-core] .z7pa-page .z7-login-vault__security { grid-area:security; align-self:start; color:var(--z7-faint); font:8px var(--z7-mono); letter-spacing:.12em; text-transform:uppercase; }
+html[data-z7-core] .z7pa-page .z7-login-vault__security span { color:#50d6c1; font-size:8px; }
+
+html[data-z7-core] .z7pa-page .z7pa-library { padding:0 0 clamp(64px,9vw,120px); }
+html[data-z7-core] .z7pa-page .z7pa-section-head { grid-template-columns:1fr minmax(250px,.65fr); gap:32px; padding:24px 0 32px; border-top:1px solid var(--z7-rule-strong); }
+html[data-z7-core] .z7pa-page .z7pa-section-head h2,
+html[data-z7-core] .z7pa-page .z7pa-policy h2 { color:var(--z7-text); font-size:clamp(2rem,4vw,4rem); font-weight:500; letter-spacing:-.065em; }
+html[data-z7-core] .z7pa-page .z7pa-section-head > p,
+html[data-z7-core] .z7pa-page .z7pa-policy__layout > p { color:var(--z7-muted); }
+html[data-z7-core] .z7pa-page .z7pa-grid { border-color:var(--z7-rule); }
+html[data-z7-core] .z7pa-page .z7pa-card {
+  min-height:285px; padding:clamp(20px,2.4vw,32px); border-color:var(--z7-rule) !important; border-radius:0 !important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--z7-surface) 84%,transparent),color-mix(in srgb,var(--z7-bg-raised) 65%,transparent)) !important;
+  box-shadow:none !important; transition:transform .3s ease,border-color .3s ease,background .3s ease;
+}
+html[data-z7-core] .z7pa-page .z7pa-card:hover { border-color:color-mix(in srgb,var(--vault-accent) 42%,var(--z7-rule)) !important; background:color-mix(in srgb,var(--z7-surface) 96%,transparent) !important; }
+html[data-z7-core] .z7pa-page .z7pa-card__meta,
+html[data-z7-core] .z7pa-page .z7pa-card__body p { color:var(--z7-faint); }
+html[data-z7-core] .z7pa-page .z7pa-card__body h3 { color:var(--z7-text); font-size:clamp(1.45rem,2vw,2.1rem); }
+html[data-z7-core] .z7pa-page .z7pa-card__body > span,
+html[data-z7-core] .z7pa-page .z7pa-card__action { color:var(--z7-muted); }
+html[data-z7-core] .z7pa-page .z7pa-card__action { border-color:var(--z7-rule); }
+html[data-z7-core] .z7pa-page .z7pa-policy { padding-bottom:clamp(64px,9vw,120px); }
+html[data-z7-core] .z7pa-page .z7pa-policy__layout { padding:clamp(36px,5vw,70px) 0; border-color:var(--z7-rule-strong); }
+html[data-z7-core][data-theme="light"] .z7pa-page .z7-login-vault { box-shadow:0 28px 70px -52px rgba(12,35,74,.38),inset 0 1px rgba(255,255,255,.8) !important; }
+
+@media (max-width: 760px) {
+  html[data-z7-core] .z7pa-page .z7pa-hero { padding:112px 0 20px !important; }
+  html[data-z7-core] .z7pa-page .z7pa-hero__layout { grid-template-columns:1fr !important; gap:28px !important; }
+  html[data-z7-core] .z7pa-page .z7pa-hero__copy h1 { font-size:clamp(3rem,13vw,5rem) !important; }
+  html[data-z7-core] .z7pa-page .z7-login-vault { width:calc(100% - 28px) !important; margin:28px auto 70px; border-radius:20px !important; }
+  html[data-z7-core] .z7pa-page .z7-login-vault::before { background:radial-gradient(ellipse at 20% 20%,var(--vault-glow),transparent 23rem); }
+  html[data-z7-core] .z7pa-page .z7-login-vault__aura { width:18rem; right:-6rem; top:auto; bottom:0; transform:none; }
+  html[data-z7-core] .z7pa-page .z7-login-vault__card { padding:25px 22px 28px !important; grid-template-columns:1fr; grid-template-areas:"brand" "kicker" "title" "intro" "form" "security"; gap:0; }
+  html[data-z7-core] .z7pa-page .z7-login-vault__brand { margin-bottom:30px; }
+  html[data-z7-core] .z7pa-page .z7-login-vault__title { font-size:clamp(2.6rem,11vw,3.8rem) !important; }
+  html[data-z7-core] .z7pa-page .z7icx__intro { margin:14px 0 25px; }
+  html[data-z7-core] .z7pa-page .z7pa-login__form { gap:14px; }
+  html[data-z7-core] .z7pa-page .z7-login-vault__security { margin-top:22px; }
+  html[data-z7-core] .z7pa-page .z7pa-section-head,
+  html[data-z7-core] .z7pa-page .z7pa-policy__layout { grid-template-columns:1fr; }
+  html[data-z7-core] .z7pa-page .z7pa-grid { grid-template-columns:1fr; }
+  html[data-z7-core] .z7pa-page .z7pa-card { min-height:250px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-z7-core] .z7pa-page *, html[data-z7-core] .z7pa-page *::before, html[data-z7-core] .z7pa-page *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
+}
