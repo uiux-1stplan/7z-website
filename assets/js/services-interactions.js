@@ -81,6 +81,7 @@
     let motionEnergy = 0.08;
     let frame = 0;
     let targetFrame = 0;
+    let lastCoastTime = 0;
     let activePointer = null;
     let startX = 0;
     let startY = 0;
@@ -129,12 +130,14 @@
       };
       targetFrame = requestAnimationFrame(tick);
     };
-    const coast = () => {
-      rotation += velocity;
-      velocity *= .94;
+    const coast = now => {
+      const delta = Math.min(2, Math.max(.5, (now - lastCoastTime) / 16.667));
+      lastCoastTime = now;
+      rotation += velocity * delta;
+      velocity *= Math.pow(.94, delta);
       motionEnergy = Math.max(.08, Math.abs(velocity) / 13 * .78);
       paint();
-      if (Math.abs(velocity) > .12) frame = requestAnimationFrame(coast);
+      if (Math.abs(velocity) > .08) frame = requestAnimationFrame(coast);
       else { frame = 0; settle(); }
     };
     const goTo = target => {
@@ -142,7 +145,7 @@
       if (reduced) { rotation = target; paint(); return; }
       const start = rotation;
       const began = performance.now();
-      const duration = 430;
+      const duration = 620;
       motionEnergy = .58;
       const tick = now => {
         const t = Math.min(1, (now - began) / duration);
@@ -162,7 +165,7 @@
     const resizeRing = () => {
       if (!ring || !cards.length) return;
       const cardWidth = parseFloat(getComputedStyle(cards[0]).width) || cards[0].getBoundingClientRect().width;
-      const radius = Math.max(cardWidth * 1.25, cardWidth / (2 * Math.tan(Math.PI / cards.length)));
+      const radius = Math.max(cardWidth * 1.65, cardWidth / (2 * Math.tan(Math.PI / cards.length)) * 1.15);
       ring.style.setProperty("--mirror-radius", `${radius}px`);
       paint();
     };
@@ -252,7 +255,10 @@
       if (activePointer !== event.pointerId) return;
       activePointer = null;
       campaignRail.classList.remove("is-dragging");
-      if (moved && Math.abs(velocity) > .55 && !reduced) frame = requestAnimationFrame(coast);
+      if (moved && Math.abs(velocity) > .55 && !reduced) {
+        lastCoastTime = performance.now();
+        frame = requestAnimationFrame(coast);
+      }
       else if (moved) settle();
       moved = false;
     };
