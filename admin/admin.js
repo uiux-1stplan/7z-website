@@ -262,11 +262,13 @@
           },
 
           headerSubtitle: {
+            display: "none",
             color: "#7f7f7f",
             fontSize: "10px"
           },
 
           socialButtonsBlockButton: {
+            display: "none",
             minHeight: "38px",
             background: surfaceRaised,
             border:
@@ -276,6 +278,7 @@
           },
 
           socialButtonsBlockButtonText: {
+            display: "none",
             fontSize: "10px",
             fontWeight: "550"
           },
@@ -924,4 +927,10 @@
 
   boot();
 })();
+
+
+
+
+
+
 
