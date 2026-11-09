@@ -119,11 +119,13 @@
         if (rect.width) set((event.clientX - rect.left) / rect.width * 100);
       };
       card.addEventListener("pointerdown", event => {
-        handle.setPointerCapture?.(event.pointerId);
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        event.preventDefault();
+        card.setPointerCapture?.(event.pointerId);
         update(event);
       }, { signal: abort.signal });
-      handle.addEventListener("pointermove", event => {
-        if (handle.hasPointerCapture?.(event.pointerId)) update(event);
+      card.addEventListener("pointermove", event => {
+        if (card.hasPointerCapture?.(event.pointerId)) update(event);
       }, { signal: abort.signal });
       handle.addEventListener("keydown", event => {
         const delta = event.key === "ArrowRight" ? 4 : event.key === "ArrowLeft" ? -4 : 0;

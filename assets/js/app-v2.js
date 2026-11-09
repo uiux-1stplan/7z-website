@@ -56,6 +56,9 @@
     bindSpotlights();
     bindVideoPolicy();
     bindHeroStage();
+    bindDeviceShowcases();
+    bindProjectConfigurator();
+    animateCampaignStage();
     buildFilmLanes();
     animateFilmLanes();
   }
@@ -230,8 +233,9 @@
     const hero = document.querySelector(".logo-hero");
     const stage = hero?.querySelector(".logo-hero__stage");
     const reel = hero?.querySelector(".logo-hero__reel");
-    if (!hero || !stage || !reel) return;
+    if (!hero || !stage) return;
     initConstellation();
+    if (!reel) return;
     const cards = [...reel.querySelectorAll("[data-hero-bento]")];
     let tiltX = null, tiltY = null;
     const gsap = window.gsap;
@@ -295,6 +299,50 @@
     lanes.forEach((lane, index) => {
       const direction = index === 0 ? -18 : 18;
       const tween = gsap.to(lane, { xPercent: direction, ease: "none", scrollTrigger: { trigger: viewport, start: "top bottom", end: "bottom top", scrub: .5, invalidateOnRefresh: true } });
+      filmTriggers.push(tween.scrollTrigger);
+    });
+  }
+
+  function bindDeviceShowcases() {
+    document.querySelectorAll("[data-device-showcase]").forEach(showcase => {
+      showcase.querySelectorAll("[data-device-view]").forEach(button => button.addEventListener("click", () => {
+        showcase.dataset.view = button.dataset.deviceView;
+        showcase.querySelectorAll("[data-device-view]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+        window.ScrollTrigger?.refresh();
+      }, { signal: abort.signal }));
+    });
+  }
+
+  function bindProjectConfigurator() {
+    const form = document.getElementById("projectInquiryForm");
+    if (!form) return;
+    const selected = form.querySelector('[name="projectType"]');
+    form.querySelectorAll("[data-project-type]").forEach(button => button.addEventListener("click", () => {
+      selected.value = button.dataset.projectType;
+      form.querySelectorAll("[data-project-type]").forEach(item => {
+        item.classList.toggle("is-selected", item === button);
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+    }, { signal: abort.signal }));
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      const subject = `7Z Magic project inquiry — ${data.get("projectType")}`;
+      const body = `Name: ${data.get("name")}\nEmail: ${data.get("email")}\nService: ${data.get("projectType")}\n\n${data.get("brief")}`;
+      location.href = `mailto:creative@7z-magic.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }, { signal: abort.signal });
+  }
+
+  function animateCampaignStage() {
+    const stage = document.querySelector("[data-campaign-stage]");
+    if (!stage || !window.gsap || !window.ScrollTrigger || reducedMotion.matches) return;
+    const tiles = [...stage.querySelectorAll(".media-tile")];
+    tiles.forEach((tile, index) => {
+      const tween = window.gsap.fromTo(tile, { y: 22 + index % 3 * 12, scale: .96 }, {
+        y: 0, scale: 1, ease: "none",
+        scrollTrigger: { trigger: stage, start: "top bottom", end: "bottom 35%", scrub: .6 }
+      });
       filmTriggers.push(tween.scrollTrigger);
     });
   }

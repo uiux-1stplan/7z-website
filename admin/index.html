@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-z7-core>
 <head>
   <script>try{document.documentElement.dataset.theme=localStorage.getItem("z7-theme")||"dark"}catch{}</script>
   <meta charset="utf-8">
@@ -7,16 +7,13 @@
   <meta name="robots" content="noindex,nofollow">
   <title>7Z Magic — Admin Portal</title>
 
-  <link rel="stylesheet" href="/admin/admin.css">
+  <link rel="stylesheet" href="/assets/css/core-system.css"><link rel="stylesheet" href="/admin/admin.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
 </head>
 
 <body class="z7-admin-shell">
 
-<div
-  id="site-header-slot"
-  class="z7-admin-site-header">
-</div>
+<header class="z7-header" aria-label="Primary"><div class="z7-container z7-header__inner"><a class="z7-brand" href="/" aria-label="7Z Magic home"><img src="/assets/brand/7Z-LogoT(3).png" width="150" height="44" alt="7Z Magic" decoding="async"></a><nav class="z7-nav" id="z7MainNav" aria-label="Main navigation"><a href="/">Home</a><a href="/services/">Services</a><a href="/websites/">Websites</a><a href="/about/">About</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact</a><a href="/private-access/" data-z7-no-transition>Private Access</a></nav><div class="z7-header__actions"><a class="z7-header__social" href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer" aria-label="7Z Magic on Instagram">Instagram</a><a class="z7-header__contact" href="mailto:creative@7z-magic.com">Email us</a><button class="z7-theme-toggle" id="theme" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme"><span aria-hidden="true">◐</span></button><button class="z7-lang-toggle" id="lang" type="button" aria-label="Switch language">EN</button><button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button></div></div></header>
 
 <div class="ambient ambient-a"></div>
 <div class="ambient ambient-b"></div>
@@ -25,7 +22,7 @@
 <div id="boot-screen" class="boot-screen">
   <div class="boot-mark">
   <img
-    src="/assets/brand/7z-official.png"
+    src="/assets/brand/7Z-LogoT(3).png"
     alt="7Z Magic">
 </div>
   <div class="boot-copy">
@@ -105,7 +102,7 @@
   <aside class="sidebar">
 
     <div class="sidebar-brand">
-      <div class="brand-symbol"><img src="/assets/brand/7z-official.png" alt="7Z Magic"></div>
+      <div class="brand-symbol"><img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic"></div>
 
       <div>
         <strong>7Z MAGIC</strong>
@@ -163,7 +160,7 @@
 
   <main class="main">
 
-    <header class="topbar">
+    <div class="topbar">
 
       <div>
         <span class="page-kicker">
@@ -187,7 +184,7 @@
         <div id="clerk-user-button"></div>
       </div>
 
-    </header>
+    </div>
 
 
     <section class="academy-admin-overview" aria-labelledby="academy-admin-title">
@@ -462,14 +459,11 @@
 </div>
 
 
-<div
-  id="site-footer-slot"
-  class="z7-admin-site-footer">
-</div>
+<footer class="z7-footer" id="contact-footer"><span class="z7-footer__anchor" id="contact" aria-hidden="true"></span><div class="z7-container z7-footer__main"><div class="z7-footer__brand"><img src="/assets/brand/7Z-LogoT(3).png" width="220" height="65" alt="7Z Magic" loading="lazy" decoding="async"><h2>Premium creative systems for spaces, screens and modern brands.</h2><p>Architecture, AI, media production, websites and brand experience shaped with cinematic precision.</p></div><nav class="z7-footer__links" aria-label="Explore"><span class="z7-footer__label">Explore</span><a href="/services/">Services</a><a href="/websites/">Website Design</a><a href="/about/">About Us</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact Us</a></nav><nav class="z7-footer__links z7-footer__academy" aria-label="Academy"><span class="z7-footer__label">Academy</span><a href="/courses/">All courses</a><a href="/courses/ai-engineering/">AI for Engineers</a></nav><nav class="z7-footer__links z7-footer__portals" aria-label="Portals"><span class="z7-footer__label">Portals</span><a href="/private-access/">Private Client Portal</a><a href="/admin/">Admin Console</a></nav><div class="z7-footer__contact"><span class="z7-footer__label">Contact</span><p>Ready to start a polished digital experience?</p><a class="z7-footer__email" href="mailto:creative@7z-magic.com">creative@7z-magic.com</a><div class="z7-footer__socials"><a href="https://www.instagram.com/7z.magic" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:creative@7z-magic.com">Email</a></div></div></div><div class="z7-container z7-footer__bottom"><small>Copyright &copy; 2026 7Z Magic. All rights reserved.</small><a href="/">Home</a></div></footer>
 
 <div id="toast-stack" class="toast-stack"></div>
 
-<script src="/admin/site-shell.js?v=20260824"></script>
+
 <script src="/admin/admin.js"></script>
 
 <script src="/admin/legacy-file-access.js?v=20260824"></script>

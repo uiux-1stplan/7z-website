@@ -30,7 +30,7 @@ if (!fs.existsSync(cssPath)) {
   if (!css.includes('[data-theme="light"]') || !css.includes('[data-theme="dark"]')) {
     errors.push(`Both [data-theme="dark"] and [data-theme="light"] tokens must be fully defined in ${cssPath}`);
   }
-  for (const token of ['#hero-constellation', '.hero-bento-tile', '.service-card:hover', '.home-showcase__lane', '.z7-loader__count::after']) {
+  for (const token of ['#hero-constellation', '.home-metrics', '.service-card:hover', '.home-showcase__lane', '.z7-loader__count::after']) {
     if (!css.includes(token)) errors.push(`Missing implemented visual system selector in ${cssPath}: ${token}`);
   }
   if (!/radial-gradient\(450px circle at var\(--mouse-x/.test(css)) {
@@ -59,11 +59,15 @@ for (const page of allPages) {
   const html = fs.readFileSync(page, 'utf8');
   if (/<style[\s>]/i.test(html)) errors.push(`Forbidden inline <style> in ${page} — all styles must live in ${cssPath}`);
   if (page === 'index.html') {
-    const bentoTiles = (html.match(/data-hero-bento/g) || []).length;
-    if (!html.includes('id="hero-constellation"') || bentoTiles < 3) errors.push(`Home hero must contain its live constellation canvas and three rendered Bento video tiles`);
+    if (!html.includes('id="hero-constellation"') || !html.includes('class="home-metrics"')) errors.push(`Home must contain the live text hero and capability metrics`);
+    const heroHtml = html.match(/<section class="logo-hero"[\s\S]*?<\/section>/)?.[0] || '';
+    if (/<video|logo-hero__reel/.test(heroHtml)) errors.push(`Home hero must have no video container`);
     if ((html.match(/class="service-card/g) || []).length < 5) errors.push(`Home must contain the five actual interactive service tiles`);
     if (!html.includes('id="homeVideoRail"')) errors.push(`Home must include the live film-strip mount point`);
   }
+  if (!html.includes('/assets/brand/7Z-LogoT(3).png') || html.includes('/assets/brand/7z-official.png')) errors.push(`Old or missing logo reference in ${page}`);
+  if (page === 'services/index.html' && !html.includes('class="comparison-stage before-after"')) errors.push('Services before-after slider missing');
+  if (page === 'websites/index.html' && !html.includes('class="website-work__media device-showcase"')) errors.push('Websites device showcase missing');
   if (/jungle|forest/i.test(html)) errors.push(`Forbidden legacy jungle video reference in ${page}`);
   const videos = html.match(/<video[^>]*>/gi) || [];
   for (const video of videos) {
@@ -73,20 +77,27 @@ for (const page of allPages) {
     }
   }
 
-  if (publicPages.includes(page)) {
+  {
     const header = html.match(/<header[\s\S]*?<\/header>/i)?.[0]?.replace(/\s+/g, ' ').trim();
     const footer = html.match(/<footer[\s\S]*?<\/footer>/i)?.[0]?.replace(/\s+/g, ' ').trim();
     const hero = html.match(/<section[^>]*data-hero-variant="([^"]+)"[\s\S]*?<\/section>/i);
     if (!header) errors.push(`Missing <header> in ${page}`);
     if (!footer) errors.push(`Missing <footer> in ${page}`);
-    if (!hero) errors.push(`Page ${page} must have a bespoke hero section with unique data-hero-variant="<variant-name>"`);
-    else heroSignatures.add(hero[1]);
+    if (!hero && publicPages.includes(page)) errors.push(`Page ${page} must have a bespoke hero section with unique data-hero-variant="<variant-name>"`);
+    if (hero && publicPages.includes(page)) heroSignatures.add(hero[1]);
     if (!refHeader && header) refHeader = header;
     else if (header && header !== refHeader) errors.push(`Header mismatch in ${page}`);
     if (!refFooter && footer) refFooter = footer;
     else if (footer && footer !== refFooter) errors.push(`Footer mismatch in ${page}`);
   }
 }
+
+for (const path of ['admin/admin.css','assets/css/private-access-control.css','founders/index.html']) {
+  const source = fs.readFileSync(path, 'utf8');
+  if (/(?:#000(?:000)?|#111(?:111)?)(?![0-9a-f])/i.test(source)) errors.push(`Hardcoded black in ${path}`);
+}
+const themeCss = fs.readFileSync(cssPath, 'utf8');
+if (!themeCss.includes('html[data-z7-core][data-theme="light"] .z7p-partner__media img')) errors.push('Light partner logo contrast rule missing');
 
 if (heroSignatures.size < publicPages.length) errors.push(`Each public page must have its own unique bespoke hero variant (found ${heroSignatures.size} unique variants for ${publicPages.length} pages)`);
 if (refHeader && (refHeader.includes('/courses/') || !refHeader.includes('/private-access/'))) errors.push(`Header must include /private-access/ and must NOT include /courses/`);
