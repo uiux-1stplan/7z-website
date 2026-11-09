@@ -261,6 +261,17 @@
     if (state.loader) state.loader.hidden = true;
     const overlay = state.overlay;
     if (!overlay || reduced.matches) { clearOverlay(state); return; }
+    const transitionInner = overlay.querySelector(".z7-transition__inner");
+    if (transitionInner && !transitionInner.querySelector(".z7-transition__mark")) {
+      const mark = document.createElement("img");
+      mark.className = "z7-transition__mark";
+      mark.src = "/assets/brand/7Z-LogoT(3).png";
+      mark.alt = "7Z Magic";
+      mark.width = 190;
+      mark.height = 104;
+      mark.decoding = "async";
+      transitionInner.prepend(mark);
+    }
     overlay.hidden = false;
     overlay.style.visibility = "visible";
     if (gsap) gsap.fromTo(overlay, { yPercent: 0 }, { yPercent: -105, clipPath: "inset(0 0 100% 0 round 0 0 45% 45%)", duration: .68, ease: "power3.inOut", onComplete: () => clearOverlay(state) });
@@ -280,6 +291,17 @@
     };
     const overlay = state.overlay;
     if (!overlay || reduced.matches || lowData) { go(); return; }
+    const transitionInner = overlay.querySelector(".z7-transition__inner");
+    if (transitionInner && !transitionInner.querySelector(".z7-transition__mark")) {
+      const mark = document.createElement("img");
+      mark.className = "z7-transition__mark";
+      mark.src = "/assets/brand/7Z-LogoT(3).png";
+      mark.alt = "7Z Magic";
+      mark.width = 190;
+      mark.height = 104;
+      mark.decoding = "async";
+      transitionInner.prepend(mark);
+    }
     const label = overlay.querySelector("[data-z7-transition-label]");
     if (label) label.textContent = labelFor(destination);
     overlay.hidden = false;
