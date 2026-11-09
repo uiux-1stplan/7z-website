@@ -30,9 +30,9 @@
       if (registration && outcomes && !main.querySelector(".course-mid-enroll")) {
         const band = document.createElement("aside");
         band.className = "course-mid-enroll";
-        band.innerHTML = `<p>الفكرة أصبحت منهجاً قابلاً للتطبيق.</p>`;
+        band.innerHTML = `<p>Turn your idea into a method you can put to work.</p>`;
         const cta = registration.cloneNode(true);
-        cta.textContent = "سجّل في المسار الآن ↗";
+        cta.textContent = "Enroll in this course ↗";
         band.append(cta);
         outcomes.after(band);
       }
@@ -55,9 +55,9 @@
     const close = main.querySelector(".services-vision");
     if (close) {
       const stories = [
-        ["02 / THE METHOD", "نبدأ من السياق، ونصمم النتيجة قبل اختيار الأداة.", "كل مشروع يمر بالاكتشاف، وبناء الاتجاه، وصناعة النموذج الأول، ثم الإنتاج والمراجعة والتسليم.", media.architecture, "01 — DISCOVER / DESIGN / DELIVER"],
-        ["03 / IMAGE IN MOTION", "الفكرة لا تتوقف عند إطار واحد.", "نربط الهوية والمشهد والحركة والصوت في حكاية متماسكة تخدم هدف المشروع وقنواته.", media.film, "02 — DIRECTION / MOTION / SOUND"],
-        ["04 / DESIGNED TO PERFORM", "تجارب رقمية واضحة في كل شاشة.", "من هندسة المعلومات إلى تفاصيل الواجهة، نبني مواقع تعكس العلامة وتسهّل التفاعل وتحافظ على سرعة الوصول.", media.screens, "03 — STRATEGY / INTERFACE / BUILD"]
+        ["02 / THE METHOD", "Context first. A clear direction before choosing the tools.", "Every project moves through discovery, direction, prototyping, production, review, and delivery.", media.architecture, "01 — DISCOVER / DESIGN / DELIVER"],
+        ["03 / IMAGE IN MOTION", "An idea should live beyond a single frame.", "We connect identity, image, movement, and sound into one story shaped around the project and its audience.", media.film, "02 — DIRECTION / MOTION / SOUND"],
+        ["04 / DESIGNED TO PERFORM", "Digital experiences made clear on every screen.", "From information architecture to interface detail, we build websites that express the brand and make action intuitive.", media.screens, "03 — STRATEGY / INTERFACE / BUILD"]
       ];
       const fragment = document.createDocumentFragment();
       for (const [index,title,body,src,meta] of stories) {
@@ -72,7 +72,7 @@
   if (path === "/about") {
     const target = main.querySelector(".z7x-capability-grid")?.closest("section") || main.lastElementChild;
     if (target) {
-      const story = add("cinematic-timeline", `<div class="cinematic-timeline__head"><p class="eyebrow">07 / OUR EVOLUTION</p><h2>هندسةٌ تمنح الصورة نظاماً. وسينما تمنح النظام روحاً.</h2></div><ol><li><span>01</span><div><h3>نرسم المساحة</h3><p>نحوّل المخطط إلى تجربة معمارية قابلة للتخيّل والقرار.</p></div></li><li><span>02</span><div><h3>نبني اللغة</h3><p>نصوغ علامة واضحة تنعكس على الصورة والواجهة وكل نقطة تواصل.</p></div></li><li><span>03</span><div><h3>نحرك الفكرة</h3><p>نوظف أدوات الذكاء الاصطناعي والإنتاج السينمائي لفتح احتمالات جديدة.</p></div></li><li><span>04</span><div><h3>نربط التجربة</h3><p>نصل المحتوى بالويب والمنتج والنتيجة التي يحتاجها المشروع.</p></div></li></ol>`, target);
+      const story = add("cinematic-timeline", `<div class="cinematic-timeline__head"><p class="eyebrow">07 / OUR EVOLUTION</p><h2>Engineering gives images a system. Cinema gives systems a soul.</h2></div><ol><li><span>01</span><div><h3>Shape the space</h3><p>Translate plans into architectural experiences people can see, feel, and evaluate.</p></div></li><li><span>02</span><div><h3>Build the language</h3><p>Create a clear brand expression across visuals, interfaces, and every point of contact.</p></div></li><li><span>03</span><div><h3>Move the idea</h3><p>Use AI and cinematic production to open new creative possibilities.</p></div></li><li><span>04</span><div><h3>Connect the experience</h3><p>Bring content, web, and product together around the outcome each project needs.</p></div></li></ol>`, target);
       const strip = document.createElement("div");
       strip.className = "cinematic-story__visual cinematic-story__visual--wide";
       strip.innerHTML = `<img src="${media.campaign}" alt="7Z Magic campaign production" loading="lazy"><span>STRATEGY × ENGINEERING × CINEMA × AI</span>`;
