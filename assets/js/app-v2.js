@@ -411,11 +411,6 @@
     if (!slot) return;
     const polish = () => {
       slot.querySelectorAll('[class*="socialButtons"],[class*="dividerRow"]').forEach(node => { node.hidden = true; node.setAttribute("aria-hidden", "true"); });
-      const walker = document.createTreeWalker(slot, NodeFilter.SHOW_TEXT);
-      while (walker.nextNode()) {
-        const node = walker.currentNode;
-        if (/clerk-claret-miroro/i.test(node.nodeValue || "")) node.nodeValue = node.nodeValue.replace(/continue\s+to\s+clerk-claret-miroro/gi, "Admin access").replace(/clerk-claret-miroro/gi, "7Z Magic");
-      }
     };
     const observer = new MutationObserver(polish);
     observer.observe(slot, { childList: true, subtree: true, characterData: true });

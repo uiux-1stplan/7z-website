@@ -48,60 +48,6 @@
 
 
   /*
-   * Replace dynamic Clerk project-name text
-   * at TEXT-NODE level.
-   *
-   * This avoids destroying Clerk's React DOM.
-   */
-  function replaceClerkText(scope) {
-
-    const walker =
-      D.createTreeWalker(
-        scope,
-        NodeFilter.SHOW_TEXT
-      );
-
-
-    const nodes = [];
-
-    while (walker.nextNode()) {
-      nodes.push(
-        walker.currentNode
-      );
-    }
-
-
-    for (
-      const node
-      of nodes
-    ) {
-
-      const original =
-        String(
-          node.nodeValue || ""
-        );
-
-
-      if (
-        /clerk-claret-mirror/i
-          .test(original)
-      ) {
-
-        node.nodeValue =
-          original.replace(
-            /continue\s+to\s+clerk-claret-mirror/gi,
-            "Administrator Access"
-          )
-          .replace(
-            /clerk-claret-mirror/gi,
-            "7Z Magic Admin"
-          );
-      }
-    }
-  }
-
-
-  /*
    * Find ANY foreign element sitting physically above
    * the Clerk inputs/buttons and disable pointer events
    * on that blocker only.
@@ -332,33 +278,6 @@
       );
 
 
-    root
-      .querySelectorAll(
-        "button"
-      )
-      .forEach(
-        button => {
-
-          if (
-            /continue with google/i
-              .test(
-                cleanText(
-                  button.textContent
-                )
-              )
-          ) {
-
-            hide(
-              button.closest(
-                '[class*="socialButtons"]'
-              ) ||
-              button
-            );
-          }
-        }
-      );
-
-
     /*
      * Some Clerk branding nodes can render
      * immediately outside .cl-rootBox.
@@ -458,9 +377,7 @@
     );
 
 
-    replaceClerkText(
-      root
-    );
+    root.querySelectorAll(".cl-headerTitle").forEach(hide);
 
 
     improveOuterHeading(

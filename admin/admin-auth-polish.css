@@ -133,10 +133,7 @@
 }
 
 
-/*
- * Hide Clerk's dynamically generated title text:
- * "Continue to clerk-claret-mirror"
- */
+/* Hide provider generated account title copy. */
 .cl-headerTitle{
   margin:0!important;
   color:transparent!important;

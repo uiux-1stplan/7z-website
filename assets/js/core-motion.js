@@ -4,7 +4,7 @@
   if (!root.hasAttribute("data-z7-core")) return;
 
   const KEY = "z7:core-arrival:v1";
-  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/courses", "/courses/ai-engineering", "/websites"]);
+  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/courses", "/courses/ai-engineering", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/ai-for-engineers", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)");
   const smoothDesktop = matchMedia("(min-width: 768px) and (pointer: fine)");
@@ -19,7 +19,7 @@
   const pathOf = url => url.pathname.replace(/\/+$/, "") || "/";
   const labelFor = url => ({
     "/": "Home", "/about": "About", "/founders": "Founders", "/partners": "Partners",
-    "/contact": "Contact", "/services": "Services", "/courses": "7Z Academy", "/courses/ai-engineering": "AI Engineering", "/websites": "Websites"
+    "/contact": "Contact", "/services": "Services", "/private-access": "Private Access", "/courses": "7Z Academy", "/courses/ai-engineering": "AI Engineering", "/courses/ai-for-engineers": "AI for Engineers", "/courses/cinematic-filmmaking-with-ai": "Cinematic Filmmaking", "/websites": "Websites"
   }[pathOf(url)] || "7Z Magic");
   function timer(state, fn, delay) {
     const id = setTimeout(() => { state.timers.delete(id); fn(); }, delay);
@@ -238,15 +238,15 @@
     state.loaderContext?.revert();
     value.n = 100;
     paint();
-    if (gsap) gsap.to(loader, { clipPath: "ellipse(140% 0% at 50% 0%)", yPercent: -7, duration: .76, ease: "power3.inOut", onComplete: () => clearLoader(state) });
+    if (gsap) gsap.to(loader, { clipPath: "ellipse(145% 0% at 50% 0%)", yPercent: -4, duration: .96, ease: "power3.inOut", onComplete: () => clearLoader(state) });
     else if (loader.animate) {
       const animation = loader.animate([
-        { clipPath: "ellipse(140% 100% at 50% 0%)", transform: "translateY(0)" },
-        { clipPath: "ellipse(140% 0% at 50% 0%)", transform: "translateY(-7%)" }
-      ], { duration: 700, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+        { clipPath: "ellipse(145% 100% at 50% 0%)", transform: "translateY(0)" },
+        { clipPath: "ellipse(145% 0% at 50% 0%)", transform: "translateY(-4%)" }
+      ], { duration: 920, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(() => clearLoader(state));
     } else clearLoader(state);
-    timer(state, () => clearLoader(state), 850);
+    timer(state, () => clearLoader(state), 1050);
   }
   function clearOverlay(state) {
     if (!state.overlay) return;
@@ -274,12 +274,12 @@
     }
     overlay.hidden = false;
     overlay.style.visibility = "visible";
-    if (gsap) gsap.fromTo(overlay, { yPercent: 0 }, { yPercent: -105, clipPath: "inset(0 0 100% 0 round 0 0 45% 45%)", duration: .68, ease: "power3.inOut", onComplete: () => clearOverlay(state) });
+    if (gsap) gsap.fromTo(overlay, { yPercent: 0, clipPath: "ellipse(145% 100% at 50% 0%)" }, { yPercent: -3, clipPath: "ellipse(145% 0% at 50% 0%)", duration: .84, ease: "power3.inOut", onComplete: () => clearOverlay(state) });
     else if (overlay.animate) {
-      const animation = overlay.animate([{ transform: "translateY(0)" }, { transform: "translateY(-105%)", clipPath: "inset(0 0 100% 0 round 0 0 45% 45%)" }], { duration: 680, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+      const animation = overlay.animate([{ transform: "translateY(0)", clipPath: "ellipse(145% 100% at 50% 0%)" }, { transform: "translateY(-3%)", clipPath: "ellipse(145% 0% at 50% 0%)" }], { duration: 840, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(() => clearOverlay(state));
     } else clearOverlay(state);
-    timer(state, () => clearOverlay(state), 820);
+    timer(state, () => clearOverlay(state), 980);
   }
   function navigate(state, destination) {
     if (state.navigating) return;
@@ -306,9 +306,9 @@
     if (label) label.textContent = labelFor(destination);
     overlay.hidden = false;
     overlay.style.visibility = "visible";
-    if (gsap) gsap.fromTo(overlay, { yPercent: 105, scaleX: .9 }, { yPercent: 0, scaleX: 1, duration: .58, ease: "power3.inOut", onComplete: go });
+    if (gsap) gsap.fromTo(overlay, { yPercent: 105, scaleX: .9, clipPath: "ellipse(145% 0% at 50% 100%)" }, { yPercent: 0, scaleX: 1, clipPath: "ellipse(145% 100% at 50% 100%)", duration: .66, ease: "power3.inOut", onComplete: go });
     else if (overlay.animate) {
-      const animation = overlay.animate([{ transform: "translateY(105%) scaleX(.9)" }, { transform: "translateY(0) scaleX(1)" }], { duration: 580, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+      const animation = overlay.animate([{ transform: "translateY(105%) scaleX(.9)", clipPath: "ellipse(145% 0% at 50% 100%)" }, { transform: "translateY(0) scaleX(1)", clipPath: "ellipse(145% 100% at 50% 100%)" }], { duration: 660, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(go);
     } else go();
     timer(state, go, 740);

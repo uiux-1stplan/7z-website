@@ -18,7 +18,7 @@
     const path = location.pathname;
     const selectors = path === '/' || path === '/index.html'
       ? '.service-loop__intro, .chapter__intro, .gallery-copy, .pin-copy, .web-copy, .reach-copy, .film-copy, .studio-suite__intro'
-      : path === '/course-registration/'
+      : path === '/courses/cinematic-filmmaking-with-ai/' || path === '/course-registration/'
         ? '.section-head, .offer-item, .price-card, .date, .step'
         : path.startsWith('/websites/')
           ? '.wx-hero h1, .wx-hero p'
