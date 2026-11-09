@@ -30,6 +30,8 @@ html.z7icx-preauth[data-z7-core] .z7pa-page .z7pa-library { display: none !impor
 html[data-z7-core] main.z7pa-page + footer.z7-footer { margin-top: 24px; }
 html[data-z7-core] body.z7pa-page .z7-header .z7-brand { width: 42px; height: 44px; }
 html[data-z7-core] body.z7pa-page .z7-header .z7-brand img { width: 38px; height: 42px; object-fit: contain; }
+html[data-z7-core] body.z7pa-page .z7-transition { z-index: 1200; }
+html[data-z7-core] body.z7pa-page .z7-loader { z-index: 1300; }
 html[data-z7-core] .z7pa-page .z7pa-shell { width: min(1320px, calc(100% - 2 * var(--z7-gutter))); }
 html[data-z7-core] .z7pa-page .z7pa-hero {
   min-height: 0 !important;
