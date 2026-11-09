@@ -25,6 +25,11 @@ html[data-z7-core] .z7pa-page::before {
   mask-image: linear-gradient(180deg, #000 0%, transparent 65%);
 }
 html[data-z7-core] .z7pa-page > * { position: relative; z-index: 1; }
+/* The legacy pre-auth library reserved a full viewport after hiding its contents. */
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7pa-library { display: none !important; min-height: 0 !important; padding: 0 !important; }
+html[data-z7-core] main.z7pa-page + footer.z7-footer { margin-top: 24px; }
+html[data-z7-core] body.z7pa-page .z7-header .z7-brand { width: 42px; height: 44px; }
+html[data-z7-core] body.z7pa-page .z7-header .z7-brand img { width: 38px; height: 42px; object-fit: contain; }
 html[data-z7-core] .z7pa-page .z7pa-shell { width: min(1320px, calc(100% - 2 * var(--z7-gutter))); }
 html[data-z7-core] .z7pa-page .z7pa-hero {
   min-height: 0 !important;
@@ -70,7 +75,7 @@ html[data-z7-core] .z7pa-page .z7-login-vault {
   width: min(1320px, calc(100% - 2 * var(--z7-gutter))) !important;
   max-width: none !important;
   min-height: 0;
-  margin: clamp(28px, 4vw, 56px) auto clamp(82px, 10vw, 132px);
+  margin: clamp(28px, 4vw, 56px) auto 36px;
   overflow: hidden;
   border: 1px solid var(--z7-rule-strong) !important;
   border-radius: 28px !important;
@@ -146,7 +151,7 @@ html[data-z7-core][data-theme="light"] .z7pa-page .z7-login-vault { box-shadow:0
   html[data-z7-core] .z7pa-page .z7pa-hero { padding:112px 0 20px !important; }
   html[data-z7-core] .z7pa-page .z7pa-hero__layout { grid-template-columns:1fr !important; gap:28px !important; }
   html[data-z7-core] .z7pa-page .z7pa-hero__copy h1 { font-size:clamp(3rem,13vw,5rem) !important; }
-  html[data-z7-core] .z7pa-page .z7-login-vault { width:calc(100% - 28px) !important; margin:28px auto 70px; border-radius:20px !important; }
+  html[data-z7-core] .z7pa-page .z7-login-vault { width:calc(100% - 28px) !important; margin:28px auto 30px; border-radius:20px !important; }
   html[data-z7-core] .z7pa-page .z7-login-vault::before { background:radial-gradient(ellipse at 20% 20%,var(--vault-glow),transparent 23rem); }
   html[data-z7-core] .z7pa-page .z7-login-vault__aura { width:18rem; right:-6rem; top:auto; bottom:0; transform:none; }
   html[data-z7-core] .z7pa-page .z7-login-vault__card { padding:25px 22px 28px !important; grid-template-columns:1fr; grid-template-areas:"brand" "kicker" "title" "intro" "form" "security"; gap:0; }
