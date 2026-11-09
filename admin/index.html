@@ -14,7 +14,7 @@
 
 <body class="z7-admin-shell">
 
-<header class="z7-header" aria-label="Primary"><div class="z7-container z7-header__inner"><a class="z7-brand" href="/" aria-label="7Z Magic home"><img src="/assets/brand/7Z-LogoT(3).png" width="150" height="44" alt="7Z Magic" decoding="async"></a><nav class="z7-nav" id="z7MainNav" aria-label="Main navigation"><a href="/">Home</a><a href="/services/">Services</a><a href="/websites/">Websites</a><a href="/about/">About</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact</a><a href="/private-access/">Private Access</a></nav><div class="z7-header__actions"><div class="z7-header__socials" aria-label="Connect with 7Z Magic"><a href="mailto:creative@7z-magic.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6.5h18v11H3zM3 7l9 7 9-7"/></svg></a><a href="https://www.instagram.com/7z.magic" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".7"/></svg></a><a href="https://web.facebook.com/7z.magic" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 21v-8h3l.5-3H14V8.5c0-1 .4-1.5 1.6-1.5H18V4.2c-.5-.1-1.7-.2-2.8-.2-3 0-4.7 1.8-4.7 4.9V10H8v3h2.5v8"/></svg></a><a href="https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.7 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5Z"/><path d="M9 8.5c-.6 0-.9.6-.7 1.3.7 2.4 2.7 4.4 5.1 5.1.7.2 1.3-.2 1.4-.8l.2-.8-1.6-.8-.8.7c-.8-.3-1.6-1.1-2-1.9l.7-.8-.8-1.6Z"/></svg></a></div><button class="z7-theme-toggle" id="theme" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme"><span aria-hidden="true">◐</span></button><button class="z7-lang-toggle" id="lang" type="button" aria-label="Switch language">EN</button><button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button></div></div></header>
+<header class="admin-masthead"><a href="/" aria-label="7Z Magic home"><img src="/assets/brand/7Z-LogoT(3).png" width="52" height="58" alt="7Z Magic"></a><span>PRIVATE ADMINISTRATION</span><button class="admin-theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme">◐</button></header>
 
 <div class="ambient ambient-a"></div>
 <div class="ambient ambient-b"></div>
@@ -39,10 +39,8 @@
     <section class="auth-brand">
       <div class="brand-kicker">7Z MAGIC / SECURE ACCESS</div>
 
-      <h1>
-        Client Portal
-        <span>Administration.</span>
-      </h1>
+      <div class="auth-wordmark"><img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic"><span>7Z MAGIC<br><small>CONTROL ROOM / 01</small></span></div>
+      <h1>One secure gateway.<span>For every client experience.</span></h1>
 
       <p>
         Secure user management, controlled access and private
@@ -113,7 +111,7 @@
 
     <nav class="nav">
 
-      <button class="nav-item active">
+      <button class="nav-item active" type="button" data-admin-scroll="#users-section">
         <span class="nav-icon">01</span>
         <span>
           <strong>Users</strong>
@@ -121,19 +119,27 @@
         </span>
       </button>
 
-      <button class="nav-item disabled" disabled>
+      <button class="nav-item" type="button" data-admin-scroll="#z7-private-upload-panel">
         <span class="nav-icon">02</span>
         <span>
           <strong>Files</strong>
-          <small>Next stage</small>
+          <small>Private delivery</small>
         </span>
       </button>
 
-      <button class="nav-item disabled" disabled>
+      <button class="nav-item" type="button" data-admin-scroll="#affiliates-section">
         <span class="nav-icon">03</span>
         <span>
-          <strong>Permissions</strong>
-          <small>Next stage</small>
+          <strong>Affiliates</strong>
+          <small>Codes & performance</small>
+        </span>
+      </button>
+
+      <button class="nav-item" type="button" data-admin-scroll="#accounting-section">
+        <span class="nav-icon">04</span>
+        <span>
+          <strong>Accounting</strong>
+          <small>Course revenue</small>
         </span>
       </button>
 
@@ -188,6 +194,7 @@
     </div>
 
 
+    <div class="admin-existing-workspace" id="users-section">
     <section class="academy-admin-overview" aria-labelledby="academy-admin-title">
       <div class="academy-admin-overview__head">
         <div><span class="eyebrow">ACADEMY / LIVE PAGES</span><h2 id="academy-admin-title">Course workspace</h2></div>
@@ -319,7 +326,7 @@
       </article>
 
 
-      <article class="panel users-panel">
+      <article class="panel users-panel" id="users-panel">
 
         <div class="panel-head table-head">
 
@@ -369,6 +376,30 @@
 
       </article>
 
+    </section>
+
+    </div>
+
+    <section class="admin-engine-section" id="affiliates-section" aria-labelledby="affiliates-title">
+      <div class="engine-heading"><div><span class="eyebrow">ACADEMY / PARTNER NETWORK</span><h2 id="affiliates-title">Affiliates &amp; discount codes</h2><p>Create partner profiles, issue course codes and follow attributed registrations.</p></div><button class="button button-secondary" type="button" data-engine-refresh>Refresh data</button></div>
+      <div class="admin-engine-grid">
+        <article class="engine-panel">
+          <div class="engine-panel-head"><span class="eyebrow">01 / NEW PARTNER</span><h3>Add affiliate</h3></div>
+          <form id="affiliate-form" class="engine-form"><label>Full name<input name="name" required maxlength="120" placeholder="Partner name"></label><label>Email address<input name="email" type="email" maxlength="180" placeholder="partner@company.com"></label><label>Company<input name="company" maxlength="160" placeholder="Company or channel"></label><label>Default commission %<input name="commissionPercent" type="number" min="0" max="100" step="1" value="20" required></label><button class="button button-primary full" type="submit">Create affiliate profile <span>↗</span></button></form>
+        </article>
+        <article class="engine-panel">
+          <div class="engine-panel-head"><span class="eyebrow">02 / NEW CAMPAIGN</span><h3>Issue a discount code</h3></div>
+          <form id="coupon-form" class="engine-form"><label>Discount code<input name="code" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" placeholder="PARTNER10"></label><label>Affiliate<select name="affiliateId" id="coupon-affiliate"><option value="">Studio code / no affiliate</option></select></label><label>Course<select name="courseId"><option value="all">All courses</option><option value="cinematic-film">AI Cinematic Filmmaking</option><option value="ai-engineering">AI for Engineers</option></select></label><div class="engine-form-pair"><label>Discount %<input name="discountPercent" type="number" min="0" max="100" value="10" required></label><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" value="20" required></label></div><label>Maximum uses <span class="field-hint">Leave blank for unlimited</span><input name="maxRedemptions" type="number" min="1" max="1000000" placeholder="Unlimited"></label><button class="button button-primary full" type="submit">Generate live code <span>↗</span></button></form>
+        </article>
+      </div>
+      <div class="engine-panel engine-table-panel"><div class="engine-panel-head"><div><span class="eyebrow">03 / PARTNER ROSTER</span><h3>Affiliate performance</h3></div><span class="engine-live"><i></i> LIVE DATA</span></div><div class="engine-table-wrap"><table><thead><tr><th>Affiliate</th><th>Codes</th><th>Uses</th><th>Net sales</th><th>Commission</th><th>Status</th><th></th></tr></thead><tbody id="affiliates-body"></tbody></table></div><p class="engine-empty" id="affiliates-empty" hidden>No affiliate profiles yet. Create the first partner above.</p></div>
+      <div class="engine-panel engine-table-panel"><div class="engine-panel-head"><div><span class="eyebrow">04 / CODE REGISTER</span><h3>Active campaigns</h3></div></div><div class="engine-table-wrap"><table><thead><tr><th>Code</th><th>Affiliate</th><th>Course</th><th>Discount</th><th>Commission</th><th>Redemptions</th><th>Status</th><th></th></tr></thead><tbody id="coupons-body"></tbody></table></div><p class="engine-empty" id="coupons-empty" hidden>No discount codes have been issued.</p></div>
+    </section>
+
+    <section class="admin-engine-section" id="accounting-section" aria-labelledby="accounting-title">
+      <div class="engine-heading"><div><span class="eyebrow">ACADEMY / FINANCE</span><h2 id="accounting-title">Course accounting</h2><p>Live registration and payment review data. Submitted transfers remain pending until verified.</p></div><button class="button button-secondary" type="button" data-engine-refresh>Refresh data</button></div>
+      <div class="finance-stats"><article class="finance-stat"><span>GROSS COURSE SALES</span><strong id="finance-gross">0.00 <small>JOD</small></strong><p>Verified list-price value</p></article><article class="finance-stat"><span>VERIFIED REVENUE</span><strong id="finance-revenue">0.00 <small>JOD</small></strong><p>Received after discounts</p></article><article class="finance-stat"><span>AWAITING REVIEW</span><strong id="finance-pending">0.00 <small>JOD</small></strong><p>Submitted, not verified</p></article><article class="finance-stat"><span>DISCOUNTS GRANTED</span><strong id="finance-discounts">0.00 <small>JOD</small></strong><p>Across course registrations</p></article><article class="finance-stat"><span>COMMISSIONS DUE</span><strong id="finance-commissions">0.00 <small>JOD</small></strong><p>Earned on verified revenue</p></article><article class="finance-stat"><span>STUDIO NET AFTER SHARES</span><strong id="finance-studio-net">0.00 <small>JOD</small></strong><p>Before operating costs</p></article></div>
+      <div class="engine-panel engine-table-panel"><div class="engine-panel-head"><div><span class="eyebrow">PAYMENT LEDGER</span><h3>Registration activity</h3></div><select id="finance-course-filter" aria-label="Filter by course"><option value="all">All courses</option><option value="cinematic-film">AI Cinematic Filmmaking</option><option value="ai-engineering">AI for Engineers</option></select></div><div class="engine-table-wrap"><table><thead><tr><th>Student</th><th>Course</th><th>Submitted</th><th>Code</th><th>Net due</th><th>Commission</th><th>Payment status</th><th>Actions</th></tr></thead><tbody id="accounting-body"></tbody></table></div><p class="engine-empty" id="accounting-empty" hidden>No course registrations have been recorded.</p></div>
     </section>
 
   </main>
@@ -466,6 +497,7 @@
 
 
 <script src="/admin/admin.js"></script>
+<script src="/admin/course-engine.js?v=20261110-admin-engine-1"></script>
 
 <script src="/admin/legacy-file-access.js?v=20260824"></script>
 <script src="/admin/private-file-upload.bundle.js?v=20260824"></script>

@@ -16,6 +16,36 @@ const COUPONS = Object.freeze({
   ALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
 });
 
+async function resolveCourseCoupon(sql, code, courseId) {
+  if (!code) return null;
+  let rows;
+  try {
+    rows = await sql`SELECT c.code,c.affiliate_id,c.course_id,c.discount_percent,c.commission_percent,
+        c.status,c.max_redemptions,c.requires_previous_email,
+        COALESCE(NULLIF(a.name,''),c.affiliate_name,'') AS affiliate_name,
+        a.status AS affiliate_status
+      FROM course_discount_codes c
+      LEFT JOIN course_admin_affiliates a ON a.id=c.affiliate_id
+      WHERE UPPER(c.code)=${code} LIMIT 1`;
+  } catch (error) {
+    if (error?.code === "42P01") return COUPONS[code] || null;
+    throw error;
+  }
+  const managed = rows[0];
+  if (!managed) return COUPONS[code] || null;
+  if (managed.status !== "active" || (managed.affiliate_id && managed.affiliate_status !== "active") || (managed.course_id !== "all" && managed.course_id !== courseId)) return null;
+  if (managed.max_redemptions) {
+    const used = await sql`SELECT COUNT(*)::int AS count FROM course_registrations WHERE UPPER(coupon_code)=${code}`;
+    if (Number(used[0]?.count || 0) >= Number(managed.max_redemptions)) return null;
+  }
+  return {
+    discountPercent: Number(managed.discount_percent),
+    affiliateName: managed.affiliate_name || "",
+    commissionPercent: Number(managed.commission_percent),
+    requiresPreviousEmail: Boolean(managed.requires_previous_email),
+  };
+}
+
 function money(value) { return Math.round((Number(value) + Number.EPSILON) * 1000) / 1000; }
 
 function matchesImageType(bytes, contentType) {
@@ -138,8 +168,8 @@ export default async function handler(req, res) {
       }
       if (body.couponCode !== undefined) {
         const couponCode = String(body.couponCode ?? "").trim().toUpperCase();
-        if (couponCode && !COUPONS[couponCode]) return res.status(400).json({ error: "This discount code is invalid." });
-        const coupon = couponCode ? COUPONS[couponCode] : null;
+        const coupon = await resolveCourseCoupon(sql, couponCode, courseId);
+        if (couponCode && !coupon) return res.status(400).json({ error: "This discount code is invalid or unavailable." });
         const previousCourseEmail = String(body.previousCourseEmail ?? "").trim().toLowerCase();
         if (coupon?.requiresPreviousEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(previousCourseEmail)) return res.status(400).json({ error: "Enter the email used for your previous course.", code: "PREVIOUS_COURSE_EMAIL_REQUIRED" });
         const discountJod = coupon ? money(priceJod * coupon.discountPercent / 100) : 0;
@@ -148,7 +178,8 @@ export default async function handler(req, res) {
       }
       const current = (await sql`SELECT coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,previous_course_email FROM course_checkout_intents WHERE token_hash=${tokenHash}`)[0];
       const discountJod = money(current?.discount_jod ?? 0);
-      return res.status(200).json({ ok: true, priceJod, originalPriceJod: priceJod, discountJod, totalJod: money(priceJod - discountJod), couponCode: current?.coupon_code ?? "", discountPercent: Number(current?.discount_percent ?? 0), previousCourseEmail: current?.previous_course_email ?? "", requiresPreviousCourseEmail: Boolean(COUPONS[current?.coupon_code]?.requiresPreviousEmail), currency: "JOD", courseId, courseName: course.name, capacity: CAPACITY, methods, expiresAt: new Date(intent.expires_at).toISOString() });
+      const currentCoupon = await resolveCourseCoupon(sql, current?.coupon_code || "", courseId);
+      return res.status(200).json({ ok: true, priceJod, originalPriceJod: priceJod, discountJod, totalJod: money(priceJod - discountJod), couponCode: current?.coupon_code ?? "", discountPercent: Number(current?.discount_percent ?? 0), previousCourseEmail: current?.previous_course_email ?? "", requiresPreviousCourseEmail: Boolean(currentCoupon?.requiresPreviousEmail), currency: "JOD", courseId, courseName: course.name, capacity: CAPACITY, methods, expiresAt: new Date(intent.expires_at).toISOString() });
     }
 
     if (body.action !== "submit") return res.status(400).json({ error: "Checkout action is not valid." });

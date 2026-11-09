@@ -365,6 +365,7 @@
     );
 
     await loadUsers();
+    document.dispatchEvent(new Event("z7:admin-ready"));
   }
 
   function updateStats() {
