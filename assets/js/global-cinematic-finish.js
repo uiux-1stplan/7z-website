@@ -28,7 +28,7 @@
     if (root.hasAttribute("data-z7-core")) return;
     let loader = document.querySelector(".z7-global-loader");
     let overlay = document.querySelector(".z7-global-transition");
-    if (!loader) { loader = makeLayer("loader", ""); document.body.prepend(loader); }
+    if (!loader) { loader = makeLayer("loader", "7Z MAGIC / PREPARING THE EXPERIENCE"); document.body.prepend(loader); }
     if (!overlay) { overlay = makeLayer("transition", "7Z Magic"); document.body.append(overlay); }
 
     const current = pathOf(new URL(location.href));
