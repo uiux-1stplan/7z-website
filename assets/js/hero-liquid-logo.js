@@ -2,17 +2,11 @@ import * as THREE from "three";
 import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
-import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
-import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
-import { FXAAShader } from "three/addons/shaders/FXAAShader.js";
 
 const host = document.querySelector(".logo-hero__mark.z7-liquid-logo-host");
 const canvas = host?.querySelector("canvas");
 if (host && canvas) {
-  let renderer, composer, raf = 0, resizeObserver, visibilityObserver;
+  let renderer, raf = 0, resizeObserver, visibilityObserver;
   let heroVisible = true;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
@@ -22,7 +16,6 @@ if (host && canvas) {
     if (raf) cancelAnimationFrame(raf);
     resizeObserver?.disconnect();
     visibilityObserver?.disconnect();
-    composer?.dispose();
     renderer?.dispose();
   };
   const fail = error => {
@@ -83,28 +76,12 @@ if (host && canvas) {
     logo.scale.setScalar(200 / Math.max(size.x, size.y, size.z));
     scene.add(logo);
 
-    composer = new EffectComposer(renderer);
-    const renderPass = new RenderPass(scene, camera);
-    renderPass.clearAlpha = 0;
-    composer.addPass(renderPass);
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), .2, .5, .86));
-    composer.addPass(new OutputPass());
-    const fxaa = new ShaderPass(FXAAShader);
-    composer.addPass(fxaa);
-    composer.addPass(new ShaderPass({
-      uniforms: { tDiffuse: { value: null } },
-      vertexShader: "varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
-      fragmentShader: "uniform sampler2D tDiffuse; varying vec2 vUv; void main(){vec4 c=texture2D(tDiffuse,vUv);float l=max(max(c.r,c.g),c.b);gl_FragColor=vec4(c.rgb,smoothstep(0.012,0.065,l));}"
-    }));
-
     const resize = () => {
       const { width, height } = host.getBoundingClientRect();
       if (width < 2 || height < 2) return;
       const ratio = Math.min(devicePixelRatio || 1, 1.5);
       renderer.setPixelRatio(ratio); renderer.setSize(width, height, false);
-      composer.setPixelRatio(ratio); composer.setSize(width, height);
       camera.aspect = width / height; camera.updateProjectionMatrix();
-      fxaa.material.uniforms.resolution.value.set(1 / (width * ratio), 1 / (height * ratio));
     };
     const render = () => {
       raf = 0;
@@ -113,7 +90,7 @@ if (host && canvas) {
       const targetRotationX = (mouse.y / Math.max(1, innerHeight) - .5) * .3;
       logo.rotation.y += (targetRotationY - logo.rotation.y) * .05;
       logo.rotation.x += (targetRotationX - logo.rotation.x) * .05;
-      composer.render();
+      renderer.render(scene, camera);
       if (!reducedMotion.matches) raf = requestAnimationFrame(render);
     };
 
@@ -136,14 +113,14 @@ if (host && canvas) {
       else if (!document.hidden && heroVisible && !raf) raf = requestAnimationFrame(render);
     });
     reducedMotion.addEventListener?.("change", () => {
-      if (reducedMotion.matches && raf) { cancelAnimationFrame(raf); raf = 0; composer.render(); }
+      if (reducedMotion.matches && raf) { cancelAnimationFrame(raf); raf = 0; renderer.render(scene, camera); }
       else if (!reducedMotion.matches && !raf && !document.hidden && heroVisible) raf = requestAnimationFrame(render);
     });
 
     resize();
     host.classList.add("is-ready");
     if (!reducedMotion.matches) raf = requestAnimationFrame(render);
-    else composer.render();
+    else renderer.render(scene, camera);
   }
   build().catch(fail);
 }
