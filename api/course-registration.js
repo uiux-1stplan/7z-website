@@ -331,7 +331,6 @@ export default async function handler(req, res) {
   if (req.method !== "POST") { res.setHeader("Allow", "GET, POST, OPTIONS"); return res.status(405).json({ error: "Method not allowed." }); }
   if (!isAllowedCourseOrigin(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
   try {
-    if (!process.env.ZOHO_SMTP_HOST || !process.env.ZOHO_SMTP_APP_PASSWORD) return res.status(503).json({ error: "Registration is not open yet." });
     const input = req.body && typeof req.body === "object" ? req.body : {};
     if (JSON.stringify(input).length > 8000) return res.status(413).json({ error: "Request too large." });
     const clean = (value, max) => String(value || "").trim().slice(0, max);
@@ -356,3 +355,4 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: "Registration is temporarily unavailable." });
   }
 }
+
