@@ -154,6 +154,7 @@
       headings.forEach(heading => {
         if (heading.dataset.z7HeadingReady) return;
         const text = heading.textContent.trim();
+        heading.setAttribute("aria-label", text);
         const className = "z7-heading-motion justify-center";
         const rootNode = createRoot(heading);
         heading.dataset.z7HeadingReady = "spring";
@@ -164,7 +165,7 @@
           lineConfig: { tension: 180, friction: 48 },
           lineConfigIn: { tension: 180, friction: 48 },
           lineConfigOut: { tension: 180, friction: 48 },
-          rootMargin: "0px 0px -8% 0px", seo: true
+          rootMargin: "0px 0px -8% 0px", seo: false
         }, text));
       });
     };
