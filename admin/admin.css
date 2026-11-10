@@ -712,3 +712,9 @@ html[data-theme="light"] .z7af-open,html[data-theme="light"] .z7af-download,html
   #app.dashboard-app>.sidebar { padding:10px !important; border-radius:20px !important; }
   #app.dashboard-app .dashboard-nav>.nav-item { min-height:38px !important; }
 }
+
+/* The desktop sidebar is narrow by design, so keep its workspace links stacked. */
+@media(min-width:1001px) {
+  #app.dashboard-app .dashboard-nav { grid-template-columns:minmax(0,1fr) !important; }
+  #app.dashboard-app .dashboard-nav>.nav-item { grid-template-columns:34px minmax(0,1fr) 12px !important; min-width:0 !important; }
+}
