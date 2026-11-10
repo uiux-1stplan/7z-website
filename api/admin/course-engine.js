@@ -55,6 +55,13 @@ async function ensureSchema(sql) {
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
+  await sql`CREATE TABLE IF NOT EXISTS course_revenue_adjustments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    amount_jod NUMERIC(14,3) NOT NULL CHECK (amount_jod BETWEEN -1000000000 AND 1000000000),
+    reason TEXT NOT NULL,
+    created_by TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
 
   const legacyAffiliates = [
     ["legacy-hassan", "Hassan Rayan", 25],
@@ -130,6 +137,7 @@ async function getCodes(sql) {
 
 async function getAccounting(sql) {
   let rows = [];
+  let adjustments = [];
   let totals = { gross: 0, revenue: 0, pending: 0, discounts: 0, commissionsDue: 0, commissionsTotal: 0, studioNet: 0 };
   try {
     const [summary] = await sql`SELECT
@@ -145,17 +153,22 @@ async function getAccounting(sql) {
       pending: Number(summary?.pending || 0), discounts: Number(summary?.discounts || 0),
       commissionsDue: Number(summary?.commissions_due || 0), commissionsTotal: Number(summary?.commissions_total || 0),
     };
+    const [adjustmentSummary] = await sql`SELECT COALESCE(SUM(amount_jod),0) AS total FROM course_revenue_adjustments`;
+    adjustments = await sql`SELECT id,amount_jod,reason,created_by,created_at FROM course_revenue_adjustments ORDER BY created_at DESC LIMIT 250`;
+    const adjustmentTotal = Number(adjustmentSummary?.total || 0);
+    totals.revenue += adjustmentTotal;
     totals.studioNet = totals.revenue - totals.commissionsTotal;
     rows = await sql`SELECT id, full_name, email, course_id, created_at, payment_status,
       price_jod, discount_jod, coupon_code, affiliate_name, commission_percent,
       commission_jod, commission_status, payment_provider, payment_reference
-      FROM course_registrations ORDER BY created_at DESC LIMIT 500`;
+      FROM course_registrations ORDER BY created_at DESC LIMIT 5000`;
   } catch (error) {
     if (error?.code !== "42P01") throw error;
   }
   return {
     totals: Object.fromEntries(Object.entries(totals).map(([key, value]) => [key, Math.round(value * 1000) / 1000])),
     registrations: rows,
+    adjustments,
   };
 }
 
@@ -213,7 +226,27 @@ export default async function handler(req, res) {
       const status = body.status === "inactive" ? "inactive" : "active";
       const [affiliate] = await sql`UPDATE course_admin_affiliates SET status=${status},updated_at=NOW() WHERE id=${text(body.id,64)} RETURNING id,status`;
       if (!affiliate) return send(res, 404, { error: "Affiliate not found." });
+      if (status === "inactive") await sql`UPDATE course_discount_codes SET status='inactive',updated_at=NOW() WHERE affiliate_id=${affiliate.id}`;
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliate_status_changed", targetType: "course_affiliate", targetId: affiliate.id, details: { status } });
+      return send(res, 200, { affiliate });
+    }
+
+    if (body.action === "archive-all-affiliates") {
+      const [result] = await sql`WITH archived AS (UPDATE course_admin_affiliates SET status='inactive',updated_at=NOW() WHERE status='active' RETURNING id), codes AS (UPDATE course_discount_codes SET status='inactive',updated_at=NOW() WHERE status='active' AND affiliate_id IN (SELECT id FROM archived) RETURNING id) SELECT (SELECT COUNT(*)::int FROM archived) AS affiliates,(SELECT COUNT(*)::int FROM codes) AS codes`;
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliates_bulk_archived", targetType: "course_affiliates", targetId: "active", details: { affiliates: Number(result?.affiliates || 0), codes: Number(result?.codes || 0) } });
+      return send(res, 200, { archived: { affiliates: Number(result?.affiliates || 0), codes: Number(result?.codes || 0) } });
+    }
+
+    if (body.action === "update-affiliate") {
+      const id = text(body.id, 64);
+      const name = text(body.name, 120);
+      const email = text(body.email, 180).toLowerCase();
+      const company = text(body.company, 160);
+      const commission = percent(body.commissionPercent);
+      if (!name || commission === null || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) return send(res, 400, { error: "Enter a name, valid email and commission from 0 to 100." });
+      const [affiliate] = await sql`UPDATE course_admin_affiliates SET name=${name},email=${email || null},company=${company},commission_percent=${commission},updated_at=NOW() WHERE id=${id} RETURNING id,name,email,company,commission_percent,status`;
+      if (!affiliate) return send(res, 404, { error: "Affiliate not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliate_updated", targetType: "course_affiliate", targetId: affiliate.id, details: { name, email, company, commissionPercent: commission } });
       return send(res, 200, { affiliate });
     }
 
@@ -223,6 +256,42 @@ export default async function handler(req, res) {
       if (!coupon) return send(res, 404, { error: "Discount code not found." });
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_status_changed", targetType: "course_discount_code", targetId: coupon.id, details: { status } });
       return send(res, 200, { coupon });
+    }
+
+    if (body.action === "update-code") {
+      const id = text(body.id, 64);
+      const code = text(body.code, 32).toUpperCase();
+      const courseId = text(body.courseId || "all", 32);
+      const discount = percent(body.discountPercent);
+      const commission = percent(body.commissionPercent);
+      const maxUses = body.maxRedemptions ? Number(body.maxRedemptions) : null;
+      if (!/^[A-Z0-9][A-Z0-9_-]{2,31}$/.test(code) || !courses.has(courseId) || discount === null || commission === null || (maxUses !== null && (!Number.isInteger(maxUses) || maxUses < 1 || maxUses > 1000000))) return send(res, 400, { error: "Check the code, course and percentage values." });
+      const affiliateId = text(body.affiliateId, 64) || null;
+      if (affiliateId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i.test(affiliateId)) return send(res, 400, { error: "The selected affiliate is not valid." });
+      const [affiliate] = affiliateId ? await sql`SELECT id,name,status FROM course_admin_affiliates WHERE id=${affiliateId}` : [];
+      if (affiliateId && (!affiliate || affiliate.status !== "active")) return send(res, 400, { error: "Choose an active affiliate." });
+      const [coupon] = await sql`UPDATE course_discount_codes SET code=${code},affiliate_id=${affiliate?.id || null},affiliate_name=${affiliate?.name || ""},course_id=${courseId},discount_percent=${discount},commission_percent=${commission},max_redemptions=${maxUses},updated_at=NOW() WHERE id=${id} RETURNING id,code,affiliate_id,affiliate_name,course_id,discount_percent,commission_percent,status,max_redemptions`;
+      if (!coupon) return send(res, 404, { error: "Discount code not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_updated", targetType: "course_discount_code", targetId: coupon.id, details: { code, courseId, discountPercent: discount, commissionPercent: commission } });
+      return send(res, 200, { coupon });
+    }
+
+    if (body.action === "adjust-revenue") {
+      const amount = Number(body.amount);
+      const reason = text(body.reason, 240);
+      if (!Number.isFinite(amount) || Math.abs(amount) > 1000000000 || !reason) return send(res, 400, { error: "Enter a valid adjustment and reason." });
+      const [adjustment] = await sql`INSERT INTO course_revenue_adjustments (amount_jod,reason,created_by) VALUES (${Math.round(amount * 1000) / 1000},${reason},${String(gate.auth.userId)}) RETURNING id,amount_jod,reason,created_by,created_at`;
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_revenue_adjusted", targetType: "course_revenue_adjustment", targetId: adjustment.id, details: { amount: Number(adjustment.amount_jod), reason } });
+      return send(res, 201, { adjustment });
+    }
+
+    if (body.action === "reset-revenue") {
+      const current = await getAccounting(sql);
+      const amount = -Number(current.totals.revenue || 0);
+      if (Math.abs(amount) < 0.0005) return send(res, 200, { reset: false, adjustment: null });
+      const [adjustment] = await sql`INSERT INTO course_revenue_adjustments (amount_jod,reason,created_by) VALUES (${Math.round(amount * 1000) / 1000},'Administrator reset of reported revenue',${String(gate.auth.userId)}) RETURNING id,amount_jod,reason,created_by,created_at`;
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_revenue_reset", targetType: "course_revenue_adjustment", targetId: adjustment.id, details: { adjustment: Number(adjustment.amount_jod), previousRevenue: Number(current.totals.revenue || 0) } });
+      return send(res, 200, { reset: true, adjustment });
     }
 
     if (body.action === "set-payment-status") {

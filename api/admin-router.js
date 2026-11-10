@@ -1,4 +1,4 @@
-﻿const loaders = {
+const loaders = {
 
   "admin-accounts":
     () =>
@@ -16,6 +16,12 @@
     () =>
       import(
         "../_handlers/admin/files.js"
+      ),
+
+  "file-manage":
+    () =>
+      import(
+        "../_handlers/admin/file-manage.js"
       ),
 
   "blob-finalize":

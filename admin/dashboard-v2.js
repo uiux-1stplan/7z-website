@@ -6,6 +6,7 @@
   const titles = {
     overview: ["7Z MAGIC / OVERVIEW", "Studio overview", "A live view of your client and academy workspace."],
     users: ["CLIENT DIRECTORY / ACCESS CONTROL", "Users", "Invite, organize and protect access to private project spaces."],
+    files: ["CLIENT DELIVERY / PRIVATE STORAGE", "Client files", "Organize protected deliverables and manage account permissions."],
     orders: ["ACADEMY / COMMERCE", "Orders & affiliates", "Course registrations, partner performance and discount codes."],
     analytics: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics", "Financial and enrollment signals from recorded course activity."],
     settings: ["STUDIO CONTROL / PREFERENCES", "Settings", "Workspace appearance, session security and course destinations."],
@@ -260,4 +261,3 @@
   document.addEventListener("z7:admin-ready", initialize);
   if (!$("#app")?.classList.contains("hidden")) initialize();
 })();
-

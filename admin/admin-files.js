@@ -1,10 +1,12 @@
-﻿(() => {
+(() => {
 
   "use strict";
 
 
   const API =
     "/api/admin/files";
+  const MANAGE_API =
+    "/api/admin/file-manage";
 
 
   function esc(value) {
@@ -400,6 +402,9 @@
                   DOWNLOAD
                 </button>
 
+                <button type="button" class="z7af-manage" data-rename="${esc(file.id)}" data-name="${esc(file.name)}">RENAME</button>
+                <button type="button" class="z7af-manage is-danger" data-remove="${esc(file.id)}" data-name="${esc(file.name)}">REMOVE</button>
+
               </div>
 
             </article>
@@ -446,6 +451,9 @@
           }
         );
 
+      list.querySelectorAll("[data-rename]").forEach(button => button.addEventListener("click", () => openRenameDialog(button.dataset.rename, button.dataset.name)));
+      list.querySelectorAll("[data-remove]").forEach(button => button.addEventListener("click", () => removeFile(button.dataset.remove, button.dataset.name, button)));
+
 
     } catch (error) {
 
@@ -457,6 +465,61 @@
         "z7af-message is-error";
     }
   }
+
+  async function manageFile(action, id, name) {
+    const response = await authFetch(MANAGE_API, {
+      method: action === "rename" ? "PATCH" : "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, name })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "The file could not be updated.");
+    return payload;
+  }
+
+  function openRenameDialog(id, name) {
+    const dialog = document.getElementById("file-rename-dialog");
+    const input = document.getElementById("file-rename-input");
+    if (!dialog || !input) return;
+    document.getElementById("file-rename-id").value = id;
+    input.value = name || "";
+    dialog.showModal();
+    window.setTimeout(() => input.focus(), 50);
+  }
+
+  async function removeFile(id, name, button) {
+    if (!window.confirm(`Remove “${name}” from the client library? This also revokes all client access.`)) return;
+    button.disabled = true;
+    try {
+      await manageFile("delete", id, name);
+      document.querySelector("#z7af-message").textContent = "File removed and client access revoked.";
+      await loadFiles();
+    } catch (error) {
+      window.alert(error.message || "The file could not be removed.");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  document.getElementById("file-rename-form")?.addEventListener("submit", async event => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const id = document.getElementById("file-rename-id").value;
+    const name = document.getElementById("file-rename-input").value.trim();
+    if (!name) return;
+    const save = form.querySelector('[type="submit"]');
+    save.disabled = true;
+    try {
+      await manageFile("rename", id, name);
+      document.getElementById("file-rename-dialog").close();
+      await loadFiles();
+    } catch (error) {
+      window.alert(error.message || "The file could not be renamed.");
+    } finally {
+      save.disabled = false;
+    }
+  });
+  ["file-rename-close", "file-rename-cancel"].forEach(id => document.getElementById(id)?.addEventListener("click", () => document.getElementById("file-rename-dialog")?.close()));
 
 
   function activeDocument(
@@ -489,6 +552,16 @@
       )
     );
   }
+
+  let lastUploadMessage = "";
+  const uploadMessageObserver = new MutationObserver(() => {
+    const message = document.getElementById("z7-upload-message");
+    const value = message?.textContent?.trim() || "";
+    if (!value || value === lastUploadMessage || !/uploaded successfully/i.test(value)) return;
+    lastUploadMessage = value;
+    loadFiles().then(() => document.dispatchEvent(new CustomEvent("z7:private-file-updated")));
+  });
+  uploadMessageObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
 
 
   async function openFile(

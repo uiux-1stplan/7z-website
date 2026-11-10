@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
 
   "use strict";
 
@@ -68,6 +68,10 @@
   function target() {
 
     return (
+      document.querySelector(
+        "#z7-native-clients-mount"
+      ) ||
+
       document.querySelector(
         "#z7-private-upload-panel"
       )?.parentElement ||
