@@ -4,7 +4,7 @@
   if (!root.hasAttribute("data-z7-core")) return;
 
   const KEY = "z7:core-arrival:v1";
-  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/courses", "/courses/ai-engineering", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/ai-for-engineers", "/websites"]);
+  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/admin", "/courses", "/courses/ai-engineering", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/cinematic-filmmaking-with-ai/registration", "/courses/ai-for-engineers", "/courses/ai-for-engineers/registration", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)");
   const smoothDesktop = matchMedia("(min-width: 768px) and (pointer: fine)");
@@ -262,6 +262,8 @@
     if (state.loader) state.loader.hidden = true;
     const overlay = state.overlay;
     if (!overlay || reduced.matches) { clearOverlay(state); return; }
+    const arrivalLabel = overlay.querySelector("[data-z7-transition-label]");
+    if (arrivalLabel) arrivalLabel.textContent = labelFor(new URL(location.href));
     const transitionInner = overlay.querySelector(".z7-transition__inner");
     if (transitionInner && !transitionInner.querySelector(".z7-transition__mark")) {
       const mark = document.createElement("img");
@@ -292,6 +294,7 @@
     };
     const overlay = state.overlay;
     if (!overlay || reduced.matches || lowData) { go(); return; }
+    root.setAttribute("data-z7-transitioning", "");
     if (pathOf(destination) === "/private-access") overlay.style.zIndex = "1200";
     const transitionInner = overlay.querySelector(".z7-transition__inner");
     if (transitionInner && !transitionInner.querySelector(".z7-transition__mark")) {
