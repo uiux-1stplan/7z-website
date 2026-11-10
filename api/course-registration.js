@@ -344,10 +344,17 @@ export default async function handler(req, res) {
     if (Number(hour[0]?.count || 0) >= 5) return res.status(429).json({ error: "Too many attempts. Please retry later." });
     const token = randomBytes(32).toString("base64url");
     const tokenHash = createHash("sha256").update(token).digest("hex");
-    const intent = (await sql`SELECT * FROM start_course_checkout_intent(${tokenHash},${name},${email},${phone},${location},${experience.toLowerCase()},${language.toLowerCase()},${goal},${courseId},${course.priceJod})`)[0];
+    let intent = (await sql`SELECT * FROM start_course_checkout_intent(${tokenHash},${name},${email},${phone},${location},${experience.toLowerCase()},${language.toLowerCase()},${goal},${courseId},${course.priceJod})`)[0];
     if (intent.outcome === "invalid_course") return res.status(400).json({ error: "Course not found." });
     if (intent.outcome === "full") return res.status(409).json({ error: "Course is full.", full: true });
-    if (intent.outcome === "duplicate" || intent.outcome === "pending") return res.status(409).json({ error: intent.outcome === "duplicate" ? "This email is already registered." : "A checkout is already open for this email.", duplicate: true });
+    if (intent.outcome === "pending") {
+      // Replace an abandoned checkout only when no receipt has been uploaded. This
+      // gives the student a fresh token while preserving any checkout with payment proof.
+      const replaced = await sql`UPDATE course_checkout_intents SET status='REPLACED' WHERE course_id=${courseId} AND lower(email)=${email} AND status='PENDING' AND expires_at > NOW() AND payment_proof_pathname='' RETURNING id`;
+      if (!replaced.length) return res.status(409).json({ error: "A previous checkout for this email already has a payment receipt. Do not make another transfer; use that checkout or contact the academy.", pendingPaymentProof: true });
+      intent = (await sql`SELECT * FROM start_course_checkout_intent(${tokenHash},${name},${email},${phone},${location},${experience.toLowerCase()},${language.toLowerCase()},${goal},${courseId},${course.priceJod})`)[0];
+    }
+    if (intent.outcome === "duplicate") return res.status(409).json({ error: "This email is already registered.", duplicate: true });
     if (intent.outcome !== "created") return res.status(503).json({ error: "Registration is temporarily unavailable." });
     return res.status(201).json({ ok: true, courseId, checkoutToken: token, expiresAt: new Date(intent.expires_at).toISOString() });
   } catch (error) {
