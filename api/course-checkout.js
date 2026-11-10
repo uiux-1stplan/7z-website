@@ -99,7 +99,9 @@ export default async function handler(req, res) {
   setHeaders(req, res);
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method === "GET") {
-    if (!isAllowedCourseOrigin(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
+    // Payment method details are public. Same-origin browser GETs may omit the
+    // Origin header, so only reject an explicitly supplied, untrusted origin.
+    if (req.headers.origin && !isAllowedCourseOrigin(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
     return res.status(200).json({ methods: getPaymentMethods() });
   }
   if (req.method !== "POST") { res.setHeader("Allow", "GET, POST, OPTIONS"); return res.status(405).json({ error: "Method not allowed." }); }
