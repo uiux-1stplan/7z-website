@@ -58,6 +58,7 @@
       const dateText = row.cells[2]?.textContent.trim() || "";
       const parsedDate = Date.parse(dateText);
       return {
+        id: row.dataset.registrationId || "",
         name: $(".engine-user strong", row)?.textContent.trim() || "Student",
         course: row.cells[1]?.textContent.trim() || "Course registration",
         dateText,
@@ -182,6 +183,18 @@
       amount.className = "activity-amount";
       amount.textContent = money(row.due, true);
       item.append(icon, detail, status, amount);
+      if (row.id) {
+        const remove = document.createElement("button");
+        remove.className = "activity-remove";
+        remove.type = "button";
+        remove.dataset.engineAction = "delete-registration";
+        remove.dataset.id = row.id;
+        remove.dataset.name = row.name;
+        remove.setAttribute("aria-label", `Delete registration for ${row.name}`);
+        remove.title = "Delete registration from the ledger";
+        remove.textContent = "×";
+        item.append(remove);
+      }
       return item;
     }));
     if (empty) empty.hidden = recent.length > 0;

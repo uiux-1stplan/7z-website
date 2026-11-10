@@ -47,7 +47,7 @@
       const active = affiliate.status === "active";
       affiliateOptions.push(`<option value="${escape(affiliate.id)}" ${active ? "" : "disabled"}>${escape(affiliate.name)}${active ? "" : " · inactive"}</option>`);
       const row = document.createElement("tr");
-      row.innerHTML = `<td><div class="engine-user"><strong>${escape(affiliate.name)}</strong><span>${escape(affiliate.email || affiliate.company || "Affiliate partner")}</span></div></td><td>${Number(affiliate.code_count || 0)}</td><td>${Number(affiliate.registration_count || 0)}</td><td>${jod(affiliate.net_sales_jod)}</td><td>${jod(affiliate.outstanding_commission_jod)}<small class="engine-subvalue">earned ${Number(affiliate.earned_commission_jod || 0).toFixed(2)} JOD</small></td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}" data-email="${escape(affiliate.email || "")}" data-company="${escape(affiliate.company || "")}" data-commission="${Number(affiliate.commission_percent || 0)}">EDIT</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-affiliate" data-id="${escape(affiliate.id)}" data-status="${active ? "inactive" : "active"}">${active ? "ARCHIVE" : "RESTORE"}</button></div></td>`;
+      row.innerHTML = `<td><div class="engine-user"><strong>${escape(affiliate.name)}</strong><span>${escape(affiliate.email || affiliate.company || "Affiliate partner")}</span></div></td><td>${Number(affiliate.code_count || 0)}</td><td>${Number(affiliate.registration_count || 0)}</td><td>${jod(affiliate.net_sales_jod)}</td><td>${jod(affiliate.outstanding_commission_jod)}<small class="engine-subvalue">earned ${Number(affiliate.earned_commission_jod || 0).toFixed(2)} JOD</small></td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}" data-email="${escape(affiliate.email || "")}" data-company="${escape(affiliate.company || "")}" data-commission="${Number(affiliate.commission_percent || 0)}">EDIT</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-affiliate" data-id="${escape(affiliate.id)}" data-status="${active ? "inactive" : "active"}">${active ? "ARCHIVE" : "RESTORE"}</button><button class="small-button danger" type="button" data-engine-action="delete-affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}">DELETE</button></div></td>`;
       body.append(row);
     }
     $("#coupon-affiliate").innerHTML = affiliateOptions.join("");
@@ -61,7 +61,7 @@
       const active = code.status === "active";
       const course = { all: "All courses", "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" }[code.course_id] || code.course_id;
       const row = document.createElement("tr");
-      row.innerHTML = `<td><code class="engine-code">${escape(code.code)}</code></td><td>${escape(code.affiliate_name || "Studio")}</td><td>${escape(course)}</td><td>${Number(code.discount_percent)}%</td><td>${Number(code.commission_percent)}%</td><td>${Number(code.redemption_count || 0)}${code.max_redemptions ? ` / ${Number(code.max_redemptions)}` : ""}</td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="code" data-id="${escape(code.id)}" data-code="${escape(code.code)}" data-affiliate="${escape(code.affiliate_id || "")}" data-course="${escape(code.course_id || "all")}" data-discount="${Number(code.discount_percent)}" data-commission="${Number(code.commission_percent)}" data-max-uses="${escape(code.max_redemptions || "")}">EDIT</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-code" data-id="${escape(code.id)}" data-status="${active ? "inactive" : "active"}">${active ? "ARCHIVE" : "RESTORE"}</button></div></td>`;
+      row.innerHTML = `<td><code class="engine-code">${escape(code.code)}</code></td><td>${escape(code.affiliate_name || "Studio")}</td><td>${escape(course)}</td><td>${Number(code.discount_percent)}%</td><td>${Number(code.commission_percent)}%</td><td>${Number(code.redemption_count || 0)}${code.max_redemptions ? ` / ${Number(code.max_redemptions)}` : ""}</td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="code" data-id="${escape(code.id)}" data-code="${escape(code.code)}" data-affiliate="${escape(code.affiliate_id || "")}" data-course="${escape(code.course_id || "all")}" data-discount="${Number(code.discount_percent)}" data-commission="${Number(code.commission_percent)}" data-max-uses="${escape(code.max_redemptions || "")}">EDIT</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-code" data-id="${escape(code.id)}" data-status="${active ? "inactive" : "active"}">${active ? "ARCHIVE" : "RESTORE"}</button><button class="small-button danger" type="button" data-engine-action="delete-code" data-id="${escape(code.id)}" data-name="${escape(code.code)}">DELETE</button></div></td>`;
       body.append(row);
     }
   }
@@ -74,7 +74,7 @@
     $("#finance-commissions").innerHTML = jod(totals.commissionsDue);
     $("#finance-studio-net").innerHTML = jod(totals.studioNet);
     const history = $("#revenue-adjustment-history");
-    if (history) history.innerHTML = state.adjustments.length ? state.adjustments.slice(0, 8).map(item => `<div class="adjustment-row"><span>${new Date(item.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", month: "short", day: "numeric", year: "numeric" })}</span><strong class="${Number(item.amount_jod) < 0 ? "is-negative" : "is-positive"}">${Number(item.amount_jod) > 0 ? "+" : ""}${Number(item.amount_jod).toFixed(3)} JOD</strong><small>${escape(item.reason)}</small></div>`).join("") : '<p class="adjustment-empty">No manual adjustments yet. Every change will be recorded here.</p>';
+    if (history) history.innerHTML = state.adjustments.length ? state.adjustments.map(item => `<div class="adjustment-row"><span>${new Date(item.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", month: "short", day: "numeric", year: "numeric" })}</span><strong class="${Number(item.amount_jod) < 0 ? "is-negative" : "is-positive"}">${Number(item.amount_jod) > 0 ? "+" : ""}${Number(item.amount_jod).toFixed(3)} JOD</strong><small>${escape(item.reason)}</small><div class="adjustment-actions"><button type="button" class="small-button" data-adjustment-edit="${escape(item.id)}" data-amount="${Number(item.amount_jod)}" data-reason="${escape(item.reason)}">EDIT</button><button type="button" class="small-button danger" data-adjustment-delete="${escape(item.id)}" data-amount="${Number(item.amount_jod)}">DELETE</button></div></div>`).join("") : '<p class="adjustment-empty">No manual adjustments yet. Every change will be recorded here.</p>';
     const selectedCourse = $("#finance-course-filter").value;
     const rows = state.registrations.filter((registration) => selectedCourse === "all" || registration.course_id === selectedCourse);
     $("#accounting-empty").hidden = rows.length > 0;
@@ -88,13 +88,14 @@
       const due = Math.max(0, Number(registration.price_jod || 0) - Number(registration.discount_jod || 0));
       const date = registration.created_at ? new Date(registration.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", year: "numeric", month: "short", day: "numeric" }) : "—";
       const row = document.createElement("tr");
+      row.dataset.registrationId = String(registration.id);
       const paymentAction = isPending
         ? `<button class="small-button is-confirm" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="PAID">VERIFY PAYMENT</button><button class="small-button danger" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="REJECTED">REJECT</button>`
         : isPaid ? `<button class="small-button" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="PENDING_REVIEW">REOPEN REVIEW</button>` : `<span class="engine-dash">—</span>`;
       const commissionAction = isPaid && Number(registration.commission_jod || 0) > 0
         ? `<button class="small-button" type="button" data-engine-action="set-commission-status" data-id="${escape(registration.id)}" data-status="${registration.commission_status === "PAID" ? "PAYABLE" : "PAID"}">${registration.commission_status === "PAID" ? "REOPEN PAYOUT" : "MARK COMMISSION PAID"}</button>`
         : "";
-      row.innerHTML = `<td><div class="engine-user"><strong>${escape(registration.full_name)}</strong><span>${escape(registration.email)}</span></div></td><td>${escape(course)}</td><td>${date}</td><td><code class="engine-code">${escape(registration.coupon_code || "—")}</code></td><td>${jod(due)}</td><td>${Number(registration.commission_percent || 0)}% · ${Number(registration.commission_jod || 0).toFixed(2)} JOD<br><small class="engine-subvalue">${escape(registration.commission_status || "NOT_APPLICABLE")}</small></td><td><span class="engine-status ${isPaid ? "is-active" : isPending ? "is-pending" : "is-inactive"}">${escape(paymentStatus.replaceAll("_", " "))}</span></td><td><div class="engine-actions">${paymentAction}${commissionAction}</div></td>`;
+      row.innerHTML = `<td><div class="engine-user"><strong>${escape(registration.full_name)}</strong><span>${escape(registration.email)}</span></div></td><td>${escape(course)}</td><td>${date}</td><td><code class="engine-code">${escape(registration.coupon_code || "—")}</code></td><td>${jod(due)}</td><td>${Number(registration.commission_percent || 0)}% · ${Number(registration.commission_jod || 0).toFixed(2)} JOD<br><small class="engine-subvalue">${escape(registration.commission_status || "NOT_APPLICABLE")}</small></td><td><span class="engine-status ${isPaid ? "is-active" : isPending ? "is-pending" : "is-inactive"}">${escape(paymentStatus.replaceAll("_", " "))}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="registration" data-id="${escape(registration.id)}" data-name="${escape(registration.full_name)}" data-email="${escape(registration.email)}" data-course="${escape(registration.course_id)}" data-price="${Number(registration.price_jod || 0)}" data-discount="${Number(registration.discount_jod || 0)}" data-commission="${Number(registration.commission_percent || 0)}" data-status="${escape(paymentStatus)}">EDIT</button>${paymentAction}${commissionAction}<button class="small-button danger" type="button" data-engine-action="delete-registration" data-id="${escape(registration.id)}" data-name="${escape(registration.full_name)}">DELETE</button></div></td>`;
       body.append(row);
     }
   }
@@ -142,11 +143,19 @@
       $("#course-edit-title").textContent = "Edit affiliate";
       $("#course-edit-copy").textContent = "Update partner details and the default commission. Existing registrations keep their recorded rate.";
       fields.innerHTML = `<label>Partner name<input name="name" required maxlength="120" value="${escape(button.dataset.name)}"></label><label>Email<input name="email" type="email" maxlength="180" value="${escape(button.dataset.email)}"></label><label>Company<input name="company" maxlength="160" value="${escape(button.dataset.company)}"></label><label>Default commission %<input name="commissionPercent" type="number" min="0" max="100" step="1" required value="${Number(button.dataset.commission)}"></label>`;
-    } else {
+    } else if (kind === "code") {
       const options = state.affiliates.filter(item => item.status === "active").map(item => `<option value="${escape(item.id)}" ${item.id === button.dataset.affiliate ? "selected" : ""}>${escape(item.name)}</option>`).join("");
       $("#course-edit-title").textContent = "Edit discount code";
       $("#course-edit-copy").textContent = "Discounts and commissions change for future checkouts; past registrations remain unchanged.";
       fields.innerHTML = `<label>Code<input name="code" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" value="${escape(button.dataset.code)}"></label><label>Affiliate<select name="affiliateId"><option value="">Studio code / no affiliate</option>${options}</select></label><label>Course<select name="courseId"><option value="all">All courses</option><option value="cinematic-film" ${button.dataset.course === "cinematic-film" ? "selected" : ""}>AI Cinematic Filmmaking</option><option value="ai-engineering" ${button.dataset.course === "ai-engineering" ? "selected" : ""}>AI for Engineers</option></select></label><div class="engine-form-pair"><label>Discount %<input name="discountPercent" type="number" min="0" max="100" required value="${Number(button.dataset.discount)}"></label><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" required value="${Number(button.dataset.commission)}"></label></div><label>Maximum uses<input name="maxRedemptions" type="number" min="1" max="1000000" value="${escape(button.dataset.maxUses)}" placeholder="Unlimited"></label>`;
+    } else if (kind === "registration") {
+      $("#course-edit-title").textContent = "Edit registration & revenue";
+      $("#course-edit-copy").textContent = "Changes update the course ledger, verified revenue, commissions and Latest Activity. Revenue includes paid registrations only.";
+      fields.innerHTML = `<label>Student name<input name="fullName" required maxlength="160" value="${escape(button.dataset.name)}"></label><label>Email address<input name="email" type="email" required maxlength="180" value="${escape(button.dataset.email)}"></label><label>Course<select name="courseId"><option value="cinematic-film" ${button.dataset.course === "cinematic-film" ? "selected" : ""}>AI Cinematic Filmmaking</option><option value="ai-engineering" ${button.dataset.course === "ai-engineering" ? "selected" : ""}>AI for Engineers</option></select></label><div class="engine-form-pair"><label>Price (JOD)<input name="priceJod" type="number" min="0" max="1000000000" step="0.001" required value="${Number(button.dataset.price)}"></label><label>Discount (JOD)<input name="discountJod" type="number" min="0" max="1000000000" step="0.001" required value="${Number(button.dataset.discount)}"></label></div><div class="engine-form-pair"><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" step="1" required value="${Number(button.dataset.commission)}"></label><label>Payment status<select name="paymentStatus"><option value="PENDING_REVIEW" ${button.dataset.status === "PENDING_REVIEW" ? "selected" : ""}>Pending review</option><option value="PAID" ${["PAID","APPROVED","VERIFIED"].includes(button.dataset.status) ? "selected" : ""}>Paid / verified</option><option value="REJECTED" ${button.dataset.status === "REJECTED" ? "selected" : ""}>Rejected</option></select></label></div>`;
+    } else {
+      $("#course-edit-title").textContent = "Edit revenue adjustment";
+      $("#course-edit-copy").textContent = "This audited entry changes reported revenue. Original student payment records remain intact.";
+      fields.innerHTML = `<label>Adjustment amount (JOD)<input name="amount" type="number" min="-1000000000" max="1000000000" step="0.001" required value="${Number(button.dataset.amount)}"></label><label>Reason<input name="reason" maxlength="240" required value="${escape(button.dataset.reason)}"></label>`;
     }
     dialog.showModal();
   }
@@ -197,11 +206,11 @@
     $("#course-edit-form")?.addEventListener("submit", async event => {
       event.preventDefault();
       const form = event.currentTarget;
-      const action = form.dataset.kind === "affiliate" ? "update-affiliate" : "update-code";
+      const action = form.dataset.kind === "affiliate" ? "update-affiliate" : form.dataset.kind === "code" ? "update-code" : form.dataset.kind === "adjustment" ? "update-revenue-adjustment" : "update-registration";
       try {
         await request({ body: { action, id: form.dataset.id, ...formObject(form) } });
         $("#course-edit-dialog").close();
-        notify("Changes saved. Historical registrations are unchanged.");
+        notify(form.dataset.kind === "adjustment" ? "Revenue adjustment updated in the audit trail." : "Changes saved and recorded in the audit trail.");
         await refresh();
       } catch (error) { notify(error.message || "Changes could not be saved.", "error"); }
     });
@@ -225,12 +234,30 @@
     document.addEventListener("click", (event) => {
       const editButton = event.target.closest("[data-engine-edit]");
       if (editButton) { editRecord(editButton); return; }
+      const adjustmentEdit = event.target.closest("[data-adjustment-edit]");
+      if (adjustmentEdit) {
+        const dialog = $("#course-edit-dialog");
+        const form = $("#course-edit-form");
+        form.dataset.kind = "adjustment";
+        form.dataset.id = adjustmentEdit.dataset.adjustmentEdit;
+        $("#course-edit-title").textContent = "Edit revenue adjustment";
+        $("#course-edit-copy").textContent = "This audited entry changes reported revenue. Original student payment records remain intact.";
+        $("#course-edit-fields").innerHTML = `<label>Adjustment amount (JOD)<input name="amount" type="number" min="-1000000000" max="1000000000" step="0.001" required value="${Number(adjustmentEdit.dataset.amount)}"></label><label>Reason<input name="reason" maxlength="240" required value="${escape(adjustmentEdit.dataset.reason)}"></label>`;
+        dialog.showModal();
+        return;
+      }
+      const adjustmentDelete = event.target.closest("[data-adjustment-delete]");
+      if (adjustmentDelete) {
+        if (window.confirm(`Delete this audited revenue adjustment (${Number(adjustmentDelete.dataset.amount).toFixed(3)} JOD)? This will recalculate reported revenue.`)) post({ action: "delete-revenue-adjustment", id: adjustmentDelete.dataset.adjustmentDelete }, "Revenue adjustment deleted and totals recalculated.");
+        return;
+      }
       const button = event.target.closest("[data-engine-action]");
       if (!button) return;
       const body = { action: button.dataset.engineAction, id: button.dataset.id, status: button.dataset.status };
-      const message = body.action === "set-payment-status" ? `Set payment status to ${body.status.replaceAll("_", " ")}?` : body.action === "set-commission-status" ? `Set commission status to ${body.status}?` : body.action === "toggle-affiliate" && body.status === "inactive" ? "Archive this affiliate and disable its active discount codes? Sales history will be retained." : body.action === "toggle-code" && body.status === "inactive" ? "Archive this discount code? Existing registrations will be retained." : `Set status to ${body.status}?`;
+      const message = body.action === "set-payment-status" ? `Set payment status to ${body.status.replaceAll("_", " ")}?` : body.action === "set-commission-status" ? `Set commission status to ${body.status}?` : body.action === "toggle-affiliate" && body.status === "inactive" ? "Archive this affiliate and disable its active discount codes? Sales history will be retained." : body.action === "toggle-code" && body.status === "inactive" ? "Archive this discount code? Existing registrations will be retained." : body.action === "delete-affiliate" ? `Permanently delete ${button.dataset.name || "this affiliate"} and its discount codes? Historical registrations and their recorded totals remain in the ledger.` : body.action === "delete-code" ? `Permanently delete discount code ${button.dataset.name || ""}? Past registrations keep their recorded code and commission.` : body.action === "delete-registration" ? "Delete this student registration? It will disappear from Latest Activity and be removed from the registration ledger, recalculating verified revenue, discounts and commissions." : `Set status to ${body.status}?`;
       if (!window.confirm(message)) return;
-      post(body, "Course administration updated.");
+      const success = body.action === "delete-affiliate" ? "Affiliate and its codes deleted. Historical ledger entries were retained." : body.action === "delete-code" ? "Discount code deleted. Historical registrations were retained." : body.action === "delete-registration" ? "Registration deleted; revenue and Latest Activity were recalculated." : "Course administration updated.";
+      post(body, success);
     });
     document.querySelectorAll("[data-admin-scroll]").forEach((button) => button.addEventListener("click", () => {
       document.querySelector(button.dataset.adminScroll)?.scrollIntoView({ behavior: "smooth", block: "start" });

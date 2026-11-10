@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261109-2">
-  <link rel="stylesheet" href="/admin/admin.css?v=20261110-glass-dashboard-6">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261110-glass-dashboard-7">
 </head>
 
 <body class="z7-admin-shell">
@@ -292,13 +292,13 @@
       <div class="view-intro"><div><span class="eyebrow">ACADEMY / BUSINESS INTELLIGENCE</span><h2 id="analytics-heading">Analytics</h2><p>Financial and enrollment signals from recorded course activity.</p></div><button class="button button-secondary" type="button" data-engine-refresh>Refresh data</button></div>
       <div class="analytics-kpis"><article class="glass-panel analytics-kpi"><span>VERIFIED REVENUE</span><strong id="analytics-revenue">0.00 <small>JOD</small></strong><p>Received course payments</p></article><article class="glass-panel analytics-kpi"><span>GROSS COURSE SALES</span><strong id="analytics-gross">0.00 <small>JOD</small></strong><p>Verified list-price value</p></article><article class="glass-panel analytics-kpi"><span>COMMISSIONS DUE</span><strong id="analytics-commission">0.00 <small>JOD</small></strong><p>Earned by affiliates</p></article><article class="glass-panel analytics-kpi"><span>PAYMENT COMPLETION</span><strong id="analytics-conversion">0%</strong><p>Paid registrations / total</p></article></div>
       <div class="analytics-grid"><article class="glass-panel analytics-chart-panel"><div class="glass-panel__head"><div><span class="eyebrow">REVENUE / VERIFIED</span><h3>Monthly revenue</h3></div><span class="chart-period">JOD · LAST 6 MONTHS</span></div><div class="chart-wrap chart-wrap--large"><svg class="revenue-chart" id="analytics-revenue-chart" viewBox="0 0 760 240" role="img" aria-label="Monthly verified revenue"><defs><linearGradient id="analytics-chart-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#b08bff" stop-opacity=".32"/><stop offset="1" stop-color="#b08bff" stop-opacity="0"/></linearGradient></defs><path class="chart-area" id="analytics-chart-area"/><path class="chart-line" id="analytics-chart-line"/><g id="analytics-chart-points"></g></svg><div class="chart-labels" id="analytics-chart-labels"></div><p class="chart-empty" id="analytics-chart-empty" hidden>No verified course payments have been recorded yet.</p></div></article><article class="glass-panel course-mix-panel"><div class="glass-panel__head"><div><span class="eyebrow">ENROLLMENTS / BY COURSE</span><h3>Course mix</h3></div><span class="chart-period">ALL TIME</span></div><div class="course-mix-list" id="analytics-course-mix"></div><p class="mix-empty" id="analytics-mix-empty" hidden>Course activity will appear here after the first registration.</p></article></div>
-      <div class="glass-panel activity-panel"><div class="glass-panel__head"><div><span class="eyebrow">LATEST ACTIVITY</span><h3>Recent registrations</h3></div><button class="quiet-link" type="button" data-dashboard-nav="orders">Open orders <span aria-hidden="true">↗</span></button></div><div class="activity-list" id="analytics-recent-activity"></div><p class="activity-empty" id="analytics-activity-empty" hidden>No recent registrations to show.</p></div>
+      <div class="glass-panel activity-panel"><div class="glass-panel__head"><div><span class="eyebrow">LATEST ACTIVITY / LIVE LEDGER</span><h3>Recent registrations</h3><p>These entries come from the course ledger. Editing or deleting one recalculates verified revenue and the registration report.</p></div><button class="quiet-link" type="button" data-dashboard-nav="orders">Open orders <span aria-hidden="true">↗</span></button></div><div class="activity-list" id="analytics-recent-activity"></div><p class="activity-empty" id="analytics-activity-empty" hidden>No recent registrations to show.</p></div>
       <section class="glass-panel revenue-controls-panel"><div class="glass-panel__head"><div><span class="eyebrow">LEDGER CONTROLS</span><h3>Revenue adjustments</h3><p>Adjust the reported total with an auditable entry. Original registrations remain in the ledger.</p></div><span class="secure-badge"><i></i> ADMIN ONLY</span></div><form id="revenue-adjustment-form" class="revenue-adjustment-form"><label>Adjustment amount (JOD)<input name="amount" type="number" step="0.001" min="-1000000000" max="1000000000" required placeholder="e.g. 125.000"></label><label>Reason<input name="reason" type="text" maxlength="240" required placeholder="Explain the correction"></label><button class="button button-primary" type="submit">Save adjustment</button><button class="button button-secondary" id="revenue-reset" type="button">Reset reported total</button><button class="button button-secondary" id="report-export" type="button">Download Excel report (.xls)</button></form><div class="adjustment-history-head"><strong>Recent adjustments</strong><span>Newest first</span></div><div id="revenue-adjustment-history" class="adjustment-history"></div></section>
     </section>
 
     <section class="dashboard-view" id="files-view" data-dashboard-panel="files" aria-labelledby="files-heading" hidden>
       <div class="view-intro"><div><span class="eyebrow">CLIENT DELIVERY / PRIVATE STORAGE</span><h2 id="files-heading">Client files</h2><p>Upload, organize and control access to protected client deliverables.</p></div><span class="secure-badge"><i></i> PRIVATE STORAGE</span></div>
-      <div class="glass-panel files-intro"><span class="files-intro__mark" aria-hidden="true">7Z</span><div><strong>One secure library for every client handoff.</strong><p>Files stay private until you grant access from the Users section. Rename and remove files without losing the rest of the workspace.</p></div><button class="quiet-link" type="button" data-dashboard-nav="users">Manage access <span aria-hidden="true">↗</span></button></div>
+      <div class="glass-panel files-intro"><span class="files-intro__mark" aria-hidden="true">7Z</span><div><span class="eyebrow">PRIVATE VAULT / LIVE LIBRARY</span><strong>Every client handoff has its own secure stage.</strong><p>Preview, download, rename or remove a deliverable here. Access for each client is managed separately in Users.</p></div><button class="quiet-link" type="button" data-dashboard-nav="users">Manage access <span aria-hidden="true">↗</span></button></div>
       <div id="client-files-mount"><div id="legacy-file-access-panel" hidden></div></div>
     </section>
 
@@ -434,8 +434,8 @@
 
 
 <script src="/admin/admin.js"></script>
-<script src="/admin/course-engine.js?v=20261110-admin-engine-1"></script>
-<script src="/admin/dashboard-v2.js?v=20261110-glass-dashboard-1"></script>
+<script src="/admin/course-engine.js?v=20261110-admin-engine-3"></script>
+<script src="/admin/dashboard-v2.js?v=20261110-glass-dashboard-3"></script>
 <script src="/admin/private-file-upload.bundle.js?v=20260824"></script>
 <script src="/admin/native-clients.js?v=20260825"></script>
 <script src="/admin/admin-files.js"></script>

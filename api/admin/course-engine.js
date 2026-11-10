@@ -231,6 +231,17 @@ export default async function handler(req, res) {
       return send(res, 200, { affiliate });
     }
 
+    if (body.action === "delete-affiliate") {
+      const id = text(body.id, 64);
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) return send(res, 400, { error: "Choose a valid affiliate." });
+      const [affiliate] = await sql`SELECT id,name FROM course_admin_affiliates WHERE id=${id}`;
+      if (!affiliate) return send(res, 404, { error: "Affiliate not found." });
+      const deletedCodes = await sql`DELETE FROM course_discount_codes WHERE affiliate_id=${affiliate.id} RETURNING id`;
+      await sql`DELETE FROM course_admin_affiliates WHERE id=${affiliate.id}`;
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliate_deleted", targetType: "course_affiliate", targetId: affiliate.id, details: { name: affiliate.name, deletedCodes: deletedCodes.length, historicalRegistrationsRetained: true } });
+      return send(res, 200, { deleted: true, deletedCodes: deletedCodes.length });
+    }
+
     if (body.action === "archive-all-affiliates") {
       const [result] = await sql`WITH archived AS (UPDATE course_admin_affiliates SET status='inactive',updated_at=NOW() WHERE status='active' RETURNING id), codes AS (UPDATE course_discount_codes SET status='inactive',updated_at=NOW() WHERE status='active' AND affiliate_id IN (SELECT id FROM archived) RETURNING id) SELECT (SELECT COUNT(*)::int FROM archived) AS affiliates,(SELECT COUNT(*)::int FROM codes) AS codes`;
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliates_bulk_archived", targetType: "course_affiliates", targetId: "active", details: { affiliates: Number(result?.affiliates || 0), codes: Number(result?.codes || 0) } });
@@ -258,6 +269,14 @@ export default async function handler(req, res) {
       return send(res, 200, { coupon });
     }
 
+    if (body.action === "delete-code") {
+      const id = text(body.id, 64);
+      const [coupon] = await sql`DELETE FROM course_discount_codes WHERE id=${id} RETURNING id,code,affiliate_name`;
+      if (!coupon) return send(res, 404, { error: "Discount code not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_deleted", targetType: "course_discount_code", targetId: coupon.id, details: { code: coupon.code, affiliate: coupon.affiliate_name, historicalRegistrationsRetained: true } });
+      return send(res, 200, { deleted: true });
+    }
+
     if (body.action === "update-code") {
       const id = text(body.id, 64);
       const code = text(body.code, 32).toUpperCase();
@@ -276,6 +295,37 @@ export default async function handler(req, res) {
       return send(res, 200, { coupon });
     }
 
+    if (body.action === "update-registration") {
+      const registrationId = Number(body.id);
+      const fullName = text(body.fullName, 160);
+      const email = text(body.email, 180).toLowerCase();
+      const courseId = text(body.courseId, 32);
+      const price = Number(body.priceJod);
+      const discount = Number(body.discountJod);
+      const commission = percent(body.commissionPercent);
+      const paymentStatus = ["PENDING_REVIEW", "PAID", "REJECTED"].includes(body.paymentStatus) ? body.paymentStatus : null;
+      if (!Number.isSafeInteger(registrationId) || registrationId < 1 || !fullName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !["cinematic-film", "ai-engineering"].includes(courseId) || !Number.isFinite(price) || price < 0 || price > 1000000000 || !Number.isFinite(discount) || discount < 0 || discount > price || commission === null || !paymentStatus) return send(res, 400, { error: "Check the student, course, payment status and JOD amounts. Discount cannot exceed price." });
+      const [before] = await sql`SELECT id,full_name,course_id,payment_status,price_jod,discount_jod,commission_percent,commission_jod,commission_status FROM course_registrations WHERE id=${registrationId}`;
+      if (!before) return send(res, 404, { error: "Registration not found." });
+      const roundedPrice = Math.round(price * 1000) / 1000;
+      const roundedDiscount = Math.round(discount * 1000) / 1000;
+      const net = Math.max(0, roundedPrice - roundedDiscount);
+      const commissionJod = Math.round(net * commission * 10) / 1000;
+      const commissionStatus = commission === 0 ? "NOT_APPLICABLE" : paymentStatus === "PAID" ? (before.commission_status === "PAID" ? "PAID" : "PAYABLE") : paymentStatus === "PENDING_REVIEW" ? "PENDING_PAYMENT_REVIEW" : "NOT_APPLICABLE";
+      const [registration] = await sql`UPDATE course_registrations SET full_name=${fullName},email=${email},course_id=${courseId},price_jod=${roundedPrice},discount_jod=${roundedDiscount},commission_percent=${commission},commission_jod=${commissionJod},payment_status=${paymentStatus},commission_status=${commissionStatus} WHERE id=${registrationId} RETURNING id,full_name,email,course_id,payment_status,price_jod,discount_jod,commission_percent,commission_jod,commission_status,created_at`;
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_registration_updated", targetType: "course_registration", targetId: registration.id, details: { before: { courseId: before.course_id, paymentStatus: before.payment_status, priceJod: Number(before.price_jod), discountJod: Number(before.discount_jod) }, after: { courseId, paymentStatus, priceJod: roundedPrice, discountJod: roundedDiscount, commissionPercent: commission } } });
+      return send(res, 200, { registration });
+    }
+
+    if (body.action === "delete-registration") {
+      const registrationId = Number(body.id);
+      if (!Number.isSafeInteger(registrationId) || registrationId < 1) return send(res, 400, { error: "Registration ID is not valid." });
+      const [registration] = await sql`DELETE FROM course_registrations WHERE id=${registrationId} RETURNING id,full_name,course_id,payment_status,price_jod,discount_jod,commission_jod`;
+      if (!registration) return send(res, 404, { error: "Registration not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_registration_deleted", targetType: "course_registration", targetId: registration.id, details: { studentName: registration.full_name, courseId: registration.course_id, paymentStatus: registration.payment_status, priceJod: Number(registration.price_jod || 0), discountJod: Number(registration.discount_jod || 0), commissionJod: Number(registration.commission_jod || 0), revenueAndActivityRecalculated: true } });
+      return send(res, 200, { deleted: true, registrationId });
+    }
+
     if (body.action === "adjust-revenue") {
       const amount = Number(body.amount);
       const reason = text(body.reason, 240);
@@ -292,6 +342,28 @@ export default async function handler(req, res) {
       const [adjustment] = await sql`INSERT INTO course_revenue_adjustments (amount_jod,reason,created_by) VALUES (${Math.round(amount * 1000) / 1000},'Administrator reset of reported revenue',${String(gate.auth.userId)}) RETURNING id,amount_jod,reason,created_by,created_at`;
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_revenue_reset", targetType: "course_revenue_adjustment", targetId: adjustment.id, details: { adjustment: Number(adjustment.amount_jod), previousRevenue: Number(current.totals.revenue || 0) } });
       return send(res, 200, { reset: true, adjustment });
+    }
+
+    if (body.action === "update-revenue-adjustment") {
+      const id = text(body.id, 64);
+      const amount = Number(body.amount);
+      const reason = text(body.reason, 240);
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id) || !Number.isFinite(amount) || Math.abs(amount) > 1000000000 || !reason) return send(res, 400, { error: "Enter a valid adjustment and reason." });
+      const [before] = await sql`SELECT id,amount_jod,reason FROM course_revenue_adjustments WHERE id=${id}`;
+      if (!before) return send(res, 404, { error: "Revenue adjustment not found." });
+      const roundedAmount = Math.round(amount * 1000) / 1000;
+      const [adjustment] = await sql`UPDATE course_revenue_adjustments SET amount_jod=${roundedAmount},reason=${reason} WHERE id=${id} RETURNING id,amount_jod,reason,created_by,created_at`;
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_revenue_adjustment_updated", targetType: "course_revenue_adjustment", targetId: adjustment.id, details: { before: { amount: Number(before.amount_jod), reason: before.reason }, after: { amount: roundedAmount, reason } } });
+      return send(res, 200, { adjustment });
+    }
+
+    if (body.action === "delete-revenue-adjustment") {
+      const id = text(body.id, 64);
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) return send(res, 400, { error: "Choose a valid revenue adjustment." });
+      const [adjustment] = await sql`DELETE FROM course_revenue_adjustments WHERE id=${id} RETURNING id,amount_jod,reason`;
+      if (!adjustment) return send(res, 404, { error: "Revenue adjustment not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_revenue_adjustment_deleted", targetType: "course_revenue_adjustment", targetId: adjustment.id, details: { amount: Number(adjustment.amount_jod), reason: adjustment.reason, revenueRecalculated: true } });
+      return send(res, 200, { deleted: true });
     }
 
     if (body.action === "set-payment-status") {
@@ -323,7 +395,7 @@ export default async function handler(req, res) {
     return send(res, 400, { error: "Unknown course management action." });
   } catch (error) {
     console.error("Course admin engine:", error);
-    if (error?.code === "23505") return send(res, 409, { error: "That discount code is already in use." });
+    if (error?.code === "23505") return send(res, 409, { error: "That value is already in use. Check the discount code or student email." });
     return send(res, 500, { error: "Course administration is temporarily unavailable." });
   }
 }
