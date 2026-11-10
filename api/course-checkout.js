@@ -65,7 +65,15 @@ function setHeaders(req, res) {
 
 function settingText(value) {
   const raw = String(value ?? "").trim();
-  try { const parsed = JSON.parse(raw); return typeof parsed === "string" ? parsed.trim() : raw; } catch { return raw; }
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed === "string") return parsed.trim();
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      const en = String(parsed.en ?? "").trim(), ar = String(parsed.ar ?? "").trim();
+      if (en || ar) return { en, ar };
+    }
+    return raw;
+  } catch { return raw; }
 }
 
 function getPaymentMethods() {
