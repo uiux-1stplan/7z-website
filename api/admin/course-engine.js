@@ -63,6 +63,18 @@ async function ensureSchema(sql) {
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
 
+  // Seed legacy affiliate data once. Re-seeding on every request resurrected
+  // deleted legacy affiliates and discount codes during the dashboard refresh.
+  await sql`CREATE TABLE IF NOT EXISTS course_admin_migrations (
+    migration_key TEXT PRIMARY KEY,
+    applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+  const [legacySeed] = await sql`INSERT INTO course_admin_migrations (migration_key)
+    VALUES ('legacy-affiliates-and-codes-v1')
+    ON CONFLICT (migration_key) DO NOTHING
+    RETURNING migration_key`;
+  if (!legacySeed) return;
+
   const legacyAffiliates = [
     ["legacy-hassan", "Hassan Rayan", 25],
     ["legacy-shaas", "Shaas Matar", 25],
