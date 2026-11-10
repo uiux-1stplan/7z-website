@@ -63,3 +63,44 @@ html[data-theme="light"] .z7-global-cursor__ring { background: transparent; }
   .z7-global-loader__logo, .z7-global-transition__logo, .z7-global-loader__line > i, .z7-heading-fallback { animation-duration: .01ms !important; }
   .z7-global-transition, .z7-liquid-logo-host > canvas { transition-duration: .01ms !important; }
 }
+
+
+/* Plain PNG brand mark for global loading and blur transitions. */
+.z7-global-loader,
+.z7-global-transition {
+  background: #07070a !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.z7-global-loader__line,
+.z7-global-loader__label { display: none !important; }
+.z7-global-loader__content,
+.z7-global-transition__content { gap: 17px; }
+.z7-global-loader__logo,
+.z7-global-transition__logo {
+  width: clamp(116px, 20vw, 190px);
+  height: auto;
+  max-height: 120px;
+  opacity: 0;
+  filter: drop-shadow(0 0 24px rgba(194,204,255,.22));
+  animation: z7-plain-mark-in .8s ease .08s forwards;
+}
+.z7-global-transition {
+  opacity: 0;
+  visibility: hidden;
+  filter: none;
+  transform: none;
+  background: rgba(7,7,10,.76) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  transition: opacity .42s ease, visibility .42s ease !important;
+}
+.z7-global-transition.is-active { opacity: 1; visibility: visible; filter: none; transform: none; }
+.z7-global-transition.is-leaving,
+.z7-global-loader.is-leaving { opacity: 0; visibility: hidden; filter: none; transform: none; }
+.z7-global-transition__logo { opacity: 1; animation: none; }
+.z7-global-transition__label { margin: 0; color: rgba(245,246,251,.84); font-size: 11px; letter-spacing: .18em; }
+html[data-z7-transitioning] body > :not(.z7-global-transition):not(.z7-global-loader):not(#z7Loader):not(#z7Transition),
+html[data-z7-arriving] body > :not(.z7-transition):not(.z7-loader):not(.z7-global-transition):not(.z7-global-loader) { filter: blur(5px); transition: filter .42s ease; }
+@keyframes z7-plain-mark-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .z7-global-loader__logo { animation-duration: .01ms; } }
