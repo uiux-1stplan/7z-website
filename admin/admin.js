@@ -25,6 +25,45 @@
     element?.classList.add("hidden");
   }
 
+  function applySpringText(element) {
+    if (!element || element.dataset.springTextReady) return;
+    element.dataset.springTextReady = "true";
+    const label = element.textContent.trim();
+    if (!label || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    element.setAttribute("aria-label", label);
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    let index = 0;
+    textNodes.forEach((node) => {
+      const pieces = node.nodeValue.split(/(\s+)/);
+      const fragment = document.createDocumentFragment();
+      pieces.forEach((piece) => {
+        if (!piece) return;
+        if (/^\s+$/.test(piece)) {
+          fragment.append(document.createTextNode(piece));
+          return;
+        }
+        const word = document.createElement("span");
+        word.className = "spring-word";
+        word.setAttribute("aria-hidden", "true");
+        word.style.setProperty("--spring-index", String(index++));
+        word.textContent = piece;
+        fragment.append(word);
+      });
+      node.replaceWith(fragment);
+    });
+  }
+
+  function startSpringTextEngine() {
+    const slot = $("#clerk-signin");
+    const animateHeadings = () => {
+      document.querySelectorAll("[data-spring-text], #clerk-signin .cl-headerTitle").forEach(applySpringText);
+    };
+    animateHeadings();
+    if (slot) new MutationObserver(animateHeadings).observe(slot, { childList: true, subtree: true });
+  }
+
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -187,6 +226,7 @@
   async function mountSignIn() {
     hide("#boot-screen");
     show("#auth-screen");
+    startSpringTextEngine();
 
     const slot = $("#clerk-signin");
 
