@@ -81,10 +81,10 @@ function getPaymentMethods() {
   const westernInstructions = settingText(process.env.COURSE_WU_INSTRUCTIONS);
   const methods = [];
   if (process.env.COURSE_CLIQ_ALIAS?.trim() && process.env.COURSE_CLIQ_PHONE?.trim() && cliqInstructions) {
-    methods.push({ id: "CLIQ", name: "CliQ", recipient: process.env.COURSE_CLIQ_ALIAS.trim(), account: process.env.COURSE_CLIQ_PHONE.trim(), instructions: cliqInstructions });
+    methods.push({ id: "CLIQ", name: "CliQ", alias: process.env.COURSE_CLIQ_ALIAS.trim(), recipient: process.env.COURSE_CLIQ_ALIAS.trim(), recipientName: process.env.COURSE_CLIQ_RECIPIENT_NAME?.trim() || "", bank: process.env.COURSE_CLIQ_BANK?.trim() || "", account: process.env.COURSE_CLIQ_PHONE.trim(), instructions: cliqInstructions });
   }
   if (process.env.COURSE_WU_BENEFICIARY?.trim() && westernInstructions) {
-    methods.push({ id: "WESTERN_UNION", name: "Western Union", recipient: process.env.COURSE_WU_BENEFICIARY.trim(), account: "", instructions: westernInstructions });
+    methods.push({ id: "WESTERN_UNION", name: "Western Union", recipient: process.env.COURSE_WU_BENEFICIARY.trim(), receiverFullName: process.env.COURSE_WU_BENEFICIARY.trim(), country: process.env.COURSE_WU_COUNTRY?.trim() || "", city: process.env.COURSE_WU_CITY?.trim() || "", phone: process.env.COURSE_WU_PHONE?.trim() || "", instructions: westernInstructions });
   }
   return methods;
 }
@@ -194,6 +194,7 @@ export default async function handler(req, res) {
     const provider = String(body.provider ?? "").toUpperCase();
     const reference = String(body.reference ?? "").trim().slice(0, 160);
     if (!methods.some((method) => method.id === provider)) return res.status(400).json({ error: "Choose an available payment method." });
+    if (provider === "WESTERN_UNION" && !/^\d{10}$/.test(reference)) return res.status(400).json({ error: "Enter the 10-digit Western Union MTCN." });
     if (reference.length < 3) return res.status(400).json({ error: "Enter the transfer reference." });
 
     const proofRows = await sql`SELECT status,expires_at,payment_proof_pathname,payment_proof_content_type,payment_proof_provider FROM course_checkout_intents WHERE token_hash=${tokenHash}`;
@@ -270,3 +271,4 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: "Checkout is temporarily unavailable." });
   }
 }
+
