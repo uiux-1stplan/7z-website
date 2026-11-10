@@ -25,11 +25,10 @@
   }
 
   function addTransitions() {
-    // The established public-page motion controller owns these routes already.
     if (root.hasAttribute("data-z7-core")) return;
     let loader = document.querySelector(".z7-global-loader");
     let overlay = document.querySelector(".z7-global-transition");
-    if (!loader) { loader = makeLayer("loader", "Preparing the 7Z Magic experience"); document.body.prepend(loader); }
+    if (!loader) { loader = makeLayer("loader", ""); document.body.prepend(loader); }
     if (!overlay) { overlay = makeLayer("transition", "7Z Magic"); document.body.append(overlay); }
 
     const current = pathOf(new URL(location.href));
@@ -40,24 +39,35 @@
       if (!arrival) arrival = JSON.parse(sessionStorage.getItem("z7:core-arrival:v1") || "null");
       sessionStorage.removeItem("z7:core-arrival:v1");
     } catch {}
+
+    const finishArrival = () => {
+      overlay.classList.remove("is-active");
+      overlay.classList.add("is-leaving");
+      root.removeAttribute("data-z7-arriving");
+      setTimeout(() => { overlay.hidden = true; overlay.classList.remove("is-leaving"); loader?.remove(); }, reduced.matches ? 0 : 560);
+    };
     if (arrival?.path === current && Date.now() - arrival.time < 15000) {
       const label = overlay.querySelector(".z7-global-transition__label");
       if (label) label.textContent = arrival.label || labelFor(new URL(location.href));
       overlay.hidden = false;
+      root.setAttribute("data-z7-arriving", "");
       requestAnimationFrame(() => overlay.classList.add("is-active"));
-      setTimeout(() => {
-        overlay.classList.remove("is-active");
-        overlay.classList.add("is-leaving");
-        root.removeAttribute("data-z7-arriving");
-        setTimeout(() => { overlay.hidden = true; overlay.classList.remove("is-leaving"); loader?.remove(); }, 520);
-      }, reduced.matches ? 40 : 280);
+      setTimeout(finishArrival, reduced.matches ? 20 : 220);
     } else if (loader && (() => { try { return !sessionStorage.getItem("z7:global-started:v1"); } catch { return false; } })()) {
       try { sessionStorage.setItem("z7:global-started:v1", "1"); } catch {}
-      const finish = () => {
+      const logo = loader.querySelector(".z7-global-loader__logo");
+      const started = performance.now();
+      const pageReady = document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise(resolve => window.addEventListener("load", resolve, { once: true }));
+      const cap = new Promise(resolve => setTimeout(resolve, 1800));
+      Promise.race([pageReady, cap]).then(() => Promise.allSettled([
+        logo?.decode?.() || Promise.resolve(),
+        new Promise(resolve => setTimeout(resolve, Math.max(0, 620 - (performance.now() - started))))
+      ])).then(() => {
         loader.classList.add("is-leaving");
-        setTimeout(() => { loader.remove(); }, reduced.matches ? 0 : 520);
-      };
-      setTimeout(finish, reduced.matches ? 0 : 820);
+        setTimeout(() => loader?.remove(), reduced.matches ? 0 : 560);
+      });
     } else if (loader) loader.remove();
 
     if (window.__z7GlobalTransitionsBound) return;
@@ -76,17 +86,17 @@
       const title = overlay.querySelector(".z7-global-transition__label");
       if (title) title.textContent = label;
       overlay.hidden = false;
+      overlay.classList.remove("is-leaving");
       root.setAttribute("data-z7-transitioning", "");
       requestAnimationFrame(() => overlay.classList.add("is-active"));
-      const go = () => {
+      setTimeout(() => {
         const value = { path: pathOf(destination), time: Date.now(), label };
         try {
           sessionStorage.setItem("z7:global-arrival:v1", JSON.stringify(value));
           sessionStorage.setItem("z7:core-arrival:v1", JSON.stringify(value));
         } catch {}
         location.assign(destination.href);
-      };
-      setTimeout(go, reduced.matches ? 0 : 460);
+      }, reduced.matches ? 0 : 420);
     }, { passive: false });
   }
 
