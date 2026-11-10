@@ -95,6 +95,12 @@ if (fallback && !fallback.parentElement.classList.contains("z7-liquid-logo-host"
     composer.addPass(new OutputPass());
     const fxaa = new ShaderPass(FXAAShader);
     composer.addPass(fxaa);
+    const alphaRestore = new ShaderPass({
+      uniforms: { tDiffuse: { value: null } },
+      vertexShader: "varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
+      fragmentShader: "uniform sampler2D tDiffuse; varying vec2 vUv; void main(){vec4 color=texture2D(tDiffuse,vUv); float light=max(max(color.r,color.g),color.b); float alpha=smoothstep(0.012,0.065,light); gl_FragColor=vec4(color.rgb,alpha); }"
+    });
+    composer.addPass(alphaRestore);
     controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = .055;
