@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
@@ -10,38 +9,38 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { FXAAShader } from "three/addons/shaders/FXAAShader.js";
 
-const fallback = document.querySelector(".logo-hero__mark");
-if (fallback && !fallback.parentElement.classList.contains("z7-liquid-logo-host")) {
-  const host = document.createElement("span");
-  host.className = "z7-liquid-logo-host";
-  fallback.before(host);
-  host.append(fallback);
-  if (host && !host.querySelector("canvas")) {
-  const canvas = document.createElement("canvas");
-  canvas.setAttribute("aria-hidden", "true");
-  canvas.dataset.z7LiquidLogo = "";
-  host.append(canvas);
-
-  let renderer, composer, controls, raf = 0, observer, visibilityObserver, heroVisible = true, pointer = { x: 0, y: 0 }, target = { x: 0, y: 0 };
+const host = document.querySelector(".logo-hero__mark.z7-liquid-logo-host");
+const canvas = host?.querySelector("canvas");
+if (host && canvas) {
+  let renderer, composer, raf = 0, resizeObserver, visibilityObserver;
+  let heroVisible = true;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-  const dispose = () => {
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+  const mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+
+  const cleanup = () => {
     if (raf) cancelAnimationFrame(raf);
-    observer?.disconnect();
+    resizeObserver?.disconnect();
     visibilityObserver?.disconnect();
-    controls?.dispose();
     composer?.dispose();
     renderer?.dispose();
   };
-  const fail = error => { console.warn("7Z liquid logo unavailable; keeping the static brand mark.", error); dispose(); canvas.remove(); };
+  const fail = error => {
+    console.warn("7Z hero canvas could not initialize.", error);
+    cleanup();
+    host.classList.add("is-unavailable");
+  };
 
   async function build() {
-    if (!window.WebGLRenderingContext || !host.isConnected) return fail(new Error("WebGL is unavailable"));
+    if (!window.WebGLRenderingContext || !host.isConnected) throw new Error("WebGL is unavailable");
     THREE.ColorManagement.enabled = true;
     RectAreaLightUniformsLib.init();
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, 1, .1, 1200);
     camera.position.set(0, 0, 420);
     camera.lookAt(0, 0, 0);
+
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "low-power", failIfMajorPerformanceCaveat: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.useLegacyLights = false;
@@ -63,105 +62,88 @@ if (fallback && !fallback.parentElement.classList.contains("z7-liquid-logo-host"
     const rim = new THREE.PointLight(0x829cff, 21, 520, 2);
     rim.position.set(0, 70, -120); scene.add(rim);
 
-    const svgText = await fetch("/assets/brand/7Z-LogoT.svg", { cache: "force-cache" }).then(response => {
-      if (!response.ok) throw new Error(`SVG request failed (${response.status})`);
-      return response.text();
-    });
-    const parsed = new SVGLoader().parse(svgText);
-    const materialCaps = new THREE.MeshPhysicalMaterial({ color: 0x505050, metalness: .94, roughness: .35, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 2.99, side: THREE.DoubleSide });
-    const materialWalls = new THREE.MeshPhysicalMaterial({ color: 0x7c7c7c, emissive: 0x303030, emissiveIntensity: .11, metalness: .94, roughness: .41, envMapIntensity: 2.665, side: THREE.DoubleSide });
-    const logo = new THREE.Group();
-    const depth = 25;
+    const response = await fetch("/assets/brand/7Z-LogoT.svg", { cache: "force-cache" });
+    if (!response.ok) throw new Error("The hero SVG could not be loaded");
+    const svg = new SVGLoader().parse(await response.text());
+    const caps = new THREE.MeshPhysicalMaterial({ color: 0x505050, metalness: .94, roughness: .35, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 2.99, side: THREE.DoubleSide });
+    const walls = new THREE.MeshPhysicalMaterial({ color: 0x7c7c7c, emissive: 0x303030, emissiveIntensity: .11, metalness: .94, roughness: .41, envMapIntensity: 2.665, side: THREE.DoubleSide });
+    const logo = new THREE.Group(), depth = 25;
     const bevelThickness = THREE.MathUtils.clamp(depth * .032, .45, 1.2);
     const bevelSize = THREE.MathUtils.clamp(depth * .018, .28, .72);
-    parsed.paths.forEach(path => SVGLoader.createShapes(path).forEach(shape => {
+    svg.paths.forEach(path => SVGLoader.createShapes(path).forEach(shape => {
       const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelSegments: 3, bevelThickness, bevelSize, curveSegments: 8 });
       geometry.scale(1, -1, 1);
       geometry.computeVertexNormals();
-      logo.add(new THREE.Mesh(geometry, [materialCaps, materialWalls]));
+      logo.add(new THREE.Mesh(geometry, [caps, walls]));
     }));
-    if (!logo.children.length) throw new Error("No filled SVG shapes were found");
+    if (!logo.children.length) throw new Error("The SVG has no filled shapes");
     const bounds = new THREE.Box3().setFromObject(logo);
-    const center = bounds.getCenter(new THREE.Vector3());
-    logo.position.sub(center);
+    logo.position.sub(bounds.getCenter(new THREE.Vector3()));
     const size = bounds.getSize(new THREE.Vector3());
-    const scale = 200 / Math.max(size.x, size.y, size.z);
-    logo.scale.setScalar(scale);
+    logo.scale.setScalar(200 / Math.max(size.x, size.y, size.z));
     scene.add(logo);
 
     composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
+    const renderPass = new RenderPass(scene, camera);
+    renderPass.clearAlpha = 0;
+    composer.addPass(renderPass);
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), .2, .5, .86));
     composer.addPass(new OutputPass());
     const fxaa = new ShaderPass(FXAAShader);
     composer.addPass(fxaa);
-    const alphaRestore = new ShaderPass({
+    composer.addPass(new ShaderPass({
       uniforms: { tDiffuse: { value: null } },
       vertexShader: "varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
-      fragmentShader: "uniform sampler2D tDiffuse; varying vec2 vUv; void main(){vec4 color=texture2D(tDiffuse,vUv); float light=max(max(color.r,color.g),color.b); float alpha=smoothstep(0.012,0.065,light); gl_FragColor=vec4(color.rgb,alpha); }"
-    });
-    composer.addPass(alphaRestore);
-    controls = new OrbitControls(camera, canvas);
-    controls.enableDamping = true;
-    controls.dampingFactor = .055;
-    controls.enablePan = false;
-    controls.enableZoom = false;
-    controls.rotateSpeed = .16;
-    controls.minPolarAngle = Math.PI * .34;
-    controls.maxPolarAngle = Math.PI * .66;
-    controls.target.set(0, 0, 0);
-    controls.update();
+      fragmentShader: "uniform sampler2D tDiffuse; varying vec2 vUv; void main(){vec4 c=texture2D(tDiffuse,vUv);float l=max(max(c.r,c.g),c.b);gl_FragColor=vec4(c.rgb,smoothstep(0.012,0.065,l));}"
+    }));
 
     const resize = () => {
       const { width, height } = host.getBoundingClientRect();
       if (width < 2 || height < 2) return;
-      const dpr = Math.min(devicePixelRatio || 1, 1.5);
-      renderer.setPixelRatio(dpr); renderer.setSize(width, height, false);
-      composer.setPixelRatio(dpr); composer.setSize(width, height);
+      const ratio = Math.min(devicePixelRatio || 1, 1.5);
+      renderer.setPixelRatio(ratio); renderer.setSize(width, height, false);
+      composer.setPixelRatio(ratio); composer.setSize(width, height);
       camera.aspect = width / height; camera.updateProjectionMatrix();
-      fxaa.material.uniforms.resolution.value.set(1 / (width * dpr), 1 / (height * dpr));
+      fxaa.material.uniforms.resolution.value.set(1 / (width * ratio), 1 / (height * ratio));
     };
-    const tick = now => {
+    const render = () => {
       raf = 0;
-      if (document.hidden || !heroVisible || reducedMotion.matches || !host.isConnected) return;
-      const dt = Math.min(.05, (now - (tick.last || now)) / 1000); tick.last = now;
-      logo.rotation.y += dt * .4;
-      pointer.x += (target.x - pointer.x) * .035;
-      pointer.y += (target.y - pointer.y) * .035;
-      logo.rotation.x = pointer.y * .08;
-      logo.rotation.z = pointer.x * .035;
-      controls.update();
+      if (document.hidden || !heroVisible || !host.isConnected) return;
+      const targetRotationY = (mouse.x / Math.max(1, innerWidth) - .5) * .5;
+      const targetRotationX = (mouse.y / Math.max(1, innerHeight) - .5) * .3;
+      logo.rotation.y += (targetRotationY - logo.rotation.y) * .05;
+      logo.rotation.x += (targetRotationX - logo.rotation.x) * .05;
       composer.render();
-      raf = requestAnimationFrame(tick);
+      if (!reducedMotion.matches) raf = requestAnimationFrame(render);
     };
-    observer = new ResizeObserver(resize); observer.observe(host);
+
+    resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(host);
     visibilityObserver = new IntersectionObserver(([entry]) => {
       heroVisible = entry.isIntersecting;
       if (!heroVisible && raf) { cancelAnimationFrame(raf); raf = 0; }
-      else if (heroVisible && !raf && !document.hidden && !reducedMotion.matches) raf = requestAnimationFrame(tick);
+      else if (heroVisible && !raf && !document.hidden) raf = requestAnimationFrame(render);
     }, { threshold: 0 });
     visibilityObserver.observe(host);
-    canvas.addEventListener("pointermove", event => {
-      const rect = canvas.getBoundingClientRect();
-      target.x = (event.clientX - rect.left) / rect.width - .5;
-      target.y = (event.clientY - rect.top) / rect.height - .5;
-    }, { passive: true });
-    canvas.addEventListener("pointerleave", () => { target.x = 0; target.y = 0; }, { passive: true });
+    if (finePointer.matches) {
+      window.addEventListener("pointermove", event => {
+        if (!event.pointerType || event.pointerType === "mouse") { mouse.x = event.clientX; mouse.y = event.clientY; }
+      }, { passive: true });
+      window.addEventListener("blur", () => { mouse.x = innerWidth / 2; mouse.y = innerHeight / 2; });
+    }
     document.addEventListener("visibilitychange", () => {
-      if ((document.hidden || !heroVisible) && raf) { cancelAnimationFrame(raf); raf = 0; }
-      else if (!document.hidden && heroVisible && !raf && !reducedMotion.matches) raf = requestAnimationFrame(tick);
+      if (document.hidden && raf) { cancelAnimationFrame(raf); raf = 0; }
+      else if (!document.hidden && heroVisible && !raf) raf = requestAnimationFrame(render);
     });
     reducedMotion.addEventListener?.("change", () => {
-      if (reducedMotion.matches && raf) { cancelAnimationFrame(raf); raf = 0; }
-      else if (!reducedMotion.matches && !raf && !document.hidden && heroVisible) raf = requestAnimationFrame(tick);
+      if (reducedMotion.matches && raf) { cancelAnimationFrame(raf); raf = 0; composer.render(); }
+      else if (!reducedMotion.matches && !raf && !document.hidden && heroVisible) raf = requestAnimationFrame(render);
     });
+
     resize();
     host.classList.add("is-ready");
-    if (fallback) fallback.setAttribute("aria-hidden", "true");
-    if (!reducedMotion.matches) raf = requestAnimationFrame(tick);
+    if (!reducedMotion.matches) raf = requestAnimationFrame(render);
     else composer.render();
   }
-
   build().catch(fail);
-  }
 }
