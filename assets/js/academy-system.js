@@ -85,7 +85,7 @@
     const uploadButton = $("[data-upload-proof]");
     const reference = $("#transfer-reference");
     const receipt = $("#receipt");
-    let proofReady = false, proofBusy = false, proofProvider = "", selectedProvider = "";
+    let proofReady = false, proofBusy = false, proofProvider = "", selectedProvider = "", checkoutReady = false;
     const call = async payload => {
       const response = await fetch("/api/course-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...payload, token }) });
       const data = await response.json().catch(() => ({}));
@@ -97,7 +97,7 @@
       const selected = $("input[name='pay-method']:checked");
       const matchingProof = proofReady && selected && selected.value === proofProvider;
       uploadButton.disabled = proofBusy || !selected || !receipt.files || !receipt.files[0] || matchingProof;
-      submit.disabled = Boolean(token) && (proofBusy || !proofReady || !selected || selected.value !== proofProvider || reference.value.trim().length < 3);
+      submit.disabled = Boolean(token) && (!checkoutReady || proofBusy || !proofReady || !selected || selected.value !== proofProvider || reference.value.trim().length < 3);
     };
     const renderMethodDetails = () => {
       const selected = $("input[name='pay-method']:checked");
@@ -110,6 +110,7 @@
     const applyDetails = data => {
       total.textContent = new Intl.NumberFormat(lang === "ar" ? "ar-JO" : "en-JO", { maximumFractionDigits: 3 }).format(Number(data.totalJod ?? data.priceJod));
       methods = (data.methods || []).filter(method => ["CLIQ", "WESTERN_UNION"].includes(method.id));
+      checkoutReady = methods.length > 0;
       methodsBox.innerHTML = methods.map(method => '<label><input type="radio" name="pay-method" value="' + escape(method.id) + '"' + (method.id === selectedProvider ? " checked" : "") + '><span><strong>' + escape(t(method.id === "CLIQ" ? "cliq" : "western")) + '</strong><small style="display:block;color:var(--a-muted);margin-top:4px">' + escape(t(method.id === "CLIQ" ? "cliq" : "western")) + '</small></span></label>').join("");
       renderMethodDetails();
       updateFinalButton();
@@ -161,7 +162,7 @@
     });
     form.addEventListener("submit", async event => {
       event.preventDefault();
-      if (token && panel.classList.contains("visible")) {
+      if (token && panel.classList.contains("visible") && checkoutReady) {
         const selected = $("input[name='pay-method']:checked");
         if (!selected || !proofReady || selected.value !== proofProvider || reference.value.trim().length < 3) {
           setStatus(!selected ? t("chooseMethod") : !proofReady ? t("proofError") : t("enterReference"), "error");
@@ -184,8 +185,17 @@
         }
         return;
       }
+      if (!panel.classList.contains("visible") && !form.reportValidity()) { setStatus(t("invalid"), "error"); return; }
+      // Enter the payment step immediately after validating required learner details.
+      // Backend readiness must not leave Continue appearing inert.
+      panel.classList.add("visible");
+      $("[data-registration-fields]").classList.add("academy-hidden");
+      $("[data-step-indicator='2']").classList.add("active");
+      reference.required = true; receipt.required = true;
+      submit.textContent = t("send");
+      setStatus(t("sending"));
+      panel.scrollIntoView({ behavior: "smooth", block: "center" });
       if (!token) {
-        if (!form.reportValidity()) { setStatus(t("invalid"), "error"); return; }
         submit.disabled = true;
         try {
           const values = Object.fromEntries(new FormData(form));
@@ -225,7 +235,9 @@
       }).catch(() => { token = ""; history.replaceState(null, "", location.pathname); });
     }
     fetch("/api/course-registration?course=" + encodeURIComponent(course.id), { cache: "no-store" }).then(response => response.json()).then(data => {
-      if (data.open === false && !token) { submit.disabled = true; setStatus(t("courseClosed")); }
+      // Availability feedback is informational; the first-step action stays usable.
+      if (data.open === false && !token && !panel.classList.contains("visible")) setStatus(t("courseClosed"));
     }).catch(() => {});
   }
 })();
+
