@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261109-2">
-  <link rel="stylesheet" href="/admin/admin.css?v=20261110-vault-login-1">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261110-glass-dashboard-2">
 </head>
 
 <body class="z7-admin-shell">
@@ -63,61 +63,23 @@
   </div>
 </div>
 
-<div id="app" class="app hidden">
+<div id="app" class="app dashboard-app hidden">
 
   <aside class="sidebar">
 
     <div class="sidebar-brand">
-      <div class="brand-symbol"><img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic"></div>
-
-      <div>
-        <strong>7Z MAGIC</strong>
-        <span>Client Portal</span>
-      </div>
+      <div class="brand-symbol"><img src="/assets/brand/7Z-LogoT(3).png?v=20261110-3" alt="7Z Magic"></div>
+      <div><strong>7Z MAGIC</strong><span>STUDIO CONTROL</span></div>
     </div>
 
-    <nav class="nav">
-
-      <button class="nav-item active" type="button" data-admin-scroll="#users-section">
-        <span class="nav-icon">01</span>
-        <span>
-          <strong>Users</strong>
-          <small>Access management</small>
-        </span>
-      </button>
-
-      <button class="nav-item" type="button" data-admin-scroll="#z7-private-upload-panel">
-        <span class="nav-icon">02</span>
-        <span>
-          <strong>Files</strong>
-          <small>Private delivery</small>
-        </span>
-      </button>
-
-      <button class="nav-item" type="button" data-admin-scroll="#affiliates-section">
-        <span class="nav-icon">03</span>
-        <span>
-          <strong>Affiliates</strong>
-          <small>Codes & performance</small>
-        </span>
-      </button>
-
-      <button class="nav-item" type="button" data-admin-scroll="#accounting-section">
-        <span class="nav-icon">04</span>
-        <span>
-          <strong>Accounting</strong>
-          <small>Course revenue</small>
-        </span>
-      </button>
-
+    <span class="sidebar-label">WORKSPACE</span>
+    <nav class="nav dashboard-nav" aria-label="Admin sections">
+      <button class="nav-item active" type="button" data-dashboard-nav="overview" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/></svg></span><span><strong>Overview</strong><small>Studio at a glance</small></span><i aria-hidden="true">↗</i></button>
+      <button class="nav-item" type="button" data-dashboard-nav="users"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c.5-3.4 2.5-5 6-5s5.5 1.6 6 5M16 5.2a3.5 3.5 0 0 1 0 6.7m1.3 3.3c2.1.7 3.3 2.2 3.7 4.8"/></svg></span><span><strong>Users</strong><small>Client access</small></span><i aria-hidden="true">↗</i></button>
+      <button class="nav-item" type="button" data-dashboard-nav="orders"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14l1 16H4L5 4Z"/><path d="M9 8a3 3 0 0 0 6 0M8 12h8"/></svg></span><span><strong>Orders</strong><small>Courses & affiliates</small></span><i aria-hidden="true">↗</i></button>
+      <button class="nav-item" type="button" data-dashboard-nav="analytics"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h17"/><path d="m7 15 4-4 3 2 6-7"/><circle cx="20" cy="6" r="1.5"/></svg></span><span><strong>Analytics</strong><small>Revenue & activity</small></span><i aria-hidden="true">↗</i></button>
+      <button class="nav-item" type="button" data-dashboard-nav="settings"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.8-.7a8 8 0 0 1-1.7 1l-.3 1.9h-2.8l-.3-1.9a8 8 0 0 1-1.7-1l-1.8.7-1.4-2.4 1.4-1.1A7 7 0 0 1 7 13.2l-1.8-1 1.4-2.4 1.9.6a8 8 0 0 1 1.6-1.1L10.4 7h3.2l.3 2.3a8 8 0 0 1 1.6 1.1l1.9-.6 1.4 2.4-1.8 1a7 7 0 0 1-.6 1.8Z" transform="translate(0 -2)"/></svg></span><span><strong>Settings</strong><small>Account & workspace</small></span><i aria-hidden="true">↗</i></button>
     </nav>
-
-    <div class="academy-admin-nav" aria-label="Academy">
-      <span class="academy-admin-nav__label">ACADEMY</span>
-      <a href="/courses/">Course catalogue <span aria-hidden="true">↗</span></a>
-      <a href="/courses/ai-for-engineers/">AI for Engineers <span aria-hidden="true">↗</span></a>
-      <a href="/courses/cinematic-filmmaking-with-ai/">Enrollment page <span aria-hidden="true">↗</span></a>
-    </div>
 
     <div class="sidebar-footer">
       <div class="security-status">
@@ -136,20 +98,16 @@
 
     <div class="topbar">
 
-      <div>
-        <span class="page-kicker">
-          ADMINISTRATION / USERS
-        </span>
-
-        <h1>User Management</h1>
-
-        <p>
-          Create users, manage account access,
-          roles and credentials.
-        </p>
+      <div class="topbar-title">
+        <span class="page-kicker" id="admin-page-kicker">7Z MAGIC / OVERVIEW</span>
+        <h1 id="admin-page-title">Studio overview</h1>
+        <p id="admin-page-subtitle">A live view of your client and academy workspace.</p>
       </div>
 
-      <div class="admin-profile"><button class="admin-theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme" title="Switch theme"><span aria-hidden="true">◐</span></button>
+      <div class="admin-profile">
+        <label class="admin-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input id="admin-global-search" type="search" placeholder="Search workspace" aria-label="Search workspace"></label>
+        <button class="admin-top-action" type="button" data-dashboard-nav="users" data-focus-create-user><span aria-hidden="true">+</span> Add user</button>
+        <button class="admin-theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme"><span aria-hidden="true">◐</span></button>
         <div id="admin-copy">
           <strong id="admin-name">Administrator</strong>
           <span id="admin-email"></span>
@@ -161,44 +119,24 @@
     </div>
 
 
-    <div class="admin-existing-workspace" id="users-section">
-    <section class="academy-admin-overview" aria-labelledby="academy-admin-title">
-      <div class="academy-admin-overview__head">
-        <div><span class="eyebrow">ACADEMY / LIVE PAGES</span><h2 id="academy-admin-title">Course workspace</h2></div>
-        <a class="academy-admin-overview__link" href="/courses/">Open catalogue <span aria-hidden="true">↗</span></a>
+    <section class="dashboard-view is-active" id="overview-view" data-dashboard-panel="overview" aria-labelledby="overview-heading">
+      <div class="overview-welcome"><div><span class="eyebrow">YOUR STUDIO / LIVE OVERVIEW</span><h2 id="overview-heading">Good to see you, <strong id="overview-admin-name">Admin</strong><span class="welcome-glow">.</span></h2><p>Keep every client relationship and academy order in view.</p></div><div class="overview-date"><span class="live-dot"></span><span>LIVE WORKSPACE</span><time id="overview-clock"></time></div></div>
+      <section class="dashboard-kpis" aria-label="Workspace statistics">
+        <article class="glass-panel kpi-card kpi-card--revenue"><div class="kpi-topline"><span>Total revenue</span><span class="kpi-mark">JOD</span></div><strong id="overview-revenue">0.00</strong><small>Verified academy payments</small><div class="kpi-spark" aria-hidden="true"><svg viewBox="0 0 160 42"><path d="M1 33C18 32 19 22 34 24s17 10 31 3 15-16 28-14 18 13 31 7 15-11 35-15"/></svg></div></article>
+        <article class="glass-panel kpi-card kpi-card--users"><div class="kpi-topline"><span>Active users</span><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c.5-3.4 2.5-5 6-5s5.5 1.6 6 5m1-14a3.5 3.5 0 0 1 0 6.7m1.3 3.3c2.1.7 3.3 2.2 3.7 4.8"/></svg></span></div><strong id="overview-active-users">—</strong><small>Enabled client accounts</small><div class="kpi-bottomline"><span class="live-dot"></span> Account directory synced</div></article>
+        <article class="glass-panel kpi-card kpi-card--orders"><div class="kpi-topline"><span>Orders</span><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14l1 16H4L5 4Z"/><path d="M9 8a3 3 0 0 0 6 0M8 12h8"/></svg></span></div><strong id="overview-orders">0</strong><small>Academy registrations</small><div class="kpi-bottomline"><span id="overview-pending">0 awaiting review</span></div></article>
+        <article class="glass-panel kpi-card kpi-card--conversion"><div class="kpi-topline"><span>Conversion</span><span class="kpi-mark">PAID / ALL</span></div><strong id="overview-conversion">0%</strong><small>Enrollment payment completion</small><div class="kpi-progress"><span id="overview-conversion-bar"></span></div></article>
+      </section>
+      <div class="overview-grid">
+        <article class="glass-panel overview-chart-panel"><div class="glass-panel__head"><div><span class="eyebrow">ACADEMY / REVENUE</span><h3>Revenue movement</h3></div><span class="chart-period">LAST 6 MONTHS <i aria-hidden="true">⌄</i></span></div><div class="chart-total"><strong id="overview-chart-total">0.00 <small>JOD</small></strong><span>verified payments</span></div><div class="chart-wrap"><svg class="revenue-chart" id="overview-revenue-chart" viewBox="0 0 760 220" role="img" aria-label="Verified revenue by month"><defs><linearGradient id="overview-chart-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#8495ff" stop-opacity=".34"/><stop offset="1" stop-color="#8495ff" stop-opacity="0"/></linearGradient></defs><path class="chart-area" id="overview-chart-area"/><path class="chart-line" id="overview-chart-line"/><g id="overview-chart-points"></g></svg><div class="chart-labels" id="overview-chart-labels"></div></div></article>
+        <article class="glass-panel overview-pulse"><div class="glass-panel__head"><div><span class="eyebrow">WORKSPACE / PULSE</span><h3>Today’s focus</h3></div><span class="pulse-ring" aria-hidden="true"></span></div><div class="pulse-feature"><span class="pulse-orb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8m0-12.8L5.6 18.4"/></svg></span><div><strong id="pulse-pending-count">0 orders</strong><p id="pulse-pending-copy">No payment reviews are waiting.</p></div></div><div class="pulse-divider"></div><button class="pulse-link" type="button" data-dashboard-nav="orders">Review academy orders <span aria-hidden="true">↗</span></button><button class="pulse-link" type="button" data-dashboard-nav="users">Manage client access <span aria-hidden="true">↗</span></button></article>
       </div>
-      <div class="academy-admin-overview__items">
-        <a href="/courses/" class="academy-admin-course"><span class="academy-admin-course__index">01</span><span><strong>AI Cinematic Filmmaking</strong><small>Course catalogue page</small></span><b aria-hidden="true">↗</b></a>
-        <a href="/courses/ai-for-engineers/" class="academy-admin-course"><span class="academy-admin-course__index">02</span><span><strong>AI for Engineers</strong><small>Course detail page</small></span><b aria-hidden="true">↗</b></a>
-        <a href="/courses/cinematic-filmmaking-with-ai/" class="academy-admin-course"><span class="academy-admin-course__index">03</span><span><strong>Enrollment</strong><small>Registration workflow</small></span><b aria-hidden="true">↗</b></a>
-      </div>
-      <p class="academy-admin-overview__note">Course and enrollment links open the existing live Academy pages and registration flow.</p>
+      <div class="dashboard-source-metrics" aria-hidden="true"><span id="stat-users">0</span><span id="stat-active">0</span><span id="stat-admins">0</span></div>
     </section>
 
-    <section class="stats">
-
-      <article class="stat">
-        <span>USERS</span>
-        <strong id="stat-users">—</strong>
-        <small>Total portal accounts</small>
-      </article>
-
-      <article class="stat">
-        <span>ACTIVE</span>
-        <strong id="stat-active">—</strong>
-        <small>Enabled accounts</small>
-      </article>
-
-      <article class="stat">
-        <span>ADMINS</span>
-        <strong id="stat-admins">—</strong>
-        <small>Administrative access</small>
-      </article>
-
-    </section>
-
-
-    <section class="workspace-grid">
+    <section class="dashboard-view" id="users-section" data-dashboard-panel="users" aria-labelledby="users-heading" hidden>
+      <div class="view-intro"><div><span class="eyebrow">CLIENT DIRECTORY / ACCESS CONTROL</span><h2 id="users-heading">Users</h2><p>Invite, organize and protect access to private project spaces.</p></div><button class="admin-top-action" type="button" data-focus-create-user><span aria-hidden="true">+</span> Create user</button></div>
+      <section class="workspace-grid">
 
       <article class="panel create-panel">
 
@@ -344,9 +282,16 @@
       </article>
 
     </section>
+    </section>
 
-    </div>
+    <section class="dashboard-view" id="analytics-view" data-dashboard-panel="analytics" aria-labelledby="analytics-heading" hidden>
+      <div class="view-intro"><div><span class="eyebrow">ACADEMY / BUSINESS INTELLIGENCE</span><h2 id="analytics-heading">Analytics</h2><p>Financial and enrollment signals from recorded course activity.</p></div><button class="button button-secondary" type="button" data-engine-refresh>Refresh data</button></div>
+      <div class="analytics-kpis"><article class="glass-panel analytics-kpi"><span>VERIFIED REVENUE</span><strong id="analytics-revenue">0.00 <small>JOD</small></strong><p>Received course payments</p></article><article class="glass-panel analytics-kpi"><span>GROSS COURSE SALES</span><strong id="analytics-gross">0.00 <small>JOD</small></strong><p>Verified list-price value</p></article><article class="glass-panel analytics-kpi"><span>COMMISSIONS DUE</span><strong id="analytics-commission">0.00 <small>JOD</small></strong><p>Earned by affiliates</p></article><article class="glass-panel analytics-kpi"><span>PAYMENT COMPLETION</span><strong id="analytics-conversion">0%</strong><p>Paid registrations / total</p></article></div>
+      <div class="analytics-grid"><article class="glass-panel analytics-chart-panel"><div class="glass-panel__head"><div><span class="eyebrow">REVENUE / VERIFIED</span><h3>Monthly revenue</h3></div><span class="chart-period">JOD · LAST 6 MONTHS</span></div><div class="chart-wrap chart-wrap--large"><svg class="revenue-chart" id="analytics-revenue-chart" viewBox="0 0 760 240" role="img" aria-label="Monthly verified revenue"><defs><linearGradient id="analytics-chart-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#b08bff" stop-opacity=".32"/><stop offset="1" stop-color="#b08bff" stop-opacity="0"/></linearGradient></defs><path class="chart-area" id="analytics-chart-area"/><path class="chart-line" id="analytics-chart-line"/><g id="analytics-chart-points"></g></svg><div class="chart-labels" id="analytics-chart-labels"></div><p class="chart-empty" id="analytics-chart-empty" hidden>No verified course payments have been recorded yet.</p></div></article><article class="glass-panel course-mix-panel"><div class="glass-panel__head"><div><span class="eyebrow">ENROLLMENTS / BY COURSE</span><h3>Course mix</h3></div><span class="chart-period">ALL TIME</span></div><div class="course-mix-list" id="analytics-course-mix"></div><p class="mix-empty" id="analytics-mix-empty" hidden>Course activity will appear here after the first registration.</p></article></div>
+      <div class="glass-panel activity-panel"><div class="glass-panel__head"><div><span class="eyebrow">LATEST ACTIVITY</span><h3>Recent registrations</h3></div><button class="quiet-link" type="button" data-dashboard-nav="orders">Open orders <span aria-hidden="true">↗</span></button></div><div class="activity-list" id="analytics-recent-activity"></div><p class="activity-empty" id="analytics-activity-empty" hidden>No recent registrations to show.</p></div>
+    </section>
 
+    <section class="dashboard-view" id="orders-view" data-dashboard-panel="orders" aria-label="Course orders and affiliates" hidden>
     <section class="admin-engine-section" id="affiliates-section" aria-labelledby="affiliates-title">
       <div class="engine-heading"><div><span class="eyebrow">ACADEMY / PARTNER NETWORK</span><h2 id="affiliates-title">Affiliates &amp; discount codes</h2><p>Create partner profiles, issue course codes and follow attributed registrations.</p></div><button class="button button-secondary" type="button" data-engine-refresh>Refresh data</button></div>
       <div class="admin-engine-grid">
@@ -367,6 +312,17 @@
       <div class="engine-heading"><div><span class="eyebrow">ACADEMY / FINANCE</span><h2 id="accounting-title">Course accounting</h2><p>Live registration and payment review data. Submitted transfers remain pending until verified.</p></div><button class="button button-secondary" type="button" data-engine-refresh>Refresh data</button></div>
       <div class="finance-stats"><article class="finance-stat"><span>GROSS COURSE SALES</span><strong id="finance-gross">0.00 <small>JOD</small></strong><p>Verified list-price value</p></article><article class="finance-stat"><span>VERIFIED REVENUE</span><strong id="finance-revenue">0.00 <small>JOD</small></strong><p>Received after discounts</p></article><article class="finance-stat"><span>AWAITING REVIEW</span><strong id="finance-pending">0.00 <small>JOD</small></strong><p>Submitted, not verified</p></article><article class="finance-stat"><span>DISCOUNTS GRANTED</span><strong id="finance-discounts">0.00 <small>JOD</small></strong><p>Across course registrations</p></article><article class="finance-stat"><span>COMMISSIONS DUE</span><strong id="finance-commissions">0.00 <small>JOD</small></strong><p>Earned on verified revenue</p></article><article class="finance-stat"><span>STUDIO NET AFTER SHARES</span><strong id="finance-studio-net">0.00 <small>JOD</small></strong><p>Before operating costs</p></article></div>
       <div class="engine-panel engine-table-panel"><div class="engine-panel-head"><div><span class="eyebrow">PAYMENT LEDGER</span><h3>Registration activity</h3></div><select id="finance-course-filter" aria-label="Filter by course"><option value="all">All courses</option><option value="cinematic-film">AI Cinematic Filmmaking</option><option value="ai-engineering">AI for Engineers</option></select></div><div class="engine-table-wrap"><table><thead><tr><th>Student</th><th>Course</th><th>Submitted</th><th>Code</th><th>Net due</th><th>Commission</th><th>Payment status</th><th>Actions</th></tr></thead><tbody id="accounting-body"></tbody></table></div><p class="engine-empty" id="accounting-empty" hidden>No course registrations have been recorded.</p></div>
+    </section>
+    </section>
+
+    <section class="dashboard-view" id="settings-view" data-dashboard-panel="settings" aria-labelledby="settings-heading" hidden>
+      <div class="view-intro"><div><span class="eyebrow">STUDIO CONTROL / PREFERENCES</span><h2 id="settings-heading">Settings</h2><p>Manage your workspace appearance, session and course destinations.</p></div></div>
+      <div class="settings-grid">
+        <article class="glass-panel settings-card"><div class="settings-card__icon" aria-hidden="true">◐</div><div><span class="eyebrow">APPEARANCE</span><h3>Workspace theme</h3><p>Choose the view that feels right for your studio.</p></div><button class="button button-secondary" type="button" data-theme-toggle>Switch light / dark</button></article>
+        <article class="glass-panel settings-card"><div class="settings-card__icon settings-card__icon--blue" aria-hidden="true">✦</div><div><span class="eyebrow">SECURE SESSION</span><h3 id="settings-account-name">Administrator</h3><p id="settings-account-email">Your 7Z Magic account is active in this session.</p></div><span class="secure-badge"><i></i> PROTECTED</span></article>
+        <article class="glass-panel settings-courses"><div class="glass-panel__head"><div><span class="eyebrow">ACADEMY / LIVE DESTINATIONS</span><h3>Course workspace</h3></div><a class="quiet-link" href="/courses/">Open catalogue <span aria-hidden="true">↗</span></a></div><div class="settings-course-list"><a href="/courses/" class="settings-course"><span>01</span><strong>AI Cinematic Filmmaking</strong><i aria-hidden="true">↗</i></a><a href="/courses/ai-for-engineers/" class="settings-course"><span>02</span><strong>AI for Engineers</strong><i aria-hidden="true">↗</i></a><a href="/courses/cinematic-filmmaking-with-ai/" class="settings-course"><span>03</span><strong>Enrollment workspace</strong><i aria-hidden="true">↗</i></a></div><p class="settings-note">These links open the connected public academy pages and registration flow.</p></article>
+        <article class="glass-panel settings-card settings-security"><div class="settings-card__icon settings-card__icon--green" aria-hidden="true">✓</div><div><span class="eyebrow">ACCESS POLICY</span><h3>Admin-only controls</h3><p>User, client file and payment actions require a verified administrator session.</p></div><span class="secure-badge"><i></i> ENFORCED</span></article>
+      </div>
     </section>
 
   </main>
@@ -465,6 +421,7 @@
 
 <script src="/admin/admin.js"></script>
 <script src="/admin/course-engine.js?v=20261110-admin-engine-1"></script>
+<script src="/admin/dashboard-v2.js?v=20261110-glass-dashboard-1"></script>
 
 <script src="/admin/legacy-file-access.js?v=20260824"></script>
 <script src="/admin/private-file-upload.bundle.js?v=20260824"></script>
