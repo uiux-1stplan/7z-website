@@ -541,3 +541,5 @@ html[data-z7-core] .logo-hero__copy h1 .z7-heading-motion .line-word > span {
  html[data-z7-core] .z7-loader::before, html[data-z7-core] .z7-loader__progress,
  html[data-z7-core] .z7-loader__mark, html[data-z7-core] .z7-transition__mark { animation:none !important; }
 }
+
+html[data-z7-core] .logo-hero__mark.z7-liquid-logo-host { width:clamp(145px,15vw,205px) !important; }
