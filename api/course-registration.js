@@ -2,11 +2,19 @@ import tls from "node:tls";
 import { createHash, randomBytes } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
 
-const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: 60 }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 250, capacity: 40 } });
+const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: 60 }, "ai-engineering": { name: "7Z AI for Engineers", priceJod: 250, capacity: 40 } });
 const DEFAULT_COURSE = "cinematic-film";
 const ACADEMY_CAPACITY = 100;
 const RECIPIENT = "creative@7z-magic.com";
 const ALLOWED_ORIGINS = new Set(["https://7z-magic.com", "https://www.7z-magic.com"]);
+
+export function isAllowedCourseOrigin(origin) {
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  try {
+    const parsed = new URL(String(origin || ""));
+    return parsed.protocol === "https:" && /^7z-website(?:-[a-z0-9-]+)?-7zmagic-projects\.vercel\.app$/i.test(parsed.hostname);
+  } catch { return false; }
+}
 
 export function sqlClient() {
   const connection = process.env.DATABASE_URL || process.env.POSTGRES_URL;
@@ -16,7 +24,7 @@ export function sqlClient() {
 
 function setHeaders(req, res) {
   const origin = req.headers.origin;
-  if (origin && ALLOWED_ORIGINS.has(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  if (origin && isAllowedCourseOrigin(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -214,16 +222,19 @@ function base64Lines(value) {
   return encoded.match(/.{1,76}/g)?.join("\r\n") || "";
 }
 
-export async function sendZohoMail({ subject, body, html, attachment, proofAttachment }) {
+export async function sendZohoMail({ to = RECIPIENT, subject, body, html, attachment, proofAttachment }) {
   const host = process.env.ZOHO_SMTP_HOST;
   const password = process.env.ZOHO_SMTP_APP_PASSWORD;
   const user = process.env.ZOHO_SMTP_USER || RECIPIENT;
+  const sender = process.env.ZOHO_SMTP_FROM?.trim() || RECIPIENT;
   const port = 465;
   if (!host || !password || !user) throw new Error("Zoho SMTP is not configured");
+  const recipient = String(to || RECIPIENT).trim();
+  if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(recipient) || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(sender)) throw new Error("Email recipient or sender is invalid");
   const domain = user.split("@")[1] || "7z-magic.com";
   const boundary = `7z-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
   const headers = [
-    `From: 7Z Magic <${user}>`, `To: ${RECIPIENT}`, `Subject: =?UTF-8?B?${Buffer.from(subject).toString("base64")}?=`,
+    `From: 7Z Magic <${sender}>`, `To: ${recipient}`, `Subject: =?UTF-8?B?${Buffer.from(subject).toString("base64")}?=`,
     "MIME-Version: 1.0", `Content-Type: multipart/mixed; boundary="${boundary}"`,
   ];
   const alternativeBoundary = `7z-alt-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
@@ -287,7 +298,7 @@ export async function sendZohoMail({ subject, body, html, attachment, proofAttac
         await command(Buffer.from(user).toString("base64"), 334);
         await command(Buffer.from(password).toString("base64"), 235);
         await command(`MAIL FROM:<${user}>`, 250);
-        await command(`RCPT TO:<${RECIPIENT}>`, 250);
+        await command(`RCPT TO:<${recipient}>`, 250);
         await command("DATA", 354);
         socket.write(`${message}\r\n.\r\n`);
         const accepted = await readReply();
@@ -318,7 +329,7 @@ export default async function handler(req, res) {
     } catch { return res.status(503).json({ error: "Registration is temporarily unavailable.", open: false, configured: false }); }
   }
   if (req.method !== "POST") { res.setHeader("Allow", "GET, POST, OPTIONS"); return res.status(405).json({ error: "Method not allowed." }); }
-  if (!ALLOWED_ORIGINS.has(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
+  if (!isAllowedCourseOrigin(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
   try {
     if (!process.env.ZOHO_SMTP_HOST || !process.env.ZOHO_SMTP_APP_PASSWORD) return res.status(503).json({ error: "Registration is not open yet." });
     const input = req.body && typeof req.body === "object" ? req.body : {};

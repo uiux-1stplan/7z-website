@@ -7,6 +7,7 @@ import {
   sendWebResponse,
   toWebRequest,
 } from "../../lib/vercel-api.mjs";
+import { sendZohoMail } from "../course-registration.js";
 
 const courses = new Set(["all", "cinematic-film", "ai-engineering"]);
 function send(res, status, body) {
@@ -229,14 +230,27 @@ export default async function handler(req, res) {
       const status = ["PAID", "REJECTED", "PENDING_REVIEW"].includes(body.status) ? body.status : null;
       const registrationId = Number(body.id);
       if (!status || !Number.isSafeInteger(registrationId) || registrationId < 1) return send(res, 400, { error: "Payment update is not valid." });
+      const [before] = await sql`SELECT id,full_name,email,course_id,seat_number,price_jod,discount_jod,coupon_code,payment_status FROM course_registrations WHERE id=${registrationId}`;
+      if (!before) return send(res, 404, { error: "Registration not found." });
       const [registration] = await sql`UPDATE course_registrations SET payment_status=${status},
         commission_status=CASE WHEN ${status}='PAID' AND commission_percent>0 THEN 'PAYABLE'
           WHEN ${status}='PAID' THEN 'NOT_APPLICABLE' WHEN ${status}='PENDING_REVIEW' AND commission_percent>0 THEN 'PENDING_PAYMENT_REVIEW'
           ELSE 'NOT_APPLICABLE' END
         WHERE id=${registrationId} RETURNING id,payment_status,commission_status`;
-      if (!registration) return send(res, 404, { error: "Registration not found." });
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_payment_status_changed", targetType: "course_registration", targetId: registration.id, details: { status } });
-      return send(res, 200, { registration });
+      let notificationSent = null;
+      if (before.payment_status !== status && ["PAID", "REJECTED"].includes(status)) {
+        const approved = status === "PAID";
+        const courseName = before.course_id === "ai-engineering" ? "7Z AI for Engineers" : "7Z AI Cinematic Filmmaking";
+        const amount = Math.max(0, Number(before.price_jod || 0) - Number(before.discount_jod || 0));
+        const headline = approved ? "Payment approved — your place is confirmed" : "We could not verify this payment yet";
+        const next = approved ? "Your course payment has been approved. Learning platform access details will follow separately once enrollment access is ready." : "Your payment was not approved. Please contact the academy team with your transfer reference to resolve the issue.";
+        const safe = (value) => String(value ?? "").replace(/[&<>\"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char]));
+        const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head><body style="margin:0;padding:28px 12px;background:#eef3f9;font-family:Arial,Helvetica,sans-serif;color:#172338"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;margin:auto;background:#fff;border:1px solid #dce5f0;border-radius:18px;overflow:hidden"><tr><td style="padding:24px 30px;background:linear-gradient(125deg,#080d16,#13233b)"><img src="https://7z-magic.com/assets/brand/7Z-LogoT(3).png" width="58" height="58" alt="7Z Magic" style="display:block;object-fit:contain"><div style="margin-top:12px;color:#fff;font-size:18px;font-weight:bold;letter-spacing:2px">7Z MAGIC ACADEMY</div></td></tr><tr><td style="padding:30px"><div style="font-size:11px;letter-spacing:1.5px;color:#487ef7;font-weight:bold">PAYMENT ${approved ? "APPROVED" : "UPDATE"}</div><h1 style="font-size:25px;line-height:1.3;margin:10px 0;color:#142238">${headline}</h1><p style="color:#5d6b80;font-size:15px;line-height:1.75">Hello ${safe(before.full_name)},<br>${next}</p><div style="padding:16px 18px;background:#f3f6fb;border:1px solid #e2e9f3;border-radius:12px;color:#24344d"><strong>${safe(courseName)}</strong><div style="margin-top:8px">Seat ${Number(before.seat_number)} · ${amount.toFixed(2)} JOD · Code ${safe(before.coupon_code || "None")}</div><div style="margin-top:8px">Status: <strong>${status}</strong></div></div><p style="margin-top:22px;color:#5d6b80;font-size:13px">Questions? <a href="mailto:creative@7z-magic.com" style="color:#315fd4">creative@7z-magic.com</a></p></td></tr><tr><td style="padding:18px 30px;background:#f5f7fa;color:#718096;font-size:11px">7Z MAGIC · Academy</td></tr></table></body></html>`;
+        try { await sendZohoMail({ to: before.email, subject: `${approved ? "Payment approved" : "Payment update"} · ${courseName}`, body: `${headline}\n${next}\nCourse: ${courseName}\nSeat: ${before.seat_number}\nAmount: ${amount.toFixed(2)} JOD\nStatus: ${status}`, html }); notificationSent = true; }
+        catch (mailError) { console.error("Payment status updated; student notification failed", mailError); notificationSent = false; }
+      }
+      return send(res, 200, { registration, notificationSent });
     }
 
     if (body.action === "set-commission-status") {
