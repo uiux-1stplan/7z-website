@@ -158,7 +158,8 @@ async function getAccounting(sql) {
     const adjustmentTotal = Number(adjustmentSummary?.total || 0);
     totals.revenue += adjustmentTotal;
     totals.studioNet = totals.revenue - totals.commissionsTotal;
-    rows = await sql`SELECT id, full_name, email, course_id, created_at, payment_status,
+    rows = await sql`SELECT id, seat_number, full_name, email, phone, location, experience,
+      preferred_language, goal, previous_course_email, course_id, created_at, payment_submitted_at, payment_status,
       price_jod, discount_jod, coupon_code, affiliate_name, commission_percent,
       commission_jod, commission_status, payment_provider, payment_reference
       FROM course_registrations ORDER BY created_at DESC LIMIT 5000`;

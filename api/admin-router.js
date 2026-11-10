@@ -48,6 +48,12 @@ const loaders = {
         "../_handlers/admin/client-file-access.js"
       ),
 
+  "course-engine":
+    () =>
+      import(
+        "../_handlers/admin/course-engine.js"
+      ),
+
   "clients":
     () =>
       import(

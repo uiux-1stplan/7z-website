@@ -98,6 +98,10 @@
       "destination": "/api/admin-router?__z7route=files"
     },
     {
+      "source": "/api/admin/course-engine",
+      "destination": "/api/admin-router?__z7route=course-engine"
+    },
+    {
       "source": "/api/admin/file-manage",
       "destination": "/api/admin-router?__z7route=file-manage"
     },
