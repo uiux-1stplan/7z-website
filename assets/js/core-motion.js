@@ -199,90 +199,63 @@
     });
   }
   function clearLoader(state) {
-    if (!state.loader || state.loader.hidden) return;
+    if (!state.loader) return;
     state.loader.hidden = true;
-    state.loader.style.removeProperty("transform");
-    state.loader.style.removeProperty("clip-path");
+    state.loader.classList.remove("is-leaving");
     revealHero(state);
   }
   async function preloader(state) {
     const loader = state.loader;
     if (!loader) { revealHero(state); return; }
     if (reduced.matches) { clearLoader(state); return; }
-    const count = loader.querySelector("[data-z7-count]");
-    const bar = loader.querySelector("[data-z7-progress]");
-    const value = { n: 0 };
-    const paint = () => {
-      const n = Math.min(100, Math.round(value.n));
-      if (count) count.textContent = String(n).padStart(2, "0");
-      if (bar) bar.style.width = n + "%";
-    };
     const logo = loader.querySelector(".z7-loader__mark");
-    const ready = Promise.allSettled([document.fonts?.ready || Promise.resolve(), logo?.decode?.().catch(() => {}) || Promise.resolve()]);
-    const cap = new Promise(resolve => timer(state, resolve, 900));
-    if (gsap) {
-      state.loaderContext = gsap.context(() => gsap.to(value, { n: 92, duration: .8, ease: "power2.out", onUpdate: paint }));
-    } else {
-      const start = performance.now();
-      const frame = now => {
-        if (state.destroyed || loader.hidden) return;
-        value.n = Math.min(92, (now - start) / 9);
-        paint();
-        state.loaderRaf = requestAnimationFrame(frame);
-      };
-      state.loaderRaf = requestAnimationFrame(frame);
-    }
-    await Promise.race([ready, cap]);
+    const pageReady = document.readyState === "complete"
+      ? Promise.resolve()
+      : new Promise(resolve => window.addEventListener("load", resolve, { once: true }));
+    const cap = new Promise(resolve => timer(state, resolve, 1800));
+    const started = performance.now();
+    await Promise.race([pageReady, cap]);
+    await Promise.allSettled([logo?.decode?.() || Promise.resolve(), new Promise(resolve => timer(state, resolve, Math.max(0, 620 - (performance.now() - started))))]);
     if (state.destroyed) return;
-    if (state.loaderRaf) cancelAnimationFrame(state.loaderRaf);
-    state.loaderContext?.revert();
-    value.n = 100;
-    paint();
-    if (gsap) gsap.to(loader, { clipPath: "ellipse(145% 0% at 50% 0%)", yPercent: -4, duration: .96, ease: "power3.inOut", onComplete: () => clearLoader(state) });
-    else if (loader.animate) {
-      const animation = loader.animate([
-        { clipPath: "ellipse(145% 100% at 50% 0%)", transform: "translateY(0)" },
-        { clipPath: "ellipse(145% 0% at 50% 0%)", transform: "translateY(-4%)" }
-      ], { duration: 920, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
-      animation.finished.catch(() => {}).then(() => clearLoader(state));
-    } else clearLoader(state);
-    timer(state, () => clearLoader(state), 1050);
+    loader.classList.add("is-leaving");
+    timer(state, () => clearLoader(state), 560);
+  }
+  function ensureTransitionMark(overlay) {
+    const inner = overlay?.querySelector(".z7-transition__inner");
+    if (!inner || inner.querySelector(".z7-transition__mark")) return;
+    const mark = document.createElement("img");
+    mark.className = "z7-transition__mark";
+    mark.src = "/assets/brand/7Z-LogoT(3).png";
+    mark.alt = "7Z Magic";
+    mark.width = 190;
+    mark.height = 104;
+    mark.decoding = "async";
+    inner.prepend(mark);
   }
   function clearOverlay(state) {
     if (!state.overlay) return;
     state.overlay.hidden = true;
-    state.overlay.style.removeProperty("transform");
-    state.overlay.style.removeProperty("clip-path");
-    state.overlay.style.removeProperty("visibility");
-    state.overlay.style.removeProperty("z-index");
+    state.overlay.classList.remove("is-active", "is-leaving");
     root.removeAttribute("data-z7-arriving");
+    root.removeAttribute("data-z7-transitioning");
     revealHero(state);
   }
   function arrivalReveal(state) {
     if (state.loader) state.loader.hidden = true;
     const overlay = state.overlay;
     if (!overlay || reduced.matches) { clearOverlay(state); return; }
-    const arrivalLabel = overlay.querySelector("[data-z7-transition-label]");
-    if (arrivalLabel) arrivalLabel.textContent = labelFor(new URL(location.href));
-    const transitionInner = overlay.querySelector(".z7-transition__inner");
-    if (transitionInner && !transitionInner.querySelector(".z7-transition__mark")) {
-      const mark = document.createElement("img");
-      mark.className = "z7-transition__mark";
-      mark.src = "/assets/brand/7Z-LogoT(3).png?v=20261110-3";
-      mark.alt = "7Z Magic";
-      mark.width = 190;
-      mark.height = 104;
-      mark.decoding = "async";
-      transitionInner.prepend(mark);
-    }
+    ensureTransitionMark(overlay);
+    const label = overlay.querySelector("[data-z7-transition-label]");
+    if (label) label.textContent = labelFor(new URL(location.href));
     overlay.hidden = false;
-    overlay.style.visibility = "visible";
-    if (gsap) gsap.fromTo(overlay, { yPercent: 0, clipPath: "ellipse(145% 100% at 50% 0%)" }, { yPercent: -3, clipPath: "ellipse(145% 0% at 50% 0%)", duration: .84, ease: "power3.inOut", onComplete: () => clearOverlay(state) });
-    else if (overlay.animate) {
-      const animation = overlay.animate([{ transform: "translateY(0)", clipPath: "ellipse(145% 100% at 50% 0%)" }, { transform: "translateY(-3%)", clipPath: "ellipse(145% 0% at 50% 0%)" }], { duration: 840, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
-      animation.finished.catch(() => {}).then(() => clearOverlay(state));
-    } else clearOverlay(state);
-    timer(state, () => clearOverlay(state), 980);
+    overlay.classList.remove("is-leaving");
+    root.setAttribute("data-z7-arriving", "");
+    requestAnimationFrame(() => overlay.classList.add("is-active"));
+    timer(state, () => {
+      overlay.classList.remove("is-active");
+      overlay.classList.add("is-leaving");
+      timer(state, () => clearOverlay(state), 560);
+    }, 210);
   }
   function navigate(state, destination) {
     if (state.navigating) return;
@@ -294,29 +267,14 @@
     };
     const overlay = state.overlay;
     if (!overlay || reduced.matches || lowData) { go(); return; }
-    root.setAttribute("data-z7-transitioning", "");
-    if (pathOf(destination) === "/private-access") overlay.style.zIndex = "1200";
-    const transitionInner = overlay.querySelector(".z7-transition__inner");
-    if (transitionInner && !transitionInner.querySelector(".z7-transition__mark")) {
-      const mark = document.createElement("img");
-      mark.className = "z7-transition__mark";
-      mark.src = "/assets/brand/7Z-LogoT(3).png?v=20261110-3";
-      mark.alt = "7Z Magic";
-      mark.width = 190;
-      mark.height = 104;
-      mark.decoding = "async";
-      transitionInner.prepend(mark);
-    }
+    ensureTransitionMark(overlay);
     const label = overlay.querySelector("[data-z7-transition-label]");
     if (label) label.textContent = labelFor(destination);
     overlay.hidden = false;
-    overlay.style.visibility = "visible";
-    if (gsap) gsap.fromTo(overlay, { yPercent: 105, scaleX: .9, clipPath: "ellipse(145% 0% at 50% 100%)" }, { yPercent: 0, scaleX: 1, clipPath: "ellipse(145% 100% at 50% 100%)", duration: .66, ease: "power3.inOut", onComplete: go });
-    else if (overlay.animate) {
-      const animation = overlay.animate([{ transform: "translateY(105%) scaleX(.9)", clipPath: "ellipse(145% 0% at 50% 100%)" }, { transform: "translateY(0) scaleX(1)", clipPath: "ellipse(145% 100% at 50% 100%)" }], { duration: 660, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
-      animation.finished.catch(() => {}).then(go);
-    } else go();
-    timer(state, go, 740);
+    overlay.classList.remove("is-leaving");
+    root.setAttribute("data-z7-transitioning", "");
+    requestAnimationFrame(() => overlay.classList.add("is-active"));
+    timer(state, go, 420);
   }
   function initLinks(state) {
     document.addEventListener("click", event => {
