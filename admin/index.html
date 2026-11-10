@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261109-2">
-  <link rel="stylesheet" href="/admin/admin.css?v=20261110-glass-dashboard-3">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261110-glass-dashboard-4">
 </head>
 
 <body class="z7-admin-shell">
@@ -284,7 +284,7 @@
 
     </section>
 
-      <section class="glass-panel client-directory-panel"><div class="glass-panel__head"><div><span class="eyebrow">PORTAL ACCOUNTS</span><h3>Client accounts</h3><p>Create a client identity, then assign access to selected files below.</p></div></div><div id="z7-native-clients-mount"></div></section>
+      <div id="z7-native-clients-mount" class="client-directory-mount"></div>
       <section class="glass-panel access-matrix-panel"><div class="glass-panel__head"><div><span class="eyebrow">PRIVATE STORAGE / PERMISSIONS</span><h3>Client file access</h3><p>Choose a client to review and update its view and download permissions.</p></div><button class="button button-secondary" id="access-matrix-refresh" type="button">Refresh access</button></div><div class="access-client-picker"><label for="access-client-select">Client account</label><select id="access-client-select"><option value="">Loading client accounts…</option></select></div><div id="access-matrix-status" class="access-matrix-status" role="status"></div><div id="access-matrix-list" class="access-matrix-list"></div></section>
     </section>
 
