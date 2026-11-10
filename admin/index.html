@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261109-2">
-  <link rel="stylesheet" href="/admin/admin.css?v=20261110-glass-dashboard-7">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261110-glass-dashboard-8">
 </head>
 
 <body class="z7-admin-shell">
@@ -430,11 +430,12 @@
 <div id="toast-stack" class="toast-stack"></div>
 
 <dialog id="course-edit-dialog" class="course-edit-dialog"><form id="course-edit-form"><div class="course-edit-head"><span class="eyebrow">LIVE ADMINISTRATOR CONTROL</span><button type="button" class="course-edit-close" id="course-edit-close" aria-label="Close">×</button></div><h2 id="course-edit-title">Edit record</h2><p id="course-edit-copy">Changes are recorded in the admin audit trail.</p><div id="course-edit-fields" class="course-edit-fields"></div><div class="course-edit-actions"><button type="button" class="button button-secondary" id="course-edit-cancel">Cancel</button><button type="submit" class="button button-primary">Save changes</button></div></form></dialog>
+<dialog id="admin-action-confirm-dialog" class="admin-action-confirm-dialog"><form method="dialog"><span class="eyebrow">ADMIN ACTION / CONFIRMATION</span><h2 id="admin-action-confirm-title">Confirm action</h2><p id="admin-action-confirm-copy"></p><div class="course-edit-actions"><button class="button button-secondary" value="cancel">Cancel</button><button class="button button-danger" id="admin-action-confirm-accept" type="button">Confirm</button></div></form></dialog>
 <dialog id="file-rename-dialog" class="course-edit-dialog"><form id="file-rename-form"><div class="course-edit-head"><span class="eyebrow">PRIVATE FILE CONTROL</span><button type="button" class="course-edit-close" id="file-rename-close" aria-label="Close">×</button></div><h2>Rename file</h2><p>The new name appears to clients who have access to this file.</p><label class="file-rename-label">File name<input id="file-rename-input" name="name" type="text" maxlength="180" required></label><input id="file-rename-id" name="id" type="hidden"><div class="course-edit-actions"><button type="button" class="button button-secondary" id="file-rename-cancel">Cancel</button><button type="submit" class="button button-primary">Save name</button></div></form></dialog>
 
 
 <script src="/admin/admin.js"></script>
-<script src="/admin/course-engine.js?v=20261110-admin-engine-4"></script>
+<script src="/admin/course-engine.js?v=20261110-admin-engine-5"></script>
 <script src="/admin/dashboard-v2.js?v=20261110-glass-dashboard-3"></script>
 <script src="/admin/private-file-upload.bundle.js?v=20260824"></script>
 <script src="/admin/native-clients.js?v=20260825"></script>

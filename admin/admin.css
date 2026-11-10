@@ -774,3 +774,13 @@ html[data-theme="light"] .activity-remove { border-color:rgba(190,75,105,.16); c
   .adjustment-row small { grid-column:1/3; grid-row:2; white-space:normal; }
   .adjustment-actions { grid-column:3; grid-row:2; justify-content:flex-end; }
 }
+
+
+.admin-action-confirm-dialog { width:min(440px,calc(100vw - 32px)); padding:0; overflow:hidden; border:1px solid rgba(185,194,234,.25); border-radius:22px; color:var(--text); background:linear-gradient(145deg,rgba(30,34,52,.98),rgba(16,18,28,.98)); box-shadow:0 36px 100px rgba(0,0,0,.55),0 0 55px -36px rgba(157,132,255,.55); }
+.admin-action-confirm-dialog::backdrop { background:rgba(6,8,14,.68); backdrop-filter:blur(8px); }
+.admin-action-confirm-dialog form { display:grid; gap:13px; padding:26px; }
+.admin-action-confirm-dialog h2 { margin:0; font-size:1.2rem; letter-spacing:-.03em; }
+.admin-action-confirm-dialog p { margin:0; color:var(--muted); font-size:.78rem; line-height:1.65; }
+.admin-action-confirm-dialog .course-edit-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:5px; }
+.admin-action-confirm-dialog .button-danger { border:1px solid rgba(241,132,157,.28); background:linear-gradient(120deg,rgba(178,65,95,.88),rgba(125,45,78,.9)); color:#fff; }
+html[data-theme="light"] .admin-action-confirm-dialog { border-color:rgba(64,76,122,.18); color:#20263a; background:linear-gradient(145deg,#fff,#f2f4fb); box-shadow:0 30px 80px rgba(40,48,80,.22); }

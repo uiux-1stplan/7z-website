@@ -22,6 +22,38 @@
     window.setTimeout(() => toast.remove(), 4200);
   }
 
+  function confirmAction({ title, copy, confirmLabel, onConfirm }) {
+    const dialog = $("#admin-action-confirm-dialog");
+    if (!dialog) {
+      if (window.confirm(copy)) return onConfirm();
+      return;
+    }
+    $("#admin-action-confirm-title").textContent = title;
+    $("#admin-action-confirm-copy").textContent = copy;
+    const accept = $("#admin-action-confirm-accept");
+    accept.textContent = confirmLabel;
+    accept.onclick = async () => {
+      accept.disabled = true;
+      dialog.close();
+      try { await onConfirm(); }
+      finally { accept.disabled = false; }
+    };
+    dialog.showModal();
+  }
+
+  function bindDeleteButton(button, title, copy, label, action, success) {
+    button?.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const target = event.currentTarget;
+      confirmAction({ title, copy, confirmLabel: label, onConfirm: async () => {
+        target.disabled = true;
+        const saved = await post(action, success);
+        if (!saved) target.disabled = false;
+      } });
+    });
+  }
+
   async function request(options = {}) {
     const token = await window.Clerk?.session?.getToken?.();
     if (!token) throw new Error("Your secure admin session has expired. Sign in again to continue.");
@@ -48,6 +80,7 @@
       affiliateOptions.push(`<option value="${escape(affiliate.id)}" ${active ? "" : "disabled"}>${escape(affiliate.name)}${active ? "" : " · inactive"}</option>`);
       const row = document.createElement("tr");
       row.innerHTML = `<td><div class="engine-user"><strong>${escape(affiliate.name)}</strong><span>${escape(affiliate.email || affiliate.company || "Affiliate partner")}</span></div></td><td>${Number(affiliate.code_count || 0)}</td><td>${Number(affiliate.registration_count || 0)}</td><td>${jod(affiliate.net_sales_jod)}</td><td>${jod(affiliate.outstanding_commission_jod)}<small class="engine-subvalue">earned ${Number(affiliate.earned_commission_jod || 0).toFixed(2)} JOD</small></td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}" data-email="${escape(affiliate.email || "")}" data-company="${escape(affiliate.company || "")}" data-commission="${Number(affiliate.commission_percent || 0)}">EDIT</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-affiliate" data-id="${escape(affiliate.id)}" data-status="${active ? "inactive" : "active"}">${active ? "ARCHIVE" : "RESTORE"}</button><button class="small-button danger" type="button" data-engine-action="delete-affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}">DELETE</button></div></td>`;
+      bindDeleteButton(row.querySelector('[data-engine-action="delete-affiliate"]'), "Delete affiliate?", `Delete ${affiliate.name} and its discount codes? Historical registrations, commission values and revenue records will be retained.`, "Delete affiliate", { action: "delete-affiliate", id: affiliate.id }, "Affiliate and its codes deleted. Historical registrations were retained.");
       body.append(row);
     }
     $("#coupon-affiliate").innerHTML = affiliateOptions.join("");
@@ -62,6 +95,7 @@
       const course = { all: "All courses", "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" }[code.course_id] || code.course_id;
       const row = document.createElement("tr");
       row.innerHTML = `<td><code class="engine-code">${escape(code.code)}</code></td><td>${escape(code.affiliate_name || "Studio")}</td><td>${escape(course)}</td><td>${Number(code.discount_percent)}%</td><td>${Number(code.commission_percent)}%</td><td>${Number(code.redemption_count || 0)}${code.max_redemptions ? ` / ${Number(code.max_redemptions)}` : ""}</td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="code" data-id="${escape(code.id)}" data-code="${escape(code.code)}" data-affiliate="${escape(code.affiliate_id || "")}" data-course="${escape(code.course_id || "all")}" data-discount="${Number(code.discount_percent)}" data-commission="${Number(code.commission_percent)}" data-max-uses="${escape(code.max_redemptions || "")}">EDIT</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-code" data-id="${escape(code.id)}" data-status="${active ? "inactive" : "active"}">${active ? "ARCHIVE" : "RESTORE"}</button><button class="small-button danger" type="button" data-engine-action="delete-code" data-id="${escape(code.id)}" data-name="${escape(code.code)}">DELETE</button></div></td>`;
+      bindDeleteButton(row.querySelector('[data-engine-action="delete-code"]'), "Delete discount code?", `Delete ${code.code}? Past registrations keep their recorded code, discount and commission values.`, "Delete code", { action: "delete-code", id: code.id }, "Discount code deleted. Historical registrations were retained.");
       body.append(row);
     }
   }
