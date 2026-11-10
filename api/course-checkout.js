@@ -98,7 +98,11 @@ function requestBody(req) {
 export default async function handler(req, res) {
   setHeaders(req, res);
   if (req.method === "OPTIONS") return res.status(204).end();
-  if (req.method !== "POST") { res.setHeader("Allow", "POST, OPTIONS"); return res.status(405).json({ error: "Method not allowed." }); }
+  if (req.method === "GET") {
+    if (!isAllowedCourseOrigin(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
+    return res.status(200).json({ methods: getPaymentMethods() });
+  }
+  if (req.method !== "POST") { res.setHeader("Allow", "GET, POST, OPTIONS"); return res.status(405).json({ error: "Method not allowed." }); }
   if (!isAllowedCourseOrigin(req.headers.origin)) return res.status(403).json({ error: "Origin not allowed." });
 
   const body = requestBody(req);

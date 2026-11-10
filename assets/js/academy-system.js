@@ -98,7 +98,7 @@
       const matchingProof = proofReady && selected && selected.value === proofProvider;
       uploadButton.disabled = proofBusy || !selected || !receipt.files || !receipt.files[0] || matchingProof;
       const validReference = selected?.value === "WESTERN_UNION" ? /^\d{10}$/.test(reference.value.trim()) : reference.value.trim().length >= 3;
-      submit.disabled = Boolean(token) && (!checkoutReady || proofBusy || !proofReady || !selected || selected.value !== proofProvider || !validReference);
+      submit.disabled = panel.classList.contains("visible") && (!token || !checkoutReady || proofBusy || !proofReady || !selected || selected.value !== proofProvider || !validReference);
     };
     const renderMethodDetails = () => {
       const selected = $("input[name='pay-method']:checked");
@@ -114,14 +114,27 @@
       box.className = "academy-transfer-card";
       box.innerHTML = '<div class="academy-transfer-heading"><span>' + escape(t("transferDetails")) + '</span><strong>' + escape(t(method.id === "CLIQ" ? "cliq" : "western")) + '</strong></div><div class="academy-transfer-rows">' + details + '</div>' + (instructions ? '<p class="academy-transfer-instructions">' + escape(instructions) + '</p>' : '') + (method.id === "WESTERN_UNION" ? '<p class="academy-mtcn-note">' + escape(t("mtcnHint")) + '</p>' : '');
     };
+    const renderMethodOptions = () => {
+      methodsBox.innerHTML = methods.map(method => '<label class="academy-method-choice' + (method.id === selectedProvider ? " active" : "") + '"><input type="radio" name="pay-method" value="' + escape(method.id) + '"' + (method.id === selectedProvider ? " checked" : "") + '><span><strong>' + escape(t(method.id === "CLIQ" ? "cliq" : "western")) + '</strong><small>' + (method.id === "CLIQ" ? "ALIAS TRANSFER" : "MONEY TRANSFER") + '</small></span><b aria-hidden="true">↗</b></label>').join("");
+    };
     const applyDetails = data => {
       total.textContent = new Intl.NumberFormat(lang === "ar" ? "ar-JO" : "en-JO", { maximumFractionDigits: 3 }).format(Number(data.totalJod ?? data.priceJod));
       methods = (data.methods || []).filter(method => ["CLIQ", "WESTERN_UNION"].includes(method.id));
       checkoutReady = methods.length > 0;
-      methodsBox.innerHTML = methods.map(method => '<label class="academy-method-choice' + (method.id === selectedProvider ? " active" : "") + '"><input type="radio" name="pay-method" value="' + escape(method.id) + '"' + (method.id === selectedProvider ? " checked" : "") + '><span><strong>' + escape(t(method.id === "CLIQ" ? "cliq" : "western")) + '</strong><small>' + (method.id === "CLIQ" ? "ALIAS TRANSFER" : "MONEY TRANSFER") + '</small></span><b aria-hidden="true">↗</b></label>').join("");
+      renderMethodOptions();
       renderMethodDetails();
       updateFinalButton();
     };
+    const loadPublicMethods = async () => {
+      const response = await fetch("/api/course-checkout?methods=public", { cache: "no-store" });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || t("error"));
+      methods = (data.methods || []).filter(method => ["CLIQ", "WESTERN_UNION"].includes(method.id));
+      renderMethodOptions();
+      renderMethodDetails();
+      updateFinalButton();
+    };
+    const publicMethodsRequest = loadPublicMethods().catch(() => {});
     methodsBox.addEventListener("change", () => {
       const selected = $("input[name='pay-method']:checked");
       selectedProvider = selected ? selected.value : "";
@@ -215,10 +228,15 @@
           const values = Object.fromEntries(new FormData(form));
           const response = await fetch("/api/course-registration", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...values, courseId: course.id, consent: form.elements.consent.checked }) });
           const data = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(data.error || t("error"));
+          if (!response.ok) { const error = new Error(data.error || t("error")); error.pendingPaymentProof = Boolean(data.pendingPaymentProof); throw error; }
           token = data.checkoutToken;
           history.replaceState(null, "", location.pathname + "#" + encodeURIComponent(token));
-        } catch (error) { setStatus(error.message || t("error"), "error"); submit.disabled = false; return; }
+        } catch (error) {
+          if (error.pendingPaymentProof) await publicMethodsRequest;
+          setStatus(error.message || t("error"), "error");
+          submit.disabled = panel.classList.contains("visible");
+          return;
+        }
       }
       try {
         const details = await call({ action: "details", couponCode: $("#coupon-code").value.trim().toUpperCase(), previousCourseEmail: $("#prior-email").value.trim() });
