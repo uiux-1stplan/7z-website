@@ -409,3 +409,36 @@ html[data-z7-core] #comparisonStage input[type="range"] { position:absolute; z-i
 @keyframes z7-vault-turn { to { transform:rotate(1turn); } }
 @keyframes z7-vault-breathe { from { transform:scale(.94); opacity:.5; } to { transform:scale(1.04); opacity:1; } }
 @keyframes z7-mark-arrive { from { opacity:0; transform:translateY(18px) scale(.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+
+/* Loading curtain and route reveal: one flat logo asset, no 3D logo layers. */
+html[data-z7-core] .z7-loader,
+html[data-z7-core] .z7-transition {
+  background: #07070a !important;
+  backdrop-filter: none !important;
+}
+html[data-z7-core] .z7-loader::before,
+html[data-z7-core] .z7-transition::before,
+html[data-z7-core] .z7-loader__orb,
+html[data-z7-core] .z7-transition__orb,
+html[data-z7-core] .z7-loader__count,
+html[data-z7-core] .z7-loader__line,
+html[data-z7-core] .z7-loader__caption,
+html[data-z7-core] .z7-transition__index { display: none !important; }
+html[data-z7-core] .z7-loader__inner,
+html[data-z7-core] .z7-transition__inner { display: grid; place-items: center; gap: 18px; width: 100%; min-height: 100%; padding: 24px; text-align: center; }
+html[data-z7-core] .z7-loader__mark,
+html[data-z7-core] .z7-transition__mark { display: block; width: clamp(116px, 20vw, 190px); height: auto; max-height: 120px; object-fit: contain; filter: drop-shadow(0 0 24px rgba(194,204,255,.22)); opacity: 0; animation: z7-plain-mark-in .8s ease .08s forwards; }
+html[data-z7-core] .z7-transition__label { margin: 0; color: rgba(245,246,251,.84); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+html[data-z7-core] .z7-loader.is-leaving,
+html[data-z7-core] .z7-transition.is-leaving { opacity: 0 !important; visibility: hidden; transition: opacity .56s ease, visibility .56s ease !important; clip-path: none !important; transform: none !important; }
+html[data-z7-core] .z7-transition { opacity: 0; visibility: hidden; clip-path: none !important; transform: none !important; background: rgba(7,7,10,.76) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; transition: opacity .42s ease, visibility .42s ease !important; }
+html[data-z7-core] .z7-transition.is-active { opacity: 1; visibility: visible; }
+html[data-z7-core][data-z7-transitioning] body > :not(#z7Transition):not(#z7Loader) { filter: blur(5px); transition: filter .42s ease; }
+html[data-z7-core][data-z7-arriving] body > :not(#z7Transition):not(#z7Loader) { filter: blur(5px); transition: filter .42s ease; }
+html[data-z7-core] .logo-hero__copy::before { display: none !important; content: none !important; }
+html[data-z7-core] .logo-hero__mark.z7-liquid-logo-host { width: clamp(116px, 13vw, 170px); height: auto; aspect-ratio: 390 / 433; max-height: 47svh; display: inline-grid; position: relative; overflow: visible; }
+html[data-z7-core] .z7-liquid-logo-host > canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+html[data-z7-core] .z7-liquid-logo-host.is-ready > canvas { opacity: 1; }
+@keyframes z7-plain-mark-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { html[data-z7-core] .z7-loader__mark, html[data-z7-core] .z7-transition__mark { animation-duration: .01ms; } }
