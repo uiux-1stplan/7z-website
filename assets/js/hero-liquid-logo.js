@@ -71,9 +71,11 @@ if (host && canvas) {
     }));
     if (!logo.children.length) throw new Error("The SVG has no filled shapes");
     const bounds = new THREE.Box3().setFromObject(logo);
-    logo.position.sub(bounds.getCenter(new THREE.Vector3()));
+    const center = bounds.getCenter(new THREE.Vector3());
     const size = bounds.getSize(new THREE.Vector3());
-    logo.scale.setScalar(200 / Math.max(size.x, size.y, size.z));
+    const scale = 200 / Math.max(size.x, size.y, size.z);
+    logo.scale.setScalar(scale);
+    logo.position.copy(center.multiplyScalar(-scale));
     scene.add(logo);
 
     const resize = () => {
