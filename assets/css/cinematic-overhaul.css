@@ -425,6 +425,7 @@ html[data-z7-core] .z7-loader__count,
 html[data-z7-core] .z7-loader__line,
 html[data-z7-core] .z7-loader__caption,
 html[data-z7-core] .z7-transition__index { display: none !important; }
+html[data-z7-core] .z7-loader__top { display: grid; place-items: center; width: 100%; }
 html[data-z7-core] .z7-loader__inner,
 html[data-z7-core] .z7-transition__inner { display: grid; place-items: center; gap: 18px; width: 100%; min-height: 100%; padding: 24px; text-align: center; }
 html[data-z7-core] .z7-loader__mark,
