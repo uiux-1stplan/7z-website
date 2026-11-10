@@ -7,14 +7,15 @@
   <meta name="robots" content="noindex,nofollow">
   <title>7Z Magic — Admin Portal</title>
 
-  <link rel="stylesheet" href="/assets/css/core-system.css"><link rel="stylesheet" href="/admin/admin.css">
+  <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261109-2">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261110-vault-login-1">
 </head>
 
 <body class="z7-admin-shell">
 
-<header class="admin-masthead"><a href="/" aria-label="7Z Magic home"><img src="/assets/brand/7Z-LogoT(3).png" width="52" height="58" alt="7Z Magic"></a><span>PRIVATE ADMINISTRATION</span><button class="admin-theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme">◐</button></header>
+<header class="z7-header z7-admin-site-header" aria-label="Primary"><div class="z7-container z7-header__inner"><a class="z7-brand" href="/" aria-label="7Z Magic home"><img src="/assets/brand/7Z-LogoT(3).png?v=20261110-3" width="150" height="44" alt="7Z Magic" decoding="async"></a><nav class="z7-nav" id="z7MainNav" aria-label="Main navigation"><a href="/">Home</a><a href="/services/">Services</a><a href="/websites/">Websites</a><a href="/about/">About</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact</a></nav><div class="z7-header__actions"><div class="z7-header__socials" aria-label="Connect with 7Z Magic"><a href="mailto:creative@7z-magic.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6.5h18v11H3zM3 7l9 7 9-7"/></svg></a><a href="https://www.instagram.com/7z.magic" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".7"/></svg></a><a href="https://web.facebook.com/7z.magic" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 21v-8h3l.5-3H14V8.5c0-1 .4-1.5 1.6-1.5H18V4.2c-.5-.1-1.7-.2-2.8-.2-3 0-4.7 1.8-4.7 4.9V10H8v3h2.5v8"/></svg></a><a href="https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.7 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5Z"/><path d="M9 8.5c-.6 0-.9.6-.7 1.3.7 2.4 2.7 4.4 5.1 5.1.7.2 1.3-.2 1.4-.8l.2-.8-1.6-.8-.8.7c-.8-.3-1.6-1.1-2-1.9l.7-.8-.8-1.6Z"/></svg></a></div><button class="z7-theme-toggle" id="theme" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme"><span aria-hidden="true">◐</span></button><button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button></div></div></header>
 
 <div class="ambient ambient-a"></div>
 <div class="ambient ambient-b"></div>
@@ -34,51 +35,17 @@
 </div>
 
 <div id="auth-screen" class="auth-screen hidden">
-  <div class="auth-shell">
-
-    <section class="auth-brand">
-      <div class="brand-kicker">7Z MAGIC / SECURE ACCESS</div>
-
-      <div class="auth-wordmark"><img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic"><span>7Z MAGIC<br><small>CONTROL ROOM / 01</small></span></div>
-      <h1>One secure gateway.<span>For every client experience.</span></h1>
-
-      <p>
-        Secure user management, controlled access and private
-        project delivery.
-      </p>
-
-      <div class="security-points">
-        <div>
-          <span class="dot"></span>
-          Server-side authorization
-        </div>
-
-        <div>
-          <span class="dot"></span>
-          Private file permissions
-        </div>
-
-        <div>
-          <span class="dot"></span>
-          Administrative audit trail
-        </div>
-      </div>
-    </section>
-
-    <section class="login-panel">
-      <div class="login-title">
-        <span>ADMIN ACCESS</span>
-        <h2>Sign in</h2>
-      </div>
-
-      <div id="clerk-signin"></div>
-
-      <p class="login-note">
-        Accounts are created by authorized 7Z Magic administrators only.
-      </p>
-    </section>
-
-  </div>
+  <section class="auth-vault" aria-labelledby="vault-title">
+    <div class="vault-orbit vault-orbit--outer" aria-hidden="true"></div>
+    <div class="vault-orbit vault-orbit--inner" aria-hidden="true"></div>
+    <div class="auth-vault__identity"><img src="/assets/brand/7Z-LogoT(3).png?v=20261110-3" width="60" height="70" alt="7Z Magic"><span>7Z MAGIC <i> / </i> ADMIN VAULT</span></div>
+    <p class="brand-kicker">SECURE CONTROL ROOM</p>
+    <h1 id="vault-title" data-spring-text>Administrator access</h1>
+    <p class="auth-vault__intro">Sign in to manage the private client and academy workspaces.</p>
+    <div class="vault-divider" aria-hidden="true"><span></span><i>AUTHORIZED PERSONNEL</i><span></span></div>
+    <div id="clerk-signin"></div>
+    <p class="login-note">Access is restricted to authorized 7Z Magic administrators.</p>
+  </section>
 </div>
 
 <div id="denied-screen" class="center-state hidden">
@@ -510,3 +477,4 @@
 <script src="/assets/js/cinematic-chapters.js?v=20261109-2" defer></script><script src="/assets/js/app-v2.js" defer></script>
 </body>
 </html>
+
