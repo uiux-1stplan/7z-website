@@ -4,7 +4,7 @@
   if (!root.hasAttribute("data-z7-core")) return;
 
   const KEY = "z7:core-arrival:v1";
-  const LOADER_KEY = "z7:loader-seen:v1";
+  const LOADER_KEY = "7z_loaded";
   const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/courses", "/courses/ai-engineering", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/ai-for-engineers", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)");
