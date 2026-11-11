@@ -128,25 +128,15 @@
   }
 
   function target() {
-
     return (
-      document.querySelector(
-        "#legacy-file-access-panel"
-      )?.parentElement ||
-
-      document.querySelector(
-        "#app main"
-      ) ||
-
-      document.querySelector(
-        "#app .main-content"
-      ) ||
-
-      document.querySelector(
-        "#app"
-      )
+      document.getElementById("client-files-mount") ||
+      document.querySelector('[data-dashboard-panel="media"]') ||
+      document.querySelector("#legacy-file-access-panel")?.parentElement ||
+      document.querySelector("#app main") ||
+      document.querySelector("#app")
     );
   }
+
 
   function ensurePanel() {
 

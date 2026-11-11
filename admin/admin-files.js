@@ -113,36 +113,18 @@
 
 
   function findHost() {
-
-    const upload =
-      document.getElementById(
-        "z7-private-upload-panel"
-      );
-
-
-    if (upload) {
-      return {
-        mode: "after",
-        element: upload
-      };
+    const mediaMount = document.getElementById("client-files-mount");
+    if (mediaMount) {
+      const upload = mediaMount.querySelector("#z7-private-upload-panel");
+      return upload ? { mode: "after", element: upload } : { mode: "append", element: mediaMount };
     }
-
-
-    const access =
-      document.getElementById(
-        "legacy-file-access-panel"
-      );
-
-
-    if (access) {
-      return {
-        mode: "before",
-        element: access
-      };
-    }
-
-
-    return null;
+    const mediaPanel = document.querySelector('[data-dashboard-panel="media"]');
+    if (!mediaPanel) return null;
+    const upload = mediaPanel.querySelector("#z7-private-upload-panel");
+    if (upload) return { mode: "after", element: upload };
+    const access = mediaPanel.querySelector("#legacy-file-access-panel");
+    if (access) return { mode: "before", element: access };
+    return { mode: "append", element: mediaPanel };
   }
 
 
@@ -230,42 +212,14 @@
 
 
     if (host) {
-
-      if (
-        host.mode === "after" &&
-        host.element.nextElementSibling !==
-        panel
-      ) {
-
-        host.element.insertAdjacentElement(
-          "afterend",
-          panel
-        );
-
-      } else if (
-        host.mode === "before" &&
-        host.element.previousElementSibling !==
-        panel
-      ) {
-
-        host.element.insertAdjacentElement(
-          "beforebegin",
-          panel
-        );
+      if (host.mode === "after" && host.element.nextElementSibling !== panel) {
+        host.element.insertAdjacentElement("afterend", panel);
+      } else if (host.mode === "before" && host.element.previousElementSibling !== panel) {
+        host.element.insertAdjacentElement("beforebegin", panel);
+      } else if (host.mode === "append" && panel.parentElement !== host.element) {
+        host.element.appendChild(panel);
       }
-
-    } else if (!panel.isConnected) {
-
-      (
-        document.querySelector(
-          "main"
-        ) ||
-        document.body
-      ).appendChild(
-        panel
-      );
     }
-
 
     return panel;
   }
