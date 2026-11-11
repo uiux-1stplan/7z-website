@@ -609,3 +609,28 @@ html[data-z7-core] #z7Transition[hidden] { display:none !important; }
 html[data-z7-preloading][data-z7-core] #z7Transition,
 html[data-z7-transitioning][data-z7-core] #z7Loader,
 html[data-z7-arriving][data-z7-core] #z7Loader { display:none !important; }
+
+
+/* One-session entry loader and lightweight page curtain. */
+html[data-z7-core] #z7Loader, html[data-z7-core] #z7Transition { position:fixed !important; inset:0 !important; width:100vw; height:100svh; margin:0 !important; transform:none !important; clip-path:none !important; border:0 !important; border-radius:0 !important; }
+html[data-z7-core] #z7Loader { z-index:99999 !important; display:flex !important; align-items:center; justify-content:center; background:#07070a !important; opacity:1; filter:blur(0); pointer-events:auto; transition:opacity .6s ease,filter .6s ease,visibility .6s ease !important; }
+html[data-z7-core] #z7Loader[hidden],html[data-z7-core] #z7Transition[hidden] { display:none !important; }
+html[data-z7-core] #z7Loader::before,html[data-z7-core] #z7Loader::after,html[data-z7-core] #z7Transition::before,html[data-z7-core] #z7Transition::after,html[data-z7-core] #z7Loader .z7-loader__orb,html[data-z7-core] #z7Transition .z7-transition__orb { content:none !important; display:none !important; }
+html[data-z7-core] #z7Loader .z7-loader__inner { position:absolute !important; inset:0 !important; display:flex !important; width:100% !important; height:100% !important; min-height:0 !important; padding:24px !important; flex-direction:column; align-items:center; justify-content:center; gap:0; }
+html[data-z7-core] #z7Loader .z7-loader__top { display:flex !important; width:auto; height:auto; flex-direction:column; align-items:center; gap:0; }
+html[data-z7-core] #z7Loader .z7-loader__mark { display:block; width:120px !important; max-width:120px; height:auto !important; max-height:none !important; margin:0; opacity:1; animation:z7-quick-focus .7s ease both !important; }
+html[data-z7-core] #z7Loader .z7-loader__line { display:block !important; width:160px !important; height:2px !important; margin:24px auto 0 !important; overflow:hidden; background:rgba(220,225,235,.16) !important; }
+html[data-z7-core] #z7Loader .z7-loader__progress { display:block; width:100% !important; height:100%; transform:scaleX(0); transform-origin:left center; background:#bec4ce !important; animation:none !important; transition:none !important; }
+html[data-z7-core] #z7Loader .z7-loader__count { display:block !important; position:static !important; margin:12px 0 0 !important; color:rgba(230,233,239,.7) !important; font:500 11px/1.2 Inter,Arial,sans-serif !important; letter-spacing:.08em; opacity:1 !important; }
+html[data-z7-core] #z7Loader .z7-loader__caption { display:none !important; }
+html[data-z7-core] #z7Loader.is-leaving { opacity:0 !important; filter:blur(10px) !important; visibility:hidden; pointer-events:none !important; }
+html[data-z7-core] #z7Transition { z-index:99998 !important; display:block; opacity:0; visibility:hidden; pointer-events:none; background:rgba(7,7,10,.7) !important; backdrop-filter:blur(12px) !important; -webkit-backdrop-filter:blur(12px) !important; transition:opacity .3s ease,visibility .3s ease !important; }
+html[data-z7-core] #z7Transition .z7-transition__inner { position:absolute !important; inset:0 !important; display:flex !important; min-height:100%; width:100%; padding:24px; flex-direction:column; align-items:center; justify-content:center; gap:12px; transform:none !important; }
+html[data-z7-core] #z7Transition .z7-transition__mark { display:block; width:80px !important; height:80px !important; max-height:none !important; object-fit:contain; filter:blur(0); }
+html[data-z7-core] #z7Transition .z7-transition__label { margin:0; color:rgba(245,247,252,.9) !important; font:500 14px/1.4 Inter,Arial,sans-serif !important; letter-spacing:.04em; text-transform:none; }
+html[data-z7-core] #z7Transition .z7-transition__index { display:none !important; }
+html[data-z7-core] #z7Transition.is-active { opacity:1; visibility:visible; pointer-events:auto; }
+html[data-z7-core] #z7Transition.is-leaving { opacity:0 !important; visibility:hidden; pointer-events:none; }
+html[data-z7-transitioning][data-z7-core] body > :not(#z7Transition):not(#z7Loader),html[data-z7-arriving][data-z7-core] body > :not(#z7Transition):not(#z7Loader) { filter:none !important; transition:none !important; }
+@keyframes z7-quick-focus { from { opacity:0; filter:blur(8px); transform:scale(.985); } to { opacity:1; filter:blur(0); transform:scale(1); } }
+@media(prefers-reduced-motion:reduce){html[data-z7-core] #z7Loader .z7-loader__mark{animation:none!important;}}
