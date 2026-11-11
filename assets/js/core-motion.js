@@ -71,6 +71,7 @@
     const canvas = document.getElementById("ambient-canvas");
     const ctx = canvas?.getContext("2d", { alpha: true, desynchronized: true });
     if (!canvas || !ctx) return;
+    if (innerWidth < 1024 || matchMedia("(pointer: coarse)").matches) { canvas.hidden = true; canvas.style.display = "none"; return; }
     const field = { width: 0, height: 0, ratio: 1, pointerX: .5, pointerY: .42, targetX: .5, targetY: .42, scroll: 0, lastScroll: scrollY, lastTime: 0, time: 0 };
     const resize = () => {
       field.ratio = Math.min(devicePixelRatio || 1, 1.4);
@@ -209,16 +210,15 @@
     const loader = state.loader;
     if (!loader) { revealHero(state); return; }
     let visited = false;
-    try { visited = sessionStorage.getItem("7z_visited") === "true"; } catch {}
+    try { visited = sessionStorage.getItem("visited") !== null || sessionStorage.getItem("7z_visited") === "true"; } catch {}
     if (visited) { clearLoader(state); return; }
     root.setAttribute("data-z7-preloading", "");
     if (reduced.matches) {
-      try { sessionStorage.setItem("7z_visited", "true"); } catch {}
+      try { sessionStorage.setItem("visited", "true"); sessionStorage.setItem("7z_visited", "true"); } catch {}
       clearLoader(state);
       return;
     }
 
-    const logo = loader.querySelector(".z7-loader__mark");
     const count = loader.querySelector("[data-z7-count]");
     const progress = loader.querySelector("[data-z7-progress]");
     const line = loader.querySelector(".z7-loader__line");
@@ -227,7 +227,7 @@
       const started = performance.now();
       const tick = now => {
         if (state.destroyed) { resolve(); return; }
-        const value = Math.min(100, Math.max(0, (now - started) / 1200 * 100));
+        const value = Math.min(100, Math.max(0, (now - started) / 800 * 100));
         if (count) count.textContent = Math.round(value) + "%";
         if (progress) progress.style.transform = "scaleX(" + value / 100 + ")";
         if (value < 100) {
@@ -239,11 +239,11 @@
       };
       state.loaderRaf = requestAnimationFrame(tick);
     });
-    await Promise.all([animation, Promise.resolve(logo?.decode?.()).catch(() => {})]);
+    await animation;
     if (state.destroyed) return;
-    try { sessionStorage.setItem("7z_visited", "true"); } catch {}
+    try { sessionStorage.setItem("visited", "true"); sessionStorage.setItem("7z_visited", "true"); } catch {}
     loader.classList.add("is-leaving");
-    timer(state, () => clearLoader(state), 600);
+    timer(state, () => clearLoader(state), 150);
   }
   function ensureTransitionMark(overlay) {
     const inner = overlay?.querySelector(".z7-transition__inner");
@@ -268,7 +268,7 @@
   function arrivalReveal(state) {
     if (state.loader) state.loader.hidden = true;
     root.removeAttribute("data-z7-preloading");
-    try { sessionStorage.setItem("7z_visited", "true"); } catch {}
+    try { sessionStorage.setItem("visited", "true"); sessionStorage.setItem("7z_visited", "true"); } catch {}
     const overlay = state.overlay;
     if (!overlay || reduced.matches) { clearOverlay(state); return; }
     ensureTransitionMark(overlay);
@@ -281,7 +281,7 @@
     requestAnimationFrame(() => requestAnimationFrame(() => {
       overlay.classList.remove("is-active");
       overlay.classList.add("is-leaving");
-      timer(state, () => clearOverlay(state), 300);
+      timer(state, () => clearOverlay(state), 150);
     }));
   }
   function navigate(state, destination) {
@@ -290,7 +290,7 @@
     setMenu(state, false);
     const go = () => {
       try { sessionStorage.setItem(KEY, JSON.stringify({ path: pathOf(destination), time: Date.now() })); } catch {}
-      try { sessionStorage.setItem("7z_visited", "true"); } catch {}
+      try { sessionStorage.setItem("visited", "true"); sessionStorage.setItem("7z_visited", "true"); } catch {}
       location.assign(destination.href);
     };
     const overlay = state.overlay;
@@ -303,7 +303,7 @@
     overlay.classList.remove("is-leaving");
     root.setAttribute("data-z7-transitioning", "");
     requestAnimationFrame(() => overlay.classList.add("is-active"));
-    timer(state, go, 250);
+    timer(state, go, 150);
   }
   function initLinks(state) {
     document.addEventListener("click", event => {
