@@ -1,9 +1,29 @@
-import * as THREE from "three";
-import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
-import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+const hosts = [...document.querySelectorAll(".z7-liquid-logo-host")];
+const useRasterLogo = innerWidth < 1024 || matchMedia("(pointer: coarse)").matches;
 
-for (const host of document.querySelectorAll(".z7-liquid-logo-host")) {
+if (useRasterLogo) {
+  for (const host of hosts) {
+    host.querySelectorAll("canvas").forEach(canvas => canvas.remove());
+    const image = document.createElement("img");
+    image.className = "z7-mobile-liquid-logo";
+    image.src = "/assets/brand/7Z-LogoT(3).png";
+    image.alt = "";
+    image.width = 390;
+    image.height = 433;
+    image.decoding = "async";
+    image.setAttribute("aria-hidden", "true");
+    host.replaceChildren(image);
+    host.classList.add("is-mobile-fallback");
+  }
+} else {
+  const [THREE, { SVGLoader }, { RectAreaLightUniformsLib }, { RoomEnvironment }] = await Promise.all([
+    import("three"),
+    import("three/addons/loaders/SVGLoader.js"),
+    import("three/addons/lights/RectAreaLightUniformsLib.js"),
+    import("three/addons/environments/RoomEnvironment.js")
+  ]);
+
+  for (const host of hosts) {
   const canvas = host.querySelector("canvas");
   if (!canvas) continue;
   const rotationMode = host.dataset.rotationMode || "scroll-mouse";
@@ -153,4 +173,5 @@ for (const host of document.querySelectorAll(".z7-liquid-logo-host")) {
     else renderer.render(scene, camera);
   }
   build().catch(fail);
+}
 }
