@@ -46,6 +46,31 @@
     }
   }
 
+  function mountWorkspacePanels() {
+    const usersSlot = $("#users-assets-panels");
+    const settingsSlot = $("#settings-admin-slot");
+    const mounts = [
+      { id: "z7-native-clients", slot: usersSlot },
+      { id: "z7-private-upload-panel", slot: usersSlot },
+      { id: "z7-admin-file-library", slot: usersSlot },
+      { id: "legacy-file-access-panel", slot: usersSlot },
+      { id: "z7-admin-accounts", slot: settingsSlot },
+    ];
+    mounts.forEach(({ id, slot }) => {
+      const panel = document.getElementById(id);
+      if (panel && slot && panel.parentElement !== slot) slot.append(panel);
+    });
+  }
+
+  function observeWorkspacePanels() {
+    const app = $("#app");
+    if (!app || app.dataset.workspacePanelsObserved) return;
+    app.dataset.workspacePanelsObserved = "true";
+    const observer = new MutationObserver(mountWorkspacePanels);
+    observer.observe(app, { childList: true, subtree: true });
+    mountWorkspacePanels();
+  }
+
   function parseMoney(value) {
     const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
     return Number.isFinite(number) ? number : 0;
@@ -232,7 +257,8 @@
   function initialize() {
     if (initialized || !$("#app")) return;
     initialized = true;
-    $$("[data-dashboard-nav]").forEach((button) => button.addEventListener("click", () => {
+    observeWorkspacePanels();
+    $("[data-dashboard-nav]").forEach((button) => button.addEventListener("click", () => {
       selectView(button.dataset.dashboardNav);
       if (button.hasAttribute("data-focus-create-user")) $("#create-name")?.focus({ preventScroll: true });
     }));
