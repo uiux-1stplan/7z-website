@@ -179,3 +179,26 @@ html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video {
 html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card::before,
 html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card::after { content:none !important; display:none !important; background:none !important; filter:none !important; }
 html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video { object-fit:contain; }
+
+
+/* Clean campaign stage: no dark floor ellipse, ripple plate, or vignette. */
+html[data-z7-core] .svc-mirror-stage { position:relative; isolation:isolate; }
+html[data-z7-core] .svc-film-lane--campaign {
+  background:transparent !important;
+  box-shadow:none !important;
+}
+html[data-z7-core] .svc-film-lane--campaign::before,
+html[data-z7-core] .svc-film-lane--campaign::after {
+  content:none !important; display:none !important; animation:none !important;
+  background:none !important; box-shadow:none !important; filter:none !important;
+}
+@media (hover:hover) and (pointer:fine) {
+  html[data-z7-core] .svc-mirror-stage { position:sticky; top:7svh; z-index:8; }
+}
+@media (max-width:900px) {
+  html[data-z7-core] .svc-film-lane--campaign { height:min(620px,calc(78svh - 24px)); min-height:430px; }
+}
+@media (hover:none),(pointer:coarse) {
+  html[data-z7-core] .svc-mirror-stage { position:relative; top:auto; }
+  html[data-z7-core] .svc-film-lane--campaign { height:min(520px,calc(72svh - 28px)); min-height:390px; }
+}
