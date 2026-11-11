@@ -183,3 +183,54 @@ html[data-z7-preloading] .z7-global-transition,html[data-z7-transitioning] .z7-g
 .z7-global-transition.is-leaving { opacity:0 !important; visibility:hidden; pointer-events:none; }
 html[data-z7-transitioning] body > :not(.z7-global-transition):not(.z7-global-loader),html[data-z7-arriving] body > :not(.z7-global-transition):not(.z7-global-loader) { filter:none !important; transition:none !important; }
 @keyframes z7-quick-focus { from { opacity:0; filter:blur(8px); transform:scale(.985); } to { opacity:1; filter:blur(0); transform:scale(1); } }
+
+
+/* Keep the global loader and route fade off the expensive full-screen blur path. */
+.z7-global-loader,.z7-global-transition {
+  background:#07070a !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+.z7-global-loader { transition:opacity .15s ease,visibility .15s ease,filter .15s ease !important; }
+.z7-global-transition {
+  background:rgba(7,7,10,.56) !important;
+  filter:none !important; transform:none !important;
+  transition:opacity .15s ease,visibility .15s ease !important;
+}
+.z7-global-transition.is-leaving,.z7-global-loader.is-leaving { filter:none !important; transform:none !important; }
+html[data-z7-transitioning] body > :not(.z7-global-transition):not(.z7-global-loader):not(#z7Loader):not(#z7Transition),
+html[data-z7-arriving] body > :not(.z7-transition):not(.z7-loader):not(.z7-global-transition):not(.z7-global-loader) { filter:none !important; transform:none !important; }
+.z7-global-cursor { display:block; }
+@media (pointer:coarse), (hover:none) {
+  #z7GlobalCursor,.z7-global-cursor { display:none !important; }
+  .z7-global-cursor__ring,.z7-global-cursor__dot { display:none !important; }
+}
+@media (max-width:1023px) {
+  html:is([data-z7-core],[data-academy-ui]) :is(h1,h2,h3,h4,h5,h6) { max-width:100%; text-wrap:balance; overflow-wrap:anywhere; }
+  html:is([data-z7-core],[data-academy-ui]) h1 { font-size:clamp(2.25rem,10.5vw,3.65rem) !important; line-height:.98 !important; }
+  html:is([data-z7-core],[data-academy-ui]) h2 { font-size:clamp(1.7rem,8vw,2.8rem) !important; line-height:1.04 !important; }
+  html:is([data-z7-core],[data-academy-ui]) h3 { font-size:clamp(1.2rem,6vw,1.9rem) !important; line-height:1.12 !important; }
+  html[data-z7-core] .z7-heading-motion { display:inline; max-width:100%; }
+  .z7-heading-fallback { animation-name:z7-mobile-heading-focus !important; filter:none !important; }
+  @keyframes z7-mobile-heading-focus { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+}
+
+
+/* Fast shared page states; the page itself is never blurred or transformed. */
+html[data-z7-core] #z7Loader {
+  background:#07070a !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+  transition:opacity .15s ease,filter .15s ease,visibility .15s ease !important;
+}
+html[data-z7-core] #z7Loader.is-leaving { opacity:0 !important; filter:none !important; }
+html[data-z7-core] #z7Transition {
+  background:rgba(7,7,10,.56) !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+  transition:opacity .15s ease,visibility .15s ease !important;
+}
+html[data-z7-core][data-z7-transitioning] body > :not(#z7Transition):not(#z7Loader),
+html[data-z7-core][data-z7-arriving] body > :not(#z7Transition):not(#z7Loader) { filter:none !important; transform:none !important; }
+html[data-z7-core] .z7-liquid-logo-host.is-mobile-fallback { filter:none !important; }
+html[data-z7-core] .z7-liquid-logo-host.is-mobile-fallback > .z7-mobile-liquid-logo {
+  display:block; width:100%; height:100%; object-fit:contain; opacity:1; filter:none;
+}
+html[data-z7-core][data-theme="light"] .z7-mobile-liquid-logo { filter:invert(1) !important; }
