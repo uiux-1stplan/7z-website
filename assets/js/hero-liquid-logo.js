@@ -3,14 +3,25 @@ import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
-const host = document.querySelector(".logo-hero__mark.z7-liquid-logo-host");
-const canvas = host?.querySelector("canvas");
-if (host && canvas) {
+for (const host of document.querySelectorAll(".z7-liquid-logo-host")) {
+  const canvas = host.querySelector("canvas");
+  if (!canvas) continue;
+  const rotationMode = host.dataset.rotationMode || "scroll-mouse";
+  const heroStage = rotationMode === "scroll-mouse" ? host.closest(".logo-hero") : null;
   let renderer, raf = 0, resizeObserver, visibilityObserver;
   let heroVisible = true;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
   const mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+  let scrollRotation = 0;
+  let lastFrameTime = 0;
+  const updateScrollRotation = () => {
+    if (!heroStage || rotationMode !== "scroll-mouse") return;
+    const rect = heroStage.getBoundingClientRect();
+    const progress = THREE.MathUtils.clamp(-rect.top / Math.max(1, rect.height), 0, 1);
+    scrollRotation = progress * Math.PI * 2;
+  };
+  if (heroStage) { addEventListener("scroll", updateScrollRotation, { passive: true }); updateScrollRotation(); }
 
   const cleanup = () => {
     if (raf) cancelAnimationFrame(raf);
@@ -85,13 +96,19 @@ if (host && canvas) {
       renderer.setPixelRatio(ratio); renderer.setSize(width, height, false);
       camera.aspect = width / height; camera.updateProjectionMatrix();
     };
-    const render = () => {
+    const render = now => {
       raf = 0;
       if (document.hidden || !heroVisible || !host.isConnected) return;
-      const targetRotationY = (mouse.x / Math.max(1, innerWidth) - .5) * .5;
-      const targetRotationX = (mouse.y / Math.max(1, innerHeight) - .5) * .3;
-      logo.rotation.y += (targetRotationY - logo.rotation.y) * .05;
-      logo.rotation.x += (targetRotationX - logo.rotation.x) * .05;
+      const dt = lastFrameTime ? Math.min(50, now - lastFrameTime) : 0;
+      lastFrameTime = now;
+      if (rotationMode === "loop") {
+        logo.rotation.y += dt * .0002;
+      } else {
+        const targetRotationY = scrollRotation + (mouse.x / Math.max(1, innerWidth) - .5) * .5;
+        const targetRotationX = (mouse.y / Math.max(1, innerHeight) - .5) * .3;
+        logo.rotation.y += (targetRotationY - logo.rotation.y) * .05;
+        logo.rotation.x += (targetRotationX - logo.rotation.x) * .05;
+      }
       renderer.render(scene, camera);
       if (!reducedMotion.matches) raf = requestAnimationFrame(render);
     };
@@ -104,7 +121,7 @@ if (host && canvas) {
       else if (heroVisible && !raf && !document.hidden) raf = requestAnimationFrame(render);
     }, { threshold: 0 });
     visibilityObserver.observe(host);
-    if (finePointer.matches) {
+    if (finePointer.matches && rotationMode !== "loop") {
       window.addEventListener("pointermove", event => {
         if (!event.pointerType || event.pointerType === "mouse") { mouse.x = event.clientX; mouse.y = event.clientY; }
       }, { passive: true });

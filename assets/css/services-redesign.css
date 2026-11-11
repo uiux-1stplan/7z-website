@@ -161,3 +161,11 @@ html[data-z7-core][data-theme="light"] .svc-mirror-card { border-color:rgba(72,1
  html[data-z7-core] .z7-services-page *,html[data-z7-core] .z7-services-page *::before,html[data-z7-core] .z7-services-page *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
  html[data-z7-core] .svc-film-lane--campaign::before { animation:none; }
 }
+
+
+/* Preserve the source color and tone of each campaign film. */
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card,
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video {
+  filter:none !important; -webkit-filter:none !important; mix-blend-mode:normal !important; opacity:1 !important;
+}
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video { object-fit:contain; }

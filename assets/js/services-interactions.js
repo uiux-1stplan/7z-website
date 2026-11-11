@@ -88,6 +88,10 @@
     let lastX = 0;
     let lastTime = 0;
     let moved = false;
+    let wheelOffset = 0;
+    let wheelTarget = 0;
+    let wheelFrame = 0;
+    let wheelActive = false;
 
     const modulo = (value, length) => ((value % length) + length) % length;
     const stepAngle = () => 360 / Math.max(cards.length, 1);
@@ -110,7 +114,8 @@
     const stopMotion = () => {
       if (frame) cancelAnimationFrame(frame);
       if (targetFrame) cancelAnimationFrame(targetFrame);
-      frame = targetFrame = 0;
+      if (wheelFrame) cancelAnimationFrame(wheelFrame);
+      frame = targetFrame = wheelFrame = 0;
     };
     const nearestRotation = () => Math.round(rotation / stepAngle()) * stepAngle();
     const settle = () => {
@@ -144,6 +149,7 @@
       stopMotion();
       if (reduced) { rotation = target; paint(); return; }
       const start = rotation;
+      wheelTarget = target;
       const began = performance.now();
       const duration = 620;
       motionEnergy = .58;
@@ -159,6 +165,7 @@
       targetFrame = requestAnimationFrame(tick);
     };
     const moveByFilm = direction => {
+      wheelOffset = 0; wheelActive = false;
       const nearest = nearestRotation();
       goTo(nearest - direction * stepAngle());
     };
@@ -219,9 +226,39 @@
       setupRing();
     } else setupRing();
 
+    const wheelEase = () => {
+      rotation += (wheelTarget - rotation) * .16;
+      motionEnergy = Math.max(.12, Math.min(.7, Math.abs(wheelTarget - rotation) / 10));
+      paint();
+      if (Math.abs(wheelTarget - rotation) > .08) wheelFrame = requestAnimationFrame(wheelEase);
+      else { rotation = wheelTarget; wheelFrame = 0; motionEnergy = .08; paint(); }
+    };
+    addEventListener("wheel", event => {
+      if (reduced || !ring) return;
+      const bounds = campaignRail.getBoundingClientRect();
+      if (bounds.bottom <= 0 || bounds.top >= innerHeight) return;
+      const raw = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+      const multiplier = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1;
+      const delta = raw * multiplier;
+      if (!delta) return;
+      const next = Math.max(0, Math.min(360, wheelOffset + delta));
+      if (next === wheelOffset) return;
+      event.preventDefault();
+      if (!wheelActive) { wheelTarget = rotation; wheelActive = true; }
+      const consumed = next - wheelOffset;
+      wheelOffset = next;
+      stopMotion();
+      velocity = 0;
+      wheelTarget += consumed * .42;
+      wheelFrame = requestAnimationFrame(wheelEase);
+    }, { passive: false });
+
     campaignRail.addEventListener("pointerdown", event => {
       if (!ring || !event.isPrimary || event.button > 0 || event.target.closest("button")) return;
       stopMotion();
+      wheelOffset = 0;
+      wheelActive = false;
+      wheelTarget = rotation;
       activePointer = event.pointerId;
       startX = event.clientX;
       startY = event.clientY;

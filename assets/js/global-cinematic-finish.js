@@ -20,7 +20,7 @@
     layer.className = kind === "loader" ? "z7-global-loader" : "z7-global-transition";
     layer.setAttribute("aria-hidden", kind === "loader" ? "false" : "true");
     if (kind === "loader") layer.setAttribute("role", "status");
-    layer.innerHTML = `<div class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__content"><img class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__logo" src="${logoPath}" alt="7Z Magic" width="176" height="104" decoding="async"><p class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__label">${label}</p>${kind === "loader" ? '<span class="z7-global-loader__line" aria-hidden="true"><i></i></span>' : ""}</div>`;
+    layer.innerHTML = `<div class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__content"><img class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__logo" src="${logoPath}" alt="7Z Magic" width="176" height="104" decoding="async">${kind === "loader" ? '<span class="z7-global-loader__percent" data-global-percent>0%</span><span class="z7-global-loader__line" aria-hidden="true"><i data-global-progress></i></span>' : ""}<p class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__label">${label}</p></div>`;
     return layer;
   }
 
@@ -44,7 +44,7 @@
       overlay.classList.remove("is-active");
       overlay.classList.add("is-leaving");
       root.removeAttribute("data-z7-arriving");
-      setTimeout(() => { overlay.hidden = true; overlay.classList.remove("is-leaving"); loader?.remove(); }, reduced.matches ? 0 : 560);
+      setTimeout(() => { overlay.hidden = true; overlay.classList.remove("is-leaving"); loader?.remove(); }, reduced.matches ? 0 : 300);
     };
     if (arrival?.path === current && Date.now() - arrival.time < 15000) {
       const label = overlay.querySelector(".z7-global-transition__label");
@@ -56,17 +56,29 @@
     } else if (loader && (() => { try { return !sessionStorage.getItem("z7:global-started:v1"); } catch { return false; } })()) {
       try { sessionStorage.setItem("z7:global-started:v1", "1"); } catch {}
       const logo = loader.querySelector(".z7-global-loader__logo");
+      const percent = loader.querySelector("[data-global-percent]");
+      const progress = loader.querySelector("[data-global-progress]");
       const started = performance.now();
+      let raf = 0;
+      const draw = now => {
+        const value = Math.min(92, Math.max(0, ((now - started) / 1050) * 92));
+        if (percent) percent.textContent = Math.round(value) + "%";
+        if (progress) progress.style.transform = "scaleX(" + (value / 100) + ")";
+        if (value < 92) raf = requestAnimationFrame(draw);
+      };
+      raf = requestAnimationFrame(draw);
       const pageReady = document.readyState === "complete"
         ? Promise.resolve()
         : new Promise(resolve => window.addEventListener("load", resolve, { once: true }));
-      const cap = new Promise(resolve => setTimeout(resolve, 1800));
-      Promise.race([pageReady, cap]).then(() => Promise.allSettled([
-        logo?.decode?.() || Promise.resolve(),
-        new Promise(resolve => setTimeout(resolve, Math.max(0, 620 - (performance.now() - started))))
-      ])).then(() => {
-        loader.classList.add("is-leaving");
-        setTimeout(() => loader?.remove(), reduced.matches ? 0 : 560);
+      const cap = new Promise(resolve => setTimeout(resolve, 1600));
+      Promise.race([pageReady, cap]).then(() => logo?.decode?.() || Promise.resolve()).then(() => {
+        cancelAnimationFrame(raf);
+        if (percent) percent.textContent = "100%";
+        if (progress) progress.style.transform = "scaleX(1)";
+        setTimeout(() => {
+          loader.classList.add("is-leaving");
+          setTimeout(() => loader?.remove(), reduced.matches ? 0 : 340);
+        }, 180);
       });
     } else if (loader) loader.remove();
 
@@ -96,7 +108,7 @@
           sessionStorage.setItem("z7:core-arrival:v1", JSON.stringify(value));
         } catch {}
         location.assign(destination.href);
-      }, reduced.matches ? 0 : 420);
+      }, reduced.matches ? 0 : 240);
     }, { passive: false });
   }
 

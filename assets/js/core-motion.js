@@ -209,16 +209,37 @@
     if (!loader) { revealHero(state); return; }
     if (reduced.matches) { clearLoader(state); return; }
     const logo = loader.querySelector(".z7-loader__mark");
+    const count = loader.querySelector("[data-z7-count]");
+    const progress = loader.querySelector("[data-z7-progress]");
+    const started = performance.now();
+    let value = 0;
+    const paintProgress = next => {
+      value = Math.max(value, Math.min(100, next));
+      if (count) count.textContent = String(Math.round(value)) + "%";
+      if (progress) progress.style.transform = "scaleX(" + (value / 100) + ")";
+    };
+    const animateProgress = now => {
+      if (state.destroyed) return;
+      paintProgress(Math.min(92, ((now - started) / 1050) * 92));
+      if (value < 92) state.loaderRaf = requestAnimationFrame(animateProgress);
+      else state.loaderRaf = 0;
+    };
+    paintProgress(0);
+    state.loaderRaf = requestAnimationFrame(animateProgress);
     const pageReady = document.readyState === "complete"
       ? Promise.resolve()
       : new Promise(resolve => window.addEventListener("load", resolve, { once: true }));
-    const cap = new Promise(resolve => timer(state, resolve, 1800));
-    const started = performance.now();
+    const cap = new Promise(resolve => timer(state, resolve, 1600));
     await Promise.race([pageReady, cap]);
-    await Promise.allSettled([logo?.decode?.() || Promise.resolve(), new Promise(resolve => timer(state, resolve, Math.max(0, 620 - (performance.now() - started))))]);
+    await Promise.allSettled([logo?.decode?.() || Promise.resolve()]);
+    if (state.destroyed) return;
+    if (state.loaderRaf) cancelAnimationFrame(state.loaderRaf);
+    state.loaderRaf = 0;
+    paintProgress(100);
+    await new Promise(resolve => timer(state, resolve, 180));
     if (state.destroyed) return;
     loader.classList.add("is-leaving");
-    timer(state, () => clearLoader(state), 560);
+    timer(state, () => clearLoader(state), 340);
   }
   function ensureTransitionMark(overlay) {
     const inner = overlay?.querySelector(".z7-transition__inner");
@@ -254,8 +275,8 @@
     timer(state, () => {
       overlay.classList.remove("is-active");
       overlay.classList.add("is-leaving");
-      timer(state, () => clearOverlay(state), 560);
-    }, 210);
+      timer(state, () => clearOverlay(state), 300);
+    }, 130);
   }
   function navigate(state, destination) {
     if (state.navigating) return;
@@ -274,7 +295,7 @@
     overlay.classList.remove("is-leaving");
     root.setAttribute("data-z7-transitioning", "");
     requestAnimationFrame(() => overlay.classList.add("is-active"));
-    timer(state, go, 420);
+    timer(state, go, 240);
   }
   function initLinks(state) {
     document.addEventListener("click", event => {

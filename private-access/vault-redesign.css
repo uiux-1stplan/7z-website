@@ -174,3 +174,13 @@ html[data-z7-core][data-theme="light"] .z7pa-page .z7-login-vault { box-shadow:0
 @media (prefers-reduced-motion: reduce) {
   html[data-z7-core] .z7pa-page *, html[data-z7-core] .z7pa-page *::before, html[data-z7-core] .z7pa-page *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
 }
+
+
+/* Center the pre-auth vault beneath the fixed header without a layout snap. */
+html.z7icx-preauth[data-z7-core] body.z7pa-page { min-height:100svh; display:flex; flex-direction:column; }
+html.z7icx-preauth[data-z7-core] body.z7pa-page > .z7-header { flex:0 0 auto; }
+html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page { display:flex; flex:1 0 auto; flex-direction:column; justify-content:center; min-height:100svh !important; padding:calc(92px + env(safe-area-inset-top)) 0 48px !important; }
+html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page > .z7pa-hero { display:none !important; }
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault { flex:0 0 auto; width:min(1120px,calc(100% - 2 * var(--z7-gutter))) !important; margin:0 auto !important; }
+html.z7icx-preauth[data-z7-core] body.z7pa-page > .z7-footer { margin-top:0 !important; }
+@media (max-width:700px) { html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page { min-height:100svh !important; padding:calc(84px + env(safe-area-inset-top)) 0 32px !important; } html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault { width:calc(100% - 28px) !important; } }

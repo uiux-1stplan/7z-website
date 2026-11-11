@@ -142,3 +142,19 @@ html[data-z7-arriving] body > :not(.z7-transition):not(.z7-loader):not(.z7-globa
 @keyframes z7-orbit-breathe { 0%,100% { opacity:.58; scale:.97; } 50% { opacity:1; scale:1.025; } }
 @keyframes z7-mark-glow { 0%,100% { filter:drop-shadow(0 0 20px rgba(200,211,255,.19)); } 50% { filter:drop-shadow(0 0 34px rgba(200,211,255,.34)); } }
 @media (prefers-reduced-motion: reduce) { .z7-global-loader::before,.z7-global-loader__logo,.z7-global-transition::before { animation:none !important; } }
+
+
+/* Light-weight centered loader and branded route transition. */
+.z7-global-loader, .z7-global-transition { background:#07070a !important; }
+.z7-global-loader::before,.z7-global-loader::after,.z7-global-transition::before,.z7-global-transition::after { display:none !important; content:none !important; }
+.z7-global-loader__content,.z7-global-transition__content { position:absolute; inset:0; display:flex !important; flex-direction:column; align-items:center; justify-content:center; gap:0 !important; padding:24px; }
+.z7-global-loader__logo { width:clamp(82px,10vw,118px) !important; max-height:none !important; margin:0; animation:z7-plain-mark-in .75s ease .08s both !important; }
+.z7-global-loader__percent { display:block; margin-top:20px; color:rgba(242,245,252,.84); font:500 12px/1.2 Inter,Arial,sans-serif; letter-spacing:.08em; }
+.z7-global-loader__line { display:block; width:min(220px,52vw); height:2px; margin-top:15px; overflow:hidden; background:rgba(255,255,255,.16); }
+.z7-global-loader__line i { display:block; width:100%; height:100%; transform:scaleX(0); transform-origin:left center; background:linear-gradient(90deg,#899fff,#ecf0ff); transition:transform .18s linear; }
+.z7-global-loader__label { display:none !important; }
+.z7-global-transition { background:rgba(7,7,10,.72) !important; backdrop-filter:blur(12px) !important; -webkit-backdrop-filter:blur(12px) !important; transition:opacity .28s ease,visibility .28s ease !important; }
+.z7-global-transition__content { gap:0 !important; }
+.z7-global-transition__logo { width:clamp(68px,8vw,94px) !important; max-height:none !important; margin:0 0 14px; opacity:1; animation:none !important; }
+.z7-global-transition__label { color:rgba(245,247,252,.88); font:500 13px/1.4 Inter,Arial,sans-serif; letter-spacing:.08em; text-transform:none; }
+.z7-global-loader.is-leaving,.z7-global-transition.is-leaving { transition:opacity .34s ease,visibility .34s ease !important; }

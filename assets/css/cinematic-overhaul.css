@@ -563,3 +563,32 @@ html[data-z7-core] .z7-transition::before {
   inset:auto !important; left:50% !important; top:50% !important;
   right:auto !important; bottom:auto !important;
 }
+
+
+/* About page liquid chrome hero canvas. */
+html[data-z7-core] .about-hero__field .about-chrome-logo {
+  position:relative; z-index:2; display:block; width:clamp(190px,32vw,340px);
+  aspect-ratio:390 / 433; flex:0 0 auto; overflow:visible; background:transparent !important;
+  border:0 !important; box-shadow:none !important; filter:drop-shadow(0 0 30px rgba(156,180,255,.16));
+}
+html[data-z7-core] .about-hero__field .about-chrome-logo > canvas { position:absolute; inset:0; width:100% !important; height:100% !important; background:transparent !important; }
+
+/* Minimal, precisely centered cinematic loader and route curtain. */
+html[data-z7-core] .z7-loader,
+html[data-z7-core] .z7-transition { background:#07070a !important; backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
+html[data-z7-core] .z7-loader::before, html[data-z7-core] .z7-loader::after,
+html[data-z7-core] .z7-transition::before, html[data-z7-core] .z7-transition::after,
+html[data-z7-core] .z7-loader__orb, html[data-z7-core] .z7-transition__orb { display:none !important; content:none !important; }
+html[data-z7-core] .z7-loader__inner { position:absolute; inset:0; display:flex !important; width:100%; height:100%; min-height:100svh !important; padding:24px; align-items:center; justify-content:center; flex-direction:column; gap:0; transform:none !important; }
+html[data-z7-core] .z7-loader__top { display:flex !important; width:auto; height:auto; flex-direction:column; align-items:center; gap:0; }
+html[data-z7-core] .z7-loader__mark { width:clamp(82px,10vw,118px) !important; max-height:none !important; height:auto !important; margin:0; opacity:0; filter:drop-shadow(0 0 18px rgba(213,222,255,.2)); animation:z7-plain-mark-in .75s ease .08s forwards !important; }
+html[data-z7-core] .z7-loader__count { display:block !important; position:static !important; margin:20px 0 0 !important; color:rgba(242,245,252,.84) !important; font:500 12px/1.2 Inter,Arial,sans-serif !important; letter-spacing:.08em !important; opacity:1 !important; }
+html[data-z7-core] .z7-loader__line { width:min(220px,52vw) !important; height:2px !important; margin:15px auto 0 !important; background:rgba(255,255,255,.16) !important; }
+html[data-z7-core] .z7-loader__progress { width:100% !important; transform:scaleX(0); transform-origin:left center; background:linear-gradient(90deg,#899fff,#ecf0ff) !important; animation:none !important; transition:transform .18s linear; }
+html[data-z7-core] .z7-loader__caption { display:none !important; }
+html[data-z7-core] .z7-transition { background:rgba(7,7,10,.72) !important; backdrop-filter:blur(12px) !important; -webkit-backdrop-filter:blur(12px) !important; transition:opacity .28s ease,visibility .28s ease !important; }
+html[data-z7-core] .z7-transition__inner { display:flex !important; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:24px; }
+html[data-z7-core] .z7-transition__mark { width:clamp(68px,8vw,94px) !important; max-height:none !important; height:auto !important; filter:drop-shadow(0 0 18px rgba(213,222,255,.22)); animation:none !important; }
+html[data-z7-core] .z7-transition__label { color:rgba(245,247,252,.88) !important; font:500 13px/1.4 Inter,Arial,sans-serif !important; letter-spacing:.08em !important; text-transform:none !important; }
+html[data-z7-core] .z7-loader.is-leaving, html[data-z7-core] .z7-transition.is-leaving { transition:opacity .34s ease,visibility .34s ease !important; }
+@media (prefers-reduced-motion:reduce) { html[data-z7-core] .z7-loader__mark { animation:none !important; opacity:1; } }
