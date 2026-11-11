@@ -184,3 +184,6 @@ html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page > .z7pa-hero { disp
 html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault { flex:0 0 auto; width:min(1120px,calc(100% - 2 * var(--z7-gutter))) !important; margin:0 auto !important; }
 html.z7icx-preauth[data-z7-core] body.z7pa-page > .z7-footer { margin-top:0 !important; }
 @media (max-width:700px) { html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page { min-height:100svh !important; padding:calc(84px + env(safe-area-inset-top)) 0 32px !important; } html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault { width:calc(100% - 28px) !important; } }
+
+html[data-z7-core] body.z7pa-page > #atmosphere,
+html[data-z7-core] body.z7pa-page > .grain { position:fixed !important; inset:0 !important; width:100% !important; height:100% !important; margin:0 !important; pointer-events:none !important; }
