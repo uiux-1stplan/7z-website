@@ -86,6 +86,50 @@
     }, 4200);
   }
 
+  const AUDIT_STORAGE_KEY = "z7-admin-audit-v1";
+
+  function readSystemAuditLogs() {
+    try {
+      const value = JSON.parse(localStorage.getItem(AUDIT_STORAGE_KEY) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function renderSystemAuditLogs() {
+    const root = $("#system-audit-logs");
+    if (!root) return;
+    const entries = readSystemAuditLogs();
+    root.innerHTML = entries.length
+      ? entries.slice(0, 30).map((entry) => `<li class="audit-log-row"><span class="audit-log-dot" aria-hidden="true"></span><span class="audit-log-action">${escapeHtml(entry.action)}</span><time datetime="${escapeHtml(entry.time)}">${new Date(entry.time).toLocaleString("en-US", { timeZone: "Asia/Amman", dateStyle: "medium", timeStyle: "short" })}</time></li>`).join("")
+      : '<li class="audit-log-empty">No system activity has been recorded.</li>';
+  }
+
+  function recordSystemAudit(action) {
+    const entries = readSystemAuditLogs();
+    entries.unshift({ action: String(action || "Admin action").slice(0, 100), time: new Date().toISOString() });
+    try { localStorage.setItem(AUDIT_STORAGE_KEY, JSON.stringify(entries.slice(0, 100))); } catch { /* Private browsing can disable local storage. */ }
+    renderSystemAuditLogs();
+  }
+
+  function clearSystemAuditLogs() {
+    if (!window.confirm("Clear all local system audit logs?")) return;
+    try { localStorage.removeItem(AUDIT_STORAGE_KEY); } catch { /* The view still clears when storage is unavailable. */ }
+    renderSystemAuditLogs();
+    toast("System audit logs cleared.");
+  }
+
+  function syncThemePills() {
+    const light = document.documentElement.dataset.theme === "light";
+    document.querySelectorAll(".theme-pill").forEach(button => {
+      button.setAttribute("aria-pressed", String(light));
+      const label = button.querySelector(".theme-pill__label");
+      if (label) label.textContent = light ? "Light" : "Dark";
+      button.title = "Current theme: " + (light ? "Light" : "Dark") + ". Activate to switch.";
+    });
+  }
+
   async function loadExternalScript(src, attributes = {}) {
     await new Promise((resolve, reject) => {
       const script = document.createElement("script");
@@ -510,6 +554,16 @@
               ${user.status === "active" ? "DISABLE" : "ENABLE"}
             </button>
 
+            <button
+              type="button"
+              class="small-button danger delete-action"
+              data-user-id="${escapeHtml(user.id)}"
+              data-user-email="${safeEmail}"
+              ${isSelf ? "disabled" : ""}
+              aria-label="Delete user ${safeEmail}">
+              DELETE
+            </button>
+
           </div>
         </td>
       `;
@@ -533,6 +587,7 @@
           : [];
 
       renderUsers();
+      window.dispatchEvent(new CustomEvent("z7:users-updated", { detail: { users: state.users } }));
 
     } catch (error) {
       hide("#users-loading");
@@ -541,6 +596,29 @@
         error.message || "Could not load users.",
         "error"
       );
+    }
+  }
+
+  async function deleteUser(userId, email, button) {
+    const user = state.users.find((item) => String(item.id) === String(userId));
+    if (!user || String(userId) === String(state.me?.id)) return;
+    if (!window.confirm("Permanently delete " + (email || user.name || "this user") + "? This removes the account and its access.")) return;
+
+    if (button) button.disabled = true;
+    try {
+      await portalFetch("/api/admin/users", {
+        method: "DELETE",
+        body: { id: userId, userId },
+      });
+      state.users = state.users.filter((item) => String(item.id) !== String(userId));
+      renderUsers();
+      window.dispatchEvent(new CustomEvent("z7:users-updated", { detail: { users: state.users } }));
+      window.dispatchEvent(new CustomEvent("z7:admin-audit", { detail: { action: "User account deleted" } }));
+      toast("User deleted successfully.");
+    } catch (error) {
+      toast(error.message || "Could not delete user.", "error");
+    } finally {
+      if (button) button.disabled = false;
     }
   }
 
@@ -763,6 +841,13 @@
   }
 
   function bindEvents() {
+    document.addEventListener("z7:admin-audit", (event) => recordSystemAudit(event.detail?.action));
+    $("#clear-system-logs")?.addEventListener("click", clearSystemAuditLogs);
+    renderSystemAuditLogs();
+
+    syncThemePills();
+    new MutationObserver(syncThemePills).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
     $("#create-user-form")
       .addEventListener(
         "submit",
@@ -830,6 +915,12 @@
               status.dataset.userId,
               status.dataset.status
             );
+            return;
+          }
+
+          const remove = event.target.closest(".delete-action");
+          if (remove && !remove.disabled) {
+            deleteUser(remove.dataset.userId, remove.dataset.userEmail, remove);
           }
         }
       );

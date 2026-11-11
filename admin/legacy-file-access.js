@@ -9,6 +9,9 @@
   const CLIENT_API =
     "/api/admin/clients";
 
+  const USERS_API =
+    "/api/admin/users";
+
 
   let model = {
 
@@ -100,6 +103,7 @@
   function dashboardTarget() {
 
     return (
+      document.querySelector("#files-view") ||
       document.querySelector(
         "#app main"
       ) ||
@@ -150,7 +154,7 @@
 
 
     section.className =
-      "panel z7-client-access-panel";
+      "glass-panel z7-client-access-panel";
 
 
     section.innerHTML = `
@@ -669,268 +673,64 @@
     }
 
 
-    root.innerHTML =
-      model.resources
-      .map(
-        resource => {
+    root.innerHTML = model.resources.map(resource => {
+      const permission = permissionFor(model.selectedClient, resource.key);
+      const canView = Boolean(permission?.can_view);
+      const canDownload = Boolean(permission?.can_download);
+      const legacy = resource.type === "legacy";
+      const resourceId = legacy ? resource.scope : resource.fileId;
+      return `
+        <article class="z7-cap-file" data-resource-key="${esc(resource.key)}" data-resource-type="${esc(resource.type)}" data-resource-id="${esc(resourceId)}">
+          <div class="z7-cap-file-info">
+            <span class="z7-cap-file-type">${legacy ? "PROTECTED EXPERIENCE" : "PRIVATE UPLOAD"}</span>
+            <strong>${esc(resource.name)}</strong>
+            <span>${legacy ? "Legacy media route" : "Secure client library file"}</span>
+          </div>
+          <div class="z7-cap-file-actions">
+            <button type="button" class="z7-cap-open">Open</button>
+            <button type="button" class="z7-cap-toggle ${canView ? "is-enabled" : ""}" data-permission-toggle="view" data-enabled="${canView}" aria-pressed="${canView}">
+              <span>View</span><strong>${canView ? "Revoke access" : "Grant access"}</strong>
+            </button>
+            ${legacy ? "" : `<button type="button" class="z7-cap-toggle ${canDownload ? "is-enabled" : ""}" data-permission-toggle="download" data-enabled="${canDownload}" aria-pressed="${canDownload}">
+              <span>Download</span><strong>${canDownload ? "Revoke access" : "Grant access"}</strong>
+            </button>`}
+          </div>
+        </article>`;
+    }).join("");
 
-          const permission =
-            permissionFor(
-              model.selectedClient,
-              resource.key
-            );
-
-
-          const canView =
-            Boolean(
-              permission?.can_view
-            );
-
-
-          const canDownload =
-            Boolean(
-              permission?.can_download
-            );
-
-
-          const legacy =
-            resource.type ===
-            "legacy";
-
-
-          return `
-            <div
-              class="z7-cap-file"
-              data-resource-key="${esc(
-                resource.key
-              )}"
-              data-resource-type="${esc(
-                resource.type
-              )}"
-              data-resource-id="${esc(
-                legacy
-                  ? resource.scope
-                  : resource.fileId
-              )}">
-
-              <div class="z7-cap-file-info">
-
-                <strong>
-                  ${esc(
-                    resource.name
-                  )}
-                </strong>
-
-                <span>
-                  ${
-                    legacy
-                      ? "Original Protected Experience"
-                      : "Private Uploaded File"
-                  }
-                </span>
-
-              </div>
-
-
-              <button
-                type="button"
-                class="z7-cap-open">
-                OPEN
-              </button>
-
-
-              <label>
-
-                <input
-                  type="checkbox"
-                  data-permission="view"
-                  ${
-                    canView
-                      ? "checked"
-                      : ""
-                  }>
-
-                <span>
-                  View
-                </span>
-
-              </label>
-
-
-              ${
-                legacy
-                  ? `
-                      <label class="is-disabled">
-
-                        <input
-                          type="checkbox"
-                          disabled>
-
-                        <span>
-                          Route Access
-                        </span>
-
-                      </label>
-                    `
-                  : `
-                      <label>
-
-                        <input
-                          type="checkbox"
-                          data-permission="download"
-                          ${
-                            canDownload
-                              ? "checked"
-                              : ""
-                          }>
-
-                        <span>
-                          Download
-                        </span>
-
-                      </label>
-                    `
-              }
-
-
-              <button
-                type="button"
-                class="z7-cap-save">
-                Save
-              </button>
-
-            </div>
-          `;
-        }
-      )
-      .join("");
-
-
-    root
-      .querySelectorAll(
-        ".z7-cap-file"
-      )
-      .forEach(
-        row => {
-
-          const resourceKey =
-            row.dataset.resourceKey;
-
-
-          const resource =
-            model.resources.find(
-              item =>
-                item.key ===
-                resourceKey
-            );
-
-
-          const view =
-            row.querySelector(
-              '[data-permission="view"]'
-            );
-
-
-          const download =
-            row.querySelector(
-              '[data-permission="download"]'
-            );
-
-
-          download
-            ?.addEventListener(
-              "change",
-              () => {
-
-                if (
-                  download.checked
-                ) {
-
-                  view.checked =
-                    true;
-                }
-              }
-            );
-
-
-          view
-            ?.addEventListener(
-              "change",
-              () => {
-
-                if (
-                  !view.checked &&
-                  download
-                ) {
-
-                  download.checked =
-                    false;
-                }
-              }
-            );
-
-
-          row
-            .querySelector(
-              ".z7-cap-open"
-            )
-            ?.addEventListener(
-              "click",
-              () => {
-
-                if (
-                  resource.type ===
-                  "legacy"
-                ) {
-
-                  window.open(
-                    resource.openPath,
-                    "_blank",
-                    "noopener"
-                  );
-
-                } else {
-
-                  openUploadedFile(
-                    resource
-                  );
-                }
-              }
-            );
-
-
-          row
-            .querySelector(
-              ".z7-cap-save"
-            )
-            ?.addEventListener(
-              "click",
-              () =>
-                saveRow(
-                  row,
-                  view,
-                  download
-                )
-            );
-        }
-      );
+    root.querySelectorAll(".z7-cap-file").forEach(row => {
+      const resource = model.resources.find(item => item.key === row.dataset.resourceKey);
+      row.querySelector(".z7-cap-open")?.addEventListener("click", () => {
+        if (!resource) return;
+        if (resource.type === "legacy") window.open(resource.openPath, "_blank", "noopener");
+        else openUploadedFile(resource);
+      });
+      row.querySelectorAll("[data-permission-toggle]").forEach(button => {
+        button.addEventListener("click", async () => {
+          const viewButton = row.querySelector('[data-permission-toggle="view"]');
+          const downloadButton = row.querySelector('[data-permission-toggle="download"]');
+          const next = button.dataset.enabled !== "true";
+          const view = { checked: button.dataset.permissionToggle === "view" ? next : viewButton?.dataset.enabled === "true" };
+          const download = { checked: button.dataset.permissionToggle === "download" ? next : downloadButton?.dataset.enabled === "true" };
+          if (download.checked) view.checked = true;
+          if (!view.checked) download.checked = false;
+          await saveRow(row, view, download, button);
+        });
+      });
+    });
   }
-
 
   async function saveRow(
     row,
     view,
-    download
+    download,
+    actionButton
   ) {
 
-    const button =
-      row.querySelector(
-        ".z7-cap-save"
-      );
+    const button = actionButton || row.querySelector(".z7-cap-save");
+    if (!button) return;
 
-
-    const original =
-      button.textContent;
+    const original = button.textContent;
 
 
     button.disabled = true;
@@ -994,13 +794,12 @@
       }
 
 
-      button.textContent =
-        "Saved";
-
-
-      await load(
-        false
-      );
+      button.textContent = "Saved";
+      window.dispatchEvent(new CustomEvent("z7:admin-audit", { detail: { action: (view.checked ? "Granted" : "Revoked") + " client media access" } }));
+      await load(false);
+      renderClients();
+      renderSelectedTools();
+      renderResources();
 
 
       setTimeout(
@@ -1041,46 +840,26 @@
 
     try {
 
-      const response =
-        await authFetch(
-          API
-        );
+      const [response, usersResponse] = await Promise.all([authFetch(API), authFetch(USERS_API)]);
+      if ([response, usersResponse].some(item => item.status === 401 || item.status === 403)) return;
+      const [payload, usersPayload] = await Promise.all([response.json(), usersResponse.json()]);
+      if (!response.ok) throw new Error(payload.error || "Could not load unified access control.");
+      if (!usersResponse.ok) throw new Error(usersPayload.error || "Could not load clients from Users.");
 
+      model.clients = (Array.isArray(usersPayload.users) ? usersPayload.users : [])
+        .filter(user => String(user.role || "").toLowerCase() !== "admin")
+        .map(user => ({
+          ...user,
+          client_key: String(user.client_key || user.clientKey || user.id || user.userId || ""),
+          display_name: user.display_name || user.displayName || user.name || user.email || "Client",
+          username: user.username || user.email || user.id,
+          auth_type: user.auth_type || "native",
+          status: user.status || "active"
+        }))
+        .filter(user => user.client_key);
 
-      if (
-        response.status === 401 ||
-        response.status === 403
-      ) {
-        return;
-      }
-
-
-      const payload =
-        await response.json();
-
-
-      if (!response.ok) {
-
-        throw new Error(
-          payload.error ||
-          "Could not load unified access control."
-        );
-      }
-
-
-      model.clients =
-        payload.clients ||
-        [];
-
-
-      model.resources =
-        payload.resources ||
-        [];
-
-
-      model.permissions =
-        payload.permissions ||
-        [];
+      model.resources = payload.resources || [];
+      model.permissions = payload.permissions || [];
 
 
       if (render) {
@@ -1102,6 +881,13 @@
     }
   }
 
+
+  window.addEventListener("z7:users-updated", event => {
+    const users = Array.isArray(event.detail?.users) ? event.detail.users : [];
+    model.clients = users.filter(user => String(user.role || "").toLowerCase() !== "admin").map(user => ({ ...user, client_key: String(user.client_key || user.clientKey || user.id || user.userId || ""), display_name: user.display_name || user.displayName || user.name || user.email || "Client", username: user.username || user.email || user.id, auth_type: user.auth_type || "native", status: user.status || "active" })).filter(user => user.client_key);
+    if (!model.clients.some(client => client.client_key === model.selectedClient)) model.selectedClient = model.clients[0]?.client_key || null;
+    renderClients(); renderSelectedTools(); renderResources();
+  });
 
   async function boot() {
 

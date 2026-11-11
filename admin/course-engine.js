@@ -150,9 +150,34 @@
     }
   }
 
+  function applyDeleteImmediately(body) {
+    const id = String(body.id || "");
+    if (!id) return;
+    if (body.action === "delete-affiliate") {
+      const affiliate = state.affiliates.find(item => String(item.id) === id);
+      state.affiliates = state.affiliates.filter(item => String(item.id) !== id);
+      if (affiliate) state.codes = state.codes.filter(item => String(item.affiliate_id || "") !== id);
+      renderAffiliates(); renderCodes();
+    } else if (body.action === "delete-code") {
+      state.codes = state.codes.filter(item => String(item.id) !== id);
+      renderCodes();
+    } else if (body.action === "delete-registration") {
+      state.registrations = state.registrations.filter(item => String(item.id) !== id);
+      renderAccounting(state.totals);
+    } else if (body.action === "delete-revenue-adjustment") {
+      state.adjustments = state.adjustments.filter(item => String(item.id) !== id);
+      renderAccounting(state.totals);
+    }
+  }
+
   async function post(body, success) {
     try {
       await request({ body });
+      if (String(body.action || "").startsWith("delete-")) {
+        applyDeleteImmediately(body);
+        const labels = { "delete-affiliate": "Affiliate deleted", "delete-code": "Promo code deleted", "delete-registration": "Registration deleted", "delete-revenue-adjustment": "Ledger adjustment deleted" };
+        window.dispatchEvent(new CustomEvent("z7:admin-audit", { detail: { action: labels[body.action] || "Admin record deleted" } }));
+      }
       notify(success);
       await refresh();
       return true;

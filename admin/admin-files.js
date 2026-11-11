@@ -492,7 +492,9 @@
     button.disabled = true;
     try {
       await manageFile("delete", id, name);
+      button.closest(".z7af-file")?.remove();
       document.querySelector("#z7af-message").textContent = "File removed and client access revoked.";
+      window.dispatchEvent(new CustomEvent("z7:admin-audit", { detail: { action: "Private file deleted" } }));
       await loadFiles();
     } catch (error) {
       window.alert(error.message || "The file could not be removed.");
