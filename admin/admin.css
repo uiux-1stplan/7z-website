@@ -790,3 +790,35 @@ body.z7-admin-shell .dashboard-app .activity-row{border-bottom-color:rgba(183,20
 @media(max-width:720px){body.z7-admin-shell .dashboard-app{padding:72px 12px 28px;gap:12px}body.z7-admin-shell .dashboard-app .topbar{min-height:0;margin-bottom:16px;padding-bottom:10px}body.z7-admin-shell .dashboard-app .admin-profile{flex-wrap:wrap;gap:7px}body.z7-admin-shell .dashboard-app .admin-search{order:1;width:100%;max-width:none}body.z7-admin-shell .dashboard-app .admin-top-action{order:2}body.z7-admin-shell .dashboard-app .admin-theme-toggle{order:3;width:36px;height:36px}body.z7-admin-shell .dashboard-app #admin-copy{order:4;margin-left:auto;text-align:right}body.z7-admin-shell .dashboard-app #clerk-user-button{order:5}body.z7-admin-shell .dashboard-app .dashboard-kpis,body.z7-admin-shell .dashboard-app .analytics-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}body.z7-admin-shell .dashboard-app .kpi-card{min-height:116px;padding:13px 12px;border-radius:16px}body.z7-admin-shell .dashboard-app .overview-welcome{align-items:flex-start}body.z7-admin-shell .dashboard-app .overview-welcome h2,body.z7-admin-shell .dashboard-app .view-intro h2{font-size:clamp(1.3rem,5vw,1.65rem)}body.z7-admin-shell .dashboard-app .overview-welcome p,body.z7-admin-shell .dashboard-app .view-intro p{max-width:36ch;font-size:11px}body.z7-admin-shell .dashboard-app .glass-panel,body.z7-admin-shell .dashboard-app .panel,body.z7-admin-shell .dashboard-app .engine-panel{border-radius:16px}body.z7-admin-shell .dashboard-app .overview-grid{grid-template-columns:minmax(0,1fr)}body.z7-admin-shell .dashboard-app .overview-chart-panel,body.z7-admin-shell .dashboard-app .overview-pulse{padding:14px}body.z7-admin-shell .admin-home-link{padding:8px 10px;font-size:10px}}
 @media(max-width:420px){body.z7-admin-shell .dashboard-app{padding-inline:10px}body.z7-admin-shell .dashboard-app .dashboard-nav{gap:2px}body.z7-admin-shell .dashboard-app .nav-item{min-height:55px}body.z7-admin-shell .dashboard-app .nav-item strong{font-size:9px}body.z7-admin-shell .dashboard-app .admin-profile{column-gap:6px}body.z7-admin-shell .dashboard-app .admin-top-action{padding-inline:11px}body.z7-admin-shell .admin-home-link{gap:5px;padding:7px 8px;font-size:9px}}
 @media(prefers-reduced-motion:reduce){body.z7-admin-shell .admin-home-link,body.z7-admin-shell .dashboard-app .nav-item,body.z7-admin-shell .dashboard-app .kpi-card{transition:none!important}}
+
+/* Keep dynamically mounted admin tools inside their own dashboard destinations. */
+body.z7-admin-shell .dashboard-app .users-assets-section,
+body.z7-admin-shell .dashboard-app .settings-admin-section { display:grid; gap:15px; margin-top:8px; }
+body.z7-admin-shell .dashboard-app .users-assets-panels,
+body.z7-admin-shell .dashboard-app .settings-admin-slot { display:grid; gap:14px; min-width:0; }
+body.z7-admin-shell .dashboard-app #z7-native-clients,
+body.z7-admin-shell .dashboard-app #z7-private-upload-panel,
+body.z7-admin-shell .dashboard-app #z7-admin-file-library,
+body.z7-admin-shell .dashboard-app #legacy-file-access-panel,
+body.z7-admin-shell .dashboard-app #z7-admin-accounts { min-width:0; margin:0; }
+body.z7-admin-shell .dashboard-app .users-assets-panels #z7-native-clients { order:0; }
+body.z7-admin-shell .dashboard-app .users-assets-panels #z7-private-upload-panel { order:1; }
+body.z7-admin-shell .dashboard-app .users-assets-panels #z7-admin-file-library { order:2; }
+body.z7-admin-shell .dashboard-app .users-assets-panels #legacy-file-access-panel { order:3; }
+body.z7-admin-shell .dashboard-app #z7-admin-accounts .z7aa-head { align-items:flex-start; }
+body.z7-admin-shell .dashboard-app #z7-admin-accounts { padding:22px; border-radius:20px; }
+body.z7-admin-shell .dashboard-app .z7af-list { display:grid; gap:8px; }
+body.z7-admin-shell .dashboard-app .z7af-item {
+ display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px;
+ padding:11px 13px; border:1px solid rgba(180,201,245,.13); border-radius:13px;
+ background:linear-gradient(115deg,rgba(255,255,255,.045),rgba(115,126,255,.045));
+}
+body.z7-admin-shell .dashboard-app .z7af-item > div:first-child { min-width:0; overflow-wrap:anywhere; }
+body.z7-admin-shell .dashboard-app .z7af-item > div:last-child { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
+@media(max-width:720px) {
+ body.z7-admin-shell .dashboard-app .users-assets-section,
+ body.z7-admin-shell .dashboard-app .settings-admin-section { gap:11px; }
+ body.z7-admin-shell .dashboard-app #z7-admin-accounts { padding:15px; }
+ body.z7-admin-shell .dashboard-app .z7af-item { grid-template-columns:minmax(0,1fr); }
+ body.z7-admin-shell .dashboard-app .z7af-item > div:last-child { justify-content:flex-start; }
+}
