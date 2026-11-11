@@ -556,3 +556,10 @@ html[data-z7-core] .z7-loader__top {
 }
 html[data-z7-core] .z7-loader__line { margin:0 auto; }
 html[data-z7-core] .z7-loader__caption { margin-top:0; }
+
+
+html[data-z7-core] .z7-loader::before,
+html[data-z7-core] .z7-transition::before {
+  inset:auto !important; left:50% !important; top:50% !important;
+  right:auto !important; bottom:auto !important;
+}
