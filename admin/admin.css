@@ -984,3 +984,12 @@ html:not([data-theme="light"]) .theme-pill__sun {color:#e8c574;}
 @media(max-width:1080px) { .overview-finance-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:720px) { .overview-affiliate-row { grid-template-columns:26px minmax(0,1fr) auto; gap:8px; }.overview-affiliate-commission { grid-column:2 / 4; }.users-subsection { padding:12px; }.users-subsection-heading { align-items:flex-start; } }
 @media(max-width:460px) { .overview-finance-grid { grid-template-columns:1fr 1fr; }.overview-finance-card { padding:12px; }.overview-finance-card>strong { font-size:1.05rem; } }
+
+
+/* Strict view state + deliberate glass action hierarchy. */
+.dashboard-app [data-dashboard-panel][hidden] { display:none!important; }
+.dashboard-app .button,.dashboard-app .small-button,.dashboard-app .admin-top-action,.dashboard-app .quiet-link,.dashboard-app .z7nc-action { transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background-color .18s ease,color .18s ease; }
+.dashboard-app .button:focus-visible,.dashboard-app .small-button:focus-visible,.dashboard-app .admin-top-action:focus-visible,.dashboard-app .quiet-link:focus-visible,.dashboard-app .z7nc-action:focus-visible { outline:2px solid color-mix(in srgb,var(--accent) 78%,white); outline-offset:2px; }
+.dashboard-app .small-button:not(:disabled):hover,.dashboard-app .button:not(:disabled):hover,.dashboard-app .admin-top-action:not(:disabled):hover,.dashboard-app .z7nc-action:not(:disabled):hover { transform:translateY(-1px); box-shadow:0 9px 24px rgba(0,0,0,.22); }
+.dashboard-app .small-button.danger,.dashboard-app .button-danger,.dashboard-app .delete-action,.dashboard-app .z7nc-action.is-danger,[data-engine-action^="delete"] { border-color:color-mix(in srgb,#ff687a 48%,var(--line)); background:color-mix(in srgb,#ff526b 11%,var(--panel-raised)); color:#ff8795; }
+.dashboard-app .small-button.danger:hover,.dashboard-app .button-danger:hover,.dashboard-app .delete-action:hover,.dashboard-app .z7nc-action.is-danger:hover,[data-engine-action^="delete"]:hover { border-color:rgba(255,104,122,.72); background:rgba(255,82,107,.18); box-shadow:0 0 22px rgba(255,82,107,.14); }

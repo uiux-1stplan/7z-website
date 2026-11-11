@@ -6,10 +6,10 @@
   const titles = {
     overview: ["7Z MAGIC / OVERVIEW", "Studio overview", "A live view of your client and academy workspace."],
     users: ["CLIENT DIRECTORY / ACCESS CONTROL", "Users", "Invite, organize and protect access to private project spaces."],
-    files: ["CLIENT DELIVERY / PRIVATE STORAGE", "Media & Vault", "Manage protected files and client-specific view or download access."],
-    orders: ["ACADEMY / COURSE COMMERCE", "Courses & Affiliates", "Manage course offers, affiliate profiles and discount codes."],
+    media: ["CLIENT DELIVERY / PRIVATE STORAGE", "Media & Vault", "Manage protected files and client-specific view or download access."],
+    "courses-affiliates": ["ACADEMY / COURSE COMMERCE", "Courses & Affiliates", "Manage course offers, affiliate profiles and discount codes."],
     registrations: ["ACADEMY / PAYMENT REVIEW", "Registrations & Payments", "Review registration records, payment submissions and approvals."],
-    analytics: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics & Accounting", "Financial and enrollment signals from recorded course activity."],
+    accounting: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics & Accounting", "Financial and enrollment signals from recorded course activity."],
     settings: ["STUDIO CONTROL / PREFERENCES", "Settings", "Workspace appearance, session security and course destinations."],
   };
   const months = new Intl.DateTimeFormat("en", { month: "short" });
@@ -18,18 +18,17 @@
 
   function selectView(name, animate = true) {
     if (!titles[name]) return;
-    const current = $(`[data-dashboard-panel].is-active`);
-    const next = $(`[data-dashboard-panel="${name}"]`);
-    if (!next || current === next) return;
-    if (current) {
-      current.classList.remove("is-active");
-      current.setAttribute("aria-hidden", "true");
-      current.hidden = true;
-    }
-    next.hidden = false;
-    next.setAttribute("aria-hidden", "false");
-    next.classList.add("is-active");
-    $$("[data-dashboard-nav]").forEach((button) => {
+    const panels = $("[data-dashboard-panel]");
+    const next = panels.find((panel) => panel.dataset.dashboardPanel === name);
+    if (!next) return;
+    const current = panels.find((panel) => panel.classList.contains("is-active") && !panel.hidden);
+    panels.forEach((panel) => {
+      const active = panel === next;
+      panel.hidden = !active;
+      panel.classList.toggle("is-active", active);
+      panel.setAttribute("aria-hidden", String(!active));
+    });
+    $("[data-dashboard-nav]").forEach((button) => {
       const active = button.dataset.dashboardNav === name;
       button.classList.toggle("active", active);
       if (button.closest(".dashboard-nav")) {
@@ -43,7 +42,7 @@
     if (pageKicker) pageKicker.textContent = titles[name][0];
     if (pageTitle) pageTitle.textContent = titles[name][1];
     if (pageSubtitle) pageSubtitle.textContent = titles[name][2];
-    if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (animate && current !== next && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       next.animate([{ opacity: 0, transform: "translateY(9px)" }, { opacity: 1, transform: "translateY(0)" }], {
         duration: 250,
         easing: "cubic-bezier(.2,.8,.2,1)",
@@ -320,6 +319,8 @@
     observed.forEach((selector) => { const node = $(selector); if (node) observer.observe(node, { childList: true, subtree: true, characterData: true }); });
     const appObserver = new MutationObserver(refreshDashboard);
     appObserver.observe($("#app"), { attributes: true, attributeFilter: ["class"] });
+    const initial = $("[data-dashboard-panel].is-active:not([hidden])") || $(`[data-dashboard-panel="overview"]`);
+    if (initial) selectView(initial.dataset.dashboardPanel, false);
     setClock();
     refreshDashboard();
   }
