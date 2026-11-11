@@ -258,7 +258,7 @@
     if (initialized || !$("#app")) return;
     initialized = true;
     observeWorkspacePanels();
-    $("[data-dashboard-nav]").forEach((button) => button.addEventListener("click", () => {
+    $$("[data-dashboard-nav]").forEach((button) => button.addEventListener("click", () => {
       selectView(button.dataset.dashboardNav);
       if (button.hasAttribute("data-focus-create-user")) $("#create-name")?.focus({ preventScroll: true });
     }));
