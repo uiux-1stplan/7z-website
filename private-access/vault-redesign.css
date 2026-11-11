@@ -174,3 +174,16 @@ html[data-z7-core][data-theme="light"] .z7pa-page .z7-login-vault { box-shadow:0
 @media (prefers-reduced-motion: reduce) {
   html[data-z7-core] .z7pa-page *, html[data-z7-core] .z7pa-page *::before, html[data-z7-core] .z7pa-page *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
 }
+
+
+/* Keep unauthenticated sign-in centered and stable below the fixed navigation. */
+html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page { display:grid; min-height:calc(100svh - 72px); align-content:center; justify-items:center; padding:24px var(--z7-gutter) 36px; }
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7pa-hero { display:none!important; }
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault { width:min(600px,100%)!important; margin:0 auto!important; }
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__card { grid-template-columns:minmax(0,1fr); grid-template-areas:"brand" "kicker" "title" "intro" "form" "security"; row-gap:12px; padding:clamp(22px,5vw,46px)!important; text-align:left; }
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__brand { margin-bottom:10px; }
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__aura { right:-8%; top:42%; width:18rem; opacity:.25; }
+@media(max-width:640px) {
+  html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page { min-height:calc(100svh - 62px); padding-block:20px; }
+  html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__card { padding:22px!important; }
+}

@@ -291,6 +291,13 @@ export default async function handler(
             }),
 
             z.object({
+              action: z.literal("profile"),
+              clientKey: z.string().min(1),
+              displayName: z.string().trim().min(1).max(120),
+              company: z.string().trim().max(160).optional().default("")
+            }),
+
+            z.object({
 
               action:
                 z.literal(
@@ -331,6 +338,8 @@ export default async function handler(
         await sql`
           SELECT
             client_key,
+            display_name,
+            company,
             username,
             legacy_scope,
             auth_type,
@@ -362,6 +371,21 @@ export default async function handler(
         );
       }
 
+
+      if (parsed.data.action === "profile") {
+        if (client.auth_type !== "native") return http.sendJson(res, 400, { error: "Legacy client profiles are read-only." });
+        const updated = await sql`
+          UPDATE portal_clients
+          SET display_name = ${parsed.data.displayName},
+              company = ${parsed.data.company || null},
+              updated_at = NOW()
+          WHERE client_key = ${parsed.data.clientKey}
+          RETURNING client_key, display_name, company, auth_type, username, status, created_at, updated_at
+        `;
+        try { await runtime.writeAudit({ actorUserId: gate.auth.userId, action: "NATIVE_CLIENT_PROFILE_UPDATED", targetType: "client", targetId: parsed.data.clientKey, details: { displayName: parsed.data.displayName, company: parsed.data.company } }); }
+        catch (auditError) { console.error("Client audit log failed:", auditError); }
+        return http.sendJson(res, 200, { client: updated[0] });
+      }
 
       if (
         parsed.data.action ===
@@ -514,12 +538,33 @@ export default async function handler(
     }
 
 
+    if (req.method === "DELETE") {
+      const parsed = z.object({ clientKey: z.string().trim().min(1) }).safeParse(await http.readJson(req));
+      if (!parsed.success) return http.validationError(res, parsed);
+      const [client] = await sql`
+        SELECT client_key, auth_type, username, display_name
+        FROM portal_clients
+        WHERE client_key = ${parsed.data.clientKey}
+        LIMIT 1
+      `;
+      if (!client) return http.sendJson(res, 404, { error: "Client not found." });
+      if (client.auth_type !== "native") return http.sendJson(res, 400, { error: "Legacy client records cannot be deleted here. Disable legacy access instead." });
+      await sql`DELETE FROM portal_client_sessions WHERE client_key = ${parsed.data.clientKey}`;
+      await sql`DELETE FROM portal_client_file_permissions WHERE client_key = ${parsed.data.clientKey}`;
+      await sql`DELETE FROM portal_client_resource_permissions WHERE client_key = ${parsed.data.clientKey}`;
+      await sql`DELETE FROM portal_clients WHERE client_key = ${parsed.data.clientKey}`;
+      try { await runtime.writeAudit({ actorUserId: gate.auth.userId, action: "NATIVE_CLIENT_DELETED", targetType: "client", targetId: parsed.data.clientKey, details: { username: client.username, displayName: client.display_name } }); }
+      catch (auditError) { console.error("Client audit log failed:", auditError); }
+      return http.sendJson(res, 200, { ok: true, clientKey: parsed.data.clientKey });
+    }
+
     return http.methodNotAllowed(
       res,
       [
         "GET",
         "POST",
-        "PATCH"
+        "PATCH",
+        "DELETE"
       ]
     );
 

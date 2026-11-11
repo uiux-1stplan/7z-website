@@ -227,12 +227,15 @@
   function initHero() {
     const hero = $(".logo-hero");
     const logo = $(".logo-hero__mark", hero || document);
-    if (!hero || !logo || !matchMedia("(pointer:fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!hero || !logo || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let frame = 0, px = 0, py = 0, tx = 0, ty = 0;
+    let scrollFrame = 0;
+    const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)").matches;
     const onMove = event => {
+      if (!finePointer) return;
       const rect = hero.getBoundingClientRect();
-      tx = (event.clientX - rect.left) / rect.width - .5;
-      ty = (event.clientY - rect.top) / rect.height - .5;
+      tx = (event.clientX - rect.left) / Math.max(1, rect.width) - .5;
+      ty = (event.clientY - rect.top) / Math.max(1, rect.height) - .5;
       if (!frame) frame = requestAnimationFrame(function paint() {
         frame = 0;
         px += (tx - px) * .09; py += (ty - py) * .09;
@@ -241,11 +244,27 @@
         if (Math.abs(tx - px) + Math.abs(ty - py) > .015) frame = requestAnimationFrame(paint);
       });
     };
-    hero.addEventListener("pointermove", onMove, { passive: true, signal: abort.signal });
-    hero.addEventListener("pointerleave", () => { tx = 0; ty = 0; onMove({ clientX: hero.getBoundingClientRect().left + hero.clientWidth / 2, clientY: hero.getBoundingClientRect().top + hero.clientHeight / 2 }); }, { signal: abort.signal });
-    window.addEventListener("pagehide", () => { if (frame) cancelAnimationFrame(frame); }, { once: true, signal: abort.signal });
+    const updateScrollTurn = () => {
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        const rect = hero.getBoundingClientRect();
+        const progress = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height)));
+        logo.style.setProperty("--logo-scroll-yaw", `${progress * 360}deg`);
+      });
+    };
+    if (finePointer) {
+      hero.addEventListener("pointermove", onMove, { passive: true, signal: abort.signal });
+      hero.addEventListener("pointerleave", () => {
+        tx = 0; ty = 0;
+        onMove({ clientX: hero.getBoundingClientRect().left + hero.clientWidth / 2, clientY: hero.getBoundingClientRect().top + hero.clientHeight / 2 });
+      }, { signal: abort.signal });
+    }
+    window.addEventListener("scroll", updateScrollTurn, { passive: true, signal: abort.signal });
+    window.addEventListener("resize", updateScrollTurn, { passive: true, signal: abort.signal });
+    updateScrollTurn();
+    window.addEventListener("pagehide", () => { if (frame) cancelAnimationFrame(frame); if (scrollFrame) cancelAnimationFrame(scrollFrame); }, { once: true, signal: abort.signal });
   }
-
   function initMedia() {
     const videos = $$(".z7-home video:not([data-decorative-video]),.z7-services-page video");
     videos.forEach(video => {

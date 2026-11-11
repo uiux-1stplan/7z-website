@@ -4,6 +4,7 @@
   if (!root.hasAttribute("data-z7-core")) return;
 
   const KEY = "z7:core-arrival:v1";
+  const LOADER_KEY = "z7:loader-seen:v1";
   const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/courses", "/courses/ai-engineering", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/ai-for-engineers", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)");
@@ -214,7 +215,7 @@
     const value = { n: 0 };
     const paint = () => {
       const n = Math.min(100, Math.round(value.n));
-      if (count) count.textContent = String(n).padStart(2, "0");
+      if (count) count.textContent = String(n);
       if (bar) bar.style.width = n + "%";
     };
     const logo = loader.querySelector(".z7-loader__mark");
@@ -262,6 +263,8 @@
     if (state.loader) state.loader.hidden = true;
     const overlay = state.overlay;
     if (!overlay || reduced.matches) { clearOverlay(state); return; }
+    const arrivalLabel = overlay.querySelector("[data-z7-transition-label]");
+    if (arrivalLabel) arrivalLabel.textContent = labelFor(new URL(location.href));
     const transitionInner = overlay.querySelector(".z7-transition__inner");
     if (transitionInner && !transitionInner.querySelector(".z7-transition__mark")) {
       const mark = document.createElement("img");
@@ -624,9 +627,15 @@
     smoothDesktop.addEventListener("change", () => refreshScroll(state), { signal: state.abort.signal });
     window.addEventListener("pagehide", () => destroy(state), { once: true, signal: state.abort.signal });
     const arriving = takeArrival() || root.hasAttribute("data-z7-arriving");
+    let loaderSeen = false;
+    try { loaderSeen = sessionStorage.getItem(LOADER_KEY) === "1"; } catch {}
     if (fromCache) { clearOverlay(state); clearLoader(state); }
     else if (arriving) arrivalReveal(state);
-    else preloader(state);
+    else if (loaderSeen) clearLoader(state);
+    else {
+      try { sessionStorage.setItem(LOADER_KEY, "1"); } catch {}
+      preloader(state);
+    }
   }
   window.addEventListener("pageshow", event => { if (event.persisted && !live) boot(true); });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => boot(), { once: true });

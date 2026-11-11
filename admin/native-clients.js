@@ -164,9 +164,7 @@
 
         </div>
 
-        <span class="z7nc-badge">
-          UNIFIED
-        </span>
+        <div class="z7nc-header-badges"><span class="z7nc-badge">UNIFIED</span><span class="z7nc-badge z7nc-client-count" id="z7nc-client-count" aria-live="polite">0 CLIENTS</span></div>
 
       </div>
 
@@ -291,6 +289,20 @@
       </div>
     `;
 
+
+    panel.insertAdjacentHTML("beforeend", `
+      <div id="z7nc-edit-modal" class="z7nc-modal" hidden>
+        <div class="z7nc-modal-backdrop" data-edit-close></div>
+        <form class="z7nc-modal-card" id="z7nc-edit-form">
+          <div class="z7nc-modal-head"><div><div class="page-kicker">CLIENT ACCOUNT</div><h3>Edit Client</h3></div><button type="button" class="z7nc-modal-close" data-edit-close aria-label="Close">×</button></div>
+          <label class="z7nc-edit-field">Display Name<input id="z7nc-edit-name" maxlength="120" required></label>
+          <label class="z7nc-edit-field">Company<input id="z7nc-edit-company" maxlength="160"></label>
+          <div id="z7nc-edit-message" class="z7nc-message" role="status"></div>
+          <div class="z7nc-modal-actions"><button type="button" class="z7nc-action" data-edit-close>Cancel</button><button type="submit" class="z7nc-password-save" id="z7nc-edit-save">SAVE CHANGES</button></div>
+        </form>
+      </div>`);
+    panel.querySelector("#z7nc-edit-form")?.addEventListener("submit", saveClientEdit);
+    panel.querySelectorAll("[data-edit-close]").forEach(button => button.addEventListener("click", closeClientEdit));
 
     const upload =
       document.getElementById(
@@ -560,9 +572,9 @@
       }
 
 
-      render(
-        payload.clients || []
-      );
+      const clients = payload.clients || [];
+      render(clients);
+      window.dispatchEvent(new CustomEvent("z7:client-accounts-updated", { detail: { clients } }));
 
 
     } catch (error) {
@@ -588,8 +600,12 @@
     }
 
 
-    if (!clients.length) {
+    const countBadge = document.getElementById("z7nc-client-count");
+    if (countBadge) countBadge.textContent = `${clients.length} ${clients.length === 1 ? "CLIENT" : "CLIENTS"}`;
+    const sidebarClientCount = document.getElementById("sidebar-client-count");
+    if (sidebarClientCount) sidebarClientCount.textContent = String(clients.length);
 
+    if (!clients.length) {
       root.innerHTML = `
         <div class="z7nc-empty">
           No client accounts found.
@@ -686,6 +702,9 @@
                 ${
                   isNative
                     ? `
+                      <button type="button" class="z7nc-action" data-action="edit" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name)}" data-company="${esc(client.company || "")}">EDIT PROFILE</button>
+                      <button type="button" class="z7nc-action is-danger" data-action="delete" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name)}">DELETE CLIENT</button>
+
                       <button
                         type="button"
                         class="z7nc-action"
@@ -737,6 +756,9 @@
       ).join("");
 
 
+    root.querySelectorAll('[data-action="edit"]').forEach(button => button.addEventListener("click", () => openClientEdit(button)));
+    root.querySelectorAll('[data-action="delete"]').forEach(button => button.addEventListener("click", () => deleteClient(button)));
+
     root
       .querySelectorAll(
         '[data-action="password"]'
@@ -780,6 +802,62 @@
       );
   }
 
+
+  function openClientEdit(button) {
+    const modal = document.getElementById("z7nc-edit-modal");
+    modal.dataset.clientKey = button.dataset.clientKey;
+    document.getElementById("z7nc-edit-name").value = button.dataset.displayName || "";
+    document.getElementById("z7nc-edit-company").value = button.dataset.company || "";
+    document.getElementById("z7nc-edit-message").textContent = "";
+    modal.hidden = false;
+    document.getElementById("z7nc-edit-name").focus();
+  }
+
+  function closeClientEdit() {
+    const modal = document.getElementById("z7nc-edit-modal");
+    if (modal) modal.hidden = true;
+  }
+
+  async function saveClientEdit(event) {
+    event.preventDefault();
+    const modal = document.getElementById("z7nc-edit-modal");
+    const button = document.getElementById("z7nc-edit-save");
+    const message = document.getElementById("z7nc-edit-message");
+    const payload = { action: "profile", clientKey: modal.dataset.clientKey, displayName: document.getElementById("z7nc-edit-name").value.trim(), company: document.getElementById("z7nc-edit-company").value.trim() };
+    if (!payload.displayName) return;
+    button.disabled = true;
+    try {
+      const response = await authFetch(API, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not update client.");
+      message.textContent = "Client profile updated.";
+      await loadClients();
+      setTimeout(closeClientEdit, 450);
+    } catch (error) {
+      message.textContent = error.message || "Could not update client.";
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function deleteClient(button) {
+    const clientKey = button.dataset.clientKey;
+    const clientName = button.dataset.displayName || "this client";
+    if (!window.confirm(`Permanently delete ${clientName} and revoke all file permissions?`)) return;
+    button.disabled = true;
+    try {
+      const response = await authFetch(API, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clientKey }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not delete client.");
+      button.closest(".z7nc-client")?.remove();
+      window.dispatchEvent(new CustomEvent("z7:admin-audit", { detail: { action: "Native client account deleted" } }));
+      await loadClients();
+      document.getElementById("z7-cap-refresh")?.click();
+    } catch (error) {
+      window.alert(error.message || "Could not delete client.");
+      button.disabled = false;
+    }
+  }
 
   function openPasswordModal(
     clientKey,

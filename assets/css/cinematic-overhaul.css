@@ -409,3 +409,30 @@ html[data-z7-core] #comparisonStage input[type="range"] { position:absolute; z-i
 @keyframes z7-vault-turn { to { transform:rotate(1turn); } }
 @keyframes z7-vault-breathe { from { transform:scale(.94); opacity:.5; } to { transform:scale(1.04); opacity:1; } }
 @keyframes z7-mark-arrive { from { opacity:0; transform:translateY(18px) scale(.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+/* Glassy brand motion, centered logo axis, and a single polished session intro. */
+html[data-z7-core] .logo-hero__stage { perspective: 1100px; transform-style: preserve-3d; }
+html[data-z7-core] .logo-hero__logo3d { display: contents; }
+html[data-z7-core] .z7-home .logo-hero__mark {
+  --logo-scroll-yaw: 0deg;
+  transform: translate3d(var(--logo-x,0),var(--logo-y,0),26px) rotateX(var(--logo-rx,0deg)) rotateY(calc(var(--logo-ry,0deg) + var(--logo-scroll-yaw,0deg)));
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  filter: grayscale(1) brightness(1.35) contrast(1.22) drop-shadow(0 14px 28px rgba(160,190,230,.24));
+}
+html[data-z7-core] .z7-loader { background:#07070a; backdrop-filter:none; }
+html[data-z7-core] .z7-loader__inner { width:min(280px,calc(100vw - 40px)); text-align:center; }
+html[data-z7-core] .z7-loader__top { display:grid; justify-items:center; gap:17px; }
+html[data-z7-core] .z7-loader__mark { width:min(190px,56vw); height:76px; object-fit:contain; filter:blur(.25px) drop-shadow(0 0 22px rgba(185,205,255,.24)); }
+html[data-z7-core] .z7-loader__count { color:#eef1f8; font-size:.76rem; letter-spacing:.08em; }
+html[data-z7-core] .z7-loader__line { height:2px; margin-top:15px; background:rgba(255,255,255,.14); }
+html[data-z7-core] .z7-loader__progress { background:linear-gradient(90deg,#8aa9ff,#f0f4ff); }
+html[data-z7-core] .z7-loader__caption { margin-top:12px; color:#8e96a8; font-size:.62rem; letter-spacing:.11em; text-transform:uppercase; }
+html[data-z7-core] .z7-transition { backdrop-filter:blur(12px) saturate(115%); -webkit-backdrop-filter:blur(12px) saturate(115%); }
+html[data-z7-core] .z7-transition__inner { display:grid; justify-items:center; gap:12px; background:color-mix(in srgb,var(--bg-surface) 78%,transparent); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+html[data-z7-core] .z7-transition__mark { display:block; width:100px; height:58px; margin:0 auto 3px; object-fit:contain; filter:drop-shadow(0 0 18px var(--experience-sheen)); }
+html[data-z7-core] .z7-transition__label { margin:0; font-size:1rem; font-weight:550; letter-spacing:.02em; }
+@media (prefers-reduced-motion:reduce) {
+  html[data-z7-core] .z7-home .logo-hero__mark { transform:none!important; }
+}

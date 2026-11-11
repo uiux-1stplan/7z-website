@@ -7,8 +7,9 @@
     overview: ["7Z MAGIC / OVERVIEW", "Studio overview", "A live view of your client and academy workspace."],
     users: ["CLIENT DIRECTORY / ACCESS CONTROL", "Users", "Invite, organize and protect access to private project spaces."],
     files: ["CLIENT DELIVERY / PRIVATE STORAGE", "Client files", "Organize protected deliverables and manage account permissions."],
-    orders: ["ACADEMY / COMMERCE", "Orders & affiliates", "Course registrations, partner performance and discount codes."],
-    analytics: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics", "Financial and enrollment signals from recorded course activity."],
+    orders: ["ACADEMY / COURSE COMMERCE", "Courses & partners", "Manage affiliates, promo codes and course offers."],
+    registrations: ["ACADEMY / PAYMENT REVIEW", "Registrations & Payments", "Review registration records, payment submissions and approvals."],
+    analytics: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics & Accounting", "Financial and enrollment signals from recorded course activity."],
     settings: ["STUDIO CONTROL / PREFERENCES", "Settings", "Workspace appearance, session security and course destinations."],
   };
   const months = new Intl.DateTimeFormat("en", { month: "short" });
@@ -36,9 +37,12 @@
         else button.removeAttribute("aria-current");
       }
     });
-    $("#admin-page-kicker").textContent = titles[name][0];
-    $("#admin-page-title").textContent = titles[name][1];
-    $("#admin-page-subtitle").textContent = titles[name][2];
+    const pageKicker = $("#admin-page-kicker");
+    const pageTitle = $("#admin-page-title");
+    const pageSubtitle = $("#admin-page-subtitle");
+    if (pageKicker) pageKicker.textContent = titles[name][0];
+    if (pageTitle) pageTitle.textContent = titles[name][1];
+    if (pageSubtitle) pageSubtitle.textContent = titles[name][2];
     if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       next.animate([{ opacity: 0, transform: "translateY(9px)" }, { opacity: 1, transform: "translateY(0)" }], {
         duration: 250,

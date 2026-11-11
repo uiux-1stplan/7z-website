@@ -161,3 +161,11 @@ html[data-z7-core][data-theme="light"] .svc-mirror-card { border-color:rgba(72,1
  html[data-z7-core] .z7-services-page *,html[data-z7-core] .z7-services-page *::before,html[data-z7-core] .z7-services-page *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
  html[data-z7-core] .svc-film-lane--campaign::before { animation:none; }
 }
+
+
+/* Keep campaign footage clean and let vertical wheel input advance cards to the final item. */
+html[data-z7-core] .svc-film-lane--campaign::before,
+html[data-z7-core] .svc-film-lane--campaign::after { display:none!important; content:none!important; }
+html[data-z7-core] .svc-mirror-stage { overflow:visible; }
+html[data-z7-core] .svc-mirror-card { box-shadow:0 0 14px rgba(111,164,226,.18),0 16px 38px rgba(0,0,0,.22); }
+html[data-z7-core] .svc-mirror-card[aria-current="true"] { box-shadow:0 0 18px rgba(138,190,243,.38),0 18px 40px rgba(0,0,0,.25); }

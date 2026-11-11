@@ -47,15 +47,63 @@
       });
     }
 
+        // ==============================================
+    // PATCH - EDIT USER PROFILE
     // ==============================================
+    if (req.method === "PATCH") {
+      const schema = z.object({
+        userId: z.string().trim().min(1),
+        displayName: z.string().trim().min(1).max(120),
+        company: z.string().trim().max(160).optional().default(""),
+      });
+      const parsed = schema.safeParse(await http.readJson(req));
+      if (!parsed.success) return http.validationError(res, parsed);
+      const updated = await sql`
+        UPDATE portal_users
+        SET display_name = ${parsed.data.displayName},
+            company = ${parsed.data.company || null},
+            updated_at = NOW()
+        WHERE clerk_user_id = ${parsed.data.userId}
+        RETURNING clerk_user_id AS id, email, display_name AS name, company, role, status, created_at, updated_at
+      `;
+      if (!updated.length) return http.sendJson(res, 404, { error: "Portal user not found." });
+      try {
+        await runtime.writeAudit({ actorUserId: gate.auth.userId, action: "USER_PROFILE_UPDATED", targetType: "user", targetId: parsed.data.userId, details: { displayName: parsed.data.displayName, company: parsed.data.company } });
+      } catch (auditError) { console.error("Audit log failed:", auditError); }
+      return http.sendJson(res, 200, { user: updated[0] });
+    }
+
+    // ==============================================
+    // DELETE - REMOVE USER ACCOUNT
+    // ==============================================
+    if (req.method === "DELETE") {
+      const schema = z.object({ id: z.string().trim().min(1).optional(), userId: z.string().trim().min(1).optional() })
+        .refine((value) => Boolean(value.id || value.userId), { message: "A user ID is required." });
+      const parsed = schema.safeParse(await http.readJson(req));
+      if (!parsed.success) return http.validationError(res, parsed);
+      const userId = parsed.data.userId || parsed.data.id;
+      if (userId === gate.auth.userId) return http.sendJson(res, 400, { error: "You cannot delete your own administrator account." });
+      const existing = await sql`SELECT clerk_user_id, email FROM portal_users WHERE clerk_user_id = ${userId} LIMIT 1`;
+      if (!existing.length) return http.sendJson(res, 404, { error: "Portal user not found." });
+      try {
+        await clerk.users.deleteUser(userId);
+      } catch (error) {
+        console.error("Clerk deleteUser failed:", error);
+        return http.sendJson(res, 502, { error: "The authentication account could not be removed." });
+      }
+      await sql`DELETE FROM portal_users WHERE clerk_user_id = ${userId}`;
+      try {
+        await runtime.writeAudit({ actorUserId: gate.auth.userId, action: "USER_DELETED", targetType: "user", targetId: userId, details: { email: existing[0].email } });
+      } catch (auditError) { console.error("Audit log failed:", auditError); }
+      return http.sendJson(res, 200, { ok: true, userId });
+    }
+
+// ==============================================
     // POST - CREATE USER
     // ==============================================
 
     if (req.method !== "POST") {
-      return http.methodNotAllowed(
-        res,
-        ["GET", "POST"]
-      );
+      return http.methodNotAllowed(res, ["GET", "POST", "PATCH", "DELETE"]);
     }
 
     const schema = z.object({

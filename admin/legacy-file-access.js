@@ -10,7 +10,7 @@
     "/api/admin/clients";
 
   const USERS_API =
-    "/api/admin/users";
+    "/api/admin/all-clients";
 
 
   let model = {
@@ -844,15 +844,14 @@
       if ([response, usersResponse].some(item => item.status === 401 || item.status === 403)) return;
       const [payload, usersPayload] = await Promise.all([response.json(), usersResponse.json()]);
       if (!response.ok) throw new Error(payload.error || "Could not load unified access control.");
-      if (!usersResponse.ok) throw new Error(usersPayload.error || "Could not load clients from Users.");
+      if (!usersResponse.ok) throw new Error(usersPayload.error || "Could not load client accounts.");
 
-      model.clients = (Array.isArray(usersPayload.users) ? usersPayload.users : [])
-        .filter(user => String(user.role || "").toLowerCase() !== "admin")
+      model.clients = (Array.isArray(usersPayload.clients) ? usersPayload.clients : [])
         .map(user => ({
           ...user,
-          client_key: String(user.client_key || user.clientKey || user.id || user.userId || ""),
+          client_key: String(user.client_key || user.clientKey || ""),
           display_name: user.display_name || user.displayName || user.name || user.email || "Client",
-          username: user.username || user.email || user.id,
+          username: user.username || user.email || user.client_key,
           auth_type: user.auth_type || "native",
           status: user.status || "active"
         }))
@@ -882,9 +881,9 @@
   }
 
 
-  window.addEventListener("z7:users-updated", event => {
-    const users = Array.isArray(event.detail?.users) ? event.detail.users : [];
-    model.clients = users.filter(user => String(user.role || "").toLowerCase() !== "admin").map(user => ({ ...user, client_key: String(user.client_key || user.clientKey || user.id || user.userId || ""), display_name: user.display_name || user.displayName || user.name || user.email || "Client", username: user.username || user.email || user.id, auth_type: user.auth_type || "native", status: user.status || "active" })).filter(user => user.client_key);
+  window.addEventListener("z7:client-accounts-updated", event => {
+    const clients = Array.isArray(event.detail?.clients) ? event.detail.clients : [];
+    model.clients = clients.map(client => ({ ...client, client_key: String(client.client_key || client.clientKey || ""), display_name: client.display_name || client.displayName || client.name || client.username || "Client", username: client.username || client.client_key, auth_type: client.auth_type || "native", status: client.status || "active" })).filter(client => client.client_key);
     if (!model.clients.some(client => client.client_key === model.selectedClient)) model.selectedClient = model.clients[0]?.client_key || null;
     renderClients(); renderSelectedTools(); renderResources();
   });

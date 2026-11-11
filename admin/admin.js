@@ -527,6 +527,9 @@
 
         <td>
           <div class="row-actions">
+            <button type="button" class="small-button edit-action" data-user-id="${escapeHtml(user.id)}" aria-label="Edit user ${safeEmail}">EDIT</button>
+
+
 
             <button
               type="button"
@@ -596,6 +599,45 @@
         error.message || "Could not load users.",
         "error"
       );
+    }
+  }
+
+  function openUserEditModal(userId) {
+    const user = state.users.find((item) => String(item.id) === String(userId));
+    if (!user) return;
+    $("#user-edit-id").value = String(user.id);
+    $("#user-edit-name").value = user.name || "";
+    $("#user-edit-company").value = user.company || "";
+    show("#user-edit-modal");
+    setTimeout(() => $("#user-edit-name")?.focus(), 40);
+  }
+
+  function closeUserEditModal() {
+    hide("#user-edit-modal");
+    $("#user-edit-id").value = "";
+    $("#user-edit-form")?.reset();
+  }
+
+  async function saveUserEdit(event) {
+    event.preventDefault();
+    const id = $("#user-edit-id").value;
+    const button = $("#user-edit-submit");
+    const payload = { userId: id, displayName: $("#user-edit-name").value.trim(), company: $("#user-edit-company").value.trim() };
+    if (!payload.displayName) return toast("Display name is required.", "error");
+    button.disabled = true; button.textContent = "Saving…";
+    try {
+      const result = await portalFetch("/api/admin/users", { method: "PATCH", body: payload });
+      const updated = result.user || {};
+      state.users = state.users.map((item) => String(item.id) === String(id) ? { ...item, ...updated, name: updated.name || payload.displayName, company: updated.company ?? payload.company } : item);
+      renderUsers();
+      window.dispatchEvent(new CustomEvent("z7:users-updated", { detail: { users: state.users } }));
+      window.dispatchEvent(new CustomEvent("z7:admin-audit", { detail: { action: "User profile updated" } }));
+      closeUserEditModal();
+      toast("User profile updated.");
+    } catch (error) {
+      toast(error.message || "Could not update user.", "error");
+    } finally {
+      button.disabled = false; button.textContent = "Save changes";
     }
   }
 
@@ -848,6 +890,9 @@
     syncThemePills();
     new MutationObserver(syncThemePills).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
+    $("#user-edit-form")?.addEventListener("submit", saveUserEdit);
+    document.querySelectorAll("[data-close-user-edit]").forEach((element) => element.addEventListener("click", closeUserEditModal));
+
     $("#create-user-form")
       .addEventListener(
         "submit",
@@ -870,6 +915,9 @@
       .addEventListener(
         "click",
         (event) => {
+
+          const edit = event.target.closest(".edit-action");
+          if (edit) { openUserEditModal(edit.dataset.userId); return; }
 
           const password =
             event.target.closest(
