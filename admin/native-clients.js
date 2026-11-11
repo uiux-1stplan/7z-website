@@ -604,6 +604,10 @@
     if (countBadge) countBadge.textContent = `${clients.length} ${clients.length === 1 ? "CLIENT" : "CLIENTS"}`;
     const sidebarClientCount = document.getElementById("sidebar-client-count");
     if (sidebarClientCount) sidebarClientCount.textContent = String(clients.length);
+    const overviewClientCount = document.getElementById("overview-client-total");
+    if (overviewClientCount) overviewClientCount.textContent = String(clients.length);
+    const usersClientCount = document.getElementById("users-client-count");
+    if (usersClientCount) usersClientCount.textContent = `${clients.length} ${clients.length === 1 ? "client" : "clients"}`;
 
     if (!clients.length) {
       root.innerHTML = `

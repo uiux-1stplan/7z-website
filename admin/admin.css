@@ -956,3 +956,31 @@ html:not([data-theme="light"]) .theme-pill__sun {color:#e8c574;}
 .z7nc-edit-field { display:grid; gap:7px; color:var(--text); font-size:11px; }
 .z7nc-edit-field input { min-height:42px; padding:9px 11px; border:1px solid var(--line-strong); border-radius:10px; background:var(--bg-raised); color:var(--text); font:inherit; }
 .z7nc-modal-actions { display:flex; justify-content:flex-end; gap:8px; }
+
+
+/* Admin-only architecture refinements: separate client/portal users and complete live overview. */
+.overview-finance-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:13px 0; }
+.overview-finance-card { min-height:108px; padding:15px 17px; }
+.overview-finance-card>span { display:block; color:var(--faint); font-size:.62rem; font-weight:650; letter-spacing:.12em; }
+.overview-finance-card>strong { display:block; margin-top:12px; color:var(--text); font-size:1.28rem; font-weight:620; letter-spacing:-.045em; }
+.overview-finance-card>strong small { color:var(--faint); font-size:.68rem; font-weight:550; letter-spacing:0; }
+.overview-finance-card>p { margin:5px 0 0; color:var(--faint); font-size:.67rem; }
+.overview-affiliates { margin-top:13px; padding:17px 19px; }
+.overview-affiliate-list { display:grid; gap:0; margin-top:10px; }
+.overview-affiliate-row { display:grid; grid-template-columns:34px minmax(120px,1fr) minmax(95px,auto) minmax(120px,auto); align-items:center; gap:12px; min-height:57px; padding:8px 4px; border-top:1px solid var(--line); }
+.overview-affiliate-rank { color:var(--accent); font-size:.68rem; font-variant-numeric:tabular-nums; }
+.overview-affiliate-detail { display:grid; gap:3px; min-width:0; }
+.overview-affiliate-detail strong { overflow:hidden; color:var(--text); font-size:.78rem; text-overflow:ellipsis; white-space:nowrap; }
+.overview-affiliate-detail small,.overview-affiliate-commission { color:var(--faint); font-size:.63rem; }
+.overview-affiliate-row>b { color:var(--text); font-size:.76rem; font-variant-numeric:tabular-nums; text-align:right; }
+.users-subsection { margin-top:12px; padding:16px; border:1px solid var(--line); border-radius:20px; background:color-mix(in srgb,var(--panel-raised) 44%,transparent); }
+.users-subsection-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; }
+.users-subsection-heading h3 { margin:4px 0 3px; color:var(--text); font-size:1rem; font-weight:590; letter-spacing:-.025em; }
+.users-subsection-heading p { margin:0; color:var(--faint); font-size:.68rem; }
+.live-count-pill { display:inline-flex; align-items:center; gap:7px; padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:color-mix(in srgb,var(--panel-raised) 70%,transparent); color:var(--text); font-size:.66rem; white-space:nowrap; }
+.live-count-pill>i { width:6px; height:6px; border-radius:50%; background:#74dfb4; box-shadow:0 0 10px rgba(116,223,180,.65); }
+.users-subsection .workspace-grid { margin-top:0; }
+.users-subsection--clients .client-directory-mount { margin-top:0; }
+@media(max-width:1080px) { .overview-finance-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:720px) { .overview-affiliate-row { grid-template-columns:26px minmax(0,1fr) auto; gap:8px; }.overview-affiliate-commission { grid-column:2 / 4; }.users-subsection { padding:12px; }.users-subsection-heading { align-items:flex-start; } }
+@media(max-width:460px) { .overview-finance-grid { grid-template-columns:1fr 1fr; }.overview-finance-card { padding:12px; }.overview-finance-card>strong { font-size:1.05rem; } }

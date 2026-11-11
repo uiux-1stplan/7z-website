@@ -6,8 +6,8 @@
   const titles = {
     overview: ["7Z MAGIC / OVERVIEW", "Studio overview", "A live view of your client and academy workspace."],
     users: ["CLIENT DIRECTORY / ACCESS CONTROL", "Users", "Invite, organize and protect access to private project spaces."],
-    files: ["CLIENT DELIVERY / PRIVATE STORAGE", "Client files", "Organize protected deliverables and manage account permissions."],
-    orders: ["ACADEMY / COURSE COMMERCE", "Courses & partners", "Manage affiliates, promo codes and course offers."],
+    files: ["CLIENT DELIVERY / PRIVATE STORAGE", "Media & Vault", "Manage protected files and client-specific view or download access."],
+    orders: ["ACADEMY / COURSE COMMERCE", "Courses & Affiliates", "Manage course offers, affiliate profiles and discount codes."],
     registrations: ["ACADEMY / PAYMENT REVIEW", "Registrations & Payments", "Review registration records, payment submissions and approvals."],
     analytics: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics & Accounting", "Financial and enrollment signals from recorded course activity."],
     settings: ["STUDIO CONTROL / PREFERENCES", "Settings", "Workspace appearance, session security and course destinations."],
@@ -210,13 +210,24 @@
     const paidRows = rows.filter((row) => row.paid);
     const pendingRows = rows.filter((row) => row.pending);
     const revenue = parseMoney($("#finance-revenue")?.textContent);
-    const gross = parseMoney($("#finance-gross")?.textContent);
-    const commission = parseMoney($("#finance-commissions")?.textContent);
     const activeUsers = $("#stat-active")?.textContent.trim() || "0";
+    const totalClients = $("#sidebar-client-count")?.textContent.trim() || "0";
+    const gross = parseMoney($("#finance-gross")?.textContent);
+    const studioNet = parseMoney($("#finance-studio-net")?.textContent);
+    const discounts = parseMoney($("#finance-discounts")?.textContent);
+    const commissionsDue = parseMoney($("#finance-commissions")?.textContent);
     const conversion = rows.length ? Math.round((paidRows.length / rows.length) * 100) : 0;
 
     $("#overview-revenue").textContent = money(revenue);
     $("#overview-active-users").textContent = activeUsers;
+    $("#overview-client-total").textContent = totalClients;
+    $("#overview-gross").innerHTML = `${money(gross)} <small>JOD</small>`;
+    $("#overview-studio-net").innerHTML = `${money(studioNet)} <small>JOD</small>`;
+    $("#overview-discounts").innerHTML = `${money(discounts)} <small>JOD</small>`;
+    $("#overview-commissions").innerHTML = `${money(commissionsDue)} <small>JOD</small>`;
+    const portalCount = $("#stat-users")?.textContent.trim() || "0";
+    const portalCountNode = $("#portal-account-count");
+    if (portalCountNode) portalCountNode.textContent = `${portalCount} ${portalCount === "1" ? "account" : "accounts"}`;
     $("#overview-orders").textContent = String(rows.length);
     $("#overview-pending").textContent = `${pendingRows.length} awaiting review`;
     $("#overview-conversion").textContent = `${conversion}%`;
@@ -235,6 +246,44 @@
     drawChart("analytics", rows);
     renderCourseMix(rows);
     renderRecent(rows);
+    renderAffiliatePerformance();
+  }
+
+  function renderAffiliatePerformance() {
+    const target = $("#overview-affiliate-performance");
+    if (!target) return;
+    const rows = $("#affiliates-body tr").map((row) => {
+      const name = $(".engine-user strong", row)?.textContent.trim() || "Affiliate";
+      return {
+        name,
+        uses: row.cells[2]?.textContent.trim() || "0",
+        sales: parseMoney(row.cells[3]?.textContent),
+        commission: (() => { const match = String(row.cells[4]?.textContent || "").match(/-?\d[\d,]*(?:\.\d+)?/); return match ? parseMoney(match[0]) : 0; })(),
+      };
+    }).sort((a, b) => b.sales - a.sales).slice(0, 5);
+    target.replaceChildren(...rows.map((item, index) => {
+      const row = document.createElement("div");
+      row.className = "overview-affiliate-row";
+      const rank = document.createElement("span");
+      rank.className = "overview-affiliate-rank";
+      rank.textContent = String(index + 1).padStart(2, "0");
+      const name = document.createElement("strong");
+      name.textContent = item.name;
+      const uses = document.createElement("small");
+      uses.textContent = `${item.uses} registrations`;
+      const sales = document.createElement("b");
+      sales.textContent = `${money(item.sales)} JOD`;
+      const commission = document.createElement("small");
+      commission.className = "overview-affiliate-commission";
+      commission.textContent = `${money(item.commission)} JOD commission`;
+      const detail = document.createElement("span");
+      detail.className = "overview-affiliate-detail";
+      detail.append(name, uses);
+      row.append(rank, detail, sales, commission);
+      return row;
+    }));
+    const empty = $("#overview-affiliate-empty");
+    if (empty) empty.hidden = rows.length > 0;
   }
 
   function setClock() {
@@ -263,7 +312,7 @@
       if (value.trim()) selectView("users", false);
       filterUsers(value);
     });
-    const observed = ["#accounting-body", "#users-body", "#finance-revenue", "#finance-gross", "#finance-commissions", "#stat-active"];
+    const observed = ["#accounting-body", "#affiliates-body", "#users-body", "#finance-revenue", "#finance-gross", "#finance-studio-net", "#finance-discounts", "#finance-commissions", "#stat-active", "#sidebar-client-count"];
     const observer = new MutationObserver(() => {
       if (frame) cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => { frame = 0; refreshDashboard(); });
