@@ -56,7 +56,7 @@
   }
 
   function registrations() {
-    return $$$("#accounting-body tr").map((row) => {
+    return $$("#accounting-body tr").map((row) => {
       const status = $(".engine-status", row.cells[6] || row);
       const dateText = row.cells[2]?.textContent.trim() || "";
       const parsedDate = Date.parse(dateText);
@@ -292,17 +292,17 @@
 
   function filterUsers(query) {
     const normalized = query.trim().toLowerCase();
-    $$$("#users-body tr").forEach((row) => { row.hidden = Boolean(normalized) && !row.textContent.toLowerCase().includes(normalized); });
+    $$("#users-body tr").forEach((row) => { row.hidden = Boolean(normalized) && !row.textContent.toLowerCase().includes(normalized); });
   }
 
   function initialize() {
     if (initialized || !$("#app")) return;
     initialized = true;
-    $$$("[data-dashboard-nav]").forEach((button) => button.addEventListener("click", () => {
+    $$("[data-dashboard-nav]").forEach((button) => button.addEventListener("click", () => {
       selectView(button.dataset.dashboardNav);
       if (button.hasAttribute("data-focus-create-user")) $("#create-name")?.focus({ preventScroll: true });
     }));
-    $$$("[data-focus-create-user]").forEach((button) => button.addEventListener("click", () => {
+    $$("[data-focus-create-user]").forEach((button) => button.addEventListener("click", () => {
       selectView("users");
       window.setTimeout(() => $("#create-name")?.focus({ preventScroll: true }), 80);
     }));
