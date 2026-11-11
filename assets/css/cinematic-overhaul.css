@@ -592,3 +592,20 @@ html[data-z7-core] .z7-transition__mark { width:clamp(68px,8vw,94px) !important;
 html[data-z7-core] .z7-transition__label { color:rgba(245,247,252,.88) !important; font:500 13px/1.4 Inter,Arial,sans-serif !important; letter-spacing:.08em !important; text-transform:none !important; }
 html[data-z7-core] .z7-loader.is-leaving, html[data-z7-core] .z7-transition.is-leaving { transition:opacity .34s ease,visibility .34s ease !important; }
 @media (prefers-reduced-motion:reduce) { html[data-z7-core] .z7-loader__mark { animation:none !important; opacity:1; } }
+
+
+/* Keep the rotating logo fully visible around its centered 3D pivot. */
+html[data-z7-core] .logo-hero,
+html[data-z7-core] .logo-hero__stage,
+html[data-z7-core] .logo-hero__copy,
+html[data-z7-core] .about-hero__field { overflow:visible !important; clip-path:none !important; }
+html[data-z7-core] .logo-hero__mark.z7-liquid-logo-host,
+html[data-z7-core] .about-hero__field .about-chrome-logo { position:relative; z-index:12 !important; isolation:isolate; transform-style:preserve-3d; overflow:visible !important; clip-path:none !important; }
+html[data-z7-core] .z7-liquid-logo-host > canvas { z-index:1; overflow:visible !important; clip-path:none !important; }
+
+/* Loader and route curtain are mutually exclusive states. */
+html[data-z7-core] #z7Loader[hidden],
+html[data-z7-core] #z7Transition[hidden] { display:none !important; }
+html[data-z7-preloading][data-z7-core] #z7Transition,
+html[data-z7-transitioning][data-z7-core] #z7Loader,
+html[data-z7-arriving][data-z7-core] #z7Loader { display:none !important; }

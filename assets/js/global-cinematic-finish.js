@@ -47,14 +47,17 @@
       setTimeout(() => { overlay.hidden = true; overlay.classList.remove("is-leaving"); loader?.remove(); }, reduced.matches ? 0 : 300);
     };
     if (arrival?.path === current && Date.now() - arrival.time < 15000) {
+      try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
       const label = overlay.querySelector(".z7-global-transition__label");
       if (label) label.textContent = arrival.label || labelFor(new URL(location.href));
       overlay.hidden = false;
+      root.removeAttribute("data-z7-preloading");
       root.setAttribute("data-z7-arriving", "");
       requestAnimationFrame(() => overlay.classList.add("is-active"));
       setTimeout(finishArrival, reduced.matches ? 20 : 220);
-    } else if (loader && (() => { try { return !sessionStorage.getItem("z7:global-started:v1"); } catch { return false; } })()) {
+    } else if (loader && (() => { try { return sessionStorage.getItem("7z_loaded") !== "true"; } catch { return true; } })()) {
       try { sessionStorage.setItem("z7:global-started:v1", "1"); } catch {}
+      root.setAttribute("data-z7-preloading", "");
       const logo = loader.querySelector(".z7-global-loader__logo");
       const percent = loader.querySelector("[data-global-percent]");
       const progress = loader.querySelector("[data-global-progress]");
@@ -73,9 +76,11 @@
       const cap = new Promise(resolve => setTimeout(resolve, 1600));
       Promise.race([pageReady, cap]).then(() => logo?.decode?.() || Promise.resolve()).then(() => {
         cancelAnimationFrame(raf);
+        try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
         if (percent) percent.textContent = "100%";
         if (progress) progress.style.transform = "scaleX(1)";
         setTimeout(() => {
+          root.removeAttribute("data-z7-preloading");
           loader.classList.add("is-leaving");
           setTimeout(() => loader?.remove(), reduced.matches ? 0 : 340);
         }, 180);
@@ -99,6 +104,7 @@
       if (title) title.textContent = label;
       overlay.hidden = false;
       overlay.classList.remove("is-leaving");
+      root.removeAttribute("data-z7-preloading");
       root.setAttribute("data-z7-transitioning", "");
       requestAnimationFrame(() => overlay.classList.add("is-active"));
       setTimeout(() => {

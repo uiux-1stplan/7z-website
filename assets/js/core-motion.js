@@ -202,12 +202,20 @@
     if (!state.loader) return;
     state.loader.hidden = true;
     state.loader.classList.remove("is-leaving");
+    root.removeAttribute("data-z7-preloading");
     revealHero(state);
   }
   async function preloader(state) {
     const loader = state.loader;
     if (!loader) { revealHero(state); return; }
-    if (reduced.matches) { clearLoader(state); return; }
+    try {
+      if (sessionStorage.getItem("7z_loaded") === "true") { clearLoader(state); return; }
+    } catch {}
+    root.setAttribute("data-z7-preloading", "");
+    if (reduced.matches) {
+      try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
+      clearLoader(state); return;
+    }
     const logo = loader.querySelector(".z7-loader__mark");
     const count = loader.querySelector("[data-z7-count]");
     const progress = loader.querySelector("[data-z7-progress]");
@@ -236,6 +244,7 @@
     if (state.loaderRaf) cancelAnimationFrame(state.loaderRaf);
     state.loaderRaf = 0;
     paintProgress(100);
+    try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
     await new Promise(resolve => timer(state, resolve, 180));
     if (state.destroyed) return;
     loader.classList.add("is-leaving");
@@ -263,6 +272,8 @@
   }
   function arrivalReveal(state) {
     if (state.loader) state.loader.hidden = true;
+    root.removeAttribute("data-z7-preloading");
+    try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
     const overlay = state.overlay;
     if (!overlay || reduced.matches) { clearOverlay(state); return; }
     ensureTransitionMark(overlay);
@@ -287,6 +298,7 @@
       location.assign(destination.href);
     };
     const overlay = state.overlay;
+    root.removeAttribute("data-z7-preloading");
     if (!overlay || reduced.matches || lowData) { go(); return; }
     ensureTransitionMark(overlay);
     const label = overlay.querySelector("[data-z7-transition-label]");

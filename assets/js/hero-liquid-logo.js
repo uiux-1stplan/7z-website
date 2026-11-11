@@ -71,23 +71,34 @@ for (const host of document.querySelectorAll(".z7-liquid-logo-host")) {
     const svg = new SVGLoader().parse(await response.text());
     const caps = new THREE.MeshPhysicalMaterial({ color: 0x505050, metalness: .94, roughness: .35, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 2.99, side: THREE.DoubleSide });
     const walls = new THREE.MeshPhysicalMaterial({ color: 0x7c7c7c, emissive: 0x303030, emissiveIntensity: .11, metalness: .94, roughness: .41, envMapIntensity: 2.665, side: THREE.DoubleSide });
-    const logo = new THREE.Group(), depth = 25;
+    const geometryGroup = new THREE.Group(), depth = 25;
     const bevelThickness = THREE.MathUtils.clamp(depth * .032, .45, 1.2);
     const bevelSize = THREE.MathUtils.clamp(depth * .018, .28, .72);
     svg.paths.forEach(path => SVGLoader.createShapes(path).forEach(shape => {
       const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelSegments: 3, bevelThickness, bevelSize, curveSegments: 8 });
       geometry.scale(1, -1, 1);
+      geometry.computeBoundingBox();
       geometry.computeVertexNormals();
-      logo.add(new THREE.Mesh(geometry, [caps, walls]));
+      geometryGroup.add(new THREE.Mesh(geometry, [caps, walls]));
     }));
-    if (!logo.children.length) throw new Error("The SVG has no filled shapes");
-    const bounds = new THREE.Box3().setFromObject(logo);
+    if (!geometryGroup.children.length) throw new Error("The SVG has no filled shapes");
+
+    // Center the complete multi-path artwork as one composition, preserving spacing between SVG paths.
+    const bounds = new THREE.Box3().setFromObject(geometryGroup);
     const center = bounds.getCenter(new THREE.Vector3());
     const size = bounds.getSize(new THREE.Vector3());
-    const scale = 200 / Math.max(size.x, size.y, size.z);
-    logo.scale.setScalar(scale);
-    logo.position.copy(center.multiplyScalar(-scale));
-    scene.add(logo);
+    const scaleFactor = 200 / Math.max(size.x, size.y, size.z);
+    geometryGroup.children.forEach(mesh => {
+      mesh.geometry.translate(-center.x, -center.y, -center.z);
+      mesh.geometry.computeBoundingBox();
+    });
+    geometryGroup.scale.setScalar(scaleFactor);
+
+    // This outer group is the strict world-space pivot for both scroll rotation and pointer tilt.
+    const logoGroup = new THREE.Group();
+    logoGroup.position.set(0, 0, 0);
+    logoGroup.add(geometryGroup);
+    scene.add(logoGroup);
 
     const resize = () => {
       const { width, height } = host.getBoundingClientRect();
@@ -102,12 +113,12 @@ for (const host of document.querySelectorAll(".z7-liquid-logo-host")) {
       const dt = lastFrameTime ? Math.min(50, now - lastFrameTime) : 0;
       lastFrameTime = now;
       if (rotationMode === "loop") {
-        logo.rotation.y += dt * .0002;
+        logoGroup.rotation.y += dt * .0002;
       } else {
         const targetRotationY = scrollRotation + (mouse.x / Math.max(1, innerWidth) - .5) * .5;
         const targetRotationX = (mouse.y / Math.max(1, innerHeight) - .5) * .3;
-        logo.rotation.y += (targetRotationY - logo.rotation.y) * .05;
-        logo.rotation.x += (targetRotationX - logo.rotation.x) * .05;
+        logoGroup.rotation.y += (targetRotationY - logoGroup.rotation.y) * .05;
+        logoGroup.rotation.x += (targetRotationX - logoGroup.rotation.x) * .05;
       }
       renderer.render(scene, camera);
       if (!reducedMotion.matches) raf = requestAnimationFrame(render);

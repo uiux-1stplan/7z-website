@@ -169,3 +169,13 @@ html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video {
   filter:none !important; -webkit-filter:none !important; mix-blend-mode:normal !important; opacity:1 !important;
 }
 html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video { object-fit:contain; }
+
+
+/* Original campaign footage only: disable any tint or decorative card overlay. */
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card,
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video {
+  filter:none !important; -webkit-filter:none !important; opacity:1 !important; mix-blend-mode:normal !important;
+}
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card::before,
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card::after { content:none !important; display:none !important; background:none !important; filter:none !important; }
+html[data-z7-core] .svc-film-lane--campaign .svc-mirror-card video { object-fit:contain; }

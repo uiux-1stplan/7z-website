@@ -239,17 +239,19 @@
       if (bounds.bottom <= 0 || bounds.top >= innerHeight) return;
       const raw = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
       const multiplier = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1;
-      const delta = raw * multiplier;
-      if (!delta) return;
-      const next = Math.max(0, Math.min(360, wheelOffset + delta));
+      const deltaDegrees = raw * multiplier * .42;
+      if (!deltaDegrees) return;
+      const maxTravel = Math.max(0, 360 - stepAngle());
+      const next = Math.max(0, Math.min(maxTravel, wheelOffset + deltaDegrees));
       if (next === wheelOffset) return;
       event.preventDefault();
       if (!wheelActive) { wheelTarget = rotation; wheelActive = true; }
-      const consumed = next - wheelOffset;
+      const consumedDegrees = next - wheelOffset;
       wheelOffset = next;
       stopMotion();
       velocity = 0;
-      wheelTarget += consumed * .42;
+      // Positive wheel motion advances cards; reverse motion returns to the first card.
+      wheelTarget -= consumedDegrees;
       wheelFrame = requestAnimationFrame(wheelEase);
     }, { passive: false });
 

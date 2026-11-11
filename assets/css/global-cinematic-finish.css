@@ -158,3 +158,6 @@ html[data-z7-arriving] body > :not(.z7-transition):not(.z7-loader):not(.z7-globa
 .z7-global-transition__logo { width:clamp(68px,8vw,94px) !important; max-height:none !important; margin:0 0 14px; opacity:1; animation:none !important; }
 .z7-global-transition__label { color:rgba(245,247,252,.88); font:500 13px/1.4 Inter,Arial,sans-serif; letter-spacing:.08em; text-transform:none; }
 .z7-global-loader.is-leaving,.z7-global-transition.is-leaving { transition:opacity .34s ease,visibility .34s ease !important; }
+
+.z7-global-loader[hidden],.z7-global-transition[hidden]{display:none!important}
+html[data-z7-preloading] .z7-global-transition,html[data-z7-transitioning] .z7-global-loader,html[data-z7-arriving] .z7-global-loader{display:none!important}
