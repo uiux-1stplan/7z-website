@@ -20,15 +20,17 @@
     layer.className = kind === "loader" ? "z7-global-loader" : "z7-global-transition";
     layer.setAttribute("aria-hidden", kind === "loader" ? "false" : "true");
     if (kind === "loader") layer.setAttribute("role", "status");
-    layer.innerHTML = `<div class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__content"><img class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__logo" src="${logoPath}" alt="7Z Magic" width="176" height="104" decoding="async">${kind === "loader" ? '<span class="z7-global-loader__percent" data-global-percent>0%</span><span class="z7-global-loader__line" aria-hidden="true"><i data-global-progress></i></span>' : ""}<p class="${kind === "loader" ? "z7-global-loader" : "z7-global-transition"}__label">${label}</p></div>`;
+    layer.innerHTML = kind === "loader"
+      ? '<div class="z7-global-loader__content"><img class="z7-global-loader__logo" src="' + logoPath + '" alt="7Z Magic" width="120" height="120" decoding="async"><span class="z7-global-loader__line" aria-hidden="true"><i data-global-progress></i></span><span class="z7-global-loader__percent" data-global-percent>0%</span></div>'
+      : '<div class="z7-global-transition__content"><img class="z7-global-transition__logo" src="' + logoPath + '" alt="7Z Magic" width="80" height="80" decoding="async"><p class="z7-global-transition__label">' + label + '</p></div>';
     return layer;
   }
 
   function addTransitions() {
     if (root.hasAttribute("data-z7-core")) return;
-    let loader = document.querySelector(".z7-global-loader");
-    let overlay = document.querySelector(".z7-global-transition");
-    if (!loader) { loader = makeLayer("loader", "7Z MAGIC / PREPARING THE EXPERIENCE"); document.body.prepend(loader); }
+    let loader = document.querySelector("#z7Loader,.z7-global-loader");
+    let overlay = document.querySelector("#z7Transition,.z7-global-transition");
+    if (!loader) { loader = makeLayer("loader", ""); document.body.prepend(loader); }
     if (!overlay) { overlay = makeLayer("transition", "7Z Magic"); document.body.append(overlay); }
 
     const current = pathOf(new URL(location.href));
@@ -39,53 +41,80 @@
       if (!arrival) arrival = JSON.parse(sessionStorage.getItem("z7:core-arrival:v1") || "null");
       sessionStorage.removeItem("z7:core-arrival:v1");
     } catch {}
-
-    const finishArrival = () => {
-      overlay.classList.remove("is-active");
-      overlay.classList.add("is-leaving");
-      root.removeAttribute("data-z7-arriving");
-      setTimeout(() => { overlay.hidden = true; overlay.classList.remove("is-leaving"); loader?.remove(); }, reduced.matches ? 0 : 300);
+    const getLabel = () => overlay.querySelector("[data-z7-transition-label],.z7-global-transition__label");
+    const ensureMark = () => {
+      const inner = overlay.querySelector(".z7-transition__inner,.z7-global-transition__content");
+      if (!inner || inner.querySelector(".z7-transition__mark,.z7-global-transition__logo")) return;
+      const mark = document.createElement("img");
+      mark.className = "z7-transition__mark z7-global-transition__logo";
+      mark.src = logoPath;
+      mark.alt = "7Z Magic";
+      mark.width = 80; mark.height = 80; mark.decoding = "async";
+      inner.prepend(mark);
     };
-    if (arrival?.path === current && Date.now() - arrival.time < 15000) {
-      try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
-      const label = overlay.querySelector(".z7-global-transition__label");
-      if (label) label.textContent = arrival.label || labelFor(new URL(location.href));
+    const clearArrival = () => {
+      overlay.hidden = true;
+      overlay.classList.remove("is-active","is-leaving");
+      root.removeAttribute("data-z7-arriving");
+      root.removeAttribute("data-z7-transitioning");
+      loader?.remove();
+    };
+    const startArrival = label => {
+      if (loader) loader.hidden = true;
+      try { sessionStorage.setItem("7z_visited","true"); } catch {}
+      ensureMark();
+      const title = getLabel();
+      if (title) title.textContent = label || labelFor(new URL(location.href));
       overlay.hidden = false;
+      overlay.classList.remove("is-leaving");
+      overlay.classList.add("is-active");
       root.removeAttribute("data-z7-preloading");
-      root.setAttribute("data-z7-arriving", "");
-      requestAnimationFrame(() => overlay.classList.add("is-active"));
-      setTimeout(finishArrival, reduced.matches ? 20 : 220);
-    } else if (loader && (() => { try { return sessionStorage.getItem("7z_loaded") !== "true"; } catch { return true; } })()) {
-      try { sessionStorage.setItem("z7:global-started:v1", "1"); } catch {}
-      root.setAttribute("data-z7-preloading", "");
-      const logo = loader.querySelector(".z7-global-loader__logo");
-      const percent = loader.querySelector("[data-global-percent]");
-      const progress = loader.querySelector("[data-global-progress]");
-      const started = performance.now();
-      let raf = 0;
-      const draw = now => {
-        const value = Math.min(92, Math.max(0, ((now - started) / 1050) * 92));
-        if (percent) percent.textContent = Math.round(value) + "%";
-        if (progress) progress.style.transform = "scaleX(" + (value / 100) + ")";
-        if (value < 92) raf = requestAnimationFrame(draw);
-      };
-      raf = requestAnimationFrame(draw);
-      const pageReady = document.readyState === "complete"
-        ? Promise.resolve()
-        : new Promise(resolve => window.addEventListener("load", resolve, { once: true }));
-      const cap = new Promise(resolve => setTimeout(resolve, 1600));
-      Promise.race([pageReady, cap]).then(() => logo?.decode?.() || Promise.resolve()).then(() => {
-        cancelAnimationFrame(raf);
-        try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
-        if (percent) percent.textContent = "100%";
-        if (progress) progress.style.transform = "scaleX(1)";
-        setTimeout(() => {
+      root.setAttribute("data-z7-arriving","");
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        overlay.classList.remove("is-active");
+        overlay.classList.add("is-leaving");
+        setTimeout(clearArrival, reduced.matches ? 0 : 300);
+      }));
+    };
+
+    if (arrival?.path === current && Date.now() - arrival.time < 15000) {
+      startArrival(arrival.label);
+    } else {
+      let visited = false;
+      try { visited = sessionStorage.getItem("7z_visited") === "true"; } catch {}
+      if (visited) loader.remove();
+      else {
+        root.setAttribute("data-z7-preloading","");
+        const logo = loader.querySelector(".z7-loader__mark,.z7-global-loader__logo");
+        let count = loader.querySelector("[data-z7-count],[data-global-percent]");
+        let line = loader.querySelector(".z7-loader__line,.z7-global-loader__line");
+        let progress = loader.querySelector("[data-z7-progress],[data-global-progress]");
+        if (!line) {
+          line = document.createElement("span"); line.className = "z7-global-loader__line";
+          const fill = document.createElement("i"); fill.dataset.globalProgress = ""; line.append(fill); loader.append(line); progress = fill;
+        }
+        if (!count) {
+          count = document.createElement("span"); count.className = "z7-global-loader__percent"; count.dataset.globalPercent = ""; loader.append(count);
+        }
+        line.after(count);
+        const animation = new Promise(resolve => {
+          const started = performance.now();
+          const tick = now => {
+            const value = Math.min(100, (now - started) / 1200 * 100);
+            count.textContent = Math.round(value) + "%";
+            if (progress) progress.style.transform = "scaleX(" + value / 100 + ")";
+            if (value < 100) requestAnimationFrame(tick); else resolve();
+          };
+          requestAnimationFrame(tick);
+        });
+        Promise.all([animation,Promise.resolve(logo?.decode?.()).catch(() => {})]).then(() => {
+          try { sessionStorage.setItem("7z_visited","true"); } catch {}
           root.removeAttribute("data-z7-preloading");
           loader.classList.add("is-leaving");
-          setTimeout(() => loader?.remove(), reduced.matches ? 0 : 340);
-        }, 180);
-      });
-    } else if (loader) loader.remove();
+          setTimeout(() => loader?.remove(), reduced.matches ? 0 : 600);
+        });
+      }
+    }
 
     if (window.__z7GlobalTransitionsBound) return;
     window.__z7GlobalTransitionsBound = true;
@@ -95,27 +124,29 @@
       if (!link || link.hasAttribute("download") || link.hasAttribute("data-z7-no-transition") || (link.target && link.target !== "_self")) return;
       let destination;
       try { destination = new URL(link.href, location.href); } catch { return; }
-      if (destination.origin !== location.origin || pathOf(destination) === pathOf(new URL(location.href))) return;
+      if (destination.origin !== location.origin) return;
+      if (pathOf(destination) === current && destination.hash) return;
       event.preventDefault();
       if (window.__z7GlobalNavigating) return;
       window.__z7GlobalNavigating = true;
-      const label = labelFor(destination);
-      const title = overlay.querySelector(".z7-global-transition__label");
-      if (title) title.textContent = label;
+      const title = getLabel();
+      if (title) title.textContent = labelFor(destination);
+      ensureMark();
       overlay.hidden = false;
       overlay.classList.remove("is-leaving");
       root.removeAttribute("data-z7-preloading");
-      root.setAttribute("data-z7-transitioning", "");
+      root.setAttribute("data-z7-transitioning","");
       requestAnimationFrame(() => overlay.classList.add("is-active"));
       setTimeout(() => {
-        const value = { path: pathOf(destination), time: Date.now(), label };
+        const value = {path:pathOf(destination),time:Date.now(),label:labelFor(destination)};
         try {
-          sessionStorage.setItem("z7:global-arrival:v1", JSON.stringify(value));
-          sessionStorage.setItem("z7:core-arrival:v1", JSON.stringify(value));
+          sessionStorage.setItem("7z_visited","true");
+          sessionStorage.setItem("z7:global-arrival:v1",JSON.stringify(value));
+          sessionStorage.setItem("z7:core-arrival:v1",JSON.stringify(value));
         } catch {}
         location.assign(destination.href);
-      }, reduced.matches ? 0 : 240);
-    }, { passive: false });
+      }, reduced.matches ? 0 : 250);
+    },{passive:false});
   }
 
   function addCursor() {
