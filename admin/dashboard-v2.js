@@ -4,29 +4,33 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const titles = {
-    overview: ["7Z MAGIC / OVERVIEW", "Studio overview", "A live view of your client and academy workspace."],
-    users: ["CLIENT DIRECTORY / ACCESS CONTROL", "Users", "Invite, organize and protect access to private project spaces."],
-    orders: ["ACADEMY / COMMERCE", "Orders & affiliates", "Course registrations, partner performance and discount codes."],
-    analytics: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics", "Financial and enrollment signals from recorded course activity."],
-    settings: ["STUDIO CONTROL / PREFERENCES", "Settings", "Workspace appearance, session security and course destinations."],
+    overview: ["7Z MAGIC / OVERVIEW", "Studio overview", "A live view of clients, courses and secure delivery."],
+    users: ["PEOPLE / ACCESS CONTROL", "Users", "Manage client accounts, administrator access and permissions."],
+    media: ["PRIVATE DELIVERY / ASSET CONTROL", "Media & Vault", "Upload client deliverables and control private access."],
+    orders: ["ACADEMY / PROGRAMS & PARTNERS", "Courses, Affiliates & Promo Codes", "Manage course offers, partner performance and discount campaigns."],
+    registrations: ["ACADEMY / PAYMENT REVIEW", "Registrations & Payments", "Review enrollment details, transfer references and receipts."],
+    analytics: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics & Accounting", "Revenue, discounts and partner commissions at a glance."],
+    settings: ["STUDIO CONTROL / PREFERENCES", "Settings", "Manage workspace appearance, system information and security."],
   };
   const months = new Intl.DateTimeFormat("en", { month: "short" });
   let initialized = false;
   let frame = 0;
 
-  function selectView(name, animate = true) {
+  function selectView(name, animate = true, updateHistory = true) {
     if (!titles[name]) return;
-    const current = $(`[data-dashboard-panel].is-active`);
     const next = $(`[data-dashboard-panel="${name}"]`);
-    if (!next || current === next) return;
-    if (current) {
-      current.classList.remove("is-active");
-      current.setAttribute("aria-hidden", "true");
-      current.hidden = true;
+    if (!next) return;
+    const current = $("[data-dashboard-panel].is-active");
+    if (current !== next) {
+      if (current) {
+        current.classList.remove("is-active");
+        current.setAttribute("aria-hidden", "true");
+        current.hidden = true;
+      }
+      next.hidden = false;
+      next.setAttribute("aria-hidden", "false");
+      next.classList.add("is-active");
     }
-    next.hidden = false;
-    next.setAttribute("aria-hidden", "false");
-    next.classList.add("is-active");
     $$("[data-dashboard-nav]").forEach((button) => {
       const active = button.dataset.dashboardNav === name;
       button.classList.toggle("active", active);
@@ -35,38 +39,52 @@
         else button.removeAttribute("aria-current");
       }
     });
-    $("#admin-page-kicker").textContent = titles[name][0];
-    $("#admin-page-title").textContent = titles[name][1];
-    $("#admin-page-subtitle").textContent = titles[name][2];
-    if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      next.animate([{ opacity: 0, transform: "translateY(9px)" }, { opacity: 1, transform: "translateY(0)" }], {
-        duration: 250,
+    const kicker = $("#admin-page-kicker");
+    const heading = $("#admin-page-title");
+    const subtitle = $("#admin-page-subtitle");
+    if (kicker) kicker.textContent = titles[name][0];
+    if (heading) heading.textContent = titles[name][1];
+    if (subtitle) subtitle.textContent = titles[name][2];
+    document.documentElement.dataset.adminView = name;
+    if (current !== next) window.scrollTo({ top: 0, behavior: animate ? "smooth" : "auto" });
+    if (updateHistory && location.hash !== `#${name}`) {
+      history.pushState({ adminView: name }, "", `#${name}`);
+    }
+    if (animate && current !== next && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      next.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "translateY(0)" }], {
+        duration: 210,
         easing: "cubic-bezier(.2,.8,.2,1)",
       });
     }
   }
 
   function mountWorkspacePanels() {
-    const usersSlot = $("#users-assets-panels");
-    const settingsSlot = $("#settings-admin-slot");
+    const usersSlot = $("#users-client-assets-panels");
+    const adminsSlot = $("#users-admin-accounts-slot");
+    const mediaSlot = $("#media-vault-panels");
+    const financeSlot = $("#analytics-finance-slot");
     const mounts = [
       { id: "z7-native-clients", slot: usersSlot },
-      { id: "z7-private-upload-panel", slot: usersSlot },
-      { id: "z7-admin-file-library", slot: usersSlot },
-      { id: "legacy-file-access-panel", slot: usersSlot },
-      { id: "z7-admin-accounts", slot: settingsSlot },
+      { id: "z7-admin-accounts", slot: adminsSlot },
+      { id: "z7-private-upload-panel", slot: mediaSlot },
+      { id: "legacy-file-access-panel", slot: mediaSlot },
     ];
     mounts.forEach(({ id, slot }) => {
       const panel = document.getElementById(id);
       if (panel && slot && panel.parentElement !== slot) slot.append(panel);
     });
+    const finance = $("#accounting-section .finance-stats");
+    if (finance && financeSlot && finance.parentElement !== financeSlot) financeSlot.append(finance);
   }
 
   function observeWorkspacePanels() {
     const app = $("#app");
     if (!app || app.dataset.workspacePanelsObserved) return;
     app.dataset.workspacePanelsObserved = "true";
-    const observer = new MutationObserver(mountWorkspacePanels);
+    const observer = new MutationObserver(() => {
+      mountWorkspacePanels();
+      refreshDashboard();
+    });
     observer.observe(app, { childList: true, subtree: true });
     mountWorkspacePanels();
   }
@@ -78,7 +96,7 @@
 
   function registrations() {
     return $$("#accounting-body tr").map((row) => {
-      const status = $(".engine-status", row.cells[6] || row);
+      const status = $(".engine-status", row.cells[8] || row);
       const dateText = row.cells[2]?.textContent.trim() || "";
       const parsedDate = Date.parse(dateText);
       return {
@@ -86,7 +104,7 @@
         course: row.cells[1]?.textContent.trim() || "Course registration",
         dateText,
         date: Number.isNaN(parsedDate) ? null : new Date(parsedDate),
-        due: parseMoney(row.cells[4]?.textContent),
+        due: parseMoney(row.cells[6]?.textContent),
         paid: status?.classList.contains("is-active") || /verified|paid|complete/i.test(status?.textContent || ""),
         pending: status?.classList.contains("is-pending"),
         status: status?.textContent.trim() || "Recorded",
@@ -238,6 +256,20 @@
     $("#overview-admin-name").textContent = $("#admin-name")?.textContent.trim() || "Admin";
     $("#settings-account-name").textContent = $("#admin-name")?.textContent.trim() || "Administrator";
     $("#settings-account-email").textContent = $("#admin-email")?.textContent.trim() || "Your 7Z Magic account is active in this session.";
+    const totalClients = $("#stat-users")?.textContent.trim() || "0";
+    const clientCount = $("#users-live-count");
+    const vaultCount = $("#users-client-vault-count");
+    const overviewClients = $("#overview-total-clients");
+    if (clientCount) clientCount.textContent = totalClients;
+    if (overviewClients) overviewClients.textContent = totalClients;
+    const nativeClients = $$("#z7-native-clients .z7nc-client").length;
+    if (vaultCount) vaultCount.textContent = String(nativeClients);
+    const activePartners = $("#affiliates-body .engine-status.is-active").length;
+    const partnerCount = $("#overview-affiliate-count");
+    if (partnerCount) partnerCount.textContent = String(activePartners);
+    const privateFiles = $$("#z7-admin-file-library .z7af-file").length;
+    const fileCount = $("#overview-file-count");
+    if (fileCount) fileCount.textContent = String(privateFiles);
     drawChart("overview", rows);
     drawChart("analytics", rows);
     renderCourseMix(rows);
@@ -251,17 +283,23 @@
 
   function filterUsers(query) {
     const normalized = query.trim().toLowerCase();
-    $$("#users-body tr").forEach((row) => { row.hidden = Boolean(normalized) && !row.textContent.toLowerCase().includes(normalized); });
+    $("#users-body tr, #z7-native-clients .z7nc-client, #z7-admin-accounts tr").forEach((row) => { row.hidden = Boolean(normalized) && !row.textContent.toLowerCase().includes(normalized); });
   }
 
   function initialize() {
-    if (initialized || !$("#app")) return;
+    const app = $("#app");
+    if (initialized || !app || app.classList.contains("hidden")) return;
     initialized = true;
     observeWorkspacePanels();
-    $$("[data-dashboard-nav]").forEach((button) => button.addEventListener("click", () => {
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-dashboard-nav]");
+      if (!button) return;
+      event.preventDefault();
       selectView(button.dataset.dashboardNav);
-      if (button.hasAttribute("data-focus-create-user")) $("#create-name")?.focus({ preventScroll: true });
-    }));
+      if (button.hasAttribute("data-focus-create-user")) {
+        window.setTimeout(() => $("#create-name")?.focus({ preventScroll: true }), 60);
+      }
+    });
     $$("[data-focus-create-user]").forEach((button) => button.addEventListener("click", () => {
       selectView("users");
       window.setTimeout(() => $("#create-name")?.focus({ preventScroll: true }), 80);
@@ -271,16 +309,25 @@
       if (value.trim()) selectView("users", false);
       filterUsers(value);
     });
-    const observed = ["#accounting-body", "#users-body", "#finance-revenue", "#finance-gross", "#finance-commissions", "#stat-active"];
+    const observed = ["#accounting-body", "#users-body", "#finance-revenue", "#finance-gross", "#finance-commissions", "#stat-active", "#stat-users"];
     const observer = new MutationObserver(() => {
       if (frame) cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => { frame = 0; refreshDashboard(); });
     });
-    observed.forEach((selector) => { const node = $(selector); if (node) observer.observe(node, { childList: true, subtree: true, characterData: true }); });
-    const appObserver = new MutationObserver(refreshDashboard);
-    appObserver.observe($("#app"), { attributes: true, attributeFilter: ["class"] });
+    observed.forEach((selector) => {
+      const node = $(selector);
+      if (node) observer.observe(node, { childList: true, subtree: true, characterData: true });
+    });
+    const appObserver = new MutationObserver(() => { mountWorkspacePanels(); refreshDashboard(); });
+    appObserver.observe(app, { attributes: true, childList: true, subtree: true, attributeFilter: ["class"] });
+    window.addEventListener("popstate", () => {
+      const name = location.hash.slice(1);
+      if (titles[name]) selectView(name, false, false);
+    });
     setClock();
     refreshDashboard();
+    const route = location.hash.slice(1);
+    selectView(titles[route] ? route : "overview", false, false);
   }
 
   document.addEventListener("z7:admin-ready", initialize);

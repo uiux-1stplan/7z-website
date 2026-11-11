@@ -30,6 +30,18 @@ function setHeaders(req, res) {
   res.setHeader("X-Content-Type-Options", "nosniff");
 }
 
+async function getConfiguredCourse(sql, courseId) {
+  const fallback = COURSES[courseId];
+  if (!fallback) return null;
+  try {
+    const [configured] = await sql`SELECT name,price_jod FROM course_admin_catalog WHERE course_id=${courseId}`;
+    return configured ? { ...fallback, name: configured.name, priceJod: Number(configured.price_jod) } : fallback;
+  } catch (error) {
+    if (error?.code === "42P01") return fallback;
+    throw error;
+  }
+}
+
 export async function prepare(sql) {
   await sql`CREATE TABLE IF NOT EXISTS course_registrations (
     id BIGSERIAL PRIMARY KEY,
@@ -317,7 +329,7 @@ export default async function handler(req, res) {
     try {
       const sql = sqlClient(); await prepare(sql);
       const courseId = String(req.query?.course || DEFAULT_COURSE);
-      const course = COURSES[courseId];
+      const course = await getConfiguredCourse(sql, courseId);
       if (!course) return res.status(400).json({ error: "Course not found." });
       await sql`UPDATE course_checkout_intents SET status='EXPIRED' WHERE status='PENDING' AND expires_at <= NOW()`;
       const counts = await sql`SELECT (SELECT COUNT(*)::int FROM course_registrations WHERE course_id=${courseId}) AS registrations,(SELECT COUNT(*)::int FROM course_checkout_intents WHERE course_id=${courseId} AND status='PENDING' AND expires_at > NOW()) AS pending,(SELECT COUNT(*)::int FROM course_registrations) + (SELECT COUNT(*)::int FROM course_checkout_intents WHERE status='PENDING' AND expires_at > NOW()) AS academy_total`;
@@ -336,10 +348,11 @@ export default async function handler(req, res) {
     const clean = (value, max) => String(value || "").trim().slice(0, max);
     const name = clean(input.name, 120), email = clean(input.email, 254).toLowerCase(), phone = clean(input.phone, 40);
     const location = clean(input.country, 120), experience = clean(input.experience, 30), language = clean(input.language, 30), goal = clean(input.goal, 2000);
-    const courseId = clean(input.courseId || DEFAULT_COURSE, 40), course = COURSES[courseId];
-    if (!course) return res.status(400).json({ error: "Course not found." });
+    const courseId = clean(input.courseId || DEFAULT_COURSE, 40);
+    if (!COURSES[courseId]) return res.status(400).json({ error: "Course not found." });
     if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.length < 6 || location.length < 2 || !["beginner", "some", "pro"].includes(experience.toLowerCase()) || !["arabic", "english"].includes(language.toLowerCase()) || input.consent !== true) return res.status(400).json({ error: "Please complete the required fields and consent." });
     const sql = sqlClient(); await prepare(sql);
+    const course = await getConfiguredCourse(sql, courseId);
     const hour = await sql`SELECT COUNT(*)::int AS count FROM course_checkout_intents WHERE course_id=${courseId} AND lower(email)=${email} AND created_at > NOW() - INTERVAL '1 hour'`;
     if (Number(hour[0]?.count || 0) >= 5) return res.status(429).json({ error: "Too many attempts. Please retry later." });
     const token = randomBytes(32).toString("base64url");

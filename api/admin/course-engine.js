@@ -8,6 +8,7 @@ import {
   toWebRequest,
 } from "../../lib/vercel-api.mjs";
 import { sendZohoMail } from "../course-registration.js";
+import { issueSignedToken, presignUrl } from "@vercel/blob";
 
 const courses = new Set(["all", "cinematic-film", "ai-engineering"]);
 function send(res, status, body) {
@@ -57,32 +58,21 @@ async function ensureSchema(sql) {
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`;
 
-  const legacyAffiliates = [
-    ["legacy-hassan", "Hassan Rayan", 25],
-    ["legacy-shaas", "Shaas Matar", 25],
-    ["legacy-abdulrahman", "Abdulrahman Mohammed", 25],
-  ];
-  for (const [key, name, commission] of legacyAffiliates) {
-    await sql`INSERT INTO course_admin_affiliates (name, commission_percent, legacy_key)
-      VALUES (${name}, ${commission}, ${key}) ON CONFLICT (legacy_key) DO NOTHING`;
-  }
+  await sql`CREATE TABLE IF NOT EXISTS course_admin_catalog (
+    course_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    price_jod NUMERIC(10,2) NOT NULL CHECK (price_jod > 0),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`;
+  await sql`INSERT INTO course_admin_catalog (course_id,name,price_jod)
+    VALUES ('cinematic-film','7Z AI Cinematic Filmmaking',250),('ai-engineering','7Z AI for Engineers',250)
+    ON CONFLICT (course_id) DO NOTHING`;
 
-  const legacyCodes = [
-    ["HASSAN10", "legacy-hassan", 10, 25, false],
-    ["SHAS10", "legacy-shaas", 10, 25, false],
-    ["ABDULRAHMAN10", "legacy-abdulrahman", 10, 25, false],
-    ["7Z10", null, 10, 0, false],
-    ["ALUMNI15", null, 15, 0, true],
-  ];
-  for (const [code, legacyKey, discount, commission, previousEmail] of legacyCodes) {
-    await sql`INSERT INTO course_discount_codes
-      (code, affiliate_id, affiliate_name, discount_percent, commission_percent, requires_previous_email, legacy_key)
-      VALUES (${code},
-        (SELECT id FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}),
-        COALESCE((SELECT name FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}), ''),
-        ${discount}, ${commission}, ${previousEmail}, ${`legacy-code-${code}`})
-      ON CONFLICT (code) DO NOTHING`;
-  }
+
+}
+
+async function getCourseCatalog(sql) {
+  return sql`SELECT course_id,name,price_jod,updated_at FROM course_admin_catalog ORDER BY course_id`;
 }
 
 async function getAffiliates(sql) {
@@ -129,6 +119,16 @@ async function getCodes(sql) {
   }
 }
 
+async function getAuditLogs(sql) {
+  try {
+    return await sql`SELECT id,actor_user_id,action,target_type,target_id,details,created_at
+      FROM portal_audit_log ORDER BY created_at DESC LIMIT 200`;
+  } catch (error) {
+    if (error?.code === "42P01") return [];
+    throw error;
+  }
+}
+
 async function getAccounting(sql) {
   let rows = [];
   let totals = { gross: 0, revenue: 0, pending: 0, discounts: 0, commissionsDue: 0, commissionsTotal: 0, studioNet: 0 };
@@ -147,10 +147,11 @@ async function getAccounting(sql) {
       commissionsDue: Number(summary?.commissions_due || 0), commissionsTotal: Number(summary?.commissions_total || 0),
     };
     totals.studioNet = totals.revenue - totals.commissionsTotal;
-    rows = await sql`SELECT id, full_name, email, course_id, created_at, payment_status,
+    rows = await sql`SELECT id, full_name, email, phone, course_id, created_at, payment_status,
       price_jod, discount_jod, coupon_code, affiliate_name, commission_percent,
-      commission_jod, commission_status, payment_provider, payment_reference
-      FROM course_registrations ORDER BY created_at DESC LIMIT 500`;
+      commission_jod, commission_status, payment_provider, payment_reference,
+      payment_proof_pathname, payment_proof_content_type
+      FROM course_registrations ORDER BY created_at DESC`;
   } catch (error) {
     if (error?.code !== "42P01") throw error;
   }
@@ -171,11 +172,23 @@ export default async function handler(req, res) {
 
     if (req.method === "GET") {
       if (req.query?.view === "accounting") return send(res, 200, await getAccounting(sql));
-      const [affiliates, codes] = await Promise.all([getAffiliates(sql), getCodes(sql)]);
-      return send(res, 200, { affiliates, codes });
+      if (req.query?.view === "audit") return send(res, 200, { logs: await getAuditLogs(sql) });
+      const [affiliates, codes, courses] = await Promise.all([getAffiliates(sql), getCodes(sql), getCourseCatalog(sql)]);
+      return send(res, 200, { affiliates, codes, courses });
     }
 
     const body = bodyOf(req);
+    if (body.action === "update-course") {
+      const courseId = text(body.courseId, 32);
+      const name = text(body.name, 140);
+      const price = Number(body.priceJod);
+      if (!["cinematic-film", "ai-engineering"].includes(courseId) || !name || !Number.isFinite(price) || price <= 0 || price > 100000) return send(res, 400, { error: "Enter a course name and a price greater than 0 JOD." });
+      const [course] = await sql`UPDATE course_admin_catalog SET name=${name},price_jod=${Math.round(price * 100) / 100},updated_at=NOW() WHERE course_id=${courseId} RETURNING course_id,name,price_jod,updated_at`;
+      if (!course) return send(res, 404, { error: "Course not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_catalog_updated", targetType: "course", targetId: course.course_id, details: { name: course.name, priceJod: Number(course.price_jod) } });
+      return send(res, 200, { course });
+    }
+
     if (body.action === "create-affiliate") {
       const name = text(body.name, 120);
       const email = text(body.email, 180).toLowerCase();
@@ -224,6 +237,103 @@ export default async function handler(req, res) {
       if (!coupon) return send(res, 404, { error: "Discount code not found." });
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_status_changed", targetType: "course_discount_code", targetId: coupon.id, details: { status } });
       return send(res, 200, { coupon });
+    }
+
+    if (body.action === "update-affiliate") {
+      const id = text(body.id, 64);
+      const name = text(body.name, 120);
+      const email = text(body.email, 180).toLowerCase();
+      const company = text(body.company, 160);
+      const commission = percent(body.commissionPercent);
+      if (!id || !name || commission === null || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) return send(res, 400, { error: "Enter a name, valid email and commission between 0 and 100." });
+      const [affiliate] = await sql`UPDATE course_admin_affiliates SET name=${name},email=${email || null},company=${company},commission_percent=${commission},updated_at=NOW() WHERE id=${id} RETURNING id,name,email,company,commission_percent,status`;
+      if (!affiliate) return send(res, 404, { error: "Affiliate not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliate_updated", targetType: "course_affiliate", targetId: affiliate.id, details: { commissionPercent: commission } });
+      return send(res, 200, { affiliate });
+    }
+
+    if (body.action === "delete-affiliate") {
+      const id = text(body.id, 64);
+      if (!id) return send(res, 400, { error: "Affiliate ID is required." });
+      const [existing] = await sql`SELECT id,name FROM course_admin_affiliates WHERE id=${id}`;
+      if (!existing) return send(res, 404, { error: "Affiliate not found." });
+      await sql`DELETE FROM course_discount_codes WHERE affiliate_id=${id}`;
+      const [affiliate] = await sql`DELETE FROM course_admin_affiliates WHERE id=${id} RETURNING id,name`;
+      if (!affiliate) return send(res, 404, { error: "Affiliate not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliate_deleted", targetType: "course_affiliate", targetId: affiliate.id, details: { name: affiliate.name, historicalRegistrationsPreserved: true } });
+      return send(res, 200, { deleted: true, affiliate });
+    }
+
+    if (body.action === "update-code") {
+      const id = text(body.id, 64);
+      const code = text(body.code, 32).toUpperCase();
+      const courseId = text(body.courseId || "all", 32);
+      const discount = percent(body.discountPercent);
+      const commission = percent(body.commissionPercent);
+      const maxUses = body.maxRedemptions === "" || body.maxRedemptions === null || body.maxRedemptions === undefined ? null : Number(body.maxRedemptions);
+      if (!id || !/^[A-Z0-9][A-Z0-9_-]{2,31}$/.test(code) || !courses.has(courseId) || discount === null || commission === null) return send(res, 400, { error: "Check the code, course and percentage values." });
+      if (maxUses !== null && (!Number.isInteger(maxUses) || maxUses < 1 || maxUses > 1000000)) return send(res, 400, { error: "Maximum uses must be a positive whole number." });
+      if (body.affiliateId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(body.affiliateId))) return send(res, 400, { error: "The selected affiliate is not valid." });
+      const affiliateRows = body.affiliateId ? await sql`SELECT id,name,status FROM course_admin_affiliates WHERE id=${text(body.affiliateId,64)}` : [];
+      const affiliate = affiliateRows[0];
+      if (body.affiliateId && (!affiliate || affiliate.status !== "active")) return send(res, 400, { error: "Choose an active affiliate." });
+      const [coupon] = await sql`UPDATE course_discount_codes SET code=${code},affiliate_id=${affiliate?.id || null},affiliate_name=${affiliate?.name || ""},course_id=${courseId},discount_percent=${discount},commission_percent=${commission},max_redemptions=${maxUses},updated_at=NOW() WHERE id=${id} RETURNING id,code,affiliate_id,affiliate_name,course_id,discount_percent,commission_percent,status,max_redemptions`;
+      if (!coupon) return send(res, 404, { error: "Discount code not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_updated", targetType: "course_discount_code", targetId: coupon.id, details: { code, discountPercent: discount, commissionPercent: commission } });
+      return send(res, 200, { coupon });
+    }
+
+    if (body.action === "delete-code") {
+      const id = text(body.id, 64);
+      if (!id) return send(res, 400, { error: "Discount code ID is required." });
+      const [coupon] = await sql`DELETE FROM course_discount_codes WHERE id=${id} RETURNING id,code`;
+      if (!coupon) return send(res, 404, { error: "Discount code not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_deleted", targetType: "course_discount_code", targetId: coupon.id, details: { code: coupon.code, historicalRegistrationsPreserved: true } });
+      return send(res, 200, { deleted: true, coupon });
+    }
+
+    if (body.action === "update-registration") {
+      const id = Number(body.id);
+      const name = text(body.name, 160);
+      const email = text(body.email, 180).toLowerCase();
+      const phone = text(body.phone, 60);
+      if (!Number.isSafeInteger(id) || id < 1 || !name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !phone) return send(res, 400, { error: "Enter a valid name, email and phone number." });
+      const [registration] = await sql`UPDATE course_registrations SET full_name=${name},email=${email},phone=${phone} WHERE id=${id} RETURNING id,full_name,email,phone`;
+      if (!registration) return send(res, 404, { error: "Registration not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_registration_updated", targetType: "course_registration", targetId: registration.id, details: { email } });
+      return send(res, 200, { registration });
+    }
+
+    if (body.action === "delete-registration") {
+      const id = Number(body.id);
+      if (!Number.isSafeInteger(id) || id < 1) return send(res, 400, { error: "Registration ID is not valid." });
+      const [registration] = await sql`DELETE FROM course_registrations WHERE id=${id} RETURNING id,full_name,email,course_id,payment_status,price_jod,discount_jod,commission_jod`;
+      if (!registration) return send(res, 404, { error: "Registration not found." });
+      await writeAudit({ actorUserId: gate.auth.userId, action: "course_registration_deleted", targetType: "course_registration", targetId: registration.id, details: { email: registration.email, paymentStatus: registration.payment_status, deletedByAdmin: true } });
+      return send(res, 200, { deleted: true, registration });
+    }
+
+    if (body.action === "receipt-url") {
+      const id = Number(body.id);
+      if (!Number.isSafeInteger(id) || id < 1) return send(res, 400, { error: "Registration ID is not valid." });
+      const [registration] = await sql`SELECT payment_proof_pathname,payment_proof_content_type FROM course_registrations WHERE id=${id}`;
+      if (!registration?.payment_proof_pathname) return send(res, 404, { error: "No payment receipt is attached to this registration." });
+      let blob;
+      try { blob = new URL(registration.payment_proof_pathname); } catch {}
+      if (!blob || blob.protocol !== "https:" || !blob.hostname.endsWith(".private.blob.vercel-storage.com") || blob.search || blob.hash) return send(res, 400, { error: "The stored receipt link is not valid." });
+      const pathname = blob.pathname.replace(/^\//, "");
+      const validUntil = Date.now() + 5 * 60 * 1000;
+      const signedToken = await issueSignedToken({ pathname, operations: ["get"], validUntil });
+      const { presignedUrl } = await presignUrl(signedToken, { pathname, operation: "get", access: "private", validUntil });
+      return send(res, 200, { receiptUrl: presignedUrl, contentType: registration.payment_proof_content_type || "image/jpeg" });
+    }
+
+    if (body.action === "delete-audit-log") {
+      const id = Number(body.id);
+      if (!Number.isSafeInteger(id) || id < 1) return send(res, 400, { error: "Activity record ID is not valid." });
+      const [deleted] = await sql`DELETE FROM portal_audit_log WHERE id=${id} RETURNING id`;
+      if (!deleted) return send(res, 404, { error: "Activity record not found." });
+      return send(res, 200, { deleted: true, id: deleted.id });
     }
 
     if (body.action === "set-payment-status") {

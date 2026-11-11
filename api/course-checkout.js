@@ -122,7 +122,14 @@ export default async function handler(req, res) {
     const intentMetaRows = await sql`SELECT course_id,price_jod,status,expires_at FROM course_checkout_intents WHERE token_hash=${tokenHash}`;
     const intentMeta = intentMetaRows[0];
     if (!intentMeta) return res.status(404).json({ error: "This checkout link is not valid." });
-    const courseId = String(intentMeta.course_id || DEFAULT_COURSE), course = COURSES[courseId];
+    const courseId = String(intentMeta.course_id || DEFAULT_COURSE);
+    const fallbackCourse = COURSES[courseId];
+    if (!fallbackCourse) return res.status(400).json({ error: "Course not found." });
+    let course = fallbackCourse;
+    try {
+      const [configuredCourse] = await sql`SELECT name FROM course_admin_catalog WHERE course_id=${courseId}`;
+      if (configuredCourse?.name) course = { ...fallbackCourse, name: configuredCourse.name };
+    } catch (error) { if (error?.code !== "42P01") throw error; }
     if (!course) return res.status(400).json({ error: "Course not found." });
     const CAPACITY = course.capacity;
     const priceJod = Number(intentMeta.price_jod ?? process.env.COURSE_PRICE_JOD);
