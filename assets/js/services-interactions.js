@@ -78,7 +78,6 @@
     let cards = [];
     let rotation = 0;
     let velocity = 0;
-    let motionEnergy = 0.08;
     let frame = 0;
     let targetFrame = 0;
     let lastCoastTime = 0;
@@ -99,11 +98,6 @@
     const paint = () => {
       if (!ring) return;
       ring.style.setProperty("--mirror-rotation", `${rotation}deg`);
-      const energy = Math.min(.82, Math.max(.08, motionEnergy, Math.abs(velocity) / 13 * .78));
-      campaignRail.style.setProperty("--mirror-water-alpha", (.16 + energy * .18).toFixed(2));
-      campaignRail.style.setProperty("--mirror-line-alpha", (.04 + energy * .08).toFixed(2));
-      campaignRail.style.setProperty("--mirror-glow", `${34 + energy * 36}px`);
-      campaignRail.style.setProperty("--mirror-ripple-shift", `${Math.sin(rotation * Math.PI / 180) * energy * 13}px`);
       const selected = activeIndex();
       cards.forEach((card, index) => {
         if (index === selected) card.setAttribute("aria-current", "true");
@@ -119,7 +113,6 @@
     };
     const nearestRotation = () => Math.round(rotation / stepAngle()) * stepAngle();
     const settle = () => {
-      motionEnergy = .08;
       if (reduced) { rotation = nearestRotation(); paint(); return; }
       const start = rotation;
       const end = nearestRotation();
@@ -140,7 +133,6 @@
       lastCoastTime = now;
       rotation += velocity * delta;
       velocity *= Math.pow(.94, delta);
-      motionEnergy = Math.max(.08, Math.abs(velocity) / 13 * .78);
       paint();
       if (Math.abs(velocity) > .08) frame = requestAnimationFrame(coast);
       else { frame = 0; settle(); }
@@ -152,15 +144,13 @@
       wheelTarget = target;
       const began = performance.now();
       const duration = 620;
-      motionEnergy = .58;
       const tick = now => {
         const t = Math.min(1, (now - began) / duration);
         const eased = 1 - Math.pow(1 - t, 3);
         rotation = start + (target - start) * eased;
-        motionEnergy = .58 * (1 - t) + .08;
         paint();
         if (t < 1) targetFrame = requestAnimationFrame(tick);
-        else { targetFrame = 0; motionEnergy = .08; paint(); }
+        else { targetFrame = 0; paint(); }
       };
       targetFrame = requestAnimationFrame(tick);
     };
@@ -228,10 +218,9 @@
 
     const wheelEase = () => {
       rotation += (wheelTarget - rotation) * .16;
-      motionEnergy = Math.max(.12, Math.min(.7, Math.abs(wheelTarget - rotation) / 10));
       paint();
       if (Math.abs(wheelTarget - rotation) > .08) wheelFrame = requestAnimationFrame(wheelEase);
-      else { rotation = wheelTarget; wheelFrame = 0; motionEnergy = .08; paint(); }
+      else { rotation = wheelTarget; wheelFrame = 0; paint(); }
     };
     addEventListener("wheel", event => {
       if (reduced || !ring) return;
@@ -284,7 +273,6 @@
         campaignRail.classList.add("is-dragging");
         rotation += dx * .34;
         velocity = Math.max(-13, Math.min(13, dx / Math.max(1, now - lastTime) * 16 * .34));
-        motionEnergy = .2 + Math.min(.58, Math.abs(velocity) / 13 * .58);
         paint();
       }
       lastX = event.clientX;
