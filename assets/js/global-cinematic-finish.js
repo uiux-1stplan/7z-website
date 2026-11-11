@@ -61,7 +61,7 @@
     };
     const startArrival = label => {
       if (loader) loader.hidden = true;
-      try { sessionStorage.setItem("7z_visited","true"); } catch {}
+      try { sessionStorage.setItem("visited","true"); sessionStorage.setItem("7z_visited","true"); } catch {}
       ensureMark();
       const title = getLabel();
       if (title) title.textContent = label || labelFor(new URL(location.href));
@@ -73,7 +73,7 @@
       requestAnimationFrame(() => requestAnimationFrame(() => {
         overlay.classList.remove("is-active");
         overlay.classList.add("is-leaving");
-        setTimeout(clearArrival, reduced.matches ? 0 : 300);
+        setTimeout(clearArrival, reduced.matches ? 0 : 150);
       }));
     };
 
@@ -81,11 +81,10 @@
       startArrival(arrival.label);
     } else {
       let visited = false;
-      try { visited = sessionStorage.getItem("7z_visited") === "true"; } catch {}
+      try { visited = (sessionStorage.getItem("visited") !== null || sessionStorage.getItem("7z_visited") === "true"); } catch {}
       if (visited) loader.remove();
       else {
         root.setAttribute("data-z7-preloading","");
-        const logo = loader.querySelector(".z7-loader__mark,.z7-global-loader__logo");
         let count = loader.querySelector("[data-z7-count],[data-global-percent]");
         let line = loader.querySelector(".z7-loader__line,.z7-global-loader__line");
         let progress = loader.querySelector("[data-z7-progress],[data-global-progress]");
@@ -100,18 +99,18 @@
         const animation = new Promise(resolve => {
           const started = performance.now();
           const tick = now => {
-            const value = Math.min(100, (now - started) / 1200 * 100);
+            const value = Math.min(100, (now - started) / 800 * 100);
             count.textContent = Math.round(value) + "%";
             if (progress) progress.style.transform = "scaleX(" + value / 100 + ")";
             if (value < 100) requestAnimationFrame(tick); else resolve();
           };
           requestAnimationFrame(tick);
         });
-        Promise.all([animation,Promise.resolve(logo?.decode?.()).catch(() => {})]).then(() => {
-          try { sessionStorage.setItem("7z_visited","true"); } catch {}
+        animation.then(() => {
+          try { sessionStorage.setItem("visited","true"); sessionStorage.setItem("7z_visited","true"); } catch {}
           root.removeAttribute("data-z7-preloading");
           loader.classList.add("is-leaving");
-          setTimeout(() => loader?.remove(), reduced.matches ? 0 : 600);
+          setTimeout(() => loader?.remove(), reduced.matches ? 0 : 150);
         });
       }
     }
@@ -140,12 +139,12 @@
       setTimeout(() => {
         const value = {path:pathOf(destination),time:Date.now(),label:labelFor(destination)};
         try {
-          sessionStorage.setItem("7z_visited","true");
+          sessionStorage.setItem("visited","true"); sessionStorage.setItem("7z_visited","true");
           sessionStorage.setItem("z7:global-arrival:v1",JSON.stringify(value));
           sessionStorage.setItem("z7:core-arrival:v1",JSON.stringify(value));
         } catch {}
         location.assign(destination.href);
-      }, reduced.matches ? 0 : 250);
+      }, reduced.matches ? 0 : 150);
     },{passive:false});
   }
 
@@ -209,6 +208,7 @@
     const headings = allHeadings.filter(el => [...el.childNodes].every(node => node.nodeType === Node.TEXT_NODE));
     allHeadings.filter(el => !headings.includes(el)).forEach(animateFallback);
     if (!headings.length || reduced.matches) return;
+    if (innerWidth < 768 || matchMedia("(pointer: coarse)").matches) { headings.forEach(animateFallback); return; }
     const mountAll = (React, createRoot, TextEngine) => {
       headings.forEach(heading => {
         if (heading.dataset.z7HeadingReady) return;
@@ -246,9 +246,11 @@
   }
 
   const install = () => {
-    if (!document.querySelector('link[data-z7-global-finish]')) {
+    const finishStyles = document.querySelector('link[data-z7-global-finish]');
+    if (finishStyles) finishStyles.href = "/assets/css/global-cinematic-finish.css?v=20261112-performance";
+    else {
       const link = document.createElement("link");
-      link.rel = "stylesheet"; link.href = "/assets/css/global-cinematic-finish.css?v=20261111-1"; link.dataset.z7GlobalFinish = "";
+      link.rel = "stylesheet"; link.href = "/assets/css/global-cinematic-finish.css?v=20261112-performance"; link.dataset.z7GlobalFinish = "";
       document.head.append(link);
     }
     addTransitions();
