@@ -208,47 +208,42 @@
   async function preloader(state) {
     const loader = state.loader;
     if (!loader) { revealHero(state); return; }
-    try {
-      if (sessionStorage.getItem("7z_loaded") === "true") { clearLoader(state); return; }
-    } catch {}
+    let visited = false;
+    try { visited = sessionStorage.getItem("7z_visited") === "true"; } catch {}
+    if (visited) { clearLoader(state); return; }
     root.setAttribute("data-z7-preloading", "");
     if (reduced.matches) {
-      try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
-      clearLoader(state); return;
+      try { sessionStorage.setItem("7z_visited", "true"); } catch {}
+      clearLoader(state);
+      return;
     }
+
     const logo = loader.querySelector(".z7-loader__mark");
     const count = loader.querySelector("[data-z7-count]");
     const progress = loader.querySelector("[data-z7-progress]");
-    const started = performance.now();
-    let value = 0;
-    const paintProgress = next => {
-      value = Math.max(value, Math.min(100, next));
-      if (count) count.textContent = String(Math.round(value)) + "%";
-      if (progress) progress.style.transform = "scaleX(" + (value / 100) + ")";
-    };
-    const animateProgress = now => {
-      if (state.destroyed) return;
-      paintProgress(Math.min(92, ((now - started) / 1050) * 92));
-      if (value < 92) state.loaderRaf = requestAnimationFrame(animateProgress);
-      else state.loaderRaf = 0;
-    };
-    paintProgress(0);
-    state.loaderRaf = requestAnimationFrame(animateProgress);
-    const pageReady = document.readyState === "complete"
-      ? Promise.resolve()
-      : new Promise(resolve => window.addEventListener("load", resolve, { once: true }));
-    const cap = new Promise(resolve => timer(state, resolve, 1600));
-    await Promise.race([pageReady, cap]);
-    await Promise.allSettled([logo?.decode?.() || Promise.resolve()]);
+    const line = loader.querySelector(".z7-loader__line");
+    if (count && line && count.parentElement !== line.parentElement) line.after(count);
+    const animation = new Promise(resolve => {
+      const started = performance.now();
+      const tick = now => {
+        if (state.destroyed) { resolve(); return; }
+        const value = Math.min(100, Math.max(0, (now - started) / 1200 * 100));
+        if (count) count.textContent = Math.round(value) + "%";
+        if (progress) progress.style.transform = "scaleX(" + value / 100 + ")";
+        if (value < 100) {
+          state.loaderRaf = requestAnimationFrame(tick);
+        } else {
+          state.loaderRaf = 0;
+          resolve();
+        }
+      };
+      state.loaderRaf = requestAnimationFrame(tick);
+    });
+    await Promise.all([animation, Promise.resolve(logo?.decode?.()).catch(() => {})]);
     if (state.destroyed) return;
-    if (state.loaderRaf) cancelAnimationFrame(state.loaderRaf);
-    state.loaderRaf = 0;
-    paintProgress(100);
-    try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
-    await new Promise(resolve => timer(state, resolve, 180));
-    if (state.destroyed) return;
+    try { sessionStorage.setItem("7z_visited", "true"); } catch {}
     loader.classList.add("is-leaving");
-    timer(state, () => clearLoader(state), 340);
+    timer(state, () => clearLoader(state), 600);
   }
   function ensureTransitionMark(overlay) {
     const inner = overlay?.querySelector(".z7-transition__inner");
@@ -257,8 +252,8 @@
     mark.className = "z7-transition__mark";
     mark.src = "/assets/brand/7Z-LogoT(3).png";
     mark.alt = "7Z Magic";
-    mark.width = 190;
-    mark.height = 104;
+    mark.width = 80;
+    mark.height = 80;
     mark.decoding = "async";
     inner.prepend(mark);
   }
@@ -273,7 +268,7 @@
   function arrivalReveal(state) {
     if (state.loader) state.loader.hidden = true;
     root.removeAttribute("data-z7-preloading");
-    try { sessionStorage.setItem("7z_loaded", "true"); } catch {}
+    try { sessionStorage.setItem("7z_visited", "true"); } catch {}
     const overlay = state.overlay;
     if (!overlay || reduced.matches) { clearOverlay(state); return; }
     ensureTransitionMark(overlay);
@@ -281,13 +276,13 @@
     if (label) label.textContent = labelFor(new URL(location.href));
     overlay.hidden = false;
     overlay.classList.remove("is-leaving");
+    overlay.classList.add("is-active");
     root.setAttribute("data-z7-arriving", "");
-    requestAnimationFrame(() => overlay.classList.add("is-active"));
-    timer(state, () => {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
       overlay.classList.remove("is-active");
       overlay.classList.add("is-leaving");
       timer(state, () => clearOverlay(state), 300);
-    }, 130);
+    }));
   }
   function navigate(state, destination) {
     if (state.navigating) return;
@@ -295,6 +290,7 @@
     setMenu(state, false);
     const go = () => {
       try { sessionStorage.setItem(KEY, JSON.stringify({ path: pathOf(destination), time: Date.now() })); } catch {}
+      try { sessionStorage.setItem("7z_visited", "true"); } catch {}
       location.assign(destination.href);
     };
     const overlay = state.overlay;
@@ -307,7 +303,7 @@
     overlay.classList.remove("is-leaving");
     root.setAttribute("data-z7-transitioning", "");
     requestAnimationFrame(() => overlay.classList.add("is-active"));
-    timer(state, go, 240);
+    timer(state, go, 250);
   }
   function initLinks(state) {
     document.addEventListener("click", event => {
