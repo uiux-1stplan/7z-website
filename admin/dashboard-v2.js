@@ -18,7 +18,7 @@
 
   function selectView(name, animate = true) {
     if (!titles[name]) return;
-    const panels = $("[data-dashboard-panel]");
+    const panels = $$("[data-dashboard-panel]");
     const next = panels.find((panel) => panel.dataset.dashboardPanel === name);
     if (!next) return;
     const current = panels.find((panel) => panel.classList.contains("is-active") && !panel.hidden);
