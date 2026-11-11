@@ -81,9 +81,17 @@
     const app = $("#app");
     if (!app || app.dataset.workspacePanelsObserved) return;
     app.dataset.workspacePanelsObserved = "true";
-    const observer = new MutationObserver(() => {
+    const managedSelector = "#z7-native-clients, #z7-admin-accounts, #z7-private-upload-panel, #legacy-file-access-panel, .finance-stats";
+    const containsManagedPanel = (node) => node.nodeType === Node.ELEMENT_NODE &&
+      (node.matches(managedSelector) || Boolean(node.querySelector(managedSelector)));
+    const observer = new MutationObserver((records) => {
+      const panelMountChanged = records.some((record) =>
+        [...record.addedNodes, ...record.removedNodes].some(containsManagedPanel)
+      );
+      if (!panelMountChanged) return;
       mountWorkspacePanels();
-      refreshDashboard();
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => { frame = 0; refreshDashboard(); });
     });
     observer.observe(app, { childList: true, subtree: true });
     mountWorkspacePanels();
@@ -318,8 +326,6 @@
       const node = $(selector);
       if (node) observer.observe(node, { childList: true, subtree: true, characterData: true });
     });
-    const appObserver = new MutationObserver(() => { mountWorkspacePanels(); refreshDashboard(); });
-    appObserver.observe(app, { attributes: true, childList: true, subtree: true, attributeFilter: ["class"] });
     window.addEventListener("popstate", () => {
       const name = location.hash.slice(1);
       if (titles[name]) selectView(name, false, false);

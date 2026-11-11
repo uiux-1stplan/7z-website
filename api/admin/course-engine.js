@@ -151,7 +151,7 @@ async function getAccounting(sql) {
       price_jod, discount_jod, coupon_code, affiliate_name, commission_percent,
       commission_jod, commission_status, payment_provider, payment_reference,
       payment_proof_pathname, payment_proof_content_type
-      FROM course_registrations ORDER BY created_at DESC`;
+      FROM course_registrations ORDER BY created_at DESC LIMIT 500`;
   } catch (error) {
     if (error?.code !== "42P01") throw error;
   }
