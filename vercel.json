@@ -98,6 +98,10 @@
       "destination": "/api/admin-router?__z7route=files"
     },
     {
+      "source": "/api/admin/file-mutations",
+      "destination": "/api/admin-router?__z7route=file-mutations"
+    },
+    {
       "source": "/api/admin/all-clients",
       "destination": "/api/admin-router?__z7route=all-clients"
     },

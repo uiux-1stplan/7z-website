@@ -272,7 +272,7 @@
     if (overviewClients) overviewClients.textContent = totalClients;
     const nativeClients = $$("#z7-native-clients .z7nc-client").length;
     if (vaultCount) vaultCount.textContent = String(nativeClients);
-    const activePartners = $("#affiliates-body .engine-status.is-active").length;
+    const activePartners = $$("#affiliates-body .engine-status.is-active").length;
     const partnerCount = $("#overview-affiliate-count");
     if (partnerCount) partnerCount.textContent = String(activePartners);
     const privateFiles = $$("#z7-admin-file-library .z7af-file").length;

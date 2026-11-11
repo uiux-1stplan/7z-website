@@ -173,51 +173,135 @@
     return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]);
   }
 
-  function exportAccountingReport() {
-    const paid = state.registrations.filter((row) => ["PAID", "APPROVED", "VERIFIED"].includes(String(row.payment_status).toUpperCase()));
-    const sheet = (name, rows) => `<Worksheet ss:Name="${xmlEscape(name)}"><Table>${rows.map((row, index) => `<Row>${row.map((value) => {
-      const numeric = typeof value === "number" && Number.isFinite(value);
-      return `<Cell${index === 0 ? ' ss:StyleID="Header"' : ""}><Data ss:Type="${numeric ? "Number" : "String"}">${xmlEscape(value)}</Data></Cell>`;
-    }).join("")}</Row>`).join("")}</Table></Worksheet>`;
-    const registrationRows = [["Student", "Email", "Phone", "Course", "Submitted", "Payment status", "Method", "Transfer reference", "Code", "List price JOD", "Discount JOD", "Net due JOD", "Affiliate", "Commission %", "Commission JOD", "Commission status", "Receipt"]];
-    state.registrations.forEach((row) => registrationRows.push([
-      row.full_name, row.email, row.phone || "", row.course_id, row.created_at || "", row.payment_status || "",
-      row.payment_provider || "", row.payment_reference || "", row.coupon_code || "",
-      Number(row.price_jod || 0), Number(row.discount_jod || 0),
-      Math.max(0, Number(row.price_jod || 0) - Number(row.discount_jod || 0)),
-      row.affiliate_name || "", Number(row.commission_percent || 0), Number(row.commission_jod || 0),
-      row.commission_status || "", row.payment_proof_pathname ? "Attached" : "Not attached",
-    ]));
-    const summaryRows = [
-      ["7Z MAGIC · ACADEMY ACCOUNTING REPORT", "JOD"],
-      ["Generated at", new Date().toLocaleString("en-US", { timeZone: "Asia/Amman" })],
-      ["Verified registrations", paid.length],
-      ["Gross course sales", Number(state.totals.gross || 0)],
-      ["Verified revenue after discounts", Number(state.totals.revenue || 0)],
-      ["Pending payment value", Number(state.totals.pending || 0)],
-      ["Discounts granted", Number(state.totals.discounts || 0)],
-      ["Total earned affiliate commissions", Number(state.totals.commissionsTotal || 0)],
-      ["Outstanding commissions", Number(state.totals.commissionsDue || 0)],
-      ["Studio net after commissions", Number(state.totals.studioNet || 0)],
+function exportAccountingReport() {
+    const registrations = state.registrations || [];
+    const affiliates = state.affiliates || [];
+    const codes = state.codes || [];
+    const money = (value) => Number.isFinite(Number(value)) ? Number(value) : 0;
+    const paid = (row) => ["PAID","APPROVED","VERIFIED"].includes(String(row.payment_status || "").toUpperCase());
+    const xml = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&apos;" }[c]));
+    const cell = (value, style = 0) => ({ v:value, s:style });
+    const formula = (value, expression, style = 0) => ({ v:value, f:expression, s:style });
+    const sales = [
+      [cell("7Z Magic Academy — Financial & Accounting Report",1)],
+      ["Student","Email","Phone","Course","Submitted","Payment status","Method","Reference","Promo code","Affiliate","Gross JOD","Discount JOD","Net due JOD","Commission JOD","Commission status","Receipt"].map((v) => cell(v,2))
     ];
-    const affiliateRows = [["Affiliate", "Email", "Company", "Status", "Codes", "Registrations", "Net sales JOD", "Earned commission JOD", "Outstanding commission JOD"]];
-    state.affiliates.forEach((row) => affiliateRows.push([row.name, row.email || "", row.company || "", row.status, Number(row.code_count || 0), Number(row.registration_count || 0), Number(row.net_sales_jod || 0), Number(row.earned_commission_jod || 0), Number(row.outstanding_commission_jod || 0)]));
-    const codeRows = [["Code", "Affiliate", "Course", "Discount %", "Commission %", "Redemptions", "Max redemptions", "Status"]];
-    state.codes.forEach((row) => codeRows.push([row.code, row.affiliate_name || "", row.course_id, Number(row.discount_percent || 0), Number(row.commission_percent || 0), Number(row.redemption_count || 0), row.max_redemptions ?? "Unlimited", row.status]));
-    const workbook = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#25365B" ss:Pattern="Solid"/></Style></Styles>${sheet("Summary", summaryRows)}${sheet("Registrations", registrationRows)}${sheet("Affiliates", affiliateRows)}${sheet("Promo Codes", codeRows)}</Workbook>`;
-    const blob = new Blob(["\ufeff", workbook], { type: "application/vnd.ms-excel;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `7Z-Magic-accounting-${new Date().toISOString().slice(0, 10)}.xls`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
-    notify("Accounting workbook exported with summary, registrations, affiliates and promo codes.");
+    registrations.forEach((row, index) => {
+      const n = index + 3;
+      const alt = index % 2 ? 3 : 0;
+      sales.push([
+        cell(row.full_name,alt),cell(row.email,alt),cell(row.phone,alt),cell(row.course_id,alt),cell(row.created_at ? new Date(row.created_at).toISOString() : "",alt),
+        cell(String(row.payment_status || "PENDING_REVIEW").toUpperCase(),alt),cell(row.payment_provider || "",alt),cell(row.payment_reference || "",alt),cell(row.coupon_code || "",alt),cell(row.affiliate_name || "",alt),
+        cell(money(row.price_jod),index%2?5:4),cell(money(row.discount_jod),index%2?5:4),
+        formula(Math.max(0,money(row.price_jod)-money(row.discount_jod)),"MAX(0,K"+n+"-L"+n+")",index%2?5:4),
+        cell(money(row.commission_jod),index%2?5:4),cell(row.commission_status || "",alt),cell(row.payment_proof_pathname ? "Attached" : "Not attached",alt)
+      ]);
+    });
+    const affiliateRows = [
+      [cell("7Z Magic Academy — Affiliate Performance",1)],
+      ["Affiliate","Email","Company","Status","Codes","Registrations","Verified gross JOD","Verified discounts JOD","Verified commission JOD","Academy net JOD"].map((v)=>cell(v,2))
+    ];
+    affiliates.forEach((a,index)=>{
+      const n=index+3, alt=index%2?3:0, name=String(a.name||"");
+      const verifiedGross='SUMIFS(Sales!$K$3:$K$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"PAID")+SUMIFS(Sales!$K$3:$K$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"APPROVED")+SUMIFS(Sales!$K$3:$K$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"VERIFIED")';
+      const verifiedDiscount='SUMIFS(Sales!$L$3:$L$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"PAID")+SUMIFS(Sales!$L$3:$L$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"APPROVED")+SUMIFS(Sales!$L$3:$L$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"VERIFIED")';
+      const verifiedCommission='SUMIFS(Sales!$N$3:$N$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"PAID")+SUMIFS(Sales!$N$3:$N$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"APPROVED")+SUMIFS(Sales!$N$3:$N$10000,Sales!$J$3:$J$10000,A'+n+',Sales!$F$3:$F$10000,"VERIFIED")';
+      const sumFor = (prop) => registrations.filter((r)=>paid(r)&&String(r.affiliate_name||"")===name).reduce((sum,r)=>sum+money(r[prop]),0);
+      const gross=sumFor("price_jod"), discount=sumFor("discount_jod"), commission=sumFor("commission_jod");
+      affiliateRows.push([
+        cell(a.name,alt),cell(a.email||"",alt),cell(a.company||"",alt),cell(a.status||"",alt),
+        formula(Number(a.code_count||0),'COUNTIF(\'Promo Codes\'!$B$3:$B$10000,A'+n+')',alt),
+        formula(Number(a.registration_count||0),'COUNTIF(Sales!$J$3:$J$10000,A'+n+')',alt),
+        formula(gross,verifiedGross,index%2?5:4),formula(discount,verifiedDiscount,index%2?5:4),formula(commission,verifiedCommission,index%2?5:4),
+        formula(Math.max(0,gross-discount-commission),"MAX(0,G"+n+"-H"+n+"-I"+n+")",index%2?5:4)
+      ]);
+    });
+    const codeRows = [
+      [cell("7Z Magic Academy — Promo Code Economics",1)],
+      ["Code","Affiliate","Code type","Course","Discount %","Commission %","Uses","Verified discounts JOD","Verified commissions JOD","Academy net JOD"].map((v)=>cell(v,2))
+    ];
+    codes.forEach((c,index)=>{
+      const n=index+3, alt=index%2?3:0, code=String(c.code||"");
+      const rows=registrations.filter((r)=>String(r.coupon_code||"").toUpperCase()===code.toUpperCase());
+      const paidRows=rows.filter(paid);
+      const disc=paidRows.reduce((s,r)=>s+money(r.discount_jod),0);
+      const comm=paidRows.reduce((s,r)=>s+money(r.commission_jod),0);
+      const net=paidRows.reduce((s,r)=>s+Math.max(0,money(r.price_jod)-money(r.discount_jod)-money(r.commission_jod)),0);
+      codeRows.push([
+        cell(code,alt),cell(c.affiliate_name||"Studio",alt),cell(c.affiliate_id?"Affiliate":"General",alt),cell(c.course_id==="all"?"All courses":c.course_id,alt),
+        cell(Number(c.discount_percent||0)/100,index%2?7:6),cell(Number(c.commission_percent||0)/100,index%2?7:6),
+        formula(rows.length,'COUNTIF(Sales!$I$3:$I$10000,A'+n+')',alt),
+        formula(disc,'SUMIFS(Sales!$L$3:$L$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"PAID")+SUMIFS(Sales!$L$3:$L$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"APPROVED")+SUMIFS(Sales!$L$3:$L$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"VERIFIED")',index%2?5:4),
+        formula(comm,'SUMIFS(Sales!$N$3:$N$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"PAID")+SUMIFS(Sales!$N$3:$N$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"APPROVED")+SUMIFS(Sales!$N$3:$N$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"VERIFIED")',index%2?5:4),
+        formula(net,'SUMIFS(Sales!$M$3:$M$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"PAID")+SUMIFS(Sales!$M$3:$M$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"APPROVED")+SUMIFS(Sales!$M$3:$M$10000,Sales!$I$3:$I$10000,A'+n+',Sales!$F$3:$F$10000,"VERIFIED")-I'+n,index%2?5:4)
+      ]);
+    });
+    const lastSales=Math.max(3,sales.length);
+    const summary=[
+      [cell("7Z Magic Academy - Financial & Accounting Report",1)],
+      [cell("Generated in Amman",2),cell(new Date().toLocaleString("en-US",{timeZone:"Asia/Amman"}),0)],
+      [cell("Metric",2),cell("Value (JOD)",2)],
+      [cell("Gross registrations — all statuses",0),formula(registrations.reduce((s,r)=>s+money(r.price_jod),0),"SUM(Sales!K3:K"+lastSales+")",8)],
+      [cell("Verified discounts granted",3),formula(registrations.filter(paid).reduce((s,r)=>s+money(r.discount_jod),0),'SUMIF(Sales!F3:F'+lastSales+',"PAID",Sales!L3:L'+lastSales+')+SUMIF(Sales!F3:F'+lastSales+',"APPROVED",Sales!L3:L'+lastSales+')+SUMIF(Sales!F3:F'+lastSales+',"VERIFIED",Sales!L3:L'+lastSales+')',8)],
+      [cell("Verified net collected",3),formula(registrations.filter(paid).reduce((s,r)=>s+Math.max(0,money(r.price_jod)-money(r.discount_jod)),0),'SUMIF(Sales!F3:F'+lastSales+',"PAID",Sales!M3:M'+lastSales+')+SUMIF(Sales!F3:F'+lastSales+',"APPROVED",Sales!M3:M'+lastSales+')+SUMIF(Sales!F3:F'+lastSales+',"VERIFIED",Sales!M3:M'+lastSales+')',8)],
+      [cell("Verified affiliate commissions",3),formula(registrations.filter(paid).reduce((s,r)=>s+money(r.commission_jod),0),'SUMIF(Sales!F3:F'+lastSales+',"PAID",Sales!N3:N'+lastSales+')+SUMIF(Sales!F3:F'+lastSales+',"APPROVED",Sales!N3:N'+lastSales+')+SUMIF(Sales!F3:F'+lastSales+',"VERIFIED",Sales!N3:N'+lastSales+')',8)],
+      [cell("Academy net after affiliate commission",3),formula(registrations.filter(paid).reduce((s,r)=>s+Math.max(0,money(r.price_jod)-money(r.discount_jod)-money(r.commission_jod)),0),"MAX(0,B6-B7)",8)],
+      [cell("Pending registrations",0),formula(registrations.filter((r)=>!paid(r)&&!["REJECTED","CANCELLED"].includes(String(r.payment_status||"").toUpperCase())).length,'COUNTIF(Sales!F3:F'+lastSales+',"PENDING_REVIEW")',0)],
+      [cell("Formula notes",2)],
+      [cell("Net due = gross less student discount. Affiliate and promo sheets use verified payment rows only.",0)]
+    ];
+    const sheets=[{name:"Summary",rows:summary,widths:[44,25]},{name:"Sales",rows:sales,widths:[26,30,18,25,23,19,18,24,20,24,16,17,16,19,22,18]},{name:"Affiliates",rows:affiliateRows,widths:[24,30,22,14,12,16,22,24,25,20]},{name:"Promo Codes",rows:codeRows,widths:[18,24,16,24,15,17,12,24,25,20]}];
+    const colName=(number)=>{let n=number+1,out="";while(n){const rem=(n-1)%26;out=String.fromCharCode(65+rem)+out;n=Math.floor((n-1)/26);}return out;};
+    const encode=new TextEncoder();
+    const worksheet=(sheet)=>{
+      const maxCols=Math.max(1,...sheet.rows.map((r)=>r.length));
+      const maxRow=Math.max(1,sheet.rows.length);
+      const colXml='<cols>'+sheet.widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join("")+'</cols>';
+      const rowsXml=sheet.rows.map((row,ri)=>{
+        const rowNum=ri+1;
+        const cells=row.map((raw,ci)=>{
+          const c=raw&&typeof raw==="object"&&Object.prototype.hasOwnProperty.call(raw,"v")?raw:{v:raw,s:0};
+          const ref=colName(ci)+rowNum,style=Number(c.s||0),attr=' r="'+ref+'" s="'+style+'"';
+          if(c.f)return '<c'+attr+'><f>'+xml(c.f)+'</f><v>'+xml(c.v??0)+'</v></c>';
+          if(typeof c.v==="number"&&Number.isFinite(c.v))return '<c'+attr+'><v>'+c.v+'</v></c>';
+          return '<c'+attr+' t="inlineStr"><is><t xml:space="preserve">'+xml(c.v??"")+'</t></is></c>';
+        }).join("");
+        return '<row r="'+rowNum+'"'+(ri===0?' ht="30" customHeight="1"':"")+'>'+cells+'</row>';
+      }).join("");
+      const filter=sheet.name==="Summary"?"":'<autoFilter ref="A2:'+colName(maxCols-1)+maxRow+'"/>';
+      return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView workbookViewId="0"><pane ySplit="2" topLeftCell="A3" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="21"/>'+colXml+'<sheetData>'+rowsXml+'</sheetData>'+filter+'<pageMargins left="0.3" right="0.3" top="0.5" bottom="0.5" header="0.2" footer="0.2"/></worksheet>';
+    };
+    const contentTypes='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+sheets.map((_,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join("")+'</Types>';
+    const rootRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+    const workbook='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView activeTab="0"/></bookViews><sheets>'+sheets.map((s,i)=>'<sheet name="'+xml(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join("")+'</sheets><calcPr calcId="191029" fullCalcOnLoad="1" forceFullCalc="1"/></workbook>';
+    const workbookRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+sheets.map((_,i)=>'<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join("")+'<Relationship Id="rId'+(sheets.length+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+    const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="2"><numFmt numFmtId="164" formatCode="#,##0.000 &quot;JOD&quot;;[Red]-#,##0.000 &quot;JOD&quot;"/><numFmt numFmtId="165" formatCode="0.0%"/></numFmts><fonts count="3"><font><sz val="10"/><name val="Aptos"/></font><font><b/><sz val="15"/><color rgb="FFFFFFFF"/><name val="Aptos Display"/></font><font><b/><sz val="10"/><color rgb="FFFFFFFF"/><name val="Aptos"/></font></fonts><fills count="5"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF182238"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FF334A72"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF0F3FA"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color rgb="FFD9E1F0"/></left><right style="thin"><color rgb="FFD9E1F0"/></right><top style="thin"><color rgb="FFD9E1F0"/></top><bottom style="thin"><color rgb="FFD9E1F0"/></bottom><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="9"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0"/><xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0"/><xf numFmtId="164" fontId="0" fillId="4" borderId="1" xfId="0"/><xf numFmtId="165" fontId="0" fillId="0" borderId="1" xfId="0"/><xf numFmtId="165" fontId="0" fillId="4" borderId="1" xfId="0"/><xf numFmtId="164" fontId="2" fillId="3" borderId="1" xfId="0"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+    const files=[["[Content_Types].xml",contentTypes],["_rels/.rels",rootRels],["xl/workbook.xml",workbook],["xl/_rels/workbook.xml.rels",workbookRels],["xl/styles.xml",styles]];
+    sheets.forEach((sheet,i)=>files.push(["xl/worksheets/sheet"+(i+1)+".xml",worksheet(sheet)]));
+    const crcTable=new Uint32Array(256);
+    for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);crcTable[n]=c>>>0;}
+    const crc32=(data)=>{let c=0xffffffff;for(let i=0;i<data.length;i++)c=crcTable[(c^data[i])&255]^(c>>>8);return(c^0xffffffff)>>>0;};
+    const u16=(v)=>new Uint8Array([v&255,(v>>>8)&255]);
+    const u32=(v)=>new Uint8Array([v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]);
+    const join=(parts)=>{const out=new Uint8Array(parts.reduce((n,p)=>n+p.length,0));let at=0;for(const part of parts){out.set(part,at);at+=part.length;}return out;};
+    const locals=[],centrals=[];let offset=0;
+    for(const [name,text] of files){
+      const nameBytes=encode.encode(name),data=encode.encode(text),crc=crc32(data);
+      const local=join([u32(0x04034b50),u16(20),u16(0x0800),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(nameBytes.length),u16(0),nameBytes,data]);
+      locals.push(local);
+      const central=join([u32(0x02014b50),u16(20),u16(20),u16(0x0800),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(nameBytes.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset),nameBytes]);
+      centrals.push(central);offset+=local.length;
+    }
+    const centralBytes=join(centrals);
+    const end=join([u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(centralBytes.length),u32(offset),u16(0)]);
+    const blob=new Blob([join(locals),centralBytes,end],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    const url=URL.createObjectURL(blob),link=document.createElement("a");
+    link.href=url;link.download="7Z-Magic-Academy-Financial-Accounting-"+new Date().toISOString().slice(0,10)+".xlsx";
+    document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+    notify("Professional .xlsx report exported with formulas across Summary, Sales, Affiliates and Promo Codes.");
   }
 
-  function bind() {
+    function bind() {
     document.querySelectorAll("[data-engine-refresh]").forEach((button) => button.addEventListener("click", refresh));
     $("#finance-course-filter")?.addEventListener("change", () => renderAccounting(state.totals));
     $("#export-accounting-report")?.addEventListener("click", exportAccountingReport);

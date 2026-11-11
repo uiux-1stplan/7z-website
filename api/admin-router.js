@@ -18,6 +18,12 @@
         "../_handlers/admin/files.js"
       ),
 
+  "file-mutations":
+    () =>
+      import(
+        "../_handlers/admin/file-mutations.js"
+      ),
+
   "blob-finalize":
     () =>
       import(

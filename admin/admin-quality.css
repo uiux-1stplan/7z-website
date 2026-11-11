@@ -1,0 +1,100 @@
+/* Scoped 7Z Magic admin quality pass: glass creation, upload, library and settings. */
+.z7-admin-shell .dashboard-app .engine-form input,
+.z7-admin-shell .dashboard-app .engine-form select,
+.z7-admin-shell .dashboard-app .z7nc-form input,
+.z7-admin-shell .dashboard-app .z7nc-form select,
+.z7-admin-shell .dashboard-app .z7q-field input,
+.z7-admin-shell .dashboard-app .z7q-field select {
+  width:100%; min-height:48px; padding:12px 15px; color:var(--dash-text,#eef2ff);
+  border:1px solid rgba(255,255,255,.11); border-radius:15px;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),rgba(12,16,28,.44);
+  box-shadow:inset 0 1px rgba(255,255,255,.075),0 8px 24px rgba(4,8,20,.08);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.z7-admin-shell .dashboard-app .engine-form input:focus,
+.z7-admin-shell .dashboard-app .engine-form select:focus,
+.z7-admin-shell .dashboard-app .z7nc-form input:focus,
+.z7-admin-shell .dashboard-app .z7q-field input:focus,
+.z7-admin-shell .dashboard-app .z7q-field select:focus { outline:0; border-color:rgba(126,151,255,.72); box-shadow:0 0 0 4px rgba(111,126,255,.13),inset 0 1px rgba(255,255,255,.1); }
+.z7-admin-shell .dashboard-app .z7nc-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:18px 0 12px; }
+.z7-admin-shell .dashboard-app .z7nc-form input { min-width:0; }
+.z7-admin-shell .dashboard-app #z7nc-create { grid-column:1/-1; justify-self:start; min-height:48px; padding:0 22px; border:1px solid rgba(255,255,255,.24); border-radius:999px; color:#fff; font-weight:750; letter-spacing:.02em; background:linear-gradient(115deg,#6576ff 0%,#9c69ed 55%,#65c9f2 100%); box-shadow:0 12px 30px rgba(107,105,255,.27),inset 0 1px rgba(255,255,255,.38); transition:transform .2s ease,box-shadow .2s ease,filter .2s ease; }
+.z7-admin-shell .dashboard-app #z7nc-create:hover:not(:disabled),
+.z7-admin-shell .dashboard-app .engine-form .button-primary:hover:not(:disabled) { transform:translateY(-2px); filter:brightness(1.08); box-shadow:0 16px 38px rgba(107,105,255,.35),inset 0 1px rgba(255,255,255,.42); }
+.z7-admin-shell .dashboard-app .engine-form .button-primary { min-height:48px; border:1px solid rgba(255,255,255,.23); border-radius:999px; background:linear-gradient(115deg,#6576ff,#9868ec 58%,#61c7f0); box-shadow:0 12px 28px rgba(107,105,255,.2),inset 0 1px rgba(255,255,255,.34); }
+.z7-admin-shell .dashboard-app .z7nc-client { border:1px solid rgba(255,255,255,.09); border-radius:18px; background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018)); box-shadow:inset 0 1px rgba(255,255,255,.055); }
+.z7-admin-shell .dashboard-app #z7-private-upload-panel,
+.z7-admin-shell .dashboard-app #z7-admin-file-library { border:1px solid rgba(177,192,255,.17); border-radius:24px; background:linear-gradient(135deg,rgba(102,127,255,.09),transparent 44%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.022)),var(--dash-surface,rgba(17,21,35,.76)); box-shadow:0 24px 70px rgba(3,8,24,.16),inset 0 1px rgba(255,255,255,.08); backdrop-filter:blur(18px) saturate(125%); }
+.z7-admin-shell .dashboard-app .z7-upload-drop { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:14px; min-height:164px; padding:20px; border:1px dashed rgba(165,181,255,.34); border-radius:20px; background:linear-gradient(135deg,rgba(104,128,255,.08),rgba(255,255,255,.025)); transition:border-color .2s ease,background .2s ease,transform .2s ease; }
+.z7-admin-shell .dashboard-app .z7-upload-drop:before { content:"Drop a file here or choose it from your device"; grid-column:1/-1; color:var(--dash-muted,#9ba8c5); font-size:12px; }
+.z7-admin-shell .dashboard-app .z7-upload-drop.is-dragging { border-color:#8b9bff; background:rgba(112,127,255,.15); transform:scale(1.004); }
+.z7-admin-shell .dashboard-app .z7-upload-file { min-width:0; grid-column:1/-1; }
+.z7-admin-shell .dashboard-app .z7-upload-picker,
+.z7-admin-shell .dashboard-app .z7-upload-submit,
+.z7-admin-shell .dashboard-app .z7af-refresh { min-height:44px; padding:0 18px; border:1px solid rgba(255,255,255,.15); border-radius:999px; color:var(--dash-text,#eef2ff); background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.04)); box-shadow:inset 0 1px rgba(255,255,255,.12); transition:transform .2s ease,background .2s ease,border-color .2s ease; }
+.z7-admin-shell .dashboard-app .z7-upload-submit:not(:disabled) { color:#fff; border-color:rgba(158,168,255,.43); background:linear-gradient(110deg,#6877ff,#936af0); box-shadow:0 9px 25px rgba(108,105,255,.24),inset 0 1px rgba(255,255,255,.3); }
+.z7-admin-shell .dashboard-app .z7-upload-picker:hover,
+.z7-admin-shell .dashboard-app .z7-upload-submit:not(:disabled):hover,
+.z7-admin-shell .dashboard-app .z7af-refresh:hover { transform:translateY(-1px); border-color:rgba(176,190,255,.42); }
+.z7-admin-shell .dashboard-app .z7q-field { display:grid; gap:7px; color:var(--dash-text,#eef2ff); font-size:12px; font-weight:700; }
+.z7-admin-shell .dashboard-app .z7q-field small { color:var(--dash-muted,#9ba8c5); font-weight:500; }
+.z7-admin-shell .dashboard-app .z7q-upload-client { grid-column:1/-1; max-width:440px; }
+.z7-admin-shell .dashboard-app .z7q-table-wrap { width:100%; overflow:auto; border:1px solid rgba(255,255,255,.075); border-radius:18px; }
+.z7-admin-shell .dashboard-app .z7q-file-table { width:100%; min-width:860px; border-collapse:separate; border-spacing:0; }
+.z7-admin-shell .dashboard-app .z7q-file-table th { padding:14px 13px; color:var(--dash-muted,#a6b1ca); font-size:9px; letter-spacing:.13em; text-align:left; border-bottom:1px solid rgba(255,255,255,.085); background:rgba(255,255,255,.035); }
+.z7-admin-shell .dashboard-app .z7q-file-table td { padding:12px 13px; color:var(--dash-text,#eef2ff); font-size:11px; border-bottom:1px solid rgba(255,255,255,.055); vertical-align:middle; }
+.z7-admin-shell .dashboard-app .z7q-file-table tbody tr:last-child td { border-bottom:0; }
+.z7-admin-shell .dashboard-app .z7q-file-table tbody tr:nth-child(even) { background:rgba(255,255,255,.018); }
+.z7-admin-shell .dashboard-app .z7q-file-name { display:flex; align-items:center; gap:10px; min-width:210px; }
+.z7-admin-shell .dashboard-app .z7q-file-name strong { max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.z7-admin-shell .dashboard-app .z7q-file-type { display:grid; place-items:center; flex:none; width:36px; height:36px; border:1px solid rgba(154,169,255,.19); border-radius:12px; color:#b6bcff; background:rgba(118,126,255,.1); font-size:8px; font-weight:800; }
+.z7-admin-shell .dashboard-app .z7q-client-chip { display:inline-block; max-width:180px; padding:6px 9px; overflow:hidden; border:1px solid rgba(255,255,255,.075); border-radius:999px; color:var(--dash-muted,#9ba8c5); text-overflow:ellipsis; white-space:nowrap; background:rgba(255,255,255,.035); }
+.z7-admin-shell .dashboard-app .z7q-client-chip.is-assigned { color:#9be3ce; border-color:rgba(77,204,166,.2); background:rgba(77,204,166,.075); }
+.z7-admin-shell .dashboard-app .z7q-row-actions { display:flex; gap:6px; }
+.z7-admin-shell .dashboard-app .z7q-row-actions button { min-height:34px; padding:0 10px; border:1px solid rgba(255,255,255,.1); border-radius:999px; color:var(--dash-text,#edf1ff); font-size:10px; font-weight:650; white-space:nowrap; background:rgba(255,255,255,.055); transition:transform .16s ease,border-color .16s ease,background .16s ease; }
+.z7-admin-shell .dashboard-app .z7q-row-actions button:hover { transform:translateY(-1px); border-color:rgba(156,173,255,.42); background:rgba(121,137,255,.13); }
+.z7-admin-shell .dashboard-app .z7q-row-actions button.is-danger { color:#ff9ba8; }
+.z7-admin-shell .dashboard-app .z7q-empty { display:grid; justify-items:center; gap:8px; padding:46px 20px; color:var(--dash-muted,#9ba8c5); text-align:center; }
+.z7-admin-shell .dashboard-app .z7q-empty strong { color:var(--dash-text,#edf1ff); font-size:16px; }
+.z7-admin-shell .dashboard-app .z7q-empty__mark { display:grid; place-items:center; width:44px;height:44px;border:1px solid rgba(154,169,255,.23);border-radius:15px;color:#c2c8ff;background:rgba(118,126,255,.1);font-weight:800; }
+.z7q-dialog { width:min(520px,calc(100vw - 28px)); max-width:none; padding:0; color:var(--dash-text,#edf1ff); border:1px solid rgba(174,188,255,.22); border-radius:24px; background:linear-gradient(150deg,rgba(34,40,67,.98),rgba(14,17,28,.99)); box-shadow:0 30px 110px rgba(0,0,0,.55),0 0 60px rgba(101,119,255,.12); }
+.z7q-dialog::backdrop { background:rgba(4,6,13,.72); backdrop-filter:blur(10px); }
+.z7q-dialog__card { display:grid; gap:18px; padding:clamp(20px,4vw,30px); }
+.z7q-dialog__head { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+.z7q-dialog__head h2 { margin:7px 0 4px; color:var(--dash-text,#edf1ff); font-size:24px; }
+.z7q-dialog__head p { margin:0; color:var(--dash-muted,#a5aec5); font-size:12px; }
+.z7q-icon-button { width:40px;height:40px;border:1px solid rgba(255,255,255,.13);border-radius:50%;color:#fff;background:rgba(255,255,255,.07);font-size:21px; }
+.z7q-dialog__actions { display:flex; justify-content:flex-end; flex-wrap:wrap; align-items:center; gap:9px; margin-top:4px; }
+.z7q-dialog-message { margin-right:auto; color:#a8b5d3; font-size:11px; }
+.z7q-glass-button,.z7q-glow-button { min-height:42px;padding:0 16px;border:1px solid rgba(255,255,255,.14);border-radius:999px;color:#f4f6ff;background:rgba(255,255,255,.06);font-weight:700; }
+.z7q-glow-button { border-color:rgba(177,183,255,.35); background:linear-gradient(110deg,#6576ff,#9b68ed);box-shadow:0 9px 25px rgba(101,104,255,.27),inset 0 1px rgba(255,255,255,.28); }
+.z7q-access-list { display:grid; max-height:45vh; overflow:auto; border:1px solid rgba(255,255,255,.09); border-radius:16px; }
+.z7q-access-option { display:flex; align-items:center; justify-content:space-between; gap:14px; min-height:62px; padding:10px 13px; border-bottom:1px solid rgba(255,255,255,.055); cursor:pointer; }
+.z7q-access-option:last-child { border-bottom:0; }
+.z7q-access-option span { display:grid; gap:3px; }
+.z7q-access-option small { color:#a5aec5; font-size:10px; }
+.z7q-access-option input { width:19px;height:19px;accent-color:#8275ff; }
+.z7q-empty-inline { padding:18px; color:var(--dash-muted,#aab4ca); font-size:12px; }
+.admin-quality-toast { margin:8px; padding:12px 16px; border:1px solid rgba(143,164,255,.2); border-radius:14px; color:var(--dash-text,#edf1ff); background:rgba(21,27,45,.95); box-shadow:0 10px 35px rgba(0,0,0,.23); animation:z7q-toast-in .22s ease both; }
+.admin-quality-toast.is-error { border-color:rgba(255,112,132,.35); }
+@keyframes z7q-toast-in { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.z7-admin-shell #settings-view,
+.z7-admin-shell #settings-view * { filter:none!important; backdrop-filter:none; -webkit-backdrop-filter:none; }
+.z7-admin-shell #settings-view { opacity:1!important; transform:none!important; pointer-events:auto!important; }
+.z7-admin-shell .dashboard-view[hidden] { display:none!important; }
+.z7-admin-shell .dashboard-app .dashboard-view.is-active { visibility:visible; }
+html[data-theme="light"] .z7-admin-shell .dashboard-app .nav-item,
+html[data-theme="light"] .z7-admin-shell .dashboard-app .nav-item strong { color:#25304a!important; opacity:1!important; }
+html[data-theme="light"] .z7-admin-shell .dashboard-app .nav-item small { color:#596780!important; opacity:1!important; }
+html[data-theme="light"] .z7-admin-shell .dashboard-app .nav-item.active { color:#18233b!important; background:linear-gradient(110deg,rgba(126,158,255,.19),rgba(194,143,255,.16))!important; }
+html[data-theme="light"] .z7-admin-shell .dashboard-app .settings-card,
+html[data-theme="light"] .z7-admin-shell .dashboard-app .settings-courses,
+html[data-theme="light"] .z7-admin-shell .dashboard-app .settings-activity { color:#17223a; }
+@media(max-width:760px) {
+  .z7-admin-shell .dashboard-app .z7nc-form { grid-template-columns:1fr; }
+  .z7-admin-shell .dashboard-app #z7nc-create { grid-column:1; width:100%; }
+  .z7-admin-shell .dashboard-app .z7-upload-drop { grid-template-columns:1fr; }
+  .z7-admin-shell .dashboard-app .z7q-upload-client { max-width:none; }
+  .z7-admin-shell .dashboard-app .z7q-row-actions { flex-wrap:wrap; }
+}
