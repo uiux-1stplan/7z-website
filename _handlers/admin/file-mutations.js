@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     if (!file) return http.sendJson(res, 404, { error:"File not found." });
     await del(file.blob_pathname);
     await sql`DELETE FROM portal_client_file_permissions WHERE file_id::text=${id}`;
-    await sql`UPDATE portal_files SET is_active=FALSE, updated_at=NOW() WHERE id::text=${id}`;
+    await sql`UPDATE portal_files SET is_active=FALSE WHERE id::text=${id}`;
     await runtime.writeAudit({ actorUserId:gate.auth.userId, action:"PRIVATE_FILE_DELETED", targetType:"file", targetId:String(file.id), details:{ name:file.original_name, blobRemoved:true } });
     return http.sendJson(res, 200, { ok:true, deleted:true, id:String(file.id) });
   } catch (error) {
