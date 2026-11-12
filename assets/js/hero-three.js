@@ -16,7 +16,16 @@ function buildExtrusion(svgText){
   const shapes=[];
   let curveCount=0, sourceSize=0, smallestHole=Infinity;
   for(const path of parsed.paths){
-    if(path.userData?.style?.fill==="none") continue;
+    const fill=path.userData?.style?.fill||"";
+    if(fill==="none") continue;
+    // The supplied SVG is a raster trace with many gray shadow/edge contours.
+    // Use only the clean near-white logo faces so the extrusion has no ghost layers.
+    const hex=fill.match(/^#([0-9a-f]{6})$/i);
+    if(hex){
+      const color=Number.parseInt(hex[1],16);
+      const r=(color>>16)&255,g=(color>>8)&255,b=color&255;
+      if(Math.min(r,g,b)<240) continue;
+    }
     const made=SVGLoader.createShapes(path);
     for(const shape of made){
       shapes.push(shape);
