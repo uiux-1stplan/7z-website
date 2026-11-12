@@ -32,7 +32,7 @@ function makeEnvironment() {
 }
 
 function mountLogo({ host, image, hero, mode }) {
-  if (!host || !image || !image.complete || !image.naturalWidth) return;
+  if (!host || !image || !image.complete || !image.naturalWidth || host.querySelector(".hero-three-canvas")) return;
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
@@ -48,7 +48,7 @@ function mountLogo({ host, image, hero, mode }) {
   const scene = new THREE.Scene();
   scene.environment = makeEnvironment();
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 30);
-  camera.position.z = 3.35;
+  camera.position.z = 1.95;
   const group = new THREE.Group();
   scene.add(group);
 
@@ -83,13 +83,14 @@ function mountLogo({ host, image, hero, mode }) {
   }
   const face = new THREE.Mesh(geometry, faceMaterial);
   group.add(face);
-  group.rotation.y = mode === "loop" && !reducedMotion ? Math.PI * .06 : 0;
+  group.rotation.set(0, 0, 0);
 
   const resize = () => {
     const rect = host.getBoundingClientRect();
     const width = Math.max(1, Math.round(rect.width));
     const height = Math.max(1, Math.round(rect.height));
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -99,8 +100,9 @@ function mountLogo({ host, image, hero, mode }) {
   resize();
 
   host.classList.add("is-webgl-active");
+  image.remove();
   let pointerX = 0, pointerY = 0, targetX = 0, targetY = 0, scrollYaw = 0;
-  let previous = performance.now(), frame = 0, raf = 0, loopYaw = 0, inView = true;
+  let previous = performance.now(), raf = 0, loopYaw = 0, inView = true;
 
   const onMove = event => {
     if (reducedMotion || matchMedia("(pointer: coarse)").matches) return;
@@ -127,11 +129,11 @@ function mountLogo({ host, image, hero, mode }) {
     raf = requestAnimationFrame(animate);
     const delta = Math.min(.05, Math.max(0, (now - previous) / 1000));
     previous = now;
-    if (!reducedMotion && mode === "loop") loopYaw += delta * Math.PI * 2 / 34;
+    if (!reducedMotion && mode === "loop") loopYaw += delta * Math.PI * 2 / 16;
     pointerX += (targetX - pointerX) * .06;
     pointerY += (targetY - pointerY) * .06;
-    const targetYaw = scrollYaw + pointerX * .28 + loopYaw + (mode === "loop" ? Math.PI * .06 : 0);
-    group.rotation.y += (targetYaw - group.rotation.y) * .06;
+    const targetYaw = scrollYaw + pointerX * .28 + loopYaw;
+    group.rotation.y += (targetYaw - group.rotation.y) * .075;
     group.rotation.x += (pointerY * -.14 - group.rotation.x) * .06;
     renderer.render(scene, camera);
   };
@@ -177,6 +179,9 @@ function mountLogo({ host, image, hero, mode }) {
     edgeMaterial.dispose();
     scene.environment?.dispose();
     renderer.dispose();
+    canvas.remove();
+    host.classList.remove("is-webgl-active");
+    if (!image.isConnected) host.prepend(image);
   }, { once: true });
 }
 
@@ -189,3 +194,4 @@ function start() {
 
 if (document.readyState === "complete") start();
 else window.addEventListener("load", start, { once: true });
+window.addEventListener("pageshow", event => { if (event.persisted) start(); });

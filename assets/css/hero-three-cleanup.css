@@ -1,0 +1,18 @@
+/* Public home/about Three.js hero sizing and single-canvas replacement. */
+html[data-z7-core] .logo-hero__logo3d {
+  display:block; position:relative; flex:0 0 auto;
+  width:clamp(190px,20vw,260px); aspect-ratio:390 / 433; max-height:44svh;
+}
+html[data-z7-core] .logo-hero__logo3d.is-webgl-active .logo-hero__mark,
+html[data-z7-core] .about-hero__logo-rotor.is-webgl-active img { display:none!important; }
+html[data-z7-core] .logo-hero__logo3d .hero-three-canvas,
+html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
+  position:absolute; inset:0; z-index:1; display:block;
+  width:100%; height:100%; pointer-events:none;
+}
+@media(max-width:700px) {
+  html[data-z7-core] .logo-hero__logo3d { width:min(58vw,220px); }
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-z7-core] .logo-hero__mark { transform:none!important; }
+}

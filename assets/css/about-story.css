@@ -289,3 +289,18 @@ html[data-z7-core] .about-hero__logo-rotor img { position:relative; z-index:2; d
 
 html[data-z7-core] .about-hero__logo-rotor.is-webgl-active { animation:none; }
 html[data-z7-core] .about-hero__logo-rotor.is-webgl-active .hero-three-canvas { filter:drop-shadow(0 0 36px color-mix(in srgb,var(--about-accent) 30%,transparent)); }
+
+
+/* Give the centered Three.js logo a deliberate, visible footprint in the about hero. */
+html[data-z7-core] .about-hero__logo-rotor {
+  position:relative; width:clamp(190px,28vw,310px); aspect-ratio:1; animation:none!important;
+  display:grid; place-items:center; transform-style:preserve-3d;
+}
+html[data-z7-core] .about-hero__logo-rotor.is-webgl-active { animation:none!important; }
+html[data-z7-core] .about-hero__logo-rotor.is-webgl-active img { display:none!important; }
+html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
+  position:absolute; inset:0; width:100%; height:100%; filter:drop-shadow(0 0 30px color-mix(in srgb,var(--about-accent) 32%,transparent));
+}
+@media(max-width:700px) {
+  html[data-z7-core] .about-hero__logo-rotor { width:min(68vw,225px); }
+}
