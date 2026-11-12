@@ -95,7 +95,7 @@ function mount(host,mode){
   scene.add(logoGroup);
   const lightGroup=new THREE.Group(); scene.add(lightGroup);
   RectAreaLightUniformsLib.init();
-  scene.add(new THREE.AmbientLight(0x8babff,.056));
+  scene.add(new THREE.AmbientLight(0x8babff,mode==="scroll"?.3:.056));
   addAreaLight(lightGroup,0x868686,3.5,240,300,[-90,-40,170],[0,0,0]);
   addAreaLight(lightGroup,0xc5c5c5,16.8,72,520,[-165,20,-60],[-18,0,0]);
   addAreaLight(lightGroup,0xc5c5c5,15.4,72,520,[165,10,-58],[18,0,0]);
@@ -175,8 +175,8 @@ function mount(host,mode){
   loadSvg().then(text=>{
     if(!alive)return;
     geometry=buildExtrusion(text);
-    caps=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:0x505050,metalness:.94,roughness:.1,clearcoat:1,clearcoatRoughness:.08,transmission:0,ior:1.48,thickness:0,envMapIntensity:6.9});
-    walls=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:0x7c7c7c,emissive:0x303030,emissiveIntensity:.11,metalness:.94,roughness:.16,clearcoat:1,envMapIntensity:6.15});
+    caps=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:mode==="scroll"?0xb8bec7:0x505050,metalness:mode==="scroll"?.72:.94,roughness:mode==="scroll"?.2:.1,emissive:mode==="scroll"?0x343a43:0x000000,emissiveIntensity:mode==="scroll"?.34:0,clearcoat:1,clearcoatRoughness:.08,transmission:0,ior:1.48,thickness:0,envMapIntensity:mode==="scroll"?3.2:6.9});
+    walls=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:mode==="scroll"?0xaeb4bd:0x7c7c7c,emissive:mode==="scroll"?0x3d434c:0x303030,emissiveIntensity:mode==="scroll"?.22:.11,metalness:mode==="scroll"?.72:.94,roughness:mode==="scroll"?.24:.16,clearcoat:1,envMapIntensity:mode==="scroll"?3.1:6.15});
     const mesh=new THREE.Mesh(geometry,[caps,walls]);logoGroup.add(mesh);
     controls=new OrbitControls(camera,renderer.domElement);
     controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.06;
