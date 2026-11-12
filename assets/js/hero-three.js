@@ -62,7 +62,9 @@ function addAreaLight(parent,color,intensity,width,height,position,target){
   const light=new THREE.RectAreaLight(color,intensity,width,height);
   light.position.set(...position); light.lookAt(...target); parent.add(light);
 }
-function mount(host,image,mode){
+function mount(host,mode){
+  if(host.dataset.threeMounted==="true") return;
+  host.dataset.threeMounted="true";
   let alive=true, raf=0, last=0, visible=true;
   const scene=new THREE.Scene(); // Transparent scene: no boxed slab behind the mark.
   const camera=new THREE.PerspectiveCamera(36,1,1,5000);
@@ -96,13 +98,15 @@ function mount(host,image,mode){
   let geometry, caps, walls, controls, composer, bloom, fxaa;
   let pointerX=0,pointerY=0,targetX=0,targetY=0,scrollYaw=0;
   const hero=host.closest(".logo-hero");
+  const interactionArea=hero||host;
+  objectGroup.position.set(0,0,0);
   function fallback(error){
     if(!alive)return;
     console.warn("[7Z hero logo]",error);
     canvasObserver.disconnect();
     renderer.dispose(); renderer.domElement.remove(); scene.environment?.dispose();
-    host.classList.remove("is-webgl-active");
-    if(image&&!image.isConnected)host.prepend(image);
+    host.classList.remove("is-webgl-active"); delete host.dataset.threeMounted;
+
   }
   function resize(){
     if(!alive)return;
@@ -117,7 +121,7 @@ function mount(host,image,mode){
   }
   const canvasObserver=new ResizeObserver(resize);canvasObserver.observe(host);
   function pointerMove(e){
-    const rect=host.getBoundingClientRect();
+    const rect=interactionArea.getBoundingClientRect();
     if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom){
       targetX=((e.clientX-rect.left)/rect.width-.5)*.16;
       targetY=((e.clientY-rect.top)/rect.height-.5)*.12;
@@ -126,7 +130,7 @@ function mount(host,image,mode){
   function pointerLeave(){targetX=0;targetY=0;}
   function onScroll(){if(hero)scrollYaw=(window.scrollY/Math.max(1,innerHeight))*Math.PI*2;}
   window.addEventListener("pointermove",pointerMove,{passive:true});
-  host.addEventListener("pointerleave",pointerLeave,{passive:true});
+  interactionArea.addEventListener("pointerleave",pointerLeave,{passive:true});
   if(mode==="scroll"){window.addEventListener("scroll",onScroll,{passive:true});onScroll();}
   const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible)last=0;},{rootMargin:"100px"});
   observer.observe(host);
@@ -167,23 +171,23 @@ function mount(host,image,mode){
     composer.addPass(new OutputPass());
     fxaa=new ShaderPass(FXAAShader);composer.addPass(fxaa);
     resize();
-    if(image?.isConnected)image.remove();
     host.classList.add("is-webgl-active");
   }).catch(fallback);
 
   window.addEventListener("pagehide",()=>{
     alive=false;cancelAnimationFrame(raf);observer.disconnect();canvasObserver.disconnect();
     document.removeEventListener("visibilitychange",onVis);
-    window.removeEventListener("pointermove",pointerMove);host.removeEventListener("pointerleave",pointerLeave);
+    window.removeEventListener("pointermove",pointerMove);interactionArea.removeEventListener("pointerleave",pointerLeave);
+    delete host.dataset.threeMounted;
     window.removeEventListener("scroll",onScroll);geometry?.dispose();caps?.dispose();walls?.dispose();
-    controls?.dispose();composer?.dispose();scene.environment?.dispose();renderer.dispose();
+    controls?.dispose();composer?.dispose();scene.environment?.dispose();renderer.dispose();renderer.domElement.remove();host.classList.remove("is-webgl-active");
   },{once:true});
 }
 function start(){
   const home=document.querySelector(".logo-hero__logo3d");
-  if(home){const img=home.querySelector("img");mount(home,img,matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"scroll");}
+  if(home)mount(home,matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"scroll");
   const about=document.querySelector(".about-hero__logo-rotor");
-  if(about){const img=about.querySelector("img");mount(about,img,"loop");}
+  if(about)mount(about,"loop");
 }
 if(document.readyState==="complete")start();else addEventListener("load",start,{once:true});
 addEventListener("pageshow",e=>{if(e.persisted)start();});

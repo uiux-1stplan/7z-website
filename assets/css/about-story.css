@@ -304,3 +304,9 @@ html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
 @media(max-width:700px) {
   html[data-z7-core] .about-hero__logo-rotor { width:min(52vw,190px); }
 }
+
+
+/* Canvas-only About hero mark: centered with safe margins and restrained sizing. */
+html[data-z7-core] .about-hero__logo-rotor { width:clamp(170px,20vw,228px)!important; max-width:calc(100vw - 64px); animation:none!important; }
+html[data-z7-core] .about-hero__logo-rotor img { display:none!important; }
+@media(max-width:700px){html[data-z7-core] .about-hero__logo-rotor{width:min(48vw,178px)!important;max-width:calc(100vw - 48px)}}
