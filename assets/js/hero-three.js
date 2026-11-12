@@ -134,7 +134,7 @@ function mount(host,mode){
       // Fit the full mark with room for its scroll spin and subtle pointer tilt.
       const halfWidth=Math.max(size.x,size.z)*.5+size.y*.08+size.z*.05;
       const halfHeight=size.y*.5+size.x*.08+size.z*.05;
-      const safeDistance=Math.max(halfHeight/fov,halfWidth/(fov*camera.aspect))*1.5;
+      const safeDistance=Math.max(halfHeight/fov,halfWidth/(fov*camera.aspect))*1.25;
       camera.position.set(0,0,Math.max(390,safeDistance));
     } else camera.position.set(0,0,480);
     renderer.setPixelRatio(dpr);renderer.setSize(w,h,false);
