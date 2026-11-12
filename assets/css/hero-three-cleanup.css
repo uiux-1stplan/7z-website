@@ -1,6 +1,8 @@
 /* Keep legacy 2D logo effects out of the Three.js hero. */
-html[data-z7-core] .logo-hero__copy::before,
-html[data-z7-core] .logo-hero__copy::after { display:none!important; content:none!important; }
+#intro .logo-hero__copy::before,
+#intro .logo-hero__copy::after,
+#intro .logo-hero__copy > img,
+#intro .logo-hero__copy .logo-hero__mark { display:none!important; content:none!important; }
 
 /* The logo hosts contain only their Three.js canvas. */
 html[data-z7-core] .logo-hero__logo3d,
