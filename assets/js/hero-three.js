@@ -3,12 +3,6 @@ import { SVGLoader } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/j
 import { RectAreaLightUniformsLib } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/environments/RoomEnvironment.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js";
-import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { OutputPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/OutputPass.js";
-import { ShaderPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/ShaderPass.js";
-import { FXAAShader } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/shaders/FXAAShader.js";
 
 const VERSION="0.158.0";
 const SVG_URL="/assets/brand/7Z-LogoT.svg";
@@ -76,6 +70,7 @@ function mount(host,mode){
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure=1.05;
   renderer.setClearColor(0x07070a,0);
+  renderer.domElement.style.background="transparent";
   renderer.domElement.className="hero-three-canvas";
   renderer.domElement.setAttribute("aria-hidden","true");
   host.appendChild(renderer.domElement);
@@ -98,7 +93,7 @@ function mount(host,mode){
   addAreaLight(lightGroup,0xc5c5c5,15.4,72,520,[165,10,-58],[18,0,0]);
   addAreaLight(lightGroup,0xbfbfbf,7,150,300,[120,90,160],[0,0,0]);
 
-  let geometry, caps, walls, controls, composer, bloom, fxaa;
+  let geometry, caps, walls, controls;
   let pointerX=0,pointerY=0,targetX=0,targetY=0,scrollYaw=0;
   const hero=host.closest(".logo-hero");
   const interactionArea=hero||host;
@@ -107,7 +102,7 @@ function mount(host,mode){
     console.error("[7Z hero logo] Extrusion failed; keeping the logo visible in the same canvas.",error);
     canvasObserver.disconnect();
     geometry?.dispose(); geometry=undefined; caps?.dispose(); caps=undefined; walls?.dispose(); walls=undefined;
-    controls?.dispose(); controls=undefined; composer?.dispose(); composer=undefined;
+    controls?.dispose(); controls=undefined;
     logoGroup.clear();
     new THREE.TextureLoader().load(SVG_URL,texture=>{
       if(!alive){texture.dispose();return;}
@@ -128,8 +123,6 @@ function mount(host,mode){
     camera.position.z=Math.max(310,420/Math.sqrt(fit));
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(dpr);renderer.setSize(w,h,false);
-    composer?.setPixelRatio(dpr);composer?.setSize(w,h);
-    if(fxaa)fxaa.material.uniforms.resolution.value.set(1/(w*dpr),1/(h*dpr));
   }
   const canvasObserver=new ResizeObserver(resize);canvasObserver.observe(host);
   function pointerMove(e){
@@ -167,7 +160,7 @@ function mount(host,mode){
       logoGroup.rotation.x=pointerY;
       logoGroup.rotation.z=pointerX;
       controls?.update();
-      composer.render();
+      renderer.render(scene,camera);
     } else renderer.render(scene,camera);
   }
   raf=requestAnimationFrame(render);
@@ -181,12 +174,6 @@ function mount(host,mode){
     controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.06;
     controls.minDistance=150;controls.maxDistance=900;
     controls.enableRotate=true;controls.rotateSpeed=.5;controls.enableZoom=false;
-    composer=new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene,camera));
-    bloom=new UnrealBloomPass(new THREE.Vector2(1,1),.2,.5,.86);
-    bloom.strength=.2;bloom.radius=.5;bloom.threshold=.86;composer.addPass(bloom);
-    composer.addPass(new OutputPass());
-    fxaa=new ShaderPass(FXAAShader);composer.addPass(fxaa);
     resize();
     host.classList.add("is-webgl-active");
   }).catch(fallback);
@@ -197,7 +184,7 @@ function mount(host,mode){
     window.removeEventListener("pointermove",pointerMove);interactionArea.removeEventListener("pointerleave",pointerLeave);
     delete host.dataset.threeMounted;
     window.removeEventListener("scroll",onScroll);geometry?.dispose();caps?.dispose();walls?.dispose();
-    controls?.dispose();composer?.dispose();scene.environment?.dispose();renderer.dispose();renderer.domElement.remove();host.classList.remove("is-webgl-active");
+    controls?.dispose();scene.environment?.dispose();renderer.dispose();renderer.domElement.remove();host.classList.remove("is-webgl-active");
   },{once:true});
 }
 function start(){
