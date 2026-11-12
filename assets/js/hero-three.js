@@ -24,7 +24,7 @@ function buildExtrusion(svgText){
     if(hex){
       const color=Number.parseInt(hex[1],16);
       const r=(color>>16)&255,g=(color>>8)&255,b=color&255;
-      if(Math.min(r,g,b)<240) continue;
+      if(Math.min(r,g,b)<251) continue;
     }
     const made=SVGLoader.createShapes(path);
     for(const shape of made){
@@ -162,7 +162,7 @@ function mount(host,mode){
     if(!visible)return;
     const time=last?Math.min(.05,(now-last)/1000):0;last=now;
     if(geometry){
-      if(mode==="loop"&&!reduceMotion)logoGroup.rotation.y+=.4*time;
+      if(mode==="loop"&&!reduceMotion)logoGroup.rotation.y+=.58*time;
       if(mode==="scroll")logoGroup.rotation.y=THREE.MathUtils.damp(logoGroup.rotation.y,scrollYaw,2.4,time);
       pointerX=THREE.MathUtils.damp(pointerX,targetX,3.2,time);
       pointerY=THREE.MathUtils.damp(pointerY,targetY,3.2,time);
@@ -198,7 +198,9 @@ function mount(host,mode){
 }
 function start(){
   const home=document.querySelector(".logo-hero__logo3d");
+  const about=document.querySelector(".about-hero__logo-rotor");
   if(home)mount(home,matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"scroll");
+  if(about)mount(about,"loop");
 }
 if(document.readyState==="complete")start();else addEventListener("load",start,{once:true});
 addEventListener("pageshow",e=>{if(e.persisted)start();});
