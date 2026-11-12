@@ -51,7 +51,6 @@ function buildExtrusion(svgText){
     depth:15/scaleFactor,steps:complexity>900?1:2,curveSegments,bevelEnabled:true,
     bevelSegments,bevelSize,bevelThickness:bevelSize*(2.4/1.45),bevelOffset:-.2*bevelSize
   });
-  geometry.computeBoundingBox();
   geometry.center();
   geometry.scale(scaleFactor,-scaleFactor,scaleFactor);
   const index=geometry.index;
@@ -66,7 +65,6 @@ function addAreaLight(parent,color,intensity,width,height,position,target){
 function mount(host,mode){
   if(host.dataset.threeMounted==="true") return;
   host.dataset.threeMounted="true";
-  host.querySelectorAll("img,canvas").forEach(node=>node.remove());
   let alive=true, raf=0, last=0, visible=true;
   const scene=new THREE.Scene(); // Transparent scene: no boxed slab behind the mark.
   const camera=new THREE.PerspectiveCamera(36,1,1,5000);
@@ -88,9 +86,7 @@ function mount(host,mode){
   scene.environment=env.texture;
   room.dispose(); pmrem.dispose();
 
-  const logoGroup = new THREE.Group();
-  logoGroup.position.set(0,0,0);
-  scene.add(logoGroup);
+  const objectGroup=new THREE.Group(); scene.add(objectGroup);
   const lightGroup=new THREE.Group(); scene.add(lightGroup);
   RectAreaLightUniformsLib.init();
   scene.add(new THREE.AmbientLight(0x8babff,.056));
@@ -103,6 +99,7 @@ function mount(host,mode){
   let pointerX=0,pointerY=0,targetX=0,targetY=0,scrollYaw=0;
   const hero=host.closest(".logo-hero");
   const interactionArea=hero||host;
+  objectGroup.position.set(0,0,0);
   function fallback(error){
     if(!alive)return;
     console.warn("[7Z hero logo]",error);
@@ -131,12 +128,7 @@ function mount(host,mode){
     }
   }
   function pointerLeave(){targetX=0;targetY=0;}
-  function onScroll(){
-    if(!hero)return;
-    const heroStart=hero.getBoundingClientRect().top+window.scrollY;
-    const progress=clamp((window.scrollY-heroStart)/Math.max(1,hero.offsetHeight),0,1);
-    scrollYaw=progress*Math.PI*2;
-  }
+  function onScroll(){if(hero)scrollYaw=(window.scrollY/Math.max(1,innerHeight))*Math.PI*2;}
   window.addEventListener("pointermove",pointerMove,{passive:true});
   interactionArea.addEventListener("pointerleave",pointerLeave,{passive:true});
   if(mode==="scroll"){window.addEventListener("scroll",onScroll,{passive:true});onScroll();}
@@ -151,12 +143,12 @@ function mount(host,mode){
     if(!visible)return;
     const time=last?Math.min(.05,(now-last)/1000):0;last=now;
     if(geometry){
-      if(mode==="loop"&&!reduceMotion)logoGroup.rotation.y+=.4*time;
-      if(mode==="scroll")logoGroup.rotation.y=THREE.MathUtils.damp(logoGroup.rotation.y,scrollYaw,2.4,time);
+      if(mode==="loop"&&!reduceMotion)objectGroup.rotation.y+=.4*time;
+      if(mode==="scroll")objectGroup.rotation.y=THREE.MathUtils.damp(objectGroup.rotation.y,scrollYaw,2.4,time);
       pointerX=THREE.MathUtils.damp(pointerX,targetX,3.2,time);
       pointerY=THREE.MathUtils.damp(pointerY,targetY,3.2,time);
-      logoGroup.rotation.x=pointerY;
-      logoGroup.rotation.z=pointerX;
+      objectGroup.rotation.x=pointerY;
+      objectGroup.rotation.z=pointerX;
       controls?.update();
       composer.render();
     } else renderer.render(scene,camera);
@@ -167,10 +159,8 @@ function mount(host,mode){
     geometry=buildExtrusion(text);
     caps=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:0x505050,metalness:.94,roughness:.1,clearcoat:1,clearcoatRoughness:.08,transmission:0,ior:1.48,thickness:0,envMapIntensity:6.9});
     walls=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:0x7c7c7c,emissive:0x303030,emissiveIntensity:.11,metalness:.94,roughness:.16,clearcoat:1,envMapIntensity:6.15});
-    const logoMesh=new THREE.Mesh(geometry,[caps,walls]);
-    logoGroup.add(logoMesh);
+    const mesh=new THREE.Mesh(geometry,[caps,walls]);objectGroup.add(mesh);
     controls=new OrbitControls(camera,renderer.domElement);
-    controls.target.set(0,0,0);
     controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.06;
     controls.minDistance=150;controls.maxDistance=900;
     controls.enableRotate=true;controls.rotateSpeed=.5;controls.enableZoom=false;
@@ -196,8 +186,6 @@ function mount(host,mode){
 function start(){
   const home=document.querySelector(".logo-hero__logo3d");
   if(home)mount(home,matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"scroll");
-  const about=document.querySelector(".about-hero__logo-rotor");
-  if(about)mount(about,"loop");
 }
 if(document.readyState==="complete")start();else addEventListener("load",start,{once:true});
 addEventListener("pageshow",e=>{if(e.persisted)start();});
