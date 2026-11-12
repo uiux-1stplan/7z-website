@@ -10,10 +10,10 @@ html[data-z7-core] .about-hero__logo-rotor {
   position:relative; display:grid; place-items:center; isolation:isolate; overflow:hidden;
 }
 html[data-z7-core] .logo-hero__logo3d {
-  flex:0 0 auto; width:clamp(138px,11vw,160px); aspect-ratio:390 / 433; max-height:28svh;
+  flex:0 0 auto; width:clamp(112px,9vw,132px); aspect-ratio:390 / 433; max-height:23svh;
 }
 html[data-z7-core] .about-hero__logo-rotor {
-  width:clamp(130px,12vw,155px); max-width:calc(100vw - 64px); aspect-ratio:390 / 433; max-height:28svh; animation:none!important;
+  width:clamp(110px,10vw,122px); max-width:calc(100vw - 64px); aspect-ratio:390 / 433; max-height:22svh; animation:none!important;
 }
 html[data-z7-core] .logo-hero__logo3d .hero-three-canvas,
 html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
@@ -22,6 +22,6 @@ html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
 }
 html[data-z7-core] .logo-hero__halo { display:none!important; }
 @media(max-width:700px){
-  html[data-z7-core] .logo-hero__logo3d { width:min(38vw,140px); max-height:25svh; }
-  html[data-z7-core] .about-hero__logo-rotor { width:min(35vw,132px); max-width:calc(100vw - 48px); max-height:24svh; }
+  html[data-z7-core] .logo-hero__logo3d { width:min(34vw,118px); max-height:22svh; }
+  html[data-z7-core] .about-hero__logo-rotor { width:min(32vw,110px); max-width:calc(100vw - 48px); max-height:21svh; }
 }
