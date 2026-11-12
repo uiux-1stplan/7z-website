@@ -49,10 +49,9 @@ function buildExtrusion(svgText){
   const complexity=curveCount;
   const bevelSegments=complexity>900?8:complexity>450?14:complexity>160?24:32;
   const curveSegments=complexity>900?8:complexity>450?12:complexity>160?16:20;
-  const bevelSize=Math.max(.18/scaleFactor,Math.min(20/scaleFactor,Number.isFinite(smallestHole)?smallestHole*.38:20/scaleFactor));
+  // Keep the chrome mark as one shallow extrusion; heavy bevels create a second offset silhouette.
   const geometry=new THREE.ExtrudeGeometry(shapes,{
-    depth:15/scaleFactor,steps:complexity>900?1:2,curveSegments,bevelEnabled:true,
-    bevelSegments,bevelSize,bevelThickness:bevelSize*(2.4/1.45),bevelOffset:-.2*bevelSize
+    depth:4/scaleFactor,steps:1,curveSegments,bevelEnabled:false
   });
   geometry.computeBoundingBox();
   geometry.center();
