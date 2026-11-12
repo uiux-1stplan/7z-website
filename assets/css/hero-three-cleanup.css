@@ -1,39 +1,21 @@
-/* Public home/about Three.js hero sizing and single-canvas replacement. */
-html[data-z7-core] .logo-hero__logo3d {
-  display:block; position:relative; flex:0 0 auto;
-  width:clamp(190px,20vw,260px); aspect-ratio:390 / 433; max-height:44svh;
+/* The logo hosts contain only their Three.js canvas. */
+html[data-z7-core] .logo-hero__logo3d,
+html[data-z7-core] .about-hero__logo-rotor {
+  position:relative; display:grid; place-items:center; isolation:isolate; overflow:visible;
 }
-html[data-z7-core] .logo-hero__logo3d.is-webgl-active .logo-hero__mark,
-html[data-z7-core] .about-hero__logo-rotor.is-webgl-active img { display:none!important; }
+html[data-z7-core] .logo-hero__logo3d {
+  flex:0 0 auto; width:clamp(190px,20vw,260px); aspect-ratio:390 / 433; max-height:44svh;
+}
+html[data-z7-core] .about-hero__logo-rotor {
+  width:clamp(170px,20vw,228px); max-width:calc(100vw - 64px); aspect-ratio:1; animation:none!important;
+}
 html[data-z7-core] .logo-hero__logo3d .hero-three-canvas,
 html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
-  position:absolute; inset:0; z-index:1; display:block;
-  width:100%; height:100%; pointer-events:none;
+  position:absolute; inset:0; z-index:2; display:block; width:100%; height:100%;
+  background:transparent!important; pointer-events:auto;
 }
-@media(max-width:700px) {
-  html[data-z7-core] .logo-hero__logo3d { width:min(58vw,220px); }
-}
-@media(prefers-reduced-motion:reduce) {
-  html[data-z7-core] .logo-hero__mark { transform:none!important; }
-}
-
-/* About logo stays centered with clear breathing room during its turn. */
-html[data-z7-core] .about-hero__logo-rotor { width:clamp(165px,24vw,260px); animation:none!important; }
-@media(max-width:700px) {
-  html[data-z7-core] .about-hero__logo-rotor { width:min(52vw,190px); }
-}
-
-
-/* SVG extrusion canvas: home and About heroes only. */
 html[data-z7-core] .logo-hero__halo { display:none!important; }
-html[data-z7-core] .logo-hero__logo3d,
-html[data-z7-core] .about-hero__logo-rotor { isolation:isolate; overflow:visible; }
-html[data-z7-core] .logo-hero__logo3d .hero-three-canvas,
-html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas { background:transparent!important; pointer-events:auto; }
-html[data-z7-core] .about-hero__logo-rotor { width:clamp(170px,21vw,238px); max-width:calc(100vw - 64px); }
-@media(max-width:700px){html[data-z7-core] .about-hero__logo-rotor{width:min(48vw,180px);max-width:calc(100vw - 48px)}}
-
-/* Empty hero hosts reserve space for the canvas; no raster logo layer. */
-html[data-z7-core] .logo-hero__logo3d,
-html[data-z7-core] .about-hero__logo-rotor { display:grid; place-items:center; }
-html[data-z7-core] .hero-three-canvas { z-index:2; }
+@media(max-width:700px){
+  html[data-z7-core] .logo-hero__logo3d { width:min(58vw,220px); }
+  html[data-z7-core] .about-hero__logo-rotor { width:min(48vw,178px); max-width:calc(100vw - 48px); }
+}
