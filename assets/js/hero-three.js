@@ -67,20 +67,7 @@ function mountLogo({ host, image, hero, mode }) {
     metalness: .88, roughness: .19, envMapIntensity: 1.65,
     side: THREE.DoubleSide, depthWrite: true
   });
-  const edgeMaterial = new THREE.MeshPhysicalMaterial({
-    map: texture, color: 0x727985, transparent: true, alphaTest: .06,
-    metalness: .92, roughness: .24, envMapIntensity: 1.1,
-    side: THREE.DoubleSide, depthWrite: true
-  });
-
-  // Layered centered meshes give the raster mark visible edge thickness while retaining its exact silhouette.
-  for (let layer = 8; layer > 0; layer--) {
-    const edge = new THREE.Mesh(geometry.clone(), edgeMaterial);
-    edge.geometry.computeBoundingBox();
-    edge.geometry.center();
-    edge.position.z = -layer * .009;
-    group.add(edge);
-  }
+  // A single centered face prevents layered copies of the mark from appearing behind it.
   const face = new THREE.Mesh(geometry, faceMaterial);
   group.add(face);
   group.rotation.set(0, 0, 0);
@@ -105,7 +92,7 @@ function mountLogo({ host, image, hero, mode }) {
   let previous = performance.now(), raf = 0, loopYaw = 0, inView = true;
 
   const onMove = event => {
-    if (reducedMotion || matchMedia("(pointer: coarse)").matches) return;
+    if (reducedMotion || event.pointerType === "touch" || !hero.contains(event.target)) return;
     const rect = hero.getBoundingClientRect();
     targetX = clamp((event.clientX - rect.left) / Math.max(1, rect.width) - .5, -.5, .5);
     targetY = clamp((event.clientY - rect.top) / Math.max(1, rect.height) - .5, -.5, .5);
@@ -118,7 +105,7 @@ function mountLogo({ host, image, hero, mode }) {
     scrollYaw = progress * Math.PI * 2;
   };
   if (mode === "scroll") {
-    hero.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointermove", onMove, { passive: true });
     hero.addEventListener("pointerleave", onLeave);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
@@ -132,9 +119,9 @@ function mountLogo({ host, image, hero, mode }) {
     if (!reducedMotion && mode === "loop") loopYaw += delta * Math.PI * 2 / 16;
     pointerX += (targetX - pointerX) * .06;
     pointerY += (targetY - pointerY) * .06;
-    const targetYaw = scrollYaw + pointerX * .28 + loopYaw;
-    group.rotation.y += (targetYaw - group.rotation.y) * .075;
-    group.rotation.x += (pointerY * -.14 - group.rotation.x) * .06;
+    const targetYaw = scrollYaw + pointerX * .62 + loopYaw;
+    group.rotation.y += (targetYaw - group.rotation.y) * .095;
+    group.rotation.x += (pointerY * -.42 - group.rotation.x) * .095;
     renderer.render(scene, camera);
   };
   const pauseAnimation = () => {
@@ -168,7 +155,7 @@ function mountLogo({ host, image, hero, mode }) {
     visibilityObserver?.disconnect();
     document.removeEventListener("visibilitychange", onVisibility);
     if (mode === "scroll") {
-      hero.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointermove", onMove);
       hero.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
@@ -176,7 +163,6 @@ function mountLogo({ host, image, hero, mode }) {
     geometry.dispose();
     texture.dispose();
     faceMaterial.dispose();
-    edgeMaterial.dispose();
     scene.environment?.dispose();
     renderer.dispose();
     canvas.remove();

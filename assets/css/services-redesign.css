@@ -164,55 +164,9 @@ html[data-z7-core][data-theme="light"] .svc-mirror-card { border-color:rgba(72,1
 
 
 /* Keep campaign footage clean and let vertical wheel input advance cards to the final item. */
-html[data-z7-core] .svc-film-lane--campaign::before,
-html[data-z7-core] .svc-film-lane--campaign::after { display:none!important; content:none!important; }
+html[data-z7-core] .svc-film-lane--campaign { background:transparent; }
+html[data-z7-core] .svc-film-lane--campaign::before { display:none!important; content:none!important; }
+html[data-z7-core] .svc-film-lane--campaign::after { display:block; }
 html[data-z7-core] .svc-mirror-stage { overflow:visible; }
 html[data-z7-core] .svc-mirror-card { box-shadow:0 0 14px rgba(111,164,226,.18),0 16px 38px rgba(0,0,0,.22); }
 html[data-z7-core] .svc-mirror-card[aria-current="true"] { box-shadow:0 0 18px rgba(138,190,243,.38),0 18px 40px rgba(0,0,0,.25); }
-
-
-/* Campaign films: clean, true horizontal reel with vertical-wheel handoff at either end. */
-html[data-z7-core] .svc-film-lane--campaign {
-  display:flex; align-items:center; gap:clamp(14px,2vw,24px);
-  height:auto; min-height:0; max-height:none; overflow-x:auto; overflow-y:hidden;
-  padding:clamp(18px,3vw,38px) max(24px,calc((100% - 1280px)/2)) clamp(28px,4vw,48px);
-  perspective:none; background:transparent!important;
-  scroll-snap-type:x mandatory; scroll-behavior:auto; overscroll-behavior-x:contain;
-  scrollbar-width:thin; scrollbar-color:color-mix(in srgb,var(--svc-accent) 60%,transparent) transparent;
-  touch-action:pan-x pan-y; cursor:grab; user-select:none;
-}
-html[data-z7-core] .svc-film-lane--campaign::-webkit-scrollbar { height:4px; }
-html[data-z7-core] .svc-film-lane--campaign::-webkit-scrollbar-thumb { background:color-mix(in srgb,var(--svc-accent) 62%,transparent); }
-html[data-z7-core] .svc-film-lane--campaign::before,
-html[data-z7-core] .svc-film-lane--campaign::after,
-html[data-z7-core] .svc-mirror-stage::before,
-html[data-z7-core] .svc-mirror-stage::after { display:none!important; content:none!important; }
-html[data-z7-core] .svc-film-lane--campaign.is-dragging { cursor:grabbing; scroll-snap-type:none; }
-html[data-z7-core] .svc-campaign-card {
-  position:relative; inset:auto; flex:0 0 clamp(245px,27vw,380px);
-  width:auto; aspect-ratio:9/16; height:auto; margin:0; overflow:hidden;
-  border:1px solid color-mix(in srgb,var(--svc-accent) 38%,var(--svc-rule));
-  border-radius:5px 18px 5px 18px; background:#080b10;
-  box-shadow:0 12px 34px rgba(0,0,0,.16); transform:none!important;
-  scroll-snap-align:center; transition:border-color .25s ease,box-shadow .25s ease;
-}
-html[data-z7-core] .svc-campaign-card[aria-current="true"] {
-  border-color:color-mix(in srgb,var(--svc-accent) 72%,white);
-  box-shadow:0 14px 36px rgba(0,0,0,.2);
-}
-html[data-z7-core] .svc-campaign-card video {
-  display:block; width:100%; height:100%; object-fit:contain; background:#080b10;
-  border-radius:inherit; -webkit-box-reflect:none; pointer-events:none;
-}
-html[data-z7-core] .svc-campaign-card > span:not(.z7-video-mute) {
-  position:absolute; inset:auto 0 0; padding:28px 13px 12px;
-  color:#fff; background:linear-gradient(transparent,rgba(4,8,14,.56));
-}
-html[data-z7-core] .svc-mirror-stage { overflow:visible; }
-@media(max-width:700px) {
- html[data-z7-core] .svc-film-lane--campaign { gap:12px; padding:18px 6vw 26px; }
- html[data-z7-core] .svc-campaign-card { flex-basis:76vw; }
-}
-@media(prefers-reduced-motion:reduce) {
- html[data-z7-core] .svc-film-lane--campaign { scroll-snap-type:x mandatory; }
-}

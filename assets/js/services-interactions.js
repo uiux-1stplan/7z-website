@@ -74,22 +74,121 @@
   const campaignStage = campaignRail?.closest(".svc-mirror-stage");
   const current = root.querySelector("[data-reel-current]");
   const reelTotal = root.querySelector("[data-reel-total]");
-
   if (campaignRail) {
-    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let ring = null;
     let cards = [];
-    let wheelTarget = campaignRail.scrollLeft;
-    let wheelFrame = 0;
+    let rotation = 0;
+    let velocity = 0;
+    let motionEnergy = 0.08;
+    let frame = 0;
+    let targetFrame = 0;
+    let lastCoastTime = 0;
     let activePointer = null;
-    let dragStart = 0;
-    let dragScrollStart = 0;
-    let dragged = false;
+    let startX = 0;
+    let startY = 0;
+    let lastX = 0;
+    let lastTime = 0;
+    let moved = false;
 
-    const prepareCards = () => {
-      cards = [...campaignRail.querySelectorAll(":scope > .media-tile, :scope > .svc-campaign-card")];
-      cards.forEach(card => {
-        card.classList.add("svc-campaign-card");
+    const modulo = (value, length) => ((value % length) + length) % length;
+    const stepAngle = () => 360 / Math.max(cards.length, 1);
+    const activeIndex = () => modulo(-Math.round(rotation / stepAngle()), cards.length || 1);
+    const paint = () => {
+      if (!ring) return;
+      ring.style.setProperty("--mirror-rotation", `${rotation}deg`);
+      const energy = Math.min(.82, Math.max(.08, motionEnergy, Math.abs(velocity) / 13 * .78));
+      campaignRail.style.setProperty("--mirror-water-alpha", (.16 + energy * .18).toFixed(2));
+      campaignRail.style.setProperty("--mirror-line-alpha", (.04 + energy * .08).toFixed(2));
+      campaignRail.style.setProperty("--mirror-glow", `${34 + energy * 36}px`);
+      campaignRail.style.setProperty("--mirror-ripple-shift", `${Math.sin(rotation * Math.PI / 180) * energy * 13}px`);
+      const selected = activeIndex();
+      cards.forEach((card, index) => {
+        if (index === selected) card.setAttribute("aria-current", "true");
+        else card.removeAttribute("aria-current");
+      });
+      if (current) current.textContent = String(selected + 1).padStart(2, "0");
+    };
+    const stopMotion = () => {
+      if (frame) cancelAnimationFrame(frame);
+      if (targetFrame) cancelAnimationFrame(targetFrame);
+      frame = targetFrame = 0;
+    };
+    const nearestRotation = () => Math.round(rotation / stepAngle()) * stepAngle();
+    const settle = () => {
+      motionEnergy = .08;
+      if (reduced) { rotation = nearestRotation(); paint(); return; }
+      const start = rotation;
+      const end = nearestRotation();
+      const began = performance.now();
+      const duration = 360;
+      const tick = now => {
+        const t = Math.min(1, (now - began) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        rotation = start + (end - start) * eased;
+        paint();
+        if (t < 1) targetFrame = requestAnimationFrame(tick);
+        else targetFrame = 0;
+      };
+      targetFrame = requestAnimationFrame(tick);
+    };
+    const coast = now => {
+      const delta = Math.min(2, Math.max(.5, (now - lastCoastTime) / 16.667));
+      lastCoastTime = now;
+      rotation += velocity * delta;
+      velocity *= Math.pow(.94, delta);
+      motionEnergy = Math.max(.08, Math.abs(velocity) / 13 * .78);
+      paint();
+      if (Math.abs(velocity) > .08) frame = requestAnimationFrame(coast);
+      else { frame = 0; settle(); }
+    };
+    const goTo = target => {
+      stopMotion();
+      if (reduced) { rotation = target; paint(); return; }
+      const start = rotation;
+      const began = performance.now();
+      const duration = 620;
+      motionEnergy = .58;
+      const tick = now => {
+        const t = Math.min(1, (now - began) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        rotation = start + (target - start) * eased;
+        motionEnergy = .58 * (1 - t) + .08;
+        paint();
+        if (t < 1) targetFrame = requestAnimationFrame(tick);
+        else { targetFrame = 0; motionEnergy = .08; paint(); }
+      };
+      targetFrame = requestAnimationFrame(tick);
+    };
+    const moveByFilm = direction => {
+      const nearest = nearestRotation();
+      goTo(nearest - direction * stepAngle());
+    };
+    const resizeRing = () => {
+      if (!ring || !cards.length) return;
+      const cardWidth = parseFloat(getComputedStyle(cards[0]).width) || cards[0].getBoundingClientRect().width;
+      const radius = Math.max(cardWidth * 1.65, cardWidth / (2 * Math.tan(Math.PI / cards.length)) * 1.15);
+      ring.style.setProperty("--mirror-radius", `${radius}px`);
+      paint();
+    };
+
+    const setupRing = () => {
+      if (campaignRail.dataset.mirrorReady === "true") return;
+      const pending = [...campaignRail.querySelectorAll(":scope > .media-tile")];
+      if (!pending.length) return;
+
+      campaignRail.dataset.mirrorReady = "true";
+      ring = document.createElement("div");
+      ring.className = "svc-mirror-ring";
+      ring.setAttribute("role", "list");
+      ring.setAttribute("aria-label", "Campaign film carousel");
+      cards = pending;
+      const angle = 360 / cards.length;
+      cards.forEach((card, index) => {
+        card.classList.remove("media-tile", "z7-spatial");
+        card.classList.add("svc-mirror-card");
+        card.dataset.svcMirrorCard = "true";
         card.setAttribute("role", "listitem");
+        card.style.setProperty("--card-angle", `${index * angle}deg`);
         const video = card.querySelector("video");
         if (video) {
           video.muted = true;
@@ -98,139 +197,99 @@
           video.preload = "none";
         }
       });
-      campaignRail.setAttribute("role", "list");
-      campaignRail.setAttribute("aria-label", "Campaign film showcase");
-      campaignRail.dataset.horizontalShowcase = "true";
-      if (reelTotal) reelTotal.textContent = String(cards.length).padStart(2, "0");
-      updateCounter();
-    };
-    const maxScroll = () => Math.max(0, campaignRail.scrollWidth - campaignRail.clientWidth);
-    const updateCounter = () => {
-      if (!cards.length || !current) return;
-      const center = campaignRail.scrollLeft + campaignRail.clientWidth / 2;
-      let nearest = 0;
-      let distance = Infinity;
-      cards.forEach((card, index) => {
-        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const nextDistance = Math.abs(cardCenter - center);
-        if (nextDistance < distance) { nearest = index; distance = nextDistance; }
-      });
-      current.textContent = String(nearest + 1).padStart(2, "0");
-      cards.forEach((card, index) => {
-        if (index === nearest) card.setAttribute("aria-current", "true");
-        else card.removeAttribute("aria-current");
-      });
-    };
-    const cardsObserver = new MutationObserver(prepareCards);
-    cardsObserver.observe(campaignRail, { childList: true });
-    prepareCards();
-
-    const smoothTo = target => {
-      wheelTarget = Math.max(0, Math.min(maxScroll(), target));
-      if (reducedMotion) {
-        campaignRail.scrollLeft = wheelTarget;
-        updateCounter();
-        return;
+      if (window.gsap?.killTweensOf) {
+        window.gsap.killTweensOf(cards);
+        window.gsap.set(cards, { clearProps: "transform,opacity,visibility" });
       }
-      if (wheelFrame) return;
-      const tick = () => {
-        const remaining = wheelTarget - campaignRail.scrollLeft;
-        if (Math.abs(remaining) < 1) {
-          campaignRail.scrollLeft = wheelTarget;
-          wheelFrame = 0;
-          updateCounter();
-          return;
-        }
-        campaignRail.scrollLeft += remaining * .24;
-        updateCounter();
-        wheelFrame = requestAnimationFrame(tick);
-      };
-      wheelFrame = requestAnimationFrame(tick);
-    };
-    const scrollToCard = direction => {
-      const center = campaignRail.scrollLeft + campaignRail.clientWidth / 2;
-      let nearest = 0;
-      let distance = Infinity;
-      cards.forEach((card, index) => {
-        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const nextDistance = Math.abs(cardCenter - center);
-        if (nextDistance < distance) { nearest = index; distance = nextDistance; }
+      window.ScrollTrigger?.getAll?.().forEach(trigger => {
+        if (cards.includes(trigger.trigger)) trigger.kill();
       });
-      const next = Math.max(0, Math.min(cards.length - 1, nearest + direction));
-      const card = cards[next];
-      if (card) smoothTo(card.offsetLeft - (campaignRail.clientWidth - card.offsetWidth) / 2);
+      campaignRail.replaceChildren(ring);
+      ring.append(...cards);
+      if (reelTotal) reelTotal.textContent = String(cards.length).padStart(2, "0");
+      resizeRing();
+      if ("ResizeObserver" in window) {
+        const resizeObserver = new ResizeObserver(resizeRing);
+        resizeObserver.observe(campaignRail);
+      } else addEventListener("resize", resizeRing, { passive: true });
     };
 
-    campaignRail.addEventListener("scroll", updateCounter, { passive: true });
-    updateCounter();
+    if ("MutationObserver" in window) {
+      const tilesObserver = new MutationObserver(setupRing);
+      tilesObserver.observe(campaignRail, { childList: true });
+      setupRing();
+    } else setupRing();
 
-    if (campaignStage && matchMedia("(min-width: 768px) and (pointer: fine)").matches) {
-      let lastWheel = 0;
-      campaignStage.addEventListener("wheel", event => {
-        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX) || Math.abs(event.deltaY) < 2) return;
-        const max = maxScroll();
-        const position = wheelFrame ? wheelTarget : campaignRail.scrollLeft;
-        const next = Math.max(0, Math.min(max, position + event.deltaY * .9));
-        if (Math.abs(next - position) < 1) return;
-        event.preventDefault();
-        const now = performance.now();
-        if (now - lastWheel < 10) return;
-        lastWheel = now;
-        smoothTo(next);
-      }, { passive: false });
-    }
-
+    let wheelIndex = null;
+    let wheelLastMove = 0;
+    campaignStage?.addEventListener("wheel", event => {
+      if (!ring || !cards.length || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const currentIndex = wheelIndex === null ? activeIndex() : wheelIndex;
+      const nextIndex = currentIndex + direction;
+      if (nextIndex < 0 || nextIndex >= cards.length) { wheelIndex = null; return; }
+      event.preventDefault();
+      event.stopPropagation();
+      const now = performance.now();
+      if (now - wheelLastMove < 260) return;
+      wheelLastMove = now;
+      wheelIndex = nextIndex;
+      goTo(-wheelIndex * stepAngle());
+    }, { passive: false, capture: true });
     campaignRail.addEventListener("pointerdown", event => {
-      if (!event.isPrimary || event.button > 0 || event.target.closest("button,a")) return;
+      wheelIndex = null;
+      if (!ring || !event.isPrimary || event.button > 0 || event.target.closest("button")) return;
+      stopMotion();
       activePointer = event.pointerId;
-      dragStart = event.clientX;
-      dragScrollStart = campaignRail.scrollLeft;
-      dragged = false;
+      startX = event.clientX;
+      startY = event.clientY;
+      lastX = event.clientX;
+      lastTime = performance.now();
+      velocity = 0;
+      moved = false;
       campaignRail.setPointerCapture?.(event.pointerId);
     });
     campaignRail.addEventListener("pointermove", event => {
       if (activePointer !== event.pointerId) return;
-      const delta = event.clientX - dragStart;
-      if (Math.abs(delta) > 5) dragged = true;
-      if (dragged) {
-        campaignRail.classList.add("is-dragging");
-        campaignRail.scrollLeft = dragScrollStart - delta;
-        wheelTarget = campaignRail.scrollLeft;
-        updateCounter();
+      const dx = event.clientX - lastX;
+      const totalX = event.clientX - startX;
+      const totalY = event.clientY - startY;
+      const now = performance.now();
+      if (!moved && Math.hypot(totalX, totalY) > 6) {
+        if (Math.abs(totalY) > Math.abs(totalX) * 1.12) { activePointer = null; return; }
+        moved = true;
       }
+      if (moved) {
+        campaignRail.classList.add("is-dragging");
+        rotation += dx * .34;
+        velocity = Math.max(-13, Math.min(13, dx / Math.max(1, now - lastTime) * 16 * .34));
+        motionEnergy = .2 + Math.min(.58, Math.abs(velocity) / 13 * .58);
+        paint();
+      }
+      lastX = event.clientX;
+      lastTime = now;
     });
     const endDrag = event => {
       if (activePointer !== event.pointerId) return;
       activePointer = null;
       campaignRail.classList.remove("is-dragging");
-      if (dragged) {
-        const center = campaignRail.scrollLeft + campaignRail.clientWidth / 2;
-        const card = cards.reduce((best, candidate) =>
-          Math.abs(candidate.offsetLeft + candidate.offsetWidth / 2 - center) <
-          Math.abs(best.offsetLeft + best.offsetWidth / 2 - center) ? candidate : best, cards[0]);
-        if (card) smoothTo(card.offsetLeft - (campaignRail.clientWidth - card.offsetWidth) / 2);
+      if (moved && Math.abs(velocity) > .55 && !reduced) {
+        lastCoastTime = performance.now();
+        frame = requestAnimationFrame(coast);
       }
-      dragged = false;
+      else if (moved) settle();
+      moved = false;
     };
     campaignRail.addEventListener("pointerup", endDrag);
     campaignRail.addEventListener("pointercancel", endDrag);
     campaignRail.addEventListener("keydown", event => {
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-        event.preventDefault(); scrollToCard(1);
-      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-        event.preventDefault(); scrollToCard(-1);
-      } else if (event.key === "Home") {
-        event.preventDefault(); smoothTo(0);
-      } else if (event.key === "End") {
-        event.preventDefault(); smoothTo(maxScroll());
-      }
+      if (event.key === "ArrowLeft") { event.preventDefault(); wheelIndex = null; moveByFilm(1); }
+      else if (event.key === "ArrowRight") { event.preventDefault(); wheelIndex = null; moveByFilm(-1); }
     });
-    root.querySelectorAll("[data-reel-prev],[data-reel-next]").forEach(button => {
-      button.addEventListener("click", () => scrollToCard(button.hasAttribute("data-reel-next") ? 1 : -1));
-    });
-    addEventListener("resize", () => {
-      wheelTarget = Math.max(0, Math.min(maxScroll(), campaignRail.scrollLeft));
-      updateCounter();
-    }, { passive: true });
+
+    root.querySelectorAll("[data-reel-prev],[data-reel-next]").forEach(button => button.addEventListener("click", () => {
+      wheelIndex = null;
+      moveByFilm(button.hasAttribute("data-reel-next") ? 1 : -1);
+    }));
   }
 })();

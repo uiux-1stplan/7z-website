@@ -16,3 +16,9 @@ html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
 @media(prefers-reduced-motion:reduce) {
   html[data-z7-core] .logo-hero__mark { transform:none!important; }
 }
+
+/* About logo stays centered with clear breathing room during its turn. */
+html[data-z7-core] .about-hero__logo-rotor { width:clamp(165px,24vw,260px); animation:none!important; }
+@media(max-width:700px) {
+  html[data-z7-core] .about-hero__logo-rotor { width:min(52vw,190px); }
+}
