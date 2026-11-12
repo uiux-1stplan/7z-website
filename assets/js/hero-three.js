@@ -1,183 +1,189 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js";
+import { SVGLoader } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/SVGLoader.js";
+import { RectAreaLightUniformsLib } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/lights/RectAreaLightUniformsLib.js";
+import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/environments/RoomEnvironment.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js";
+import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/OutputPass.js";
+import { ShaderPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/ShaderPass.js";
+import { FXAAShader } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/shaders/FXAAShader.js";
 
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const VERSION="0.158.0";
+const SVG_URL="/assets/brand/7Z-LogoT.svg";
+const reduceMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+let svgTextPromise;
+function loadSvg(){ return svgTextPromise ||= fetch(SVG_URL,{cache:"force-cache"}).then(r=>{if(!r.ok)throw Error("Logo SVG unavailable");return r.text()}); }
 
-function makeEnvironment() {
-  const canvases = Array.from({ length: 6 }, (_, index) => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 128;
-    const context = canvas.getContext("2d");
-    const gradient = context.createLinearGradient(0, 0, 128, 128);
-    gradient.addColorStop(0, index % 2 ? "#141820" : "#eef1f6");
-    gradient.addColorStop(.28, "#67707d");
-    gradient.addColorStop(.44, "#fbfcff");
-    gradient.addColorStop(.58, "#303743");
-    gradient.addColorStop(.78, "#c9ced8");
-    gradient.addColorStop(1, "#171b22");
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, 128, 128);
-    context.globalAlpha = .9;
-    context.fillStyle = "#ffffff";
-    context.fillRect(0, 34 + index % 3 * 10, 128, 7);
-    context.fillStyle = "#080a0f";
-    context.fillRect(0, 52 + index % 2 * 8, 128, 11);
-    return canvas;
-  });
-  const environment = new THREE.CubeTexture(canvases);
-  environment.colorSpace = THREE.SRGBColorSpace;
-  environment.needsUpdate = true;
-  return environment;
-}
-
-function mountLogo({ host, image, hero, mode }) {
-  if (!host || !image || !image.complete || !image.naturalWidth || host.querySelector(".hero-three-canvas")) return;
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
-  } catch {
-    return;
+function buildExtrusion(svgText){
+  const parsed=new SVGLoader().parse(svgText.replace(/currentColor/gi,"#ffffff"));
+  const shapes=[];
+  let curveCount=0, sourceSize=0, smallestHole=Infinity;
+  for(const path of parsed.paths){
+    if(path.userData?.style?.fill==="none") continue;
+    const made=SVGLoader.createShapes(path);
+    for(const shape of made){
+      shapes.push(shape);
+      curveCount+=shape.curves.length;
+      const pts=shape.getPoints(16);
+      if(pts.length){
+        const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
+        sourceSize=Math.max(sourceSize,Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys));
+      }
+      for(const hole of shape.holes){
+        const hp=hole.getPoints(16);
+        if(hp.length){
+          const xs=hp.map(p=>p.x),ys=hp.map(p=>p.y);
+          smallestHole=Math.min(smallestHole,Math.max(1e-5,Math.min(Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys))));
+        }
+      }
+    }
   }
-
-  const canvas = renderer.domElement;
-  canvas.className = "hero-three-canvas";
-  canvas.setAttribute("aria-hidden", "true");
-  host.append(canvas);
-
-  const scene = new THREE.Scene();
-  scene.environment = makeEnvironment();
-  const camera = new THREE.PerspectiveCamera(34, 1, .1, 30);
-  camera.position.z = 1.95;
-  const group = new THREE.Group();
-  scene.add(group);
-
-  const texture = new THREE.Texture(image);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.needsUpdate = true;
-  const ratio = image.naturalWidth / image.naturalHeight;
-  const width = clamp(ratio, .55, 1.4);
-  const height = width / ratio;
-  const geometry = new THREE.PlaneGeometry(width, height);
-  geometry.computeBoundingBox();
+  if(!shapes.length||!sourceSize) throw Error("SVG contains no filled logo paths");
+  const scaleFactor=200/sourceSize;
+  const complexity=curveCount;
+  const bevelSegments=complexity>900?8:complexity>450?14:complexity>160?24:32;
+  const curveSegments=complexity>900?8:complexity>450?12:complexity>160?16:20;
+  const bevelSize=Math.max(.18/scaleFactor,Math.min(20/scaleFactor,Number.isFinite(smallestHole)?smallestHole*.38:20/scaleFactor));
+  const geometry=new THREE.ExtrudeGeometry(shapes,{
+    depth:15/scaleFactor,steps:complexity>900?1:2,curveSegments,bevelEnabled:true,
+    bevelSegments,bevelSize,bevelThickness:bevelSize*(2.4/1.45),bevelOffset:-.2*bevelSize
+  });
   geometry.center();
+  geometry.scale(scaleFactor,-scaleFactor,scaleFactor);
+  const index=geometry.index;
+  if(index){for(let i=0;i<index.count;i+=3){const a=index.getX(i+1),b=index.getX(i+2);index.setX(i+1,b);index.setX(i+2,a);}index.needsUpdate=true;}
+  geometry.computeVertexNormals();
+  return geometry;
+}
+function addAreaLight(parent,color,intensity,width,height,position,target){
+  const light=new THREE.RectAreaLight(color,intensity,width,height);
+  light.position.set(...position); light.lookAt(...target); parent.add(light);
+}
+function mount(host,image,mode){
+  let alive=true, raf=0, last=0, visible=true;
+  const scene=new THREE.Scene(); // Transparent scene: no boxed slab behind the mark.
+  const camera=new THREE.PerspectiveCamera(36,1,1,5000);
+  camera.position.set(0,0,420);
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.05;
+  renderer.setClearColor(0x07070a,0);
+  renderer.domElement.className="hero-three-canvas";
+  renderer.domElement.setAttribute("aria-hidden","true");
+  host.appendChild(renderer.domElement);
 
-  const faceMaterial = new THREE.MeshPhysicalMaterial({
-    map: texture, transparent: true, alphaTest: .035,
-    metalness: .88, roughness: .19, envMapIntensity: 1.65,
-    side: THREE.DoubleSide, depthWrite: true
-  });
-  // A single centered face prevents layered copies of the mark from appearing behind it.
-  const face = new THREE.Mesh(geometry, faceMaterial);
-  group.add(face);
-  group.rotation.set(0, 0, 0);
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  const room=new RoomEnvironment();
+  const env=pmrem.fromScene(room,.04);
+  scene.environment=env.texture;
+  room.dispose(); pmrem.dispose();
 
-  const resize = () => {
-    const rect = host.getBoundingClientRect();
-    const width = Math.max(1, Math.round(rect.width));
-    const height = Math.max(1, Math.round(rect.height));
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-  };
-  const observer = new ResizeObserver(resize);
-  observer.observe(host);
-  resize();
+  const objectGroup=new THREE.Group(); scene.add(objectGroup);
+  const lightGroup=new THREE.Group(); scene.add(lightGroup);
+  RectAreaLightUniformsLib.init();
+  scene.add(new THREE.AmbientLight(0x8babff,.056));
+  addAreaLight(lightGroup,0x868686,3.5,240,300,[-90,-40,170],[0,0,0]);
+  addAreaLight(lightGroup,0xc5c5c5,16.8,72,520,[-165,20,-60],[-18,0,0]);
+  addAreaLight(lightGroup,0xc5c5c5,15.4,72,520,[165,10,-58],[18,0,0]);
+  addAreaLight(lightGroup,0xbfbfbf,7,150,300,[120,90,160],[0,0,0]);
 
-  host.classList.add("is-webgl-active");
-  image.remove();
-  let pointerX = 0, pointerY = 0, targetX = 0, targetY = 0, scrollYaw = 0;
-  let previous = performance.now(), raf = 0, loopYaw = 0, inView = true;
-
-  const onMove = event => {
-    if (reducedMotion || event.pointerType === "touch" || !hero.contains(event.target)) return;
-    const rect = hero.getBoundingClientRect();
-    targetX = clamp((event.clientX - rect.left) / Math.max(1, rect.width) - .5, -.5, .5);
-    targetY = clamp((event.clientY - rect.top) / Math.max(1, rect.height) - .5, -.5, .5);
-  };
-  const onLeave = () => { targetX = 0; targetY = 0; };
-  const onScroll = () => {
-    if (mode !== "scroll" || reducedMotion) return;
-    const rect = hero.getBoundingClientRect();
-    const progress = clamp(-rect.top / Math.max(1, rect.height), 0, 1);
-    scrollYaw = progress * Math.PI * 2;
-  };
-  if (mode === "scroll") {
-    window.addEventListener("pointermove", onMove, { passive: true });
-    hero.addEventListener("pointerleave", onLeave);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    onScroll();
-  }
-
-  const animate = now => {
-    raf = requestAnimationFrame(animate);
-    const delta = Math.min(.05, Math.max(0, (now - previous) / 1000));
-    previous = now;
-    if (!reducedMotion && mode === "loop") loopYaw += delta * Math.PI * 2 / 16;
-    pointerX += (targetX - pointerX) * .06;
-    pointerY += (targetY - pointerY) * .06;
-    const targetYaw = scrollYaw + pointerX * .62 + loopYaw;
-    group.rotation.y += (targetYaw - group.rotation.y) * .095;
-    group.rotation.x += (pointerY * -.42 - group.rotation.x) * .095;
-    renderer.render(scene, camera);
-  };
-  const pauseAnimation = () => {
-    if (raf) cancelAnimationFrame(raf);
-    raf = 0;
-  };
-  const resumeAnimation = () => {
-    if (inView && !document.hidden && !raf) {
-      previous = performance.now();
-      raf = requestAnimationFrame(animate);
-    }
-  };
-  const visibilityObserver = "IntersectionObserver" in window
-    ? new IntersectionObserver(([entry]) => {
-        inView = entry.isIntersecting;
-        if (inView) resumeAnimation();
-        else pauseAnimation();
-      }, { rootMargin: "120px" })
-    : null;
-  visibilityObserver?.observe(hero || host);
-  const onVisibility = () => {
-    if (document.hidden) pauseAnimation();
-    else resumeAnimation();
-  };
-  document.addEventListener("visibilitychange", onVisibility);
-  resumeAnimation();
-
-  window.addEventListener("pagehide", () => {
-    if (raf) cancelAnimationFrame(raf);
-    observer.disconnect();
-    visibilityObserver?.disconnect();
-    document.removeEventListener("visibilitychange", onVisibility);
-    if (mode === "scroll") {
-      window.removeEventListener("pointermove", onMove);
-      hero.removeEventListener("pointerleave", onLeave);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    }
-    geometry.dispose();
-    texture.dispose();
-    faceMaterial.dispose();
-    scene.environment?.dispose();
-    renderer.dispose();
-    canvas.remove();
+  let geometry, caps, walls, controls, composer, bloom, fxaa;
+  let pointerX=0,pointerY=0,targetX=0,targetY=0,scrollYaw=0;
+  const hero=host.closest(".logo-hero");
+  function fallback(error){
+    if(!alive)return;
+    console.warn("[7Z hero logo]",error);
+    canvasObserver.disconnect();
+    renderer.dispose(); renderer.domElement.remove(); scene.environment?.dispose();
     host.classList.remove("is-webgl-active");
-    if (!image.isConnected) host.prepend(image);
-  }, { once: true });
-}
+    if(image&&!image.isConnected)host.prepend(image);
+  }
+  function resize(){
+    if(!alive)return;
+    const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight),dpr=Math.min(devicePixelRatio||1,2);
+    camera.aspect=w/h;
+    const fit=Math.max(1,w/h);
+    camera.position.z=Math.max(310,420/Math.sqrt(fit));
+    camera.updateProjectionMatrix();
+    renderer.setPixelRatio(dpr);renderer.setSize(w,h,false);
+    composer?.setPixelRatio(dpr);composer?.setSize(w,h);
+    if(fxaa)fxaa.material.uniforms.resolution.value.set(1/(w*dpr),1/(h*dpr));
+  }
+  const canvasObserver=new ResizeObserver(resize);canvasObserver.observe(host);
+  function pointerMove(e){
+    const rect=host.getBoundingClientRect();
+    if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom){
+      targetX=((e.clientX-rect.left)/rect.width-.5)*.16;
+      targetY=((e.clientY-rect.top)/rect.height-.5)*.12;
+    }
+  }
+  function pointerLeave(){targetX=0;targetY=0;}
+  function onScroll(){if(hero)scrollYaw=(window.scrollY/Math.max(1,innerHeight))*Math.PI*2;}
+  window.addEventListener("pointermove",pointerMove,{passive:true});
+  host.addEventListener("pointerleave",pointerLeave,{passive:true});
+  if(mode==="scroll"){window.addEventListener("scroll",onScroll,{passive:true});onScroll();}
+  const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible)last=0;},{rootMargin:"100px"});
+  observer.observe(host);
+  const onVis=()=>{visible=!document.hidden;if(visible)last=0;};
+  document.addEventListener("visibilitychange",onVis);
 
-function start() {
-  const homeImage = document.querySelector(".logo-hero__mark");
-  if (homeImage) mountLogo({ host: homeImage.closest(".logo-hero__logo3d"), image: homeImage, hero: document.querySelector(".logo-hero"), mode: "scroll" });
-  const aboutImage = document.querySelector(".about-hero__logo-rotor img");
-  if (aboutImage) mountLogo({ host: aboutImage.closest(".about-hero__logo-rotor"), image: aboutImage, hero: aboutImage.closest(".about-hero"), mode: "loop" });
-}
+  function render(now){
+    if(!alive)return;
+    raf=requestAnimationFrame(render);
+    if(!visible)return;
+    const time=last?Math.min(.05,(now-last)/1000):0;last=now;
+    if(geometry){
+      if(mode==="loop"&&!reduceMotion)objectGroup.rotation.y+=.4*time;
+      if(mode==="scroll")objectGroup.rotation.y=THREE.MathUtils.damp(objectGroup.rotation.y,scrollYaw,2.4,time);
+      pointerX=THREE.MathUtils.damp(pointerX,targetX,3.2,time);
+      pointerY=THREE.MathUtils.damp(pointerY,targetY,3.2,time);
+      objectGroup.rotation.x=pointerY;
+      objectGroup.rotation.z=pointerX;
+      controls?.update();
+      composer.render();
+    } else renderer.render(scene,camera);
+  }
+  raf=requestAnimationFrame(render);
+  loadSvg().then(text=>{
+    if(!alive)return;
+    geometry=buildExtrusion(text);
+    caps=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:0x505050,metalness:.94,roughness:.1,clearcoat:1,clearcoatRoughness:.08,transmission:0,ior:1.48,thickness:0,envMapIntensity:6.9});
+    walls=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:0x7c7c7c,emissive:0x303030,emissiveIntensity:.11,metalness:.94,roughness:.16,clearcoat:1,envMapIntensity:6.15});
+    const mesh=new THREE.Mesh(geometry,[caps,walls]);objectGroup.add(mesh);
+    controls=new OrbitControls(camera,renderer.domElement);
+    controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.06;
+    controls.minDistance=150;controls.maxDistance=900;
+    controls.enableRotate=true;controls.rotateSpeed=.5;controls.enableZoom=false;
+    composer=new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene,camera));
+    bloom=new UnrealBloomPass(new THREE.Vector2(1,1),.2,.5,.86);
+    bloom.strength=.2;bloom.radius=.5;bloom.threshold=.86;composer.addPass(bloom);
+    composer.addPass(new OutputPass());
+    fxaa=new ShaderPass(FXAAShader);composer.addPass(fxaa);
+    resize();
+    if(image?.isConnected)image.remove();
+    host.classList.add("is-webgl-active");
+  }).catch(fallback);
 
-if (document.readyState === "complete") start();
-else window.addEventListener("load", start, { once: true });
-window.addEventListener("pageshow", event => { if (event.persisted) start(); });
+  window.addEventListener("pagehide",()=>{
+    alive=false;cancelAnimationFrame(raf);observer.disconnect();canvasObserver.disconnect();
+    document.removeEventListener("visibilitychange",onVis);
+    window.removeEventListener("pointermove",pointerMove);host.removeEventListener("pointerleave",pointerLeave);
+    window.removeEventListener("scroll",onScroll);geometry?.dispose();caps?.dispose();walls?.dispose();
+    controls?.dispose();composer?.dispose();scene.environment?.dispose();renderer.dispose();
+  },{once:true});
+}
+function start(){
+  const home=document.querySelector(".logo-hero__logo3d");
+  if(home){const img=home.querySelector("img");mount(home,img,matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"scroll");}
+  const about=document.querySelector(".about-hero__logo-rotor");
+  if(about){const img=about.querySelector("img");mount(about,img,"loop");}
+}
+if(document.readyState==="complete")start();else addEventListener("load",start,{once:true});
+addEventListener("pageshow",e=>{if(e.persisted)start();});
