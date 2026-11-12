@@ -44,7 +44,7 @@
       if (root.hasAttribute("data-academy-ui")) await loadScript("/assets/js/academy-course.js?v=20261103-4");
       if (root.dataset.z7Visual === "spatial") await loadScript("/assets/js/home-content.js?v=20261112-logo-turn-1");
       else await loadScript("/assets/js/public-video.js");
-      await loadScript("/assets/js/core-motion.js?v=20261112-session-cinematic-1");
+      await loadScript("/assets/js/core-motion.js?v=20261112-public-polish-2");
       root.dataset.z7MotionState = window.gsap && window.ScrollTrigger && window.Lenis ? "ready" : "native-fallback";
     }
     await loadScript("/assets/js/site-theme.js");

@@ -215,9 +215,10 @@
     const value = { n: 0 };
     const paint = () => {
       const n = Math.min(100, Math.round(value.n));
-      if (count) count.textContent = String(n);
+      if (count) count.textContent = `${n}%`;
       if (bar) bar.style.width = n + "%";
     };
+    paint();
     const logo = loader.querySelector(".z7-loader__mark");
     const ready = Promise.allSettled([document.fonts?.ready || Promise.resolve(), logo?.decode?.().catch(() => {}) || Promise.resolve()]);
     const cap = new Promise(resolve => timer(state, resolve, 900));
@@ -278,9 +279,9 @@
     }
     overlay.hidden = false;
     overlay.style.visibility = "visible";
-    if (gsap) gsap.fromTo(overlay, { yPercent: 0, clipPath: "ellipse(145% 100% at 50% 0%)" }, { yPercent: -3, clipPath: "ellipse(145% 0% at 50% 0%)", duration: .84, ease: "power3.inOut", onComplete: () => clearOverlay(state) });
+    if (gsap) gsap.fromTo(overlay, { yPercent: 0, clipPath: "ellipse(145% 100% at 50% 0%)" }, { yPercent: -3, clipPath: "ellipse(145% 0% at 50% 0%)", duration: .42, ease: "power3.inOut", onComplete: () => clearOverlay(state) });
     else if (overlay.animate) {
-      const animation = overlay.animate([{ transform: "translateY(0)", clipPath: "ellipse(145% 100% at 50% 0%)" }, { transform: "translateY(-3%)", clipPath: "ellipse(145% 0% at 50% 0%)" }], { duration: 840, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+      const animation = overlay.animate([{ transform: "translateY(0)", clipPath: "ellipse(145% 100% at 50% 0%)" }, { transform: "translateY(-3%)", clipPath: "ellipse(145% 0% at 50% 0%)" }], { duration: 420, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(() => clearOverlay(state));
     } else clearOverlay(state);
     timer(state, () => clearOverlay(state), 980);
@@ -311,9 +312,9 @@
     if (label) label.textContent = labelFor(destination);
     overlay.hidden = false;
     overlay.style.visibility = "visible";
-    if (gsap) gsap.fromTo(overlay, { yPercent: 105, scaleX: .9, clipPath: "ellipse(145% 0% at 50% 100%)" }, { yPercent: 0, scaleX: 1, clipPath: "ellipse(145% 100% at 50% 100%)", duration: .66, ease: "power3.inOut", onComplete: go });
+    if (gsap) gsap.fromTo(overlay, { yPercent: 105, scaleX: .9, clipPath: "ellipse(145% 0% at 50% 100%)" }, { yPercent: 0, scaleX: 1, clipPath: "ellipse(145% 100% at 50% 100%)", duration: .42, ease: "power3.inOut", onComplete: go });
     else if (overlay.animate) {
-      const animation = overlay.animate([{ transform: "translateY(105%) scaleX(.9)", clipPath: "ellipse(145% 0% at 50% 100%)" }, { transform: "translateY(0) scaleX(1)", clipPath: "ellipse(145% 100% at 50% 100%)" }], { duration: 660, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
+      const animation = overlay.animate([{ transform: "translateY(105%) scaleX(.9)", clipPath: "ellipse(145% 0% at 50% 100%)" }, { transform: "translateY(0) scaleX(1)", clipPath: "ellipse(145% 100% at 50% 100%)" }], { duration: 420, easing: "cubic-bezier(.76,0,.24,1)", fill: "forwards" });
       animation.finished.catch(() => {}).then(go);
     } else go();
     timer(state, go, 740);

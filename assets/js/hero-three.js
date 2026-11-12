@@ -100,7 +100,7 @@ function mountLogo({ host, image, hero, mode }) {
 
   host.classList.add("is-webgl-active");
   let pointerX = 0, pointerY = 0, targetX = 0, targetY = 0, scrollYaw = 0;
-  let previous = performance.now(), frame = 0, raf = 0, loopYaw = 0;
+  let previous = performance.now(), frame = 0, raf = 0, loopYaw = 0, inView = true;
 
   const onMove = event => {
     if (reducedMotion || matchMedia("(pointer: coarse)").matches) return;
@@ -135,16 +135,35 @@ function mountLogo({ host, image, hero, mode }) {
     group.rotation.x += (pointerY * -.14 - group.rotation.x) * .06;
     renderer.render(scene, camera);
   };
+  const pauseAnimation = () => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+  };
+  const resumeAnimation = () => {
+    if (inView && !document.hidden && !raf) {
+      previous = performance.now();
+      raf = requestAnimationFrame(animate);
+    }
+  };
+  const visibilityObserver = "IntersectionObserver" in window
+    ? new IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView) resumeAnimation();
+        else pauseAnimation();
+      }, { rootMargin: "120px" })
+    : null;
+  visibilityObserver?.observe(hero || host);
   const onVisibility = () => {
-    if (document.hidden && raf) { cancelAnimationFrame(raf); raf = 0; }
-    else if (!document.hidden && !raf) { previous = performance.now(); raf = requestAnimationFrame(animate); }
+    if (document.hidden) pauseAnimation();
+    else resumeAnimation();
   };
   document.addEventListener("visibilitychange", onVisibility);
-  raf = requestAnimationFrame(animate);
+  resumeAnimation();
 
   window.addEventListener("pagehide", () => {
     if (raf) cancelAnimationFrame(raf);
     observer.disconnect();
+    visibilityObserver?.disconnect();
     document.removeEventListener("visibilitychange", onVisibility);
     if (mode === "scroll") {
       hero.removeEventListener("pointermove", onMove);
