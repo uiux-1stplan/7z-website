@@ -2,12 +2,12 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.m
 import { SVGLoader } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/SVGLoader.js";
 import { RectAreaLightUniformsLib } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/environments/RoomEnvironment.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js";
 
 const VERSION="0.158.0";
 const SVG_URL="/assets/brand/7Z-LogoT.svg";
 const reduceMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const MathUtilsSafeTan=(degrees)=>Math.tan(THREE.MathUtils.degToRad(degrees/2));
 let svgTextPromise;
 function loadSvg(){ return svgTextPromise ||= fetch(SVG_URL,{cache:"force-cache"}).then(r=>{if(!r.ok)throw Error("Logo SVG unavailable");return r.text()}); }
 
@@ -101,7 +101,7 @@ function mount(host,mode){
   addAreaLight(lightGroup,0xc5c5c5,15.4,72,520,[165,10,-58],[18,0,0]);
   addAreaLight(lightGroup,0xbfbfbf,7,150,300,[120,90,160],[0,0,0]);
 
-  let geometry, caps, walls, controls;
+  let geometry, caps, walls;
   let pointerX=0,pointerY=0,targetX=0,targetY=0,scrollYaw=0;
   const hero=host.closest(".logo-hero");
   const interactionArea=hero||host;
@@ -110,7 +110,6 @@ function mount(host,mode){
     console.error("[7Z hero logo] Extrusion failed; keeping the logo visible in the same canvas.",error);
     canvasObserver.disconnect();
     geometry?.dispose(); geometry=undefined; caps?.dispose(); caps=undefined; walls?.dispose(); walls=undefined;
-    controls?.dispose(); controls=undefined;
     logoGroup.clear();
     new THREE.TextureLoader().load(SVG_URL,texture=>{
       if(!alive){texture.dispose();return;}
@@ -127,9 +126,17 @@ function mount(host,mode){
     if(!alive)return;
     const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight),dpr=Math.min(devicePixelRatio||1,2);
     camera.aspect=w/h;
-    const fit=Math.max(1,w/h);
-    camera.position.z=Math.max(310,420/Math.sqrt(fit));
     camera.updateProjectionMatrix();
+    const fov=MathUtilsSafeTan(camera.fov);
+    if(geometry){
+      const bounds=geometry.boundingBox||geometry.computeBoundingBox();
+      const size=bounds.getSize(new THREE.Vector3());
+      // Fit the full mark with room for its scroll spin and subtle pointer tilt.
+      const halfWidth=Math.max(size.x,size.z)*.5+size.y*.08+size.z*.05;
+      const halfHeight=size.y*.5+size.x*.08+size.z*.05;
+      const safeDistance=Math.max(halfHeight/fov,halfWidth/(fov*camera.aspect))*1.5;
+      camera.position.set(0,0,Math.max(390,safeDistance));
+    } else camera.position.set(0,0,480);
     renderer.setPixelRatio(dpr);renderer.setSize(w,h,false);
   }
   const canvasObserver=new ResizeObserver(resize);canvasObserver.observe(host);
@@ -167,7 +174,6 @@ function mount(host,mode){
       pointerY=THREE.MathUtils.damp(pointerY,targetY,3.2,time);
       logoGroup.rotation.x=pointerY;
       logoGroup.rotation.z=pointerX;
-      controls?.update();
       renderer.render(scene,camera);
     } else renderer.render(scene,camera);
   }
@@ -178,10 +184,6 @@ function mount(host,mode){
     caps=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:mode==="scroll"?0xb8bec7:0x505050,metalness:mode==="scroll"?.72:.94,roughness:mode==="scroll"?.2:.1,emissive:mode==="scroll"?0x343a43:0x000000,emissiveIntensity:mode==="scroll"?.34:0,clearcoat:1,clearcoatRoughness:.08,transmission:0,ior:1.48,thickness:0,envMapIntensity:mode==="scroll"?3.2:6.9});
     walls=new THREE.MeshPhysicalMaterial({side:THREE.FrontSide,color:mode==="scroll"?0xaeb4bd:0x7c7c7c,emissive:mode==="scroll"?0x3d434c:0x303030,emissiveIntensity:mode==="scroll"?.22:.11,metalness:mode==="scroll"?.72:.94,roughness:mode==="scroll"?.24:.16,clearcoat:1,envMapIntensity:mode==="scroll"?3.1:6.15});
     const mesh=new THREE.Mesh(geometry,[caps,walls]);logoGroup.add(mesh);
-    controls=new OrbitControls(camera,renderer.domElement);
-    controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.06;
-    controls.minDistance=150;controls.maxDistance=900;
-    controls.enableRotate=true;controls.rotateSpeed=.5;controls.enableZoom=false;
     resize();
     host.classList.add("is-webgl-active");
   }).catch(fallback);
@@ -192,7 +194,7 @@ function mount(host,mode){
     window.removeEventListener("pointermove",pointerMove);interactionArea.removeEventListener("pointerleave",pointerLeave);
     delete host.dataset.threeMounted;
     window.removeEventListener("scroll",onScroll);geometry?.dispose();caps?.dispose();walls?.dispose();
-    controls?.dispose();scene.environment?.dispose();renderer.dispose();renderer.domElement.remove();host.classList.remove("is-webgl-active");
+    scene.environment?.dispose();renderer.dispose();renderer.domElement.remove();host.classList.remove("is-webgl-active");
   },{once:true});
 }
 function start(){
