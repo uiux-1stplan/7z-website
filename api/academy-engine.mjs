@@ -19,7 +19,7 @@ import {
   buildMilestoneReportHtml
 } from "./_email-templates.mjs";
 
-const isVercel = Boolean(process.env.VERCEL); const rootDir = isVercel ? "/tmp/7z-academy" : resolve(fileURLToPath(new URL("..", import.meta.url)));
+const isVercel = Boolean(process.env.VERCEL); const rootDir = isVercel ? "/tmp/7z-academy" : (process.env.VERCEL ? "/tmp/7z-academy" : resolve(fileURLToPath(new URL("..", import.meta.url))));
 const dataDir = join(rootDir, "data");
 const storageFile = join(dataDir, "academy-data.json");
 const uploadReceiptsDir = join(rootDir, "media", "uploads", "receipts");
@@ -422,5 +422,6 @@ export async function trigger20RegistrationExcelReport(allRegistrations, totalCo
     console.error("[EXCEL 20 TRIGGER ERROR]", err);
   }
 }
+
 
 
