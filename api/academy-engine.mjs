@@ -1,5 +1,5 @@
-/**
- * 7Z MAGIC ACADEMY — FULL-STACK ENGINE
+﻿/**
+ * 7Z MAGIC ACADEMY â€” FULL-STACK ENGINE
  * Neon Postgres Database, Zoho SMTP Email Engine, 20-Milestone Excel Automation via ExcelJS
  */
 
@@ -194,10 +194,10 @@ export async function ensureDbSchema() {
 
 // Mailer Setup (Zoho SMTP with SSL/TLS Fallback)
 function getTransporter() {
-  const host = process.env.SMTP_HOST || process.env.ZOHO_SMTP_HOST || "smtppro.zoho.com";
-  const user = process.env.SMTP_USER || process.env.ZOHO_SMTP_USER || ADMIN_EMAIL;
-  const pass = process.env.SMTP_PASS || process.env.ZOHO_SMTP_PASS || process.env.ZOHO_SMTP_APP_PASSWORD;
-  const port = Number(process.env.SMTP_PORT || process.env.ZOHO_SMTP_PORT || 465);
+  const host = (process.env.ZOHO_SMTP_HOST || process.env.SMTP_HOST || "smtp.zoho.com") || process.env.ZOHO_SMTP_HOST || "smtppro.zoho.com";
+  const user = (process.env.ZOHO_SMTP_USER || process.env.SMTP_USER || "creative@7z-magic.com") || process.env.ZOHO_SMTP_USER || ADMIN_EMAIL;
+  const pass = (process.env.ZOHO_SMTP_APP_PASSWORD || process.env.SMTP_PASS) || process.env.ZOHO_SMTP_PASS || process.env.ZOHO_SMTP_APP_PASSWORD;
+  const port = Number((process.env.ZOHO_SMTP_PORT || process.env.SMTP_PORT || "465") || process.env.ZOHO_SMTP_PORT || 465);
 
   if (!pass) {
     return null;
@@ -217,7 +217,7 @@ function getTransporter() {
 // Send Email Helper
 export async function sendEmail({ to, subject, html, attachments = [] }) {
   const transporter = getTransporter();
-  const user = process.env.SMTP_USER || process.env.ZOHO_SMTP_USER || ADMIN_EMAIL;
+  const user = (process.env.ZOHO_SMTP_USER || process.env.SMTP_USER || "creative@7z-magic.com") || process.env.ZOHO_SMTP_USER || ADMIN_EMAIL;
   const from = `7Z MAGIC ACADEMY <${user}>`;
 
   if (!transporter) {
@@ -257,7 +257,7 @@ export async function sendAdminRegistrationAlert(reg) {
 
   return sendEmail({
     to: ADMIN_EMAIL,
-    subject: `[7Z ACADEMY] تسجيل جديد: ${reg.fullName} — ${reg.courseName} (${reg.reference || `7Z-REG-${reg.id}`})`,
+    subject: `[7Z ACADEMY] ØªØ³Ø¬ÙŠÙ„ Ø¬Ø¯ÙŠØ¯: ${reg.fullName} â€” ${reg.courseName} (${reg.reference || `7Z-REG-${reg.id}`})`,
     html,
     attachments
   });
@@ -268,7 +268,7 @@ export async function sendStudentRegistrationConfirmation(reg) {
   const html = buildStudentConfirmationHtml(reg);
   return sendEmail({
     to: reg.email,
-    subject: `تأكيد استلام طلب التسجيل | 7Z Magic Academy — ${reg.reference || ""}`,
+    subject: `ØªØ£ÙƒÙŠØ¯ Ø§Ø³ØªÙ„Ø§Ù… Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¬ÙŠÙ„ | 7Z Magic Academy â€” ${reg.reference || ""}`,
     html
   });
 }
@@ -278,7 +278,7 @@ export async function sendPaymentApprovedEmail(reg) {
   const html = buildPaymentApprovedHtml(reg);
   return sendEmail({
     to: reg.email,
-    subject: `🎉 تهانينا! تم تأكيد وتفعيل تسجيلك رسمياً | 7Z Magic Academy`,
+    subject: `ðŸŽ‰ ØªÙ‡Ø§Ù†ÙŠÙ†Ø§! ØªÙ… ØªØ£ÙƒÙŠØ¯ ÙˆØªÙØ¹ÙŠÙ„ ØªØ³Ø¬ÙŠÙ„Ùƒ Ø±Ø³Ù…ÙŠØ§Ù‹ | 7Z Magic Academy`,
     html
   });
 }
@@ -288,7 +288,7 @@ export async function sendPaymentRejectedEmail(reg, reason = "") {
   const html = buildPaymentRejectedHtml(reg, reason);
   return sendEmail({
     to: reg.email,
-    subject: `تحديث بشأن إيصال الدفع لطلب التسجيل | 7Z Magic Academy — ${reg.reference || ""}`,
+    subject: `ØªØ­Ø¯ÙŠØ« Ø¨Ø´Ø£Ù† Ø¥ÙŠØµØ§Ù„ Ø§Ù„Ø¯ÙØ¹ Ù„Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¬ÙŠÙ„ | 7Z Magic Academy â€” ${reg.reference || ""}`,
     html
   });
 }
@@ -309,7 +309,7 @@ export async function generateStyledExcelReportBuffer(registrations, totalCount)
   // Title Banner
   worksheet.mergeCells("A1:J1");
   const banner = worksheet.getCell("A1");
-  banner.value = `7Z MAGIC ACADEMY — MILESTONE REPORT (${totalCount} REGISTRATIONS)`;
+  banner.value = `7Z MAGIC ACADEMY â€” MILESTONE REPORT (${totalCount} REGISTRATIONS)`;
   banner.font = { name: "Arial", size: 14, bold: true, color: { argb: "FFFFFFFF" } };
   banner.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF08090C" } };
   banner.alignment = { horizontal: "center", vertical: "middle" };
@@ -354,14 +354,14 @@ export async function generateStyledExcelReportBuffer(registrations, totalCount)
     const row = worksheet.addRow([
       r.seatNumber || r.seat_number || idx + 1,
       r.reference || `7Z-REG-${r.id}`,
-      r.fullName || r.full_name || "—",
-      r.email || "—",
-      r.phone || "—",
+      r.fullName || r.full_name || "â€”",
+      r.email || "â€”",
+      r.phone || "â€”",
       r.courseName || r.course_id || "7Z Course",
       Number(r.finalPrice || r.price_jod || 250),
       r.promoCode || r.coupon_code || "NONE",
       r.paymentStatus || r.payment_status || "PENDING_REVIEW",
-      (r.submittedAt || r.created_at) ? new Date(r.submittedAt || r.created_at).toISOString().split("T")[0] : "—"
+      (r.submittedAt || r.created_at) ? new Date(r.submittedAt || r.created_at).toISOString().split("T")[0] : "â€”"
     ]);
 
     row.height = 22;
@@ -406,7 +406,7 @@ export async function trigger20RegistrationExcelReport(allRegistrations, totalCo
 
     await sendEmail({
       to: REPORT_EMAIL,
-      subject: `📊 [تقرير إحصائي آلي] وصول التسجيلات إلى ${totalCount} طالباً — 7Z Magic Academy`,
+      subject: `ðŸ“Š [ØªÙ‚Ø±ÙŠØ± Ø¥Ø­ØµØ§Ø¦ÙŠ Ø¢Ù„ÙŠ] ÙˆØµÙˆÙ„ Ø§Ù„ØªØ³Ø¬ÙŠÙ„Ø§Øª Ø¥Ù„Ù‰ ${totalCount} Ø·Ø§Ù„Ø¨Ø§Ù‹ â€” 7Z Magic Academy`,
       html,
       attachments: [
         {
@@ -422,3 +422,4 @@ export async function trigger20RegistrationExcelReport(allRegistrations, totalCo
     console.error("[EXCEL 20 TRIGGER ERROR]", err);
   }
 }
+
