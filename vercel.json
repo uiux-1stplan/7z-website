@@ -90,6 +90,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/academy/:path*",
+      "destination": "/api/academy-router"
+    },
+    {
       "source": "/api/admin/admin-accounts",
       "destination": "/api/admin-router?__z7route=admin-accounts"
     },

@@ -1,0 +1,117 @@
+/* 7Z MAGIC — Cinematic Motion System: Dot & Ring Cursor, Dot Grid Warp, Spring Unblur Lines */
+
+/* ==========================================================================
+   1. Interactive Background: Dot Grid Warp Canvas
+   ========================================================================== */
+.z7-canvas-warp {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
+}
+
+/* Optional Radial Backdrop Wash */
+.z7-warp-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(30, 58, 138, 0.08) 0%, rgba(6, 7, 13, 0) 70%);
+}
+
+[data-theme="light"] .z7-warp-backdrop,
+body.light-theme .z7-warp-backdrop,
+html.theme-light .z7-warp-backdrop {
+  background: radial-gradient(120% 90% at 50% 0%, rgba(37, 99, 235, 0.05) 0%, rgba(248, 250, 252, 0) 70%);
+}
+
+/* ==========================================================================
+   2. Custom Cursor: Dot & Ring
+   ========================================================================== */
+.z7-cursor-ring,
+.z7-cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 99999;
+  opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.z7-cursor-ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 1.5px solid #ffffff;
+  background: transparent;
+}
+
+.z7-cursor-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* Light Mode Cursors */
+[data-theme="light"] .z7-cursor-ring,
+body.light-theme .z7-cursor-ring,
+html.theme-light .z7-cursor-ring {
+  border-color: #0f172a;
+}
+
+[data-theme="light"] .z7-cursor-dot,
+body.light-theme .z7-cursor-dot,
+html.theme-light .z7-cursor-dot {
+  background: #0f172a;
+}
+
+/* ==========================================================================
+   3. Heading Unblur Lines Layout
+   ========================================================================== */
+.z7-spring-line-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  column-gap: 0.3em;
+  row-gap: 0.1em;
+}
+
+.z7-spring-line-wrap--center {
+  justify-content: center !important;
+}
+
+.z7-spring-line-wrap--start {
+  justify-content: flex-start !important;
+}
+
+.z7-spring-line-wrap--end {
+  justify-content: flex-end !important;
+}
+
+.z7-spring-line {
+  display: inline-block;
+  will-change: opacity, filter, transform;
+}
+
+/* ==========================================================================
+   4. Accessibility & Reduced Motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .z7-cursor-ring,
+  .z7-cursor-dot,
+  .z7-canvas-warp,
+  .z7-warp-backdrop {
+    display: none !important;
+  }
+  .z7-spring-line {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}

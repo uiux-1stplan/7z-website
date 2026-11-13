@@ -1,0 +1,68 @@
+{
+  "registrations": [],
+  "coupons": [
+    {
+      "id": "c1",
+      "code": "7ZVIP",
+      "discountPercent": 20,
+      "courseScope": "all",
+      "status": "active",
+      "createdAt": "2026-11-13T16:44:46.288Z"
+    },
+    {
+      "id": "c2",
+      "code": "MAGIC15",
+      "discountPercent": 15,
+      "courseScope": "all",
+      "status": "active",
+      "createdAt": "2026-11-13T16:44:46.288Z"
+    },
+    {
+      "id": "c3",
+      "code": "DIRECT15",
+      "discountPercent": 15,
+      "courseScope": "all",
+      "status": "active",
+      "createdAt": "2026-11-13T16:44:46.288Z"
+    },
+    {
+      "id": "c4",
+      "code": "HASSAN25",
+      "discountPercent": 25,
+      "courseScope": "all",
+      "status": "active",
+      "createdAt": "2026-11-13T16:44:46.288Z"
+    },
+    {
+      "id": "c5",
+      "code": "SHAAS25",
+      "discountPercent": 25,
+      "courseScope": "all",
+      "status": "active",
+      "createdAt": "2026-11-13T16:44:46.288Z"
+    }
+  ],
+  "affiliates": [
+    {
+      "id": "a1",
+      "name": "Hasan Rayan",
+      "email": "hasan@7z-magic.com",
+      "code": "HASSAN25",
+      "discountPercent": 25,
+      "commissionPercent": 20,
+      "status": "active",
+      "createdAt": "2026-11-13T16:44:46.288Z"
+    },
+    {
+      "id": "a2",
+      "name": "Shaas Matar",
+      "email": "shaas@7z-magic.com",
+      "code": "SHAAS25",
+      "discountPercent": 25,
+      "commissionPercent": 20,
+      "status": "active",
+      "createdAt": "2026-11-13T16:44:46.288Z"
+    }
+  ],
+  "counter": 0
+}

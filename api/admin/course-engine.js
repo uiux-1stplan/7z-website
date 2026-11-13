@@ -7,6 +7,10 @@ import {
   sendWebResponse,
   toWebRequest,
 } from "../../lib/vercel-api.mjs";
+import {
+  sendPaymentApprovedEmail,
+  sendPaymentRejectedEmail
+} from "../academy-engine.mjs";
 
 const courses = new Set(["all", "cinematic-film", "ai-engineering"]);
 function send(res, status, body) {
@@ -387,9 +391,27 @@ export default async function handler(req, res) {
         commission_status=CASE WHEN ${status}='PAID' AND commission_percent>0 THEN 'PAYABLE'
           WHEN ${status}='PAID' THEN 'NOT_APPLICABLE' WHEN ${status}='PENDING_REVIEW' AND commission_percent>0 THEN 'PENDING_PAYMENT_REVIEW'
           ELSE 'NOT_APPLICABLE' END
-        WHERE id=${registrationId} RETURNING id,payment_status,commission_status`;
+        WHERE id=${registrationId} RETURNING id,full_name,email,course_id,seat_number,payment_status,commission_status`;
       if (!registration) return send(res, 404, { error: "Registration not found." });
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_payment_status_changed", targetType: "course_registration", targetId: registration.id, details: { status } });
+
+      if (status === "PAID" && registration.email) {
+        sendPaymentApprovedEmail({
+          fullName: registration.full_name,
+          email: registration.email,
+          courseName: registration.course_id === "ai-engineering" ? "دورة الذكاء الاصطناعي للمهندسين" : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي",
+          seatNumber: registration.seat_number || registration.id,
+          reference: `7Z-REG-${registration.id}`
+        }).catch((err) => console.error("Admin approve email error:", err.message));
+      } else if (status === "REJECTED" && registration.email) {
+        sendPaymentRejectedEmail({
+          fullName: registration.full_name,
+          email: registration.email,
+          courseName: registration.course_id === "ai-engineering" ? "دورة الذكاء الاصطناعي للمهندسين" : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي",
+          reference: `7Z-REG-${registration.id}`
+        }, body.reason || "").catch((err) => console.error("Admin reject email error:", err.message));
+      }
+
       return send(res, 200, { registration });
     }
 

@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06070d">
+  <title>إتمام الدفع ورفع الإيصال | دورة صناعة الأفلام بالذكاء الاصطناعي | 7Z MAGIC</title>
+  <meta name="description" content="الخطوة الثانية: إتمام الدفع ورفع إيصال التحويل المالي لدورة صناعة الأفلام بالذكاء الاصطناعي.">
+  <link rel="canonical" href="https://7z-magic.com/courses/cinematic-filmmaking-with-ai/payment/">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/assets/brand/7Z-LogoT(3).png">
+  
+  <link rel="stylesheet" href="/assets/css/academy-system.css?v=20261113-cinematic-3">
+  <link rel="stylesheet" href="/assets/css/motion-effects.css">
+</head>
+<body class="academy-body" data-page-title-key="pay_title">
+
+  <!-- Academy Navigation -->
+  <header class="acad-nav">
+    <div class="academy-shell acad-nav__inner">
+      <a href="/courses/cinematic-filmmaking-with-ai/registration/" class="acad-nav__brand">
+        <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic Logo" class="acad-logo-adaptive" width="42" height="42">
+        <div class="acad-nav__brand-title">
+          <strong data-i18n="brand_kicker">أكاديمية 7Z MAGIC</strong>
+          <small data-i18n="step2_header_sub">الخطوة الثانية: الدفع وتأكيد الحجز</small>
+        </div>
+      </a>
+      <div class="acad-nav__actions">
+        <a href="/courses/cinematic-filmmaking-with-ai/registration/" class="acad-pill-btn" data-i18n="back_registration">← العودة لتعديل البيانات</a>
+        <button type="button" class="acad-pill-btn" data-acad-theme-toggle aria-label="Toggle Theme">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+          <span data-i18n="theme_toggle">المظهر</span>
+        </button>
+        <button type="button" class="acad-pill-btn acad-pill-btn--primary" data-acad-lang-toggle aria-label="Toggle Language">
+          English
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="academy-shell">
+    
+    <!-- Success Confirmation State (Hidden initially) -->
+    <div class="acad-success-view" id="successView">
+      <div class="acad-success-icon">
+        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="acad-success-title" data-i18n="success_title">تم استلام طلب التسجيل بنجاح!</h2>
+      <p class="acad-success-msg" data-i18n="success_msg">
+        شكراً لانضمامك إلى أكاديمية 7Z MAGIC. تم حفظ إيصال الدفع بنجاح وأُرسلت نسخة تأكيدية إلى بريدك الإلكتروني.
+      </p>
+      
+      <div class="acad-success-ref">
+        <span data-i18n="success_ref">رقم الحجز المرجعي:</span> <strong id="successRefNum" style="color: #ffffff; letter-spacing: 0.05em;">7Z-REG-100000</strong>
+      </div>
+
+      <div style="background: rgba(37, 99, 235, 0.1); border: 1px solid var(--acad-border); border-radius: 12px; padding: 18px; max-width: 520px; margin: 0 auto 30px; font-size: 13.5px; color: var(--acad-sky); line-height: 1.6;" data-i18n="success_note">
+        ⚡ تفعيل مقعدك في الدورة سيتم فور مراجعة وتأكيد إيصال الدفع من قبل الإدارة.
+      </div>
+
+      <a href="/courses/" class="acad-pill-btn acad-pill-btn--primary" style="padding: 12px 32px;" data-i18n="back_to_academy">
+        العودة للأكاديمية
+      </a>
+    </div>
+
+    <!-- Payment Layout (Step 2) -->
+    <div class="acad-reg-layout" id="paymentLayout">
+      
+      <!-- Left Column: Summary of student, Promo Code & Receipt Upload -->
+      <div class="acad-reg-card">
+        <span class="acad-hero__badge" style="background: rgba(37, 99, 235, 0.15); border-color: var(--acad-sky); color: var(--acad-sky); font-weight: 700; margin-bottom: 16px;" data-i18n="step2_badge">
+          الخطوة 2 من 2: الدفع وتأكيد الحجز
+        </span>
+        <h1 class="acad-reg-title" data-i18n="pay_title">إتمام الدفع وإرفاق الإيصال</h1>
+        <p class="acad-reg-subtitle" data-i18n="pay_subtitle">
+          راجع ملخص بياناتك، طبّق كود الخصم إن وجد، ثم حوّل المبلغ وأرفق صورة الإيصال لتأكيد المقعد.
+        </p>
+
+        <!-- Student Contact Summary Box -->
+        <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid var(--acad-border); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <strong style="font-size: 13px; color: var(--acad-sky); text-transform: uppercase; letter-spacing: 0.08em;" data-i18n="student_info_title">بيانات الطالب المسجل</strong>
+            <a href="/courses/cinematic-filmmaking-with-ai/registration/" style="font-size: 12px; color: var(--acad-sky); text-decoration: underline;" data-i18n="edit_student_info">تعديل البيانات</a>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; font-size: 13px;">
+            <div><span style="color: var(--acad-text-muted);" data-i18n="label_student_name">الاسم:</span> <strong id="payStudentName">—</strong></div>
+            <div><span style="color: var(--acad-text-muted);" data-i18n="label_student_email">البريد:</span> <strong id="payStudentEmail">—</strong></div>
+            <div><span style="color: var(--acad-text-muted);" data-i18n="label_student_phone">الهاتف:</span> <strong id="payStudentPhone" dir="ltr">—</strong></div>
+            <div><span style="color: var(--acad-text-muted);" data-i18n="label_student_city">المدينة:</span> <strong id="payStudentCity">—</strong></div>
+          </div>
+        </div>
+
+        <form id="academyPaymentForm" data-course-id="cinematic-film" data-course-name="صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي">
+          
+          <!-- Promo / Affiliate Code Section -->
+          <div class="acad-field" style="margin-bottom: 22px;">
+            <label class="acad-label" for="payPromoCode">
+              <span data-i18n="label_promo">كود الخصم أو كود المسوق</span>
+            </label>
+            <div class="acad-promo-box">
+              <input type="text" id="payPromoCode" name="promoCode" class="acad-input" placeholder="أدخل الكود إن وجد" data-i18n-ph="placeholder_promo">
+              <button type="button" id="payApplyPromoBtn" class="acad-promo-btn" data-i18n="btn_apply_code">تطبيق الكود</button>
+            </div>
+            <div id="payPromoFeedback" class="acad-promo-feedback"></div>
+          </div>
+
+          <!-- Receipt Upload Section -->
+          <div class="acad-field" style="margin-bottom: 26px;">
+            <label class="acad-label">
+              <span><span data-i18n="label_receipt">إيصال التحويل المالي (صورة أو PDF)</span> <span class="req">*</span></span>
+            </label>
+            
+            <input type="file" id="receiptFile" accept="image/png,image/jpeg,image/webp,application/pdf" style="display: none;">
+            
+            <div class="acad-upload-zone" id="uploadDropZone">
+              <svg class="acad-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <p class="acad-upload-title" data-i18n="receipt_drop">انقر لاختيار الملف أو اسحبه وأفلته هنا</p>
+              <p class="acad-upload-hint" data-i18n="receipt_hint">الملفات المدعومة: PNG, JPG, WEBP, PDF (الحد الأقصى 12MB)</p>
+            </div>
+
+            <!-- Live Preview Box -->
+            <div class="acad-preview-box" id="receiptPreviewBox">
+              <button type="button" class="acad-preview-remove" id="receiptRemoveBtn" data-i18n="receipt_remove">حذف وتغيير الملف</button>
+              <img id="receiptPreviewImg" src="" alt="Payment Receipt Preview" style="display: none;">
+              <div id="receiptPreviewPdf" class="acad-preview-pdf" style="display: none;"></div>
+            </div>
+          </div>
+
+          <button type="submit" id="paySubmitBtn" class="acad-submit-btn">
+            <span data-i18n="submit_pay_btn">تأكيد وإرسال طلب التسجيل</span>
+          </button>
+          <p class="acad-submit-note" data-i18n="submit_note">
+            🔒 بمجرد إرسال الطلب، يتلقى فريق 7Z Magic إشعاراً فورياً لمراجعة الإيصال وتأكيد المقعد عبر البريد الإلكتروني.
+          </p>
+        </form>
+      </div>
+
+      <!-- Right Column: Order Summary & Official Payment Methods -->
+      <aside class="acad-summary-card">
+        <h2 class="acad-summary-title" data-i18n="summary_title">ملخص الحجز والدفع</h2>
+        
+        <div class="acad-summary-lines">
+          <div class="acad-summary-line">
+            <span data-i18n="summary_course">الدورة التدريبية:</span>
+            <strong data-i18n="c1_title_short" style="max-width: 200px; text-align: end;">صناعة الأفلام والمحتوى السينمائي</strong>
+          </div>
+          <div class="acad-summary-line">
+            <span data-i18n="summary_price">السعر الأساسي:</span>
+            <strong id="summaryBasePrice">250 JOD</strong>
+          </div>
+          <div class="acad-summary-line is-discount" id="summaryDiscountLine" style="display: none;">
+            <span data-i18n="summary_discount">الخصم المطبق:</span>
+            <strong id="summaryDiscountVal">-0 JOD</strong>
+          </div>
+        </div>
+
+        <div class="acad-summary-total">
+          <span data-i18n="summary_total">المبلغ المطلوب تحويله:</span>
+          <strong id="summaryTotalVal">250 JOD</strong>
+        </div>
+
+        <!-- Payment Methods (CliQ & Western Union) -->
+        <div class="acad-payment-methods">
+          <div class="acad-method-card">
+            <div class="acad-method-header">
+              <strong>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span data-i18n="method_cliq_title">1. الدفع عبر CliQ (داخل الأردن)</span>
+              </strong>
+              <span class="acad-method-badge">CliQ Jordan</span>
+            </div>
+
+            <div class="acad-method-row">
+              <span class="label" data-i18n="label_fullname">الاسم الكامل:</span>
+              <div class="val-wrap">
+                <code>Hasan Khaled Hasan Saleh</code>
+                <button type="button" class="acad-copy-btn" data-copy="Hasan Khaled Hasan Saleh" aria-label="Copy Full Name">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span data-i18n="copy_btn">نسخ</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="acad-method-row">
+              <span class="label" data-i18n="label_alias">الاسم المستعار (Alias):</span>
+              <div class="val-wrap">
+                <code style="color: var(--acad-sky); font-size: 13px;">SANZI</code>
+                <button type="button" class="acad-copy-btn" data-copy="SANZI" aria-label="Copy Alias">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span data-i18n="copy_btn">نسخ</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="acad-method-row">
+              <span class="label" data-i18n="label_phone_num">رقم الهاتف:</span>
+              <div class="val-wrap">
+                <code dir="ltr">+962797020089</code>
+                <button type="button" class="acad-copy-btn" data-copy="+962797020089" aria-label="Copy Phone Number">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span data-i18n="copy_btn">نسخ</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="acad-method-row">
+              <span class="label" data-i18n="label_bank">البنك:</span>
+              <div class="val-wrap">
+                <strong style="font-size: 12.5px; color: var(--acad-text);" data-i18n="bank_name_val">البنك العربي (Arab Bank)</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="acad-method-card">
+            <div class="acad-method-header">
+              <strong>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span data-i18n="method_wu_title">2. حوالة Western Union (كافة الدول)</span>
+              </strong>
+              <span class="acad-method-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Worldwide</span>
+            </div>
+
+            <div class="acad-method-row">
+              <span class="label" data-i18n="label_fullname">الاسم الكامل:</span>
+              <div class="val-wrap">
+                <code>Hasan Khaled Hasan Saleh</code>
+                <button type="button" class="acad-copy-btn" data-copy="Hasan Khaled Hasan Saleh" aria-label="Copy Full Name">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span data-i18n="copy_btn">نسخ</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="acad-method-row">
+              <span class="label" data-i18n="label_phone_num">رقم الهاتف:</span>
+              <div class="val-wrap">
+                <code dir="ltr">+962797020089</code>
+                <button type="button" class="acad-copy-btn" data-copy="+962797020089" aria-label="Copy Phone Number">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span data-i18n="copy_btn">نسخ</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="acad-method-row">
+              <span class="label" data-i18n="label_country_city">الدولة والمدينة:</span>
+              <div class="val-wrap">
+                <strong style="font-size: 12.5px; color: var(--acad-text);" data-i18n="country_city_val">عمّان، الأردن (Amman, Jordan)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-i18n="pay_receipt_note" style="font-size: 12px; color: var(--acad-text-muted); line-height: 1.6; text-align: center;">
+          بعد إتمام التحويل عبر تطبيق بنكك أو محفظتك، يرجى حفظ لقطة الشاشة (Screenshot) أو إيصال الـ PDF ورفعه في النموذج لتأكيد مقعدك.
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Academy Footer -->
+  <footer style="border-top: 1px solid var(--acad-border); padding: 40px 0; background: var(--acad-panel); text-align: center;">
+    <div class="academy-shell" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+      <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic Logo" class="acad-logo-adaptive" width="120" style="object-fit: contain;">
+      <p data-i18n="footer_desc" style="font-size: 13px; color: var(--acad-text-muted); max-width: 500px;">
+        أكاديمية 7Z MAGIC — تحويل الرؤية الإبداعية إلى واقع سينمائي وهندسي بتقنيات الذكاء الاصطناعي.
+      </p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        <a href="mailto:creative@7z-magic.com" class="acad-pill-btn" data-i18n="footer_contact_email">creative@7z-magic.com</a>
+        <a href="https://wa.me/962797020089" target="_blank" rel="noopener noreferrer" class="acad-pill-btn" data-i18n="footer_contact_wa">واتساب: +962 79 702 0089</a>
+      </div>
+      <small data-i18n="footer_copyright" style="color: var(--acad-text-dim); margin-top: 10px;">جميع الحقوق محفوظة © 2026 7Z Magic.</small>
+    </div>
+  </footer>
+
+  <script src="/assets/js/academy-bilingual.js?v=20261113-cinematic-3"></script>
+  <script src="/7z-motion-loader.js"></script>
+<script src="/assets/js/spring-text-engine.js" defer></script>
+<script src="/assets/js/custom-cursors.js" defer></script>
+</body>
+</html>

@@ -10,6 +10,12 @@ import { createServer } from "node:http";
 import { basename, extname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import crypto from "node:crypto";
+import {
+  handleValidateCode,
+  handleRegistration,
+  getAdminData,
+  handleAdminAction
+} from "./api/academy-service.mjs";
 
 const root = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const port = Number(process.env.PORT || 4173);
@@ -212,8 +218,8 @@ function readBody(req, limit = 2 * 1024 * 1024) {
   });
 }
 
-async function readJsonBody(req) {
-  const body = await readBody(req);
+async function readJsonBody(req, limit = 2 * 1024 * 1024) {
+  const body = await readBody(req, limit);
   if (!body.length) return {};
   return JSON.parse(body.toString("utf8"));
 }
@@ -658,6 +664,108 @@ async function handleApi(req, res, url) {
     if (!requireAdmin(req, res)) return true;
     sendJson(res, 200, analyticsSummary());
     return true;
+  }
+
+  // Academy Endpoints
+  if (url.pathname === "/api/academy/validate-code") {
+    const code = url.searchParams.get("code") || "";
+    const course = url.searchParams.get("course") || "all";
+    const result = await handleValidateCode(code, course);
+    sendJson(res, 200, result);
+    return true;
+  }
+
+  if (url.pathname === "/api/academy/register" && req.method === "POST") {
+    const body = await readJsonBody(req, 15 * 1024 * 1024);
+    const result = await handleRegistration(body);
+    sendJson(res, 201, result);
+    return true;
+  }
+
+  if (url.pathname === "/api/academy/admin-data" && req.method === "GET") {
+    const result = await getAdminData();
+    sendJson(res, 200, result);
+    return true;
+  }
+
+  if (url.pathname === "/api/academy/admin-action" && req.method === "POST") {
+    const body = await readJsonBody(req);
+    const result = await handleAdminAction(body.action, body);
+    sendJson(res, 200, result);
+    return true;
+  }
+
+  // Course Engine Fallback for Local Server
+  if (url.pathname === "/api/admin/course-engine") {
+    if (req.method === "GET") {
+      const adminData = await getAdminData();
+      if (url.searchParams.get("view") === "accounting") {
+        sendJson(res, 200, {
+          registrations: adminData.registrations.map((r) => ({
+            id: r.id || r.reference,
+            full_name: r.fullName,
+            email: r.email,
+            course_id: r.courseId,
+            created_at: r.createdAt || r.submittedAt,
+            coupon_code: r.promoCode,
+            price_jod: 250,
+            discount_jod: r.discountJod,
+            commission_percent: 20,
+            commission_jod: r.discountJod > 0 ? (250 - r.discountJod) * 0.2 : 50,
+            commission_status: r.paymentStatus === "APPROVED" ? "PAYABLE" : "PENDING_PAYMENT_REVIEW",
+            payment_status: r.paymentStatus,
+            payment_reference: r.receiptUrl || r.receiptName,
+            receipt_url: r.receiptUrl || r.receiptBase64
+          })),
+          adjustments: [],
+          totals: {
+            gross: adminData.stats.totalRegistrations * 250,
+            revenue: adminData.stats.totalRevenue,
+            pending: adminData.stats.pendingCount * 250,
+            discounts: adminData.registrations.reduce((s, x) => s + (x.discountJod || 0), 0),
+            commissionsDue: adminData.affiliates.reduce((s, x) => s + (x.commissionOwed || 0), 0),
+            studioNet: adminData.stats.totalRevenue
+          }
+        });
+      } else {
+        sendJson(res, 200, {
+          affiliates: adminData.affiliates.map((a) => ({
+            id: a.id,
+            name: a.name,
+            email: a.email,
+            company: "7Z Partner",
+            commission_percent: a.commissionPercent,
+            status: a.status,
+            code_count: 1,
+            registration_count: a.confirmedCount || 0,
+            net_sales_jod: a.totalSalesJod || 0,
+            outstanding_commission_jod: a.commissionOwed || 0,
+            earned_commission_jod: a.commissionOwed || 0
+          })),
+          codes: adminData.coupons.map((c) => ({
+            id: c.id,
+            code: c.code,
+            affiliate_name: "Studio",
+            course_id: c.courseScope || "all",
+            discount_percent: c.discountPercent,
+            commission_percent: 0,
+            redemption_count: 0,
+            status: c.status
+          }))
+        });
+      }
+      return true;
+    }
+
+    if (req.method === "POST") {
+      const body = await readJsonBody(req);
+      const actionMap = {
+        "set-payment-status": body.status === "PAID" ? "approve-payment" : "reject-payment"
+      };
+      const result = await handleAdminAction(actionMap[body.action] || body.action, { ...body, reference: body.id });
+      sendJson(res, 200, result);
+      return true;
+    }
   }
 
   return false;

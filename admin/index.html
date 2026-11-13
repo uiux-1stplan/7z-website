@@ -463,6 +463,20 @@
 <dialog id="admin-action-confirm-dialog" class="admin-action-confirm-dialog"><form method="dialog"><span class="eyebrow">ADMIN ACTION / CONFIRMATION</span><h2 id="admin-action-confirm-title">Confirm action</h2><p id="admin-action-confirm-copy"></p><div class="course-edit-actions"><button class="button button-secondary" value="cancel">Cancel</button><button class="button button-danger" id="admin-action-confirm-accept" type="button">Confirm</button></div></form></dialog>
 <dialog id="file-rename-dialog" class="course-edit-dialog"><form id="file-rename-form"><div class="course-edit-head"><span class="eyebrow">PRIVATE FILE CONTROL</span><button type="button" class="course-edit-close" id="file-rename-close" aria-label="Close">×</button></div><h2>Rename file</h2><p>The new name appears to clients who have access to this file.</p><label class="file-rename-label">File name<input id="file-rename-input" name="name" type="text" maxlength="180" required></label><input id="file-rename-id" name="id" type="hidden"><div class="course-edit-actions"><button type="button" class="button button-secondary" id="file-rename-cancel">Cancel</button><button type="submit" class="button button-primary">Save name</button></div></form></dialog>
 
+<dialog id="receipt-modal-dialog" class="course-edit-dialog" style="max-width: 680px; width: 90vw;">
+  <div class="course-edit-head">
+    <span class="eyebrow">PAYMENT VERIFICATION / RECEIPT PREVIEW</span>
+    <button type="button" class="course-edit-close" id="receipt-modal-close" aria-label="Close">×</button>
+  </div>
+  <h2 id="receipt-modal-title">Payment Receipt</h2>
+  <p id="receipt-modal-student">Review transfer proof submitted by student.</p>
+  <div id="receipt-modal-body" style="margin: 18px 0; text-align: center; max-height: 60vh; overflow: auto; background: #020408; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); padding: 14px;"></div>
+  <div class="course-edit-actions">
+    <button type="button" class="button button-secondary" id="receipt-modal-cancel">Close</button>
+    <a id="receipt-modal-download" class="button button-primary" href="" target="_blank" rel="noopener noreferrer">Open Full Window ↗</a>
+  </div>
+</dialog>
+
 
 <script src="/admin/admin.js?v=20261112-user-crud-1"></script>
 <script src="/admin/course-engine.js?v=20261112-payment-reference-1"></script>

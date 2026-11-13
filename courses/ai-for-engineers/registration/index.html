@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06070d">
+  <title>تسجيل بيانات الطالب | دورة الذكاء الاصطناعي للمهندسين | 7Z MAGIC</title>
+  <meta name="description" content="الخطوة الأولى: تسجيل البيانات الشخصية وتأكيد حجز المقعد في دورة الذكاء الاصطناعي للمهندسين.">
+  <link rel="canonical" href="https://7z-magic.com/courses/ai-for-engineers/registration/">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/assets/brand/7Z-LogoT(3).png">
+  
+  <link rel="stylesheet" href="/assets/css/academy-system.css?v=20261113-cinematic-3">
+  <link rel="stylesheet" href="/assets/css/motion-effects.css">
+</head>
+<body class="academy-body" data-page-title-key="reg_title">
+
+  <!-- Academy Navigation -->
+  <header class="acad-nav">
+    <div class="academy-shell acad-nav__inner">
+      <a href="/courses/ai-for-engineers/" class="acad-nav__brand">
+        <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic Logo" class="acad-logo-adaptive" width="42" height="42">
+        <div class="acad-nav__brand-title">
+          <strong data-i18n="brand_kicker">أكاديمية 7Z MAGIC</strong>
+          <small data-i18n="step1_header_sub">الخطوة الأولى: تسجيل البيانات الشخصية</small>
+        </div>
+      </a>
+      <div class="acad-nav__actions">
+        <a href="/courses/ai-for-engineers/" class="acad-pill-btn" data-i18n="back_course">← العودة لتفاصيل الدورة</a>
+        <button type="button" class="acad-pill-btn" data-acad-theme-toggle aria-label="Toggle Theme">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+          <span data-i18n="theme_toggle">المظهر</span>
+        </button>
+        <button type="button" class="acad-pill-btn acad-pill-btn--primary" data-acad-lang-toggle aria-label="Toggle Language">
+          English
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="academy-shell">
+    
+    <!-- Registration Funnel (Step 1) -->
+    <div class="acad-reg-layout">
+      
+      <!-- Left Column: Form -->
+      <div class="acad-reg-card">
+        <span class="acad-hero__badge" style="background: rgba(37, 99, 235, 0.15); border-color: var(--acad-sky); color: var(--acad-sky); font-weight: 700; margin-bottom: 16px;" data-i18n="step1_badge">
+          الخطوة 1 من 2: البيانات الشخصية
+        </span>
+        <h1 class="acad-reg-title" data-i18n="reg_title">تسجيل بيانات الطالب</h1>
+        <p class="acad-reg-subtitle" data-i18n="reg_subtitle">
+          أدخل معلوماتك بدقة لحجز مقعدك، ثم اضغط 'المتابعة إلى الدفع' لإتمام خطوة التحويل.
+        </p>
+
+        <form id="academyStep1Form" data-course-id="ai-engineers" data-course-name="دورة الذكاء الاصطناعي للمهندسين" data-payment-path="/courses/ai-for-engineers/payment/">
+          <div class="acad-form-grid">
+            
+            <!-- Full Name -->
+            <div class="acad-field">
+              <label class="acad-label" for="fullName">
+                <span><span data-i18n="label_name">الاسم الكامل</span> <span class="req">*</span></span>
+              </label>
+              <input type="text" id="fullName" name="fullName" class="acad-input" required placeholder="أدخل اسمك الثلاثي أو الرباعي" data-i18n-ph="placeholder_name">
+            </div>
+
+            <!-- Email -->
+            <div class="acad-field">
+              <label class="acad-label" for="email">
+                <span><span data-i18n="label_email">البريد الإلكتروني</span> <span class="req">*</span></span>
+              </label>
+              <input type="email" id="email" name="email" class="acad-input" required placeholder="example@domain.com" data-i18n-ph="placeholder_email">
+            </div>
+
+            <!-- Phone / WhatsApp -->
+            <div class="acad-field">
+              <label class="acad-label" for="phone">
+                <span><span data-i18n="label_phone">رقم الهاتف / واتساب</span> <span class="req">*</span></span>
+              </label>
+              <input type="tel" id="phone" name="phone" class="acad-input" required placeholder="+962 7X XXX XXXX" data-i18n-ph="placeholder_phone" dir="ltr" style="text-align: inherit;">
+            </div>
+
+            <!-- Country & City -->
+            <div class="acad-field">
+              <label class="acad-label" for="city">
+                <span><span data-i18n="label_city">البلد والمدينة</span> <span class="req">*</span></span>
+              </label>
+              <input type="text" id="city" name="city" class="acad-input" required placeholder="مثال: عمّان، الأردن" data-i18n-ph="placeholder_city">
+            </div>
+
+            <!-- Experience Level -->
+            <div class="acad-field acad-field--full">
+              <label class="acad-label" for="experience">
+                <span data-i18n="label_experience">مستوى خبرتك السابقة</span>
+              </label>
+              <select id="experience" name="experience" class="acad-select">
+                <option value="beginner" data-i18n="exp_beginner">مبتدئ (أبدأ من الصفر)</option>
+                <option value="intermediate" data-i18n="exp_intermediate">متوسط (لدي اطلاع مسبق على الأدوات)</option>
+                <option value="advanced" data-i18n="exp_advanced">متقدم / محترف</option>
+              </select>
+            </div>
+
+            <!-- Special Notes -->
+            <div class="acad-field acad-field--full">
+              <label class="acad-label" for="notes">
+                <span data-i18n="label_notes">ملاحظات أو أهداف خاصة (اختياري)</span>
+              </label>
+              <textarea id="notes" name="notes" rows="2" class="acad-textarea" placeholder="أخبرنا عن أهدافك من هذه الدورة..." data-i18n-ph="placeholder_notes"></textarea>
+            </div>
+
+          </div>
+
+          <button type="submit" class="acad-submit-btn">
+            <span data-i18n="btn_proceed_payment">المتابعة إلى الدفع وإثبات التحويل ←</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right Column: Course Highlights & Next Step Preview -->
+      <aside class="acad-summary-card">
+        <h2 class="acad-summary-title" data-i18n="reg_summary_title">تفاصيل الدورة المحجوزة</h2>
+        
+        <div style="margin-bottom: 20px; border-radius: 12px; overflow: hidden; height: 160px; border: 1px solid var(--acad-border);">
+          <img src="/media/posters/arch_projects/9-16H/1-optimized.svg" alt="AI for Engineers" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
+        <div class="acad-summary-lines">
+          <div class="acad-summary-line">
+            <span data-i18n="reg_course_label">البرنامج التدريبي:</span>
+            <strong data-i18n="c2_title_short" style="max-width: 200px; text-align: end;">الذكاء الاصطناعي للمهندسين</strong>
+          </div>
+          <div class="acad-summary-line">
+            <span data-i18n="reg_price_label">رسوم البرنامج:</span>
+            <strong data-i18n="price_jod">250 د.أ</strong>
+          </div>
+          <div class="acad-summary-line">
+            <span data-i18n="reg_seats_label">سعة المقاعد:</span>
+            <strong style="color: var(--acad-sky);" data-i18n="c2_seats">مقاعد غير محدودة (تدريب مباشر أونلاين)</strong>
+          </div>
+          <div class="acad-summary-line">
+            <span data-i18n="reg_project_label">المشروع النهائي:</span>
+            <strong data-i18n="c2_final_project_val">مشروع وفيديو معماري متكامل</strong>
+          </div>
+        </div>
+
+        <div data-i18n="reg_next_step_hint" style="background: rgba(37, 99, 235, 0.08); border: 1px solid var(--acad-border); border-radius: 12px; padding: 16px; margin-top: 18px; font-size: 13px; color: var(--acad-text-muted); line-height: 1.6;">
+          💡 الخطوة التالية: بعد إدخال بياناتك، ستنتقل لصفحة الدفع حيث يمكنك تطبيق كود الخصم (إن وجد) ورفع إيصال التحويل (CliQ أو حوالة) لتأكيد تسجيلك رسمياً.
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Academy Footer -->
+  <footer style="border-top: 1px solid var(--acad-border); padding: 40px 0; background: var(--acad-panel); text-align: center;">
+    <div class="academy-shell" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+      <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic Logo" class="acad-logo-adaptive" width="120" style="object-fit: contain;">
+      <p data-i18n="footer_desc" style="font-size: 13px; color: var(--acad-text-muted); max-width: 500px;">
+        أكاديمية 7Z MAGIC — تحويل الرؤية الإبداعية إلى واقع سينمائي وهندسي بتقنيات الذكاء الاصطناعي.
+      </p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        <a href="mailto:creative@7z-magic.com" class="acad-pill-btn" data-i18n="footer_contact_email">creative@7z-magic.com</a>
+        <a href="https://wa.me/962797020089" target="_blank" rel="noopener noreferrer" class="acad-pill-btn" data-i18n="footer_contact_wa">واتساب: +962 79 702 0089</a>
+      </div>
+      <small data-i18n="footer_copyright" style="color: var(--acad-text-dim); margin-top: 10px;">جميع الحقوق محفوظة © 2026 7Z Magic.</small>
+    </div>
+  </footer>
+
+  <script src="/assets/js/academy-bilingual.js?v=20261113-cinematic-3"></script>
+  <script src="/7z-motion-loader.js"></script>
+<script src="/assets/js/spring-text-engine.js" defer></script>
+<script src="/assets/js/custom-cursors.js" defer></script>
+</body>
+</html>

@@ -126,10 +126,11 @@
       const paymentAction = isPending
         ? `<button class="small-button is-confirm" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="PAID">VERIFY PAYMENT</button><button class="small-button danger" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="REJECTED">REJECT</button>`
         : isPaid ? `<button class="small-button" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="PENDING_REVIEW">REOPEN REVIEW</button>` : `<span class="engine-dash">—</span>`;
-      const paymentReference = String(registration.payment_reference || "").trim();
-      const receiptCell = /^https?:\/\//i.test(paymentReference)
-        ? `<a class="small-button" href="${escape(paymentReference)}" target="_blank" rel="noopener noreferrer">VIEW RECEIPT</a>`
-        : `<code class="engine-code">${escape(paymentReference || "—")}</code>`;
+      const rawReceipt = String(registration.receipt_url || registration.payment_proof_pathname || registration.payment_reference || registration.receipt_base64 || "").trim();
+      const hasReceipt = rawReceipt.length > 5;
+      const receiptCell = hasReceipt
+        ? `<button class="small-button is-confirm" type="button" data-view-receipt="${escape(rawReceipt)}" data-student="${escape(registration.full_name)}">VIEW RECEIPT</button>`
+        : `<code class="engine-code">—</code>`;
       const commissionAction = isPaid && Number(registration.commission_jod || 0) > 0
         ? `<button class="small-button" type="button" data-engine-action="set-commission-status" data-id="${escape(registration.id)}" data-status="${registration.commission_status === "PAID" ? "PAYABLE" : "PAID"}">${registration.commission_status === "PAID" ? "REOPEN PAYOUT" : "MARK COMMISSION PAID"}</button>`
         : "";
@@ -417,6 +418,26 @@
         if (window.confirm(`Delete this audited revenue adjustment (${Number(adjustmentDelete.dataset.amount).toFixed(3)} JOD)? This will recalculate reported revenue.`)) post({ action: "delete-revenue-adjustment", id: adjustmentDelete.dataset.adjustmentDelete }, "Revenue adjustment deleted and totals recalculated.");
         return;
       }
+      const viewReceipt = event.target.closest("[data-view-receipt]");
+      if (viewReceipt) {
+        const src = viewReceipt.getAttribute("data-view-receipt");
+        const student = viewReceipt.getAttribute("data-student") || "Student";
+        const dialog = $("#receipt-modal-dialog");
+        const modalBody = $("#receipt-modal-body");
+        const studentLabel = $("#receipt-modal-student");
+        const downloadLink = $("#receipt-modal-download");
+        if (dialog && modalBody) {
+          studentLabel.textContent = `Receipt proof submitted by ${student}`;
+          if (src.endsWith(".pdf") || src.includes("application/pdf")) {
+            modalBody.innerHTML = `<iframe src="${src}" style="width:100%;height:450px;border:none;"></iframe>`;
+          } else {
+            modalBody.innerHTML = `<img src="${src}" alt="Receipt" style="max-width:100%;max-height:450px;object-fit:contain;border-radius:8px;">`;
+          }
+          if (downloadLink) downloadLink.href = src;
+          dialog.showModal();
+        }
+        return;
+      }
       const button = event.target.closest("[data-engine-action]");
       if (!button) return;
       const body = { action: button.dataset.engineAction, id: button.dataset.id, status: button.dataset.status };
@@ -429,6 +450,8 @@
       document.querySelector(button.dataset.adminScroll)?.scrollIntoView({ behavior: "smooth", block: "start" });
       document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item === button));
     }));
+    $("#receipt-modal-close")?.addEventListener("click", () => $("#receipt-modal-dialog")?.close());
+    $("#receipt-modal-cancel")?.addEventListener("click", () => $("#receipt-modal-dialog")?.close());
   }
 
   function initialize() {
