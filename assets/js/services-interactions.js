@@ -220,24 +220,18 @@
       setupRing();
     } else setupRing();
 
-    let wheelIndex = null;
-    let wheelLastMove = 0;
+    // 100% Native Smooth Vertical Scroll: Scroll-locking & wheel-hijacking removed completely.
+    // Horizontal trackpad gesture gracefully spins the reel without blocking vertical page scroll.
     campaignStage?.addEventListener("wheel", event => {
-      if (!ring || !cards.length || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
-      const direction = event.deltaY > 0 ? 1 : -1;
-      const currentIndex = wheelIndex === null ? activeIndex() : wheelIndex;
-      const nextIndex = currentIndex + direction;
-      if (nextIndex < 0 || nextIndex >= cards.length) { wheelIndex = null; return; }
-      event.preventDefault();
-      event.stopPropagation();
-      const now = performance.now();
-      if (now - wheelLastMove < 260) return;
-      wheelLastMove = now;
-      wheelIndex = nextIndex;
-      goTo(-wheelIndex * stepAngle());
-    }, { passive: false, capture: true });
+      if (!ring || !cards.length) return;
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY) * 1.5) {
+        // Horizontal scroll only
+        stopMotion();
+        rotation -= event.deltaX * 0.22;
+        paint();
+      }
+    }, { passive: true });
     campaignRail.addEventListener("pointerdown", event => {
-      wheelIndex = null;
       if (!ring || !event.isPrimary || event.button > 0 || event.target.closest("button")) return;
       stopMotion();
       activePointer = event.pointerId;
@@ -283,12 +277,11 @@
     campaignRail.addEventListener("pointerup", endDrag);
     campaignRail.addEventListener("pointercancel", endDrag);
     campaignRail.addEventListener("keydown", event => {
-      if (event.key === "ArrowLeft") { event.preventDefault(); wheelIndex = null; moveByFilm(1); }
-      else if (event.key === "ArrowRight") { event.preventDefault(); wheelIndex = null; moveByFilm(-1); }
+      if (event.key === "ArrowLeft") { event.preventDefault(); moveByFilm(1); }
+      else if (event.key === "ArrowRight") { event.preventDefault(); moveByFilm(-1); }
     });
 
     root.querySelectorAll("[data-reel-prev],[data-reel-next]").forEach(button => button.addEventListener("click", () => {
-      wheelIndex = null;
       moveByFilm(button.hasAttribute("data-reel-next") ? 1 : -1);
     }));
   }

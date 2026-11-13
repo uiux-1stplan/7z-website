@@ -339,8 +339,7 @@
         }
         return;
       }
-      event.preventDefault();
-      navigate(state, destination);
+      // Legacy page transition disabled in favor of golden-loader.js
     }, { signal: state.abort.signal });
   }
   function initSpatial(state) {
@@ -627,16 +626,11 @@
     reduced.addEventListener("change", () => { refreshScroll(state); state.resumeCanvas?.(); }, { signal: state.abort.signal });
     smoothDesktop.addEventListener("change", () => refreshScroll(state), { signal: state.abort.signal });
     window.addEventListener("pagehide", () => destroy(state), { once: true, signal: state.abort.signal });
-    const arriving = takeArrival() || root.hasAttribute("data-z7-arriving");
-    let loaderSeen = false;
-    try { loaderSeen = sessionStorage.getItem(LOADER_KEY) === "1"; } catch {}
-    if (fromCache) { clearOverlay(state); clearLoader(state); }
-    else if (arriving) arrivalReveal(state);
-    else if (loaderSeen) clearLoader(state);
-    else {
-      try { sessionStorage.setItem(LOADER_KEY, "1"); } catch {}
-      preloader(state);
-    }
+    clearOverlay(state);
+    clearLoader(state);
+    if (state.loader) { state.loader.remove(); state.loader = null; }
+    if (state.overlay) { state.overlay.remove(); state.overlay = null; }
+    revealHero(state);
   }
   window.addEventListener("pageshow", event => { if (event.persisted && !live) boot(true); });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => boot(), { once: true });

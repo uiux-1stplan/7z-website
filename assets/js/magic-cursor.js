@@ -2,25 +2,17 @@
   "use strict";
 
   /*
-   * 7Z MAGIC — Elegant Magic Dust Cursor
-   *
-   * No GSAP dependency.
-   * No ScrollTrigger.
-   * No Lenis hooks.
-   * No existing DOM mutation beyond its own isolated layer.
+   * 7Z MAGIC — Signature Cinematic Custom Cursor
+   * Desktop-only with smooth physics spring/lerp, theme-adaptive styling,
+   * and contextual reactive badges (VIEW / EXPLORE / PLAY).
    */
 
-  const finePointer = window.matchMedia(
-    "(pointer:fine) and (hover:hover)"
-  );
-
+  const finePointer = window.matchMedia("(pointer:fine) and (hover:hover)");
   if (!finePointer.matches) return;
 
   if (document.getElementById("z7MagicCursorLayer")) return;
 
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const layer = document.createElement("div");
   layer.id = "z7MagicCursorLayer";
@@ -30,351 +22,212 @@
   const halo = document.createElement("span");
   halo.className = "z7-magic-cursor-halo";
 
+  const badge = document.createElement("span");
+  badge.className = "z7-magic-cursor-badge";
+  badge.textContent = "";
+  halo.appendChild(badge);
+
   const core = document.createElement("span");
   core.className = "z7-magic-cursor-core";
 
   layer.append(halo, core);
-
   document.body.appendChild(layer);
-
-  document.documentElement.classList.add(
-    "z7-magic-cursor-enabled"
-  );
+  document.documentElement.classList.add("z7-magic-cursor-enabled");
 
   let mouseX = innerWidth / 2;
   let mouseY = innerHeight / 2;
-
   let haloX = mouseX;
   let haloY = mouseY;
-
   let previousX = mouseX;
   let previousY = mouseY;
-
   let lastDustX = mouseX;
   let lastDustY = mouseY;
-
   let lastDustTime = 0;
 
-  const ACTIVE_DUST_LIMIT = 58;
-
+  const ACTIVE_DUST_LIMIT = 48;
   const particles = new Set();
 
-  const interactiveSelector = [
-    "a",
+  const standardInteractive = [
+    "a:not(.ws-stage a):not(.media-tile)",
     "button",
     "[role='button']",
     "input",
     "textarea",
     "select",
     "summary",
-    "[data-cursor]",
     ".btn",
-    ".button"
+    ".button",
+    ".z7-theme-toggle",
+    ".z7-lang-toggle",
+    ".z7-menu-toggle",
+    ".ws-view-switch button",
+    "[data-reel-prev]",
+    "[data-reel-next]"
   ].join(",");
 
+  const mediaShowcase = [
+    "[data-web-stage]",
+    ".ws-stage",
+    ".media-tile",
+    ".svc-mirror-card",
+    ".svc-film-lane--campaign",
+    ".svc-mirror-stage",
+    "video",
+    "a.ws-live-link",
+    ".ws-live-link"
+  ].join(",");
 
   /* --------------------------------------------------
-     Position loop
+     Position loop with smooth spring/lerp
      -------------------------------------------------- */
-
   const render = () => {
+    // Smooth physical lerp follow
+    const lerpFactor = 0.22;
+    haloX += (mouseX - haloX) * lerpFactor;
+    haloY += (mouseY - haloY) * lerpFactor;
 
-    haloX += (mouseX - haloX) * 0.19;
-    haloY += (mouseY - haloY) * 0.19;
-
-    halo.style.transform =
-      `translate3d(${haloX}px,${haloY}px,0)`;
-
-    core.style.transform =
-      `translate3d(${mouseX}px,${mouseY}px,0) rotate(45deg)`;
+    halo.style.transform = `translate3d(${haloX}px,${haloY}px,0)`;
+    core.style.transform = `translate3d(${mouseX}px,${mouseY}px,0)`;
 
     requestAnimationFrame(render);
   };
-
   requestAnimationFrame(render);
 
-
   /* --------------------------------------------------
-     Dust particle
+     Subtle luminous dust particles
      -------------------------------------------------- */
-
   const spawnDust = (x, y, dx, dy) => {
-
-    if (reducedMotion) return;
-
-    if (particles.size >= ACTIVE_DUST_LIMIT) return;
+    if (reducedMotion || particles.size >= ACTIVE_DUST_LIMIT) return;
 
     const particle = document.createElement("i");
-
     particle.className = "z7-magic-dust";
+    const size = 2.0 + Math.random() * 2.2;
+    particle.style.setProperty("--z7-dust-size", `${size}px`);
 
-    const size =
-      2.10 + Math.random() * 2.20;
-
-    particle.style.setProperty(
-      "--z7-dust-size",
-      `${size}px`
-    );
-
-    layer.insertBefore(
-      particle,
-      halo
-    );
-
+    layer.insertBefore(particle, halo);
     particles.add(particle);
 
-    const speed =
-      Math.min(
-        Math.hypot(dx, dy),
-        28
-      );
-
-    const trailFactor =
-      0.45 + Math.random() * 0.55;
-
-    const startX =
-      x +
-      (Math.random() - .5) * 4;
-
-    const startY =
-      y +
-      (Math.random() - .5) * 4;
-
-    const endX =
-      startX
-      - dx * trailFactor
-      + (Math.random() - .5) * 9;
-
-    const endY =
-      startY
-      - dy * trailFactor
-      - 4
-      - Math.random() * 8;
-
-    const duration =
-      610 +
-      Math.random() * 390 +
-      speed * 3;
-
-    const startOpacity =
-      .62 + Math.random() * .32;
+    const speed = Math.min(Math.hypot(dx, dy), 24);
+    const trailFactor = 0.45 + Math.random() * 0.45;
+    const startX = x + (Math.random() - 0.5) * 4;
+    const startY = y + (Math.random() - 0.5) * 4;
+    const endX = startX - dx * trailFactor + (Math.random() - 0.5) * 8;
+    const endY = startY - dy * trailFactor - 3 - Math.random() * 6;
+    const duration = 520 + Math.random() * 320 + speed * 2.5;
 
     const anim = particle.animate(
       [
-        {
-          transform:
-            `translate3d(${startX}px,${startY}px,0) scale(.65)`,
-          opacity: startOpacity
-        },
-        {
-          offset: .36,
-          transform:
-            `translate3d(${startX - dx * .18}px,${startY - 2}px,0) scale(1)`,
-          opacity: startOpacity * .76
-        },
-        {
-          transform:
-            `translate3d(${endX}px,${endY}px,0) scale(.15)`,
-          opacity: 0
-        }
+        { transform: `translate3d(${startX}px,${startY}px,0) scale(0.6)`, opacity: 0.75 },
+        { offset: 0.35, transform: `translate3d(${startX - dx * 0.15}px,${startY - 2}px,0) scale(1)`, opacity: 0.55 },
+        { transform: `translate3d(${endX}px,${endY}px,0) scale(0.15)`, opacity: 0 }
       ],
-      {
-        duration,
-        easing: "cubic-bezier(.16,.78,.28,1)",
-        fill: "forwards"
-      }
+      { duration, easing: "cubic-bezier(.16,.78,.28,1)", fill: "forwards" }
     );
 
     anim.onfinish = () => {
-
       particles.delete(particle);
-
       particle.remove();
     };
   };
 
-
   /* --------------------------------------------------
      Pointer movement
      -------------------------------------------------- */
+  window.addEventListener("pointermove", (event) => {
+    if (event.pointerType && event.pointerType !== "mouse") return;
 
-  window.addEventListener(
-    "pointermove",
-    (event) => {
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+    layer.classList.add("is-visible");
 
-      if (
-        event.pointerType &&
-        event.pointerType !== "mouse"
-      ) {
-        return;
-      }
+    const dx = mouseX - previousX;
+    const dy = mouseY - previousY;
+    const distanceFromDust = Math.hypot(mouseX - lastDustX, mouseY - lastDustY);
+    const now = performance.now();
 
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-
-      layer.classList.add(
-        "is-visible"
-      );
-
-      const dx =
-        mouseX - previousX;
-
-      const dy =
-        mouseY - previousY;
-
-      const distanceFromDust =
-        Math.hypot(
-          mouseX - lastDustX,
-          mouseY - lastDustY
-        );
-
-      const now =
-        performance.now();
-
-      if (
-        distanceFromDust > 4 &&
-        now - lastDustTime > 8
-      ) {
-
-        /*
-         * Mostly 1 particle.
-         * Occasionally 2 on faster movement.
-         * Keeps the effect elegant instead of glitter-heavy.
-         */
-
-        spawnDust(
-          mouseX,
-          mouseY,
-          dx,
-          dy
-        );
-
-        if (
-          Math.hypot(dx,dy) > 10 &&
-          Math.random() > .38
-        ) {
-          spawnDust(
-            mouseX,
-            mouseY,
-            dx * .72,
-            dy * .72
-          );
-        }
-
-        lastDustX = mouseX;
-        lastDustY = mouseY;
-        lastDustTime = now;
-      }
-
-      previousX = mouseX;
-      previousY = mouseY;
-    },
-    {
-      passive: true
+    if (distanceFromDust > 5 && now - lastDustTime > 12) {
+      spawnDust(mouseX, mouseY, dx, dy);
+      lastDustX = mouseX;
+      lastDustY = mouseY;
+      lastDustTime = now;
     }
-  );
 
+    previousX = mouseX;
+    previousY = mouseY;
+  }, { passive: true });
 
   /* --------------------------------------------------
-     Interaction awareness
+     Smart contextual hover reactions
      -------------------------------------------------- */
-
-  document.addEventListener(
-    "pointerover",
-    (event) => {
-
-      const target =
-        event.target instanceof Element
-          ? event.target.closest(interactiveSelector)
-          : null;
-
-      layer.classList.toggle(
-        "is-interactive",
-        Boolean(target)
-      );
-    },
-    {
-      passive: true
+  const updateHoverState = (target) => {
+    if (!target) {
+      layer.classList.remove("is-interactive", "is-media-hover");
+      badge.textContent = "";
+      return;
     }
-  );
 
-  document.addEventListener(
-    "pointerout",
-    (event) => {
+    // Check media / showcase target first
+    const mediaTarget = target.closest(mediaShowcase);
+    if (mediaTarget) {
+      layer.classList.add("is-media-hover");
+      layer.classList.remove("is-interactive");
 
-      if (
-        event.relatedTarget instanceof Element &&
-        event.relatedTarget.closest(interactiveSelector)
-      ) {
-        return;
+      if (mediaTarget.closest(".svc-film-lane") || mediaTarget.closest(".svc-mirror-card") || mediaTarget.tagName === "VIDEO") {
+        badge.textContent = "PLAY";
+      } else if (mediaTarget.closest("[data-web-stage]") || mediaTarget.classList.contains("ws-stage")) {
+        badge.textContent = "EXPLORE";
+      } else if (mediaTarget.classList.contains("ws-live-link") || mediaTarget.closest(".ws-live-link")) {
+        badge.textContent = "VISIT";
+      } else {
+        badge.textContent = "VIEW";
       }
-
-      const next =
-        event.relatedTarget instanceof Element
-          ? event.relatedTarget.closest(interactiveSelector)
-          : null;
-
-      if (!next) {
-        layer.classList.remove(
-          "is-interactive"
-        );
-      }
-    },
-    {
-      passive: true
+      return;
     }
-  );
 
-
-  document.addEventListener(
-    "pointerdown",
-    () => {
-      layer.classList.add("is-pressed");
-    },
-    {
-      passive: true
+    // Check standard interactive
+    const interactiveTarget = target.closest(standardInteractive);
+    if (interactiveTarget) {
+      layer.classList.add("is-interactive");
+      layer.classList.remove("is-media-hover");
+      badge.textContent = "";
+      return;
     }
-  );
 
-  document.addEventListener(
-    "pointerup",
-    () => {
-      layer.classList.remove("is-pressed");
-    },
-    {
-      passive: true
+    layer.classList.remove("is-interactive", "is-media-hover");
+    badge.textContent = "";
+  };
+
+  document.addEventListener("pointerover", (event) => {
+    if (!(event.target instanceof Element)) return;
+    updateHoverState(event.target);
+  }, { passive: true });
+
+  document.addEventListener("pointerout", (event) => {
+    if (event.relatedTarget instanceof Element) {
+      updateHoverState(event.relatedTarget);
+    } else {
+      updateHoverState(null);
     }
-  );
+  }, { passive: true });
 
+  document.addEventListener("pointerdown", () => {
+    layer.classList.add("is-pressed");
+  }, { passive: true });
+
+  document.addEventListener("pointerup", () => {
+    layer.classList.remove("is-pressed");
+  }, { passive: true });
 
   /* --------------------------------------------------
-     Enter / leave viewport
+     Viewport Enter / Leave
      -------------------------------------------------- */
-
-  document.documentElement.addEventListener(
-    "mouseleave",
-    () => {
-      layer.classList.remove("is-visible");
-    }
-  );
-
-  document.documentElement.addEventListener(
-    "mouseenter",
-    () => {
-      layer.classList.add("is-visible");
-    }
-  );
-
-
-  /* --------------------------------------------------
-     Window blur
-     -------------------------------------------------- */
-
-  window.addEventListener(
-    "blur",
-    () => {
-      layer.classList.remove("is-visible");
-    }
-  );
-
+  document.documentElement.addEventListener("mouseleave", () => {
+    layer.classList.remove("is-visible");
+  });
+  document.documentElement.addEventListener("mouseenter", () => {
+    layer.classList.add("is-visible");
+  });
+  window.addEventListener("blur", () => {
+    layer.classList.remove("is-visible");
+  });
 })();

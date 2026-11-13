@@ -1,6 +1,7 @@
 /* ==========================================================
-   7Z MAGIC — ELEGANT MAGIC DUST CURSOR
-   Isolated visual layer
+   7Z MAGIC — SIGNATURE CINEMATIC CURSOR
+   Adaptive Dark & Light System (Indigo / Navy / Ice-White)
+   Desktop-only (Hidden on touch devices)
    ========================================================== */
 
 @media (pointer:fine) and (hover:hover) {
@@ -22,195 +23,227 @@
     position: fixed;
     inset: 0;
     z-index: 2147483600;
-
     overflow: hidden;
-
     pointer-events: none;
     user-select: none;
-
     contain: strict;
   }
 
   /* ------------------------------------------
-     Main precision halo
+     Precision Center Core (Ice-white in dark mode)
      ------------------------------------------ */
-
-  .z7-magic-cursor-halo {
-    position: fixed;
-    top: 0;
-    left: 0;
-
-    width: 24px;
-    height: 24px;
-
-    margin-left: -12px;
-    margin-top: -12px;
-
-    border:
-      1px solid rgba(218, 190, 125, .48);
-
-    border-radius: 50%;
-
-    opacity: 0;
-
-    transform:
-      translate3d(-100px,-100px,0)
-      scale(.82);
-
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,.025),
-      0 0 16px rgba(210,178,105,.07),
-      inset 0 0 9px rgba(255,255,255,.025);
-
-    backdrop-filter: blur(.35px);
-
-    transition:
-      width .22s cubic-bezier(.2,.8,.2,1),
-      height .22s cubic-bezier(.2,.8,.2,1),
-      margin .22s cubic-bezier(.2,.8,.2,1),
-      border-color .22s ease,
-      box-shadow .22s ease,
-      opacity .18s ease;
-  }
-
-  /* ------------------------------------------
-     Tiny luxury core
-     ------------------------------------------ */
-
   .z7-magic-cursor-core {
     position: fixed;
     top: 0;
     left: 0;
-
-    width: 8px;
-    height: 8px;
-
-    margin-left: -4px;
-    margin-top: -4px;
-
-    border-radius: 2px;
-
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    margin-top: -3px;
+    border-radius: 50%;
     opacity: 0;
-
-    background:
-      linear-gradient(
-        135deg,
-        #f3eee2 0%,
-        #dec787 44%,
-        #a8874e 100%
-      );
-
-    transform:
-      translate3d(-100px,-100px,0)
-      rotate(45deg);
-
-    box-shadow:
-      0 0 7px rgba(227,198,126,.24),
-      0 0 1px rgba(255,255,255,.8);
-
+    background: #ffffff;
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.9), 0 0 2px #ffffff;
+    pointer-events: none;
     transition:
-      opacity .14s ease,
-      width .16s ease,
-      height .16s ease,
-      margin .16s ease,
-      box-shadow .16s ease;
+      opacity 0.16s ease,
+      width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+      height 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+      margin 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 0.15s ease,
+      background 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
-  .z7-magic-cursor-layer.is-visible
-  .z7-magic-cursor-core,
-
-  .z7-magic-cursor-layer.is-visible
+  /* ------------------------------------------
+     Smooth Trailing Halo
+     ------------------------------------------ */
   .z7-magic-cursor-halo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 26px;
+    height: 26px;
+    margin-left: -13px;
+    margin-top: -13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(96, 165, 250, 0.45);
+    border-radius: 50%;
+    opacity: 0;
+    background: rgba(30, 58, 138, 0.08);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    box-shadow:
+      0 0 16px rgba(37, 99, 235, 0.25),
+      inset 0 0 10px rgba(96, 165, 250, 0.10);
+    pointer-events: none;
+    transition:
+      width 0.26s cubic-bezier(0.2, 0.8, 0.2, 1),
+      height 0.26s cubic-bezier(0.2, 0.8, 0.2, 1),
+      margin 0.26s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.25s ease,
+      background 0.25s ease,
+      box-shadow 0.25s ease,
+      opacity 0.18s ease;
+  }
+
+  /* ------------------------------------------
+     Contextual Badge Text
+     ------------------------------------------ */
+  .z7-magic-cursor-badge {
+    color: #ffffff;
+    font-family: var(--z7-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-indent: 0.18em;
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .z7-magic-cursor-layer.is-visible .z7-magic-cursor-core,
+  .z7-magic-cursor-layer.is-visible .z7-magic-cursor-halo {
     opacity: 1;
   }
 
   /* ------------------------------------------
-     Interactive state
+     Standard Interactive State (Links & Buttons)
      ------------------------------------------ */
-
-  .z7-magic-cursor-layer.is-interactive
-  .z7-magic-cursor-halo {
-    width: 30px;
-    height: 30px;
-
-    margin-left: -15px;
-    margin-top: -15px;
-
-    border-color:
-      rgba(232,205,139,.72);
-
+  .z7-magic-cursor-layer.is-interactive .z7-magic-cursor-halo {
+    width: 44px;
+    height: 44px;
+    margin-left: -22px;
+    margin-top: -22px;
+    border-color: rgba(96, 165, 250, 0.75);
+    background: rgba(37, 99, 235, 0.16);
     box-shadow:
-      0 0 19px rgba(210,178,105,.11),
-      inset 0 0 10px rgba(255,255,255,.035);
+      0 0 24px rgba(37, 99, 235, 0.45),
+      inset 0 0 14px rgba(96, 165, 250, 0.22);
   }
 
-  .z7-magic-cursor-layer.is-interactive
-  .z7-magic-cursor-core {
-    width: 7px;
-    height: 7px;
-
-    margin-left: -3.5px;
-    margin-top: -3.5px;
-
-    box-shadow:
-      0 0 9px rgba(235,205,133,.36);
-  }
-
-  .z7-magic-cursor-layer.is-pressed
-  .z7-magic-cursor-halo {
-    width: 20px;
-    height: 20px;
-
-    margin-left: -10px;
-    margin-top: -10px;
+  .z7-magic-cursor-layer.is-interactive .z7-magic-cursor-core {
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    margin-top: -2px;
+    opacity: 0.8;
   }
 
   /* ------------------------------------------
-     Magic dust
+     Media & Showcase Hover State (Cards & Videos)
      ------------------------------------------ */
+  .z7-magic-cursor-layer.is-media-hover .z7-magic-cursor-halo {
+    width: 68px;
+    height: 68px;
+    margin-left: -34px;
+    margin-top: -34px;
+    border-color: rgba(96, 165, 250, 0.85);
+    background: rgba(6, 9, 18, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+      0 0 32px rgba(37, 99, 235, 0.55),
+      0 8px 24px rgba(0, 0, 0, 0.6),
+      inset 0 0 16px rgba(96, 165, 250, 0.25);
+  }
 
+  .z7-magic-cursor-layer.is-media-hover .z7-magic-cursor-core {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+
+  .z7-magic-cursor-layer.is-media-hover .z7-magic-cursor-badge {
+    opacity: 1;
+    transform: scale(1);
+    text-shadow: 0 0 8px rgba(37, 99, 235, 0.85);
+  }
+
+  /* ------------------------------------------
+     Click / Pressed State
+     ------------------------------------------ */
+  .z7-magic-cursor-layer.is-pressed .z7-magic-cursor-halo {
+    transform: translate3d(var(--x, 0), var(--y, 0), 0) scale(0.85);
+    border-color: #60a5fa;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.7);
+  }
+
+  .z7-magic-cursor-layer.is-pressed .z7-magic-cursor-core {
+    transform: translate3d(var(--x, 0), var(--y, 0), 0) scale(1.4);
+    background: #60a5fa;
+  }
+
+  /* ------------------------------------------
+     Subtle Luminous Dust
+     ------------------------------------------ */
   .z7-magic-dust {
     position: fixed;
-
     top: 0;
     left: 0;
-
     width: var(--z7-dust-size, 2px);
     height: var(--z7-dust-size, 2px);
-
-    margin-left:
-      calc(var(--z7-dust-size, 2px) / -2);
-
-    margin-top:
-      calc(var(--z7-dust-size, 2px) / -2);
-
+    margin-left: calc(var(--z7-dust-size, 2px) / -2);
+    margin-top: calc(var(--z7-dust-size, 2px) / -2);
     border-radius: 50%;
-
     pointer-events: none;
-
-    background:
-      radial-gradient(
-        circle,
-        rgba(255,248,226,.98) 0%,
-        rgba(225,196,124,.82) 38%,
-        rgba(186,148,78,.16) 68%,
-        transparent 100%
-      );
-
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(96, 165, 250, 0.75) 45%,
+      rgba(37, 99, 235, 0.2) 75%,
+      transparent 100%
+    );
     box-shadow:
-      0 0 9px rgba(219,184,105,.42),
-      0 0 15px rgba(219,184,105,.12);
+      0 0 8px rgba(96, 165, 250, 0.5),
+      0 0 14px rgba(37, 99, 235, 0.25);
+    will-change: transform, opacity;
+  }
 
-    will-change:
-      transform,
-      opacity;
+  /* ------------------------------------------
+     Light Theme Adaptations
+     ------------------------------------------ */
+  html[data-theme="light"] .z7-magic-cursor-core,
+  html.light .z7-magic-cursor-core {
+    background: #1e3a8a;
+    box-shadow: 0 0 8px rgba(30, 58, 138, 0.4);
+  }
+
+  html[data-theme="light"] .z7-magic-cursor-halo,
+  html.light .z7-magic-cursor-halo {
+    border-color: rgba(30, 58, 138, 0.45);
+    background: rgba(37, 99, 235, 0.06);
+    box-shadow:
+      0 0 14px rgba(37, 99, 235, 0.18),
+      inset 0 0 8px rgba(30, 58, 138, 0.08);
+  }
+
+  html[data-theme="light"] .z7-magic-cursor-badge,
+  html.light .z7-magic-cursor-badge {
+    color: #1e3a8a;
+    text-shadow: none;
+  }
+
+  html[data-theme="light"] .z7-magic-cursor-layer.is-media-hover .z7-magic-cursor-halo,
+  html.light .z7-magic-cursor-layer.is-media-hover .z7-magic-cursor-halo {
+    background: rgba(248, 250, 252, 0.88);
+    border-color: rgba(30, 58, 138, 0.7);
+    box-shadow:
+      0 0 24px rgba(37, 99, 235, 0.3),
+      0 8px 24px rgba(15, 23, 42, 0.15);
   }
 }
 
-
-/* Motion accessibility */
+/* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   .z7-magic-dust {
     display: none !important;
+  }
+  .z7-magic-cursor-halo,
+  .z7-magic-cursor-core {
+    transition: none !important;
   }
 }

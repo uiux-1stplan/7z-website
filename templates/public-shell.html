@@ -1,19 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en" data-z7-core>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090A0C">
   <title>7Z Magic</title>
-  <script>
-    try {
-      const arrival = JSON.parse(sessionStorage.getItem("z7:core-arrival:v1") || "null");
-      const path = location.pathname.replace(/\/+$/, "") || "/";
-      if (arrival && arrival.path === path && Date.now() - arrival.time < 12000) {
-        document.documentElement.setAttribute("data-z7-arriving", "");
-      }
-    } catch {}
-  </script>
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <noscript><style>.z7-loader,.z7-transition{display:none!important}.z7-nav{display:flex!important;position:static!important;max-height:none!important;flex-wrap:wrap!important}</style></noscript>
@@ -24,24 +15,6 @@
 </head>
 <body>
   <a class="z7-visually-hidden" href="#mainContent">Skip to content</a>
-
-  <div class="z7-loader" id="z7Loader" role="status" aria-live="polite" aria-label="Preparing 7Z Magic experience">
-    <div class="z7-loader__inner">
-      <div class="z7-loader__top">
-        <img class="z7-loader__mark" src="/assets/brand/7z-official.png" width="210" height="80" alt="7Z Magic" decoding="async">
-        <span class="z7-loader__count" data-z7-count aria-hidden="true">00</span>
-      </div>
-      <div class="z7-loader__line" aria-hidden="true"><span class="z7-loader__progress" data-z7-progress></span></div>
-      <div class="z7-loader__caption"><span>Preparing experience</span><span>7Z Magic</span></div>
-    </div>
-  </div>
-
-  <div class="z7-transition" id="z7Transition" aria-hidden="true" hidden>
-    <div class="z7-transition__inner">
-      <p class="z7-transition__label" data-z7-transition-label>7Z Magic</p>
-      <span class="z7-transition__index">NEXT SCENE / 7Z</span>
-    </div>
-  </div>
 
   <header class="z7-header" aria-label="Primary">
     <div class="z7-container z7-header__inner">
@@ -98,5 +71,6 @@
       <a href="/">Home</a>
     </div>
   </footer>
+<script src="/7z-motion-loader.js"></script>
 </body>
 </html>

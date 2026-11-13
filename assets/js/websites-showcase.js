@@ -15,11 +15,16 @@
     });
   });
 
+  // Target speed requested: 1.35 to 1.45 (set to 1.40 for optimal snappy pacing)
+  const SHOWCASE_PLAYBACK_RATE = 1.4;
+
   const loadVideo = (video) => {
     if (!video.src && video.dataset.webSrc) {
       video.src = video.dataset.webSrc;
+      video.playbackRate = SHOWCASE_PLAYBACK_RATE;
       video.load();
     }
+    video.playbackRate = SHOWCASE_PLAYBACK_RATE;
   };
 
   const playProject = (project) => {
@@ -32,9 +37,26 @@
         return;
       }
       loadVideo(video);
-      if (!motionOff) video.play().catch(() => {});
+      if (!motionOff) {
+        video.playbackRate = SHOWCASE_PLAYBACK_RATE;
+        video.play().then(() => {
+          video.playbackRate = SHOWCASE_PLAYBACK_RATE;
+        }).catch(() => {});
+      }
     });
   };
+
+  // Ensure playbackRate sticks on all video events
+  root.querySelectorAll('video').forEach((video) => {
+    video.playbackRate = SHOWCASE_PLAYBACK_RATE;
+    video.addEventListener('play', () => { video.playbackRate = SHOWCASE_PLAYBACK_RATE; });
+    video.addEventListener('loadedmetadata', () => { video.playbackRate = SHOWCASE_PLAYBACK_RATE; });
+    video.addEventListener('timeupdate', () => {
+      if (video.playbackRate !== SHOWCASE_PLAYBACK_RATE) {
+        video.playbackRate = SHOWCASE_PLAYBACK_RATE;
+      }
+    });
+  });
 
   if ('IntersectionObserver' in window) {
     const projectObserver = new IntersectionObserver((entries) => {
@@ -67,17 +89,20 @@
           const rect = stage.getBoundingClientRect();
           const x = (event.clientX - rect.left) / rect.width;
           const y = (event.clientY - rect.top) / rect.height;
+          // Dynamic lighting & 3D perspective tilt
           stage.style.setProperty('--ws-glow-x', `${(x * 100).toFixed(1)}%`);
           stage.style.setProperty('--ws-glow-y', `${(y * 100).toFixed(1)}%`);
-          stage.style.setProperty('--ws-tilt-x', `${((0.5 - y) * 2.2).toFixed(2)}deg`);
-          stage.style.setProperty('--ws-tilt-y', `${((x - 0.5) * 1.8).toFixed(2)}deg`);
+          stage.style.setProperty('--ws-tilt-x', `${((0.5 - y) * 4.8).toFixed(2)}deg`);
+          stage.style.setProperty('--ws-tilt-y', `${((x - 0.5) * 5.6).toFixed(2)}deg`);
+          stage.style.setProperty('--ws-glow-alpha', '0.38');
         });
       });
       stage.addEventListener('pointerleave', () => {
-        stage.style.setProperty('--ws-glow-x', '52%');
-        stage.style.setProperty('--ws-glow-y', '44%');
+        stage.style.setProperty('--ws-glow-x', '50%');
+        stage.style.setProperty('--ws-glow-y', '46%');
         stage.style.setProperty('--ws-tilt-x', '0deg');
         stage.style.setProperty('--ws-tilt-y', '0deg');
+        stage.style.setProperty('--ws-glow-alpha', '0.18');
       });
     });
   }

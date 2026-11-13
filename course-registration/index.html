@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090909">
@@ -45,4 +45,5 @@ const strings={ar:{allCourses:'كل الدورات',theme:'المظهر',eyebrow
 let lang=localStorage.getItem('7z-course-lang')||'ar';const apply=()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.querySelectorAll('[data-i]').forEach(el=>{const value=strings[lang][el.dataset.i];if(value)el.textContent=value});document.getElementById('lang').textContent=lang==='ar'?'EN':'عربي';document.querySelectorAll('a[href^="/course-registration/form/"]').forEach(link=>{link.href='/course-registration/form/?lang='+lang});document.title=lang==='ar'?'دورة صناعة الأفلام بالذكاء الاصطناعي | 7Z':'AI Cinematic Filmmaking Course | 7Z'};document.getElementById('lang').addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';localStorage.setItem('7z-course-lang',lang);apply()});document.getElementById('theme').addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem('7z-course-theme',next)});document.documentElement.dataset.theme=localStorage.getItem('7z-course-theme')||'dark';apply();
 </script>
 <script src="/assets/js/academy-course.js?v=20261103-3" defer></script>
+<script src="/7z-motion-loader.js"></script>
 </body></html>

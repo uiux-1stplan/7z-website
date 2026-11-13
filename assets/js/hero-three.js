@@ -49,9 +49,9 @@ function buildExtrusion(svgText){
   const complexity=curveCount;
   const bevelSegments=complexity>900?8:complexity>450?14:complexity>160?24:32;
   const curveSegments=complexity>900?8:complexity>450?12:complexity>160?16:20;
-  // Keep the chrome mark as one shallow extrusion; heavy bevels create a second offset silhouette.
+  // Increased depth by +25% (from 4.0 to 5.0) for luxurious solid architectural presence.
   const geometry=new THREE.ExtrudeGeometry(shapes,{
-    depth:4/scaleFactor,steps:1,curveSegments,bevelEnabled:false
+    depth:5.0/scaleFactor,steps:1,curveSegments,bevelEnabled:false
   });
   geometry.computeBoundingBox();
   geometry.center();
@@ -102,7 +102,9 @@ function mount(host,mode){
   addAreaLight(lightGroup,0xbfbfbf,7,150,300,[120,90,160],[0,0,0]);
 
   let geometry, caps, walls;
-  let pointerX=0,pointerY=0,targetX=0,targetY=0,scrollYaw=0;
+  let pointerYaw=0,pointerPitch=0,pointerRoll=0;
+  let targetYaw=0,targetPitch=0,targetRoll=0;
+  let scrollYaw=0,baseYaw=0;
   const hero=host.closest(".logo-hero");
   const interactionArea=hero||host;
   function fallback(error){
@@ -141,13 +143,19 @@ function mount(host,mode){
   }
   const canvasObserver=new ResizeObserver(resize);canvasObserver.observe(host);
   function pointerMove(e){
+    // Directional cursor tracking with smooth spatial parallax
     const rect=interactionArea.getBoundingClientRect();
-    if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom){
-      targetX=((e.clientX-rect.left)/rect.width-.5)*.16;
-      targetY=((e.clientY-rect.top)/rect.height-.5)*.12;
-    }
+    const centerX=rect.left+rect.width/2;
+    const centerY=rect.top+rect.height/2;
+    const nx=(e.clientX-centerX)/(window.innerWidth*0.5);
+    const ny=(e.clientY-centerY)/(window.innerHeight*0.5);
+    const cx=clamp(nx,-1.2,1.2);
+    const cy=clamp(ny,-1.2,1.2);
+    targetYaw=cx*0.38;     // Look left/right toward cursor (radians)
+    targetPitch=-cy*0.28;  // Look up/down toward cursor (radians)
+    targetRoll=-cx*0.06;   // Natural aerodynamic banking
   }
-  function pointerLeave(){targetX=0;targetY=0;}
+  function pointerLeave(){targetYaw=0;targetPitch=0;targetRoll=0;}
   function onScroll(){
     if(!hero)return;
     const heroStart=hero.getBoundingClientRect().top+window.scrollY;
@@ -168,12 +176,21 @@ function mount(host,mode){
     if(!visible)return;
     const time=last?Math.min(.05,(now-last)/1000):0;last=now;
     if(geometry){
-      if(mode==="loop"&&!reduceMotion)logoGroup.rotation.y+=.58*time;
-      if(mode==="scroll")logoGroup.rotation.y=THREE.MathUtils.damp(logoGroup.rotation.y,scrollYaw,2.4,time);
-      pointerX=THREE.MathUtils.damp(pointerX,targetX,3.2,time);
-      pointerY=THREE.MathUtils.damp(pointerY,targetY,3.2,time);
-      logoGroup.rotation.x=pointerY;
-      logoGroup.rotation.z=pointerX;
+      // Smooth physical damp/lerp for natural, calm cursor tracking
+      pointerYaw=THREE.MathUtils.damp(pointerYaw,targetYaw,3.8,time);
+      pointerPitch=THREE.MathUtils.damp(pointerPitch,targetPitch,3.8,time);
+      pointerRoll=THREE.MathUtils.damp(pointerRoll,targetRoll,3.8,time);
+
+      if(mode==="loop"&&!reduceMotion){
+        baseYaw+=0.48*time;
+        logoGroup.rotation.y=baseYaw+pointerYaw;
+      } else if(mode==="scroll"){
+        logoGroup.rotation.y=THREE.MathUtils.damp(logoGroup.rotation.y,scrollYaw+pointerYaw,3.2,time);
+      } else {
+        logoGroup.rotation.y=pointerYaw;
+      }
+      logoGroup.rotation.x=pointerPitch;
+      logoGroup.rotation.z=pointerRoll;
       renderer.render(scene,camera);
     } else renderer.render(scene,camera);
   }

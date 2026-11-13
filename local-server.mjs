@@ -546,9 +546,18 @@ async function handleUpload(req, res) {
 
 function serveStatic(req, res, url) {
   const decodedPath = decodeURIComponent(url.pathname);
-  const requestedPath = decodedPath === "/" ? "/index.html" : decodedPath === "/admin" ? "/admin.html" : decodedPath;
+  const requestedPath = decodedPath === "/" ? "/index.html" : decodedPath === "/admin" ? "/admin/index.html" : decodedPath;
   const safePath = normalize(requestedPath).replace(/^(\.\.[/\\])+/, "");
-  const filePath = resolve(join(root, safePath));
+  let filePath = resolve(join(root, safePath));
+
+  if (existsSync(filePath) && statSync(filePath).isDirectory()) {
+    const indexPath = join(filePath, "index.html");
+    if (existsSync(indexPath)) {
+      filePath = indexPath;
+    }
+  } else if (!existsSync(filePath) && existsSync(filePath + ".html")) {
+    filePath = filePath + ".html";
+  }
 
   if (!filePath.startsWith(root) || !existsSync(filePath) || statSync(filePath).isDirectory()) {
     send(res, 404, "Not found", { "Content-Type": "text/plain; charset=utf-8" });
