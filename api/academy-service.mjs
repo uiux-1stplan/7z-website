@@ -18,7 +18,7 @@ import { writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const rootDir = (process.env.VERCEL ? "/tmp/7z-academy" : resolve(fileURLToPath(new URL("..", import.meta.url))));
+const rootDir = process.env.VERCEL ? "/tmp/7z-academy" : resolve(fileURLToPath(new URL("..", import.meta.url)));
 const receiptsDir = join(rootDir, "media", "uploads", "receipts");
 
 // Ensure tables exist on boot
@@ -428,4 +428,5 @@ export async function handleAdminAction(action, body) {
 
   return { ok: false, error: "Unknown action" };
 }
+
 
