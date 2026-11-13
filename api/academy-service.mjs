@@ -114,13 +114,13 @@ export async function handleRegistration(body) {
     experience: String(body.experience || "").trim(),
     notes: String(body.notes || "").trim(),
     courseId: String(body.courseId || "cinematic-film"),
-    courseName: String(body.courseName || "7Z AI Masterclass"),
+    courseName: String(body.courseName || (body.courseId === "ai-engineering" ? "دورة الذكاء الاصطناعي للمهندسين" : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي")),
     promoCode: String(body.promoCode || "").toUpperCase(),
     discountPercent: Number(body.discountPercent || 0),
     discountJod: Number(body.discountJod || 0),
     finalPrice: Number(body.finalPrice || 250),
     paymentStatus: "PENDING_REVIEW",
-    receiptUrl: receiptFilePath,
+    receiptUrl: receiptFilePath || body.receiptUrl || "",
     receiptName: body.receiptName || "receipt.jpg",
     receiptType: body.receiptType || "image/jpeg",
     receiptBase64: body.receiptBase64 || "",
@@ -128,7 +128,7 @@ export async function handleRegistration(body) {
     createdAt: new Date().toISOString()
   };
 
-  // Try Neon DB Insert
+  // Try Neon DB Insert into both tables
   const sql = getSqlClient();
   if (sql) {
     try {
@@ -141,6 +141,18 @@ export async function handleRegistration(body) {
           ${regRecord.seatNumber}, ${regRecord.reference}, ${regRecord.fullName}, ${regRecord.email}, ${regRecord.phone}, ${regRecord.city}, ${regRecord.experience}, ${regRecord.notes},
           ${regRecord.courseId}, ${regRecord.courseName}, ${regRecord.promoCode}, ${regRecord.discountPercent}, ${regRecord.discountJod}, ${regRecord.finalPrice},
           ${regRecord.paymentStatus}, ${regRecord.receiptUrl}, ${regRecord.receiptName}, ${regRecord.receiptBase64}
+        );
+      `;
+
+      await sql`
+        INSERT INTO course_registrations (
+          seat_number, full_name, email, phone, location, experience,
+          course_id, price_jod, discount_jod, coupon_code, payment_status,
+          payment_reference, receipt_url, receipt_name, receipt_base64
+        ) VALUES (
+          ${regRecord.seatNumber}, ${regRecord.fullName}, ${regRecord.email}, ${regRecord.phone}, ${regRecord.city}, ${regRecord.experience},
+          ${regRecord.courseId}, ${regRecord.finalPrice}, ${regRecord.discountJod}, ${regRecord.promoCode}, ${regRecord.paymentStatus},
+          ${regRecord.reference}, ${regRecord.receiptUrl}, ${regRecord.receiptName}, ${regRecord.receiptBase64}
         );
       `;
     } catch (e) {
@@ -222,11 +234,11 @@ export async function getAdminData() {
         createdAt: a.created_at
       }));
     } catch (e) {
-      console.warn("DB read error, falling back to local data:", e.message);
+      console.warn("DB read error, using local data fallback:", e.message);
     }
   }
 
-  if (!registrations.length && !coupons.length) {
+  if (registrations.length === 0) {
     const local = readLocalData();
     registrations = local.registrations;
     coupons = local.coupons;
@@ -238,7 +250,7 @@ export async function getAdminData() {
     const usedRegs = registrations.filter(
       (r) => r.promoCode && r.promoCode.toUpperCase() === aff.code.toUpperCase()
     );
-    const confirmedRegs = usedRegs.filter((r) => r.paymentStatus === "APPROVED");
+    const confirmedRegs = usedRegs.filter((r) => ["PAID", "APPROVED", "VERIFIED"].includes(r.paymentStatus));
     const totalSalesJod = confirmedRegs.reduce((sum, r) => sum + Number(r.finalPrice || 0), 0);
     const commissionOwed = (totalSalesJod * Number(aff.commissionPercent || 0)) / 100;
 
@@ -252,10 +264,10 @@ export async function getAdminData() {
   });
 
   const totalRevenue = registrations
-    .filter((r) => r.paymentStatus === "APPROVED")
+    .filter((r) => ["PAID", "APPROVED", "VERIFIED"].includes(r.paymentStatus))
     .reduce((sum, r) => sum + Number(r.finalPrice || 0), 0);
   const pendingCount = registrations.filter((r) => r.paymentStatus === "PENDING_REVIEW").length;
-  const approvedCount = registrations.filter((r) => r.paymentStatus === "APPROVED").length;
+  const approvedCount = registrations.filter((r) => ["PAID", "APPROVED", "VERIFIED"].includes(r.paymentStatus)).length;
 
   return {
     registrations,
@@ -274,18 +286,25 @@ export async function getAdminData() {
 export async function handleAdminAction(action, body) {
   const local = readLocalData();
   const sql = getSqlClient();
+  const identifier = String(body.reference || body.id || "").trim();
 
   if (action === "approve-payment") {
-    const ref = body.reference;
-    let foundReg = local.registrations.find((r) => r.reference === ref);
+    let foundReg = local.registrations.find(
+      (r) => r.reference === identifier || String(r.id) === identifier || String(r.seatNumber) === identifier
+    );
 
     if (sql) {
       try {
         const [row] = await sql`
           UPDATE academy_registrations 
           SET payment_status = 'APPROVED' 
-          WHERE reference = ${ref} 
+          WHERE reference = ${identifier} OR id::text = ${identifier}
           RETURNING *;
+        `;
+        await sql`
+          UPDATE course_registrations 
+          SET payment_status = 'PAID' 
+          WHERE payment_reference = ${identifier} OR id::text = ${identifier};
         `;
         if (row) {
           foundReg = {
@@ -305,23 +324,29 @@ export async function handleAdminAction(action, body) {
       foundReg.paymentStatus = "APPROVED";
       saveLocalData(local);
       sendPaymentApprovedEmail(foundReg).catch((e) => console.error("Approve email error:", e.message));
-      return { ok: true, status: "APPROVED" };
+      return { ok: true, status: "APPROVED", registration: foundReg };
     }
     return { ok: false, error: "Registration not found" };
   }
 
   if (action === "reject-payment") {
-    const ref = body.reference;
     const reason = body.reason || "";
-    let foundReg = local.registrations.find((r) => r.reference === ref);
+    let foundReg = local.registrations.find(
+      (r) => r.reference === identifier || String(r.id) === identifier || String(r.seatNumber) === identifier
+    );
 
     if (sql) {
       try {
         const [row] = await sql`
           UPDATE academy_registrations 
           SET payment_status = 'REJECTED' 
-          WHERE reference = ${ref} 
+          WHERE reference = ${identifier} OR id::text = ${identifier}
           RETURNING *;
+        `;
+        await sql`
+          UPDATE course_registrations 
+          SET payment_status = 'REJECTED' 
+          WHERE payment_reference = ${identifier} OR id::text = ${identifier};
         `;
         if (row) {
           foundReg = {
@@ -340,7 +365,7 @@ export async function handleAdminAction(action, body) {
       foundReg.paymentStatus = "REJECTED";
       saveLocalData(local);
       sendPaymentRejectedEmail(foundReg, reason).catch((e) => console.error("Reject email error:", e.message));
-      return { ok: true, status: "REJECTED" };
+      return { ok: true, status: "REJECTED", registration: foundReg };
     }
     return { ok: false, error: "Registration not found" };
   }
@@ -363,27 +388,13 @@ export async function handleAdminAction(action, body) {
           ON CONFLICT (code) DO NOTHING;
         `;
       } catch (e) {
-        console.warn("DB coupon create error:", e.message);
+        console.warn("DB coupon insert error:", e.message);
       }
     }
 
     local.coupons.push(newCoupon);
     saveLocalData(local);
     return { ok: true, coupon: newCoupon };
-  }
-
-  if (action === "toggle-coupon") {
-    const code = String(body.code || "").toUpperCase();
-    const c = local.coupons.find((x) => x.code === code);
-    if (c) {
-      c.status = c.status === "active" ? "inactive" : "active";
-      if (sql) {
-        await sql`UPDATE academy_coupons SET status = ${c.status} WHERE upper(code) = ${code};`.catch(() => {});
-      }
-      saveLocalData(local);
-      return { ok: true, status: c.status };
-    }
-    return { ok: false, error: "Coupon not found" };
   }
 
   if (action === "create-affiliate") {
@@ -406,7 +417,7 @@ export async function handleAdminAction(action, body) {
           ON CONFLICT (code) DO NOTHING;
         `;
       } catch (e) {
-        console.warn("DB affiliate create error:", e.message);
+        console.warn("DB affiliate insert error:", e.message);
       }
     }
 
@@ -415,19 +426,5 @@ export async function handleAdminAction(action, body) {
     return { ok: true, affiliate: newAff };
   }
 
-  if (action === "toggle-affiliate") {
-    const code = String(body.code || "").toUpperCase();
-    const a = local.affiliates.find((x) => x.code === code);
-    if (a) {
-      a.status = a.status === "active" ? "inactive" : "active";
-      if (sql) {
-        await sql`UPDATE academy_affiliates SET status = ${a.status} WHERE upper(code) = ${code};`.catch(() => {});
-      }
-      saveLocalData(local);
-      return { ok: true, status: a.status };
-    }
-    return { ok: false, error: "Affiliate not found" };
-  }
-
-  return { ok: false, error: "Unknown admin action" };
+  return { ok: false, error: "Unknown action" };
 }

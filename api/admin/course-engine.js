@@ -177,7 +177,7 @@ async function getAccounting(sql) {
     rows = await sql`SELECT id, seat_number, full_name, email, phone, location, experience,
       preferred_language, goal, previous_course_email, course_id, created_at, payment_submitted_at, payment_status,
       price_jod, discount_jod, coupon_code, affiliate_name, commission_percent,
-      commission_jod, commission_status, payment_provider, payment_reference
+      commission_jod, commission_status, payment_provider, payment_reference, receipt_url, receipt_name, receipt_base64
       FROM course_registrations ORDER BY created_at DESC LIMIT 5000`;
   } catch (error) {
     if (error?.code !== "42P01") throw error;
@@ -384,31 +384,60 @@ export default async function handler(req, res) {
     }
 
     if (body.action === "set-payment-status") {
-      const status = ["PAID", "REJECTED", "PENDING_REVIEW"].includes(body.status) ? body.status : null;
-      const registrationId = Number(body.id);
-      if (!status || !Number.isSafeInteger(registrationId) || registrationId < 1) return send(res, 400, { error: "Payment update is not valid." });
-      const [registration] = await sql`UPDATE course_registrations SET payment_status=${status},
-        commission_status=CASE WHEN ${status}='PAID' AND commission_percent>0 THEN 'PAYABLE'
-          WHEN ${status}='PAID' THEN 'NOT_APPLICABLE' WHEN ${status}='PENDING_REVIEW' AND commission_percent>0 THEN 'PENDING_PAYMENT_REVIEW'
-          ELSE 'NOT_APPLICABLE' END
-        WHERE id=${registrationId} RETURNING id,full_name,email,course_id,seat_number,payment_status,commission_status`;
+      const isApprove = ["PAID", "APPROVED", "VERIFIED"].includes(String(body.status).toUpperCase());
+      const isReject = String(body.status).toUpperCase() === "REJECTED";
+      const status = isApprove ? "PAID" : isReject ? "REJECTED" : "PENDING_REVIEW";
+      const rawId = String(body.id || "").trim();
+      const numId = Number(rawId);
+      const isNum = Number.isSafeInteger(numId) && numId > 0;
+
+      let registration = null;
+      if (isNum) {
+        const [r] = await sql`UPDATE course_registrations SET payment_status=${status},
+          commission_status=CASE WHEN ${status}='PAID' AND commission_percent>0 THEN 'PAYABLE'
+            WHEN ${status}='PAID' THEN 'NOT_APPLICABLE' WHEN ${status}='PENDING_REVIEW' AND commission_percent>0 THEN 'PENDING_PAYMENT_REVIEW'
+            ELSE 'NOT_APPLICABLE' END
+          WHERE id=${numId} RETURNING id,full_name,email,course_id,seat_number,payment_status,commission_status,payment_reference`;
+        registration = r;
+      } else if (rawId) {
+        const [r] = await sql`UPDATE course_registrations SET payment_status=${status},
+          commission_status=CASE WHEN ${status}='PAID' AND commission_percent>0 THEN 'PAYABLE'
+            WHEN ${status}='PAID' THEN 'NOT_APPLICABLE' WHEN ${status}='PENDING_REVIEW' AND commission_percent>0 THEN 'PENDING_PAYMENT_REVIEW'
+            ELSE 'NOT_APPLICABLE' END
+          WHERE payment_reference=${rawId} RETURNING id,full_name,email,course_id,seat_number,payment_status,commission_status,payment_reference`;
+        registration = r;
+      }
+
+      if (!registration) {
+        try {
+          const [ar] = await sql`UPDATE academy_registrations SET payment_status=${status === "PAID" ? "APPROVED" : status}
+            WHERE reference=${rawId} OR id::text=${rawId}
+            RETURNING id,full_name,email,course_id,seat_number,payment_status,reference as payment_reference`;
+          if (ar) registration = ar;
+        } catch (e) {}
+      }
+
       if (!registration) return send(res, 404, { error: "Registration not found." });
       await writeAudit({ actorUserId: gate.auth.userId, action: "course_payment_status_changed", targetType: "course_registration", targetId: registration.id, details: { status } });
+
+      const courseName = registration.course_id === "ai-engineering"
+        ? "دورة الذكاء الاصطناعي للمهندسين (AI for Engineers)"
+        : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي (AI Filmmaking)";
 
       if (status === "PAID" && registration.email) {
         sendPaymentApprovedEmail({
           fullName: registration.full_name,
           email: registration.email,
-          courseName: registration.course_id === "ai-engineering" ? "دورة الذكاء الاصطناعي للمهندسين" : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي",
+          courseName,
           seatNumber: registration.seat_number || registration.id,
-          reference: `7Z-REG-${registration.id}`
+          reference: registration.payment_reference || `7Z-REG-${registration.id}`
         }).catch((err) => console.error("Admin approve email error:", err.message));
       } else if (status === "REJECTED" && registration.email) {
         sendPaymentRejectedEmail({
           fullName: registration.full_name,
           email: registration.email,
-          courseName: registration.course_id === "ai-engineering" ? "دورة الذكاء الاصطناعي للمهندسين" : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي",
-          reference: `7Z-REG-${registration.id}`
+          courseName,
+          reference: registration.payment_reference || `7Z-REG-${registration.id}`
         }, body.reason || "").catch((err) => console.error("Admin reject email error:", err.message));
       }
 

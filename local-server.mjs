@@ -759,10 +759,11 @@ async function handleApi(req, res, url) {
 
     if (req.method === "POST") {
       const body = await readJsonBody(req);
-      const actionMap = {
-        "set-payment-status": body.status === "PAID" ? "approve-payment" : "reject-payment"
-      };
-      const result = await handleAdminAction(actionMap[body.action] || body.action, { ...body, reference: body.id });
+      const isApprove = ["PAID", "APPROVED", "VERIFIED"].includes(String(body.status || "").toUpperCase());
+      const mappedAction = body.action === "set-payment-status"
+        ? (isApprove ? "approve-payment" : "reject-payment")
+        : body.action;
+      const result = await handleAdminAction(mappedAction, { ...body, reference: body.id, reason: body.reason || "" });
       sendJson(res, 200, result);
       return true;
     }

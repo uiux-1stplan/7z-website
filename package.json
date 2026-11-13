@@ -7,6 +7,7 @@
     "@vercel/blob": "^2.4.0",
     "@vercel/functions": "^3.9.2",
     "drizzle-orm": "^0.45.2",
+    "exceljs": "^4.4.0",
     "nodemailer": "^10.5.0",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"
