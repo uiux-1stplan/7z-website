@@ -204,5 +204,6 @@
                          "source":  "/api/private-auth/resource-check",
                          "destination":  "/api/private-auth-router?__z7route=resource-check"
                      }
-                 ]
+                 ],
+    "installCommand":  "npm install --no-audit --no-fund --legacy-peer-deps"
 }
