@@ -1,5 +1,5 @@
 /**
- * 7Z MAGIC ACADEMY â€” SERVICE ROUTER
+ * 7Z MAGIC ACADEMY — SERVICE ROUTER
  * Handles Registration, Code Validation, Admin Data & Actions
  */
 
@@ -27,7 +27,7 @@ ensureDbSchema().catch((e) => console.warn("Schema init error:", e.message));
 // 1. Validate Discount / Affiliate Code
 export async function handleValidateCode(codeStr, courseId = "all") {
   const code = String(codeStr || "").trim().toUpperCase();
-  if (!code) return { valid: false, message: "ÙŠØ±Ø¬Ù‰ Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„ÙƒÙˆØ¯" };
+  if (!code) return { valid: false, message: "يرجى إدخال الكود" };
 
   const sql = getSqlClient();
   if (sql) {
@@ -40,7 +40,7 @@ export async function handleValidateCode(codeStr, courseId = "all") {
       `;
       if (coupon) {
         if (coupon.course_scope !== "all" && coupon.course_scope !== courseId) {
-          return { valid: false, message: "Ù‡Ø°Ø§ Ø§Ù„ÙƒÙˆØ¯ ØºÙŠØ± Ù…Ø®ØµØµ Ù„Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙˆØ±Ø©" };
+          return { valid: false, message: "هذا الكود غير مخصص لهذه الدورة" };
         }
         return { valid: true, discountPercent: coupon.discount_percent, code: coupon.code, type: "coupon" };
       }
@@ -70,7 +70,7 @@ export async function handleValidateCode(codeStr, courseId = "all") {
   const c = local.coupons.find((x) => x.code.toUpperCase() === code && x.status === "active");
   if (c) {
     if (c.courseScope && c.courseScope !== "all" && c.courseScope !== courseId) {
-      return { valid: false, message: "Ù‡Ø°Ø§ Ø§Ù„ÙƒÙˆØ¯ ØºÙŠØ± Ù…Ø®ØµØµ Ù„Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙˆØ±Ø©" };
+      return { valid: false, message: "هذا الكود غير مخصص لهذه الدورة" };
     }
     return { valid: true, discountPercent: c.discountPercent, code: c.code, type: "coupon" };
   }
@@ -80,7 +80,7 @@ export async function handleValidateCode(codeStr, courseId = "all") {
     return { valid: true, discountPercent: a.discountPercent, code: a.code, affiliateName: a.name, type: "affiliate" };
   }
 
-  return { valid: false, message: "Ø§Ù„ÙƒÙˆØ¯ Ø§Ù„Ù…Ø¯Ø®Ù„ ØºÙŠØ± ØµØ§Ù„Ø­ Ø£Ùˆ Ù…Ù†ØªÙ‡ÙŠ Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ©" };
+  return { valid: false, message: "الكود المدخل غير صالح أو منتهي الصلاحية" };
 }
 
 // 2. Register Student & Upload Receipt
@@ -122,7 +122,7 @@ export async function handleRegistration(body) {
     experience: String(body.experience || "").trim(),
     notes: String(body.notes || "").trim(),
     courseId: String(body.courseId || "cinematic-film"),
-    courseName: String(body.courseName || (body.courseId === "ai-engineering" ? "Ø¯ÙˆØ±Ø© Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ Ù„Ù„Ù…Ù‡Ù†Ø¯Ø³ÙŠÙ†" : "ØµÙ†Ø§Ø¹Ø© Ø§Ù„Ø£ÙÙ„Ø§Ù… ÙˆØ§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø³ÙŠÙ†Ù…Ø§Ø¦ÙŠ Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ")),
+    courseName: String(body.courseName || (body.courseId === "ai-engineering" ? "دورة الذكاء الاصطناعي للمهندسين" : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي")),
     promoCode: String(body.promoCode || "").toUpperCase(),
     discountPercent: Number(body.discountPercent || 0),
     discountJod: Number(body.discountJod || 0),
