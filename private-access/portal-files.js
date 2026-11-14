@@ -361,6 +361,26 @@
 
         render(files);
 
+      } else if (payload?.authenticated === true) {
+
+        if (list) {
+          list.innerHTML = `
+            <div class="z7cpf-empty-state" style="padding: 50px 24px; text-align: center; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 16px; background: rgba(255, 255, 255, 0.02);">
+              <div style="width: 50px; height: 50px; margin: 0 auto 14px; display: grid; place-items: center; border-radius: 50%; background: rgba(214, 178, 94, 0.1); border: 1px solid rgba(214, 178, 94, 0.25); color: #d6b25e;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <h3 style="margin: 0 0 6px; font-size: 17px; color: #fff; font-weight: 600;">No Deliverables Published Yet</h3>
+              <p style="margin: 0; font-size: 13px; color: rgba(255, 255, 255, 0.55); max-width: 440px; margin-inline: auto;">Your private documents, presentations and cinematic assets will appear here immediately once published by the 7Z Magic team.</p>
+            </div>
+          `;
+        }
+
+        showFiles();
+
+        if (policy) {
+          policy.hidden = true;
+        }
+
       } else {
 
         hideFiles();
@@ -420,5 +440,16 @@
 
   window.__Z7_REFRESH_FILES__ =
     refresh;
+
+  window.addEventListener(
+    "z7pa:auth-changed",
+    (event) => {
+      if (event.detail?.authenticated) {
+        refresh();
+      } else {
+        hideFiles();
+      }
+    }
+  );
 
 })();

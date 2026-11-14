@@ -1011,3 +1011,30 @@ html:not([data-theme="light"]) .theme-pill__sun {color:#e8c574;}
 @media (max-width:620px) {
   #app.dashboard-app .dashboard-nav { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
 }
+
+/* Marketers Commission Payout Badges & Interactive Toggle Controls */
+.engine-status.is-active {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.28) !important;
+}
+.engine-status.is-pending {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.28) !important;
+}
+[data-toggle-payout] {
+  transition: all 0.2s cubic-bezier(0.2, 0.75, 0.2, 1) !important;
+}
+[data-toggle-payout]:hover {
+  transform: translateY(-1px) !important;
+}
+[data-toggle-payout].is-confirm:hover {
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45) !important;
+  filter: brightness(1.08);
+}
+[data-toggle-payout].is-unpaid-action:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #fff !important;
+}

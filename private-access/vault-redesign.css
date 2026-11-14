@@ -177,13 +177,66 @@ html[data-z7-core][data-theme="light"] .z7pa-page .z7-login-vault { box-shadow:0
 
 
 /* Keep unauthenticated sign-in centered and stable below the fixed navigation. */
-html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page { display:grid; min-height:calc(100svh - 72px); align-content:center; justify-items:center; padding:24px var(--z7-gutter) 36px; }
-html.z7icx-preauth[data-z7-core] .z7pa-page .z7pa-hero { display:none!important; }
-html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault { width:min(600px,100%)!important; margin:0 auto!important; }
-html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__card { grid-template-columns:minmax(0,1fr); grid-template-areas:"brand" "kicker" "title" "intro" "form" "security"; row-gap:12px; padding:clamp(22px,5vw,46px)!important; text-align:left; }
-html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__brand { margin-bottom:10px; }
-html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__aura { right:-8%; top:42%; width:18rem; opacity:.25; }
-@media(max-width:640px) {
-  html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page { min-height:calc(100svh - 62px); padding-block:20px; }
-  html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__card { padding:22px!important; }
+html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: calc(100svh - 40px) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(96px, 14vh, 140px) var(--z7-gutter) 48px !important;
+  box-sizing: border-box !important;
+}
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7pa-hero,
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7pa-library,
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7pa-policy,
+html.z7icx-preauth[data-z7-core] .z7pa-page #z7-client-private-files {
+  display: none !important;
+}
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault {
+  display: block !important;
+  width: min(520px, 100%) !important;
+  margin: 0 auto !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 26px !important;
+  background: radial-gradient(ellipse at 50% 0%, rgba(79, 140, 255, 0.12), transparent 70%), linear-gradient(155deg, rgba(20, 25, 34, 0.95), rgba(9, 11, 15, 0.98)) !important;
+  box-shadow: 0 35px 90px -30px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+}
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__card {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas: "brand" "kicker" "title" "intro" "form" "security" !important;
+  row-gap: 12px !important;
+  padding: clamp(28px, 6vw, 48px) !important;
+  text-align: left !important;
+}
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__brand {
+  margin-bottom: 12px !important;
+}
+html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__aura {
+  right: -8%;
+  top: 42%;
+  width: 18rem;
+  opacity: 0.25;
+}
+html:not(.z7icx-preauth)[data-z7-core] .z7pa-page .z7-login-vault {
+  display: none !important;
+}
+html:not(.z7icx-preauth)[data-z7-core] main.subpage-main.z7pa-page {
+  padding-top: clamp(86px, 12vh, 120px) !important;
+  min-height: 80svh;
+}
+html:not(.z7icx-preauth)[data-z7-core] #z7-client-private-files:not([hidden]) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+@media (max-width: 640px) {
+  html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page {
+    padding-top: 84px !important;
+    padding-bottom: 24px !important;
+  }
+  html.z7icx-preauth[data-z7-core] .z7pa-page .z7-login-vault__card {
+    padding: 24px 20px !important;
+  }
 }

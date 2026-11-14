@@ -91,6 +91,13 @@ async function ensureSchema(sql) {
       deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`;
 
+    await sql`CREATE TABLE IF NOT EXISTS marketer_payouts (
+      code TEXT PRIMARY KEY,
+      paid BOOLEAN NOT NULL DEFAULT FALSE,
+      paid_at TIMESTAMPTZ,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+
     await sql`CREATE TABLE IF NOT EXISTS course_admin_migrations (
       migration_key TEXT PRIMARY KEY,
       applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -477,7 +484,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
     } catch (_) {}
   }
 
-  ws2.mergeCells("A1:G1");
+  ws2.mergeCells("A1:H1");
   const titleCell2 = ws2.getCell("A1");
   titleCell2.value = "7Z MAGIC STUDIO  |  MARKETERS & PARTNERS COMMISSION LEDGER";
   titleCell2.font = titleFont;
@@ -485,7 +492,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
   titleCell2.alignment = { horizontal: "center", vertical: "middle" };
   ws2.getRow(1).height = 36;
 
-  ws2.mergeCells("A2:G2");
+  ws2.mergeCells("A2:H2");
   const subCell2 = ws2.getCell("A2");
   subCell2.value = `Strict Commission Formula: Commission = Net Price After Discount × Commission %  |  Generated ${new Date().toISOString().slice(0, 10)}`;
   subCell2.font = subtitleFont;
@@ -502,7 +509,8 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
     "Total Sales After Discount (JOD)",
     "Commission Rate %",
     "Commission Due (JOD)",
-    "Company Net Profit (JOD)"
+    "Company Net Profit (JOD)",
+    "Payout Status"
   ];
   const hRow2 = ws2.addRow(ws2Headers);
   hRow2.height = 28;
@@ -530,7 +538,8 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
       Number(m.net_sales_jod || 0),
       Number(m.commission_percent || 0) / 100,
       Number(m.commission_due_jod || 0),
-      Number(m.company_net_jod || 0)
+      Number(m.company_net_jod || 0),
+      m.paid ? "PAID" : "UNPAID"
     ]);
     row.height = 22;
     const isZebra = (rowIdx2 % 2 === 0);
@@ -548,6 +557,9 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
         cell.alignment = { horizontal: "center", vertical: "middle" };
       } else if (colNum === 3) {
         cell.alignment = { horizontal: "center", vertical: "middle" };
+      } else if (colNum === 8) {
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+        cell.font = { name: "Segoe UI", size: 10, bold: true, color: { argb: m.paid ? "FF10B981" : "FFF59E0B" } };
       }
     });
     rowIdx2++;
@@ -561,7 +573,8 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
     totalMarketerSales,
     "",
     totalMarketerComms,
-    totalCompanyProfit
+    totalCompanyProfit,
+    "—"
   ]);
   totalRow2.height = 28;
   totalRow2.eachCell((cell, colNum) => {
@@ -833,10 +846,66 @@ async function getAccounting(sql) {
   totals.netSales = totals.revenue;
   totals.studioNet = Math.max(0, totals.revenue - totals.commissionsTotal);
 
+  // Fetch marketer commission payouts state
+  const payoutsMap = new Map();
+  if (sql) {
+    try {
+      const dbPayouts = await sql`SELECT code, paid, paid_at FROM marketer_payouts`;
+      for (const p of (dbPayouts || [])) {
+        payoutsMap.set(String(p.code).toUpperCase(), {
+          paid: Boolean(p.paid),
+          paidAt: p.paid_at ? new Date(p.paid_at).toISOString() : null
+        });
+      }
+    } catch (e) {
+      console.warn("Notice querying marketer_payouts:", e.message);
+    }
+  }
+
+  try {
+    const localPayouts = local.marketerPayouts || {};
+    for (const [codeKey, p] of Object.entries(localPayouts)) {
+      const uc = String(codeKey).toUpperCase();
+      if (!payoutsMap.has(uc)) {
+        payoutsMap.set(uc, {
+          paid: Boolean(p?.paid),
+          paidAt: p?.paid_at || null
+        });
+      }
+    }
+  } catch (_) {}
+
+  const finalMarketersLedger = Array.from(marketersMap.values()).map(m => {
+    const uc = String(m.coupon_code || m.code || "").toUpperCase();
+    const pInfo = payoutsMap.get(uc);
+    const isPaid = Boolean(pInfo?.paid);
+    const paidAt = pInfo?.paidAt || null;
+    return {
+      ...m,
+      code: m.coupon_code,
+      coupon_code: m.coupon_code,
+      marketerName: m.affiliate_name,
+      affiliate_name: m.affiliate_name,
+      studentsCount: m.students_count,
+      students_count: m.students_count,
+      netSalesAfterDiscount: m.net_sales_jod,
+      net_sales_jod: m.net_sales_jod,
+      commissionPercent: m.commission_percent,
+      commission_percent: m.commission_percent,
+      commissionDue: m.commission_due_jod,
+      commission_due_jod: m.commission_due_jod,
+      companyNetProfit: m.company_net_jod,
+      company_net_jod: m.company_net_jod,
+      paid: isPaid,
+      paidAt: paidAt,
+      paid_at: paidAt
+    };
+  });
+
   return {
     totals: Object.fromEntries(Object.entries(totals).map(([key, value]) => [key, Math.round(value * 1000) / 1000])),
     registrations: rows,
-    marketersLedger: Array.from(marketersMap.values()),
+    marketersLedger: finalMarketersLedger,
     adjustments,
   };
 }
@@ -1413,6 +1482,56 @@ export default async function handler(req, res) {
         } catch {}
       }
       return send(res, 200, { registration });
+    }
+
+    if (body.action === "toggle-commission-paid" || req.query?.action === "toggle-commission-paid") {
+      const code = text(body.code || req.query?.code, 64).toUpperCase();
+      if (!code) {
+        return send(res, 400, { error: "Marketer code is required." });
+      }
+      const paid = body.paid !== undefined ? Boolean(body.paid) : true;
+      const now = new Date().toISOString();
+
+      if (sql) {
+        try {
+          await sql`INSERT INTO marketer_payouts (code, paid, paid_at, updated_at)
+            VALUES (${code}, ${paid}, ${paid ? sql`NOW()` : null}, NOW())
+            ON CONFLICT (code) DO UPDATE
+            SET paid = EXCLUDED.paid,
+                paid_at = EXCLUDED.paid_at,
+                updated_at = NOW()`;
+        } catch (dbErr) {
+          console.warn("Notice updating marketer_payouts in DB:", dbErr.message);
+        }
+      }
+
+      // Local fallback sync
+      try {
+        const local = readLocalData();
+        if (!local.marketerPayouts) local.marketerPayouts = {};
+        local.marketerPayouts[code] = {
+          paid,
+          paid_at: paid ? now : null,
+          updated_at: now
+        };
+        saveLocalData(local);
+      } catch (localErr) {
+        console.warn("Notice saving local marketer_payouts:", localErr.message);
+      }
+
+      if (gate?.auth?.userId) {
+        try {
+          await writeAudit({
+            actorUserId: gate.auth.userId,
+            action: paid ? "marketer_commission_paid" : "marketer_commission_unpaid",
+            targetType: "marketer_payout",
+            targetId: code,
+            details: { code, paid, paid_at: paid ? now : null }
+          });
+        } catch {}
+      }
+
+      return send(res, 200, { ok: true, code, paid, paid_at: paid ? now : null });
     }
 
     return send(res, 400, { error: "Unknown course management action." });

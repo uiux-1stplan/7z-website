@@ -654,6 +654,10 @@
           true
         );
 
+        if (typeof window.__Z7_REFRESH_FILES__ === "function") {
+          window.__Z7_REFRESH_FILES__();
+        }
+
 
         /* Z7_ROOT_LOGIN_REFRESH_V1 */
 
@@ -703,6 +707,14 @@
     "z7pa:focus-login",
     focusLogin
   );
+
+  window.document.addEventListener("click", (e) => {
+    const btn = e.target.closest("#z7PortalSignoutBtn");
+    if (btn) {
+      e.preventDefault();
+      signOut();
+    }
+  });
 
 
   /*

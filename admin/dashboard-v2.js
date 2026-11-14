@@ -6,11 +6,11 @@
   const titles = {
     overview: ["7Z MAGIC / OVERVIEW", "Studio overview", "A live view of your client and academy workspace."],
     users: ["CLIENT DIRECTORY / ACCESS CONTROL", "Users", "Invite, organize and protect access to private project spaces."],
-    media: ["CLIENT DELIVERY / PRIVATE STORAGE", "Media & Vault", "Manage protected files and client-specific view or download access."],
-    "courses-affiliates": ["ACADEMY / COURSE COMMERCE", "Courses & Affiliates", "Manage course offers, affiliate profiles and discount codes."],
-    registrations: ["ACADEMY / PAYMENT REVIEW", "Registrations & Payments", "Review registration records, payment submissions and approvals."],
-    accounting: ["ACADEMY / BUSINESS INTELLIGENCE", "Analytics & Accounting", "Financial and enrollment signals from recorded course activity."],
-    settings: ["STUDIO CONTROL / PREFERENCES", "Settings", "Workspace appearance, session security and course destinations."],
+    media: ["CLIENT DELIVERY / VAULT & ACCOUNTS", "Clients & Vault Files", "Manage client accounts, upload deliverables and configure access control."],
+    "courses-affiliates": ["ACADEMY / PROMO CODES", "Promo Codes & Affiliates Hub", "Manage promotional discount codes, partner profiles and campaigns."],
+    registrations: ["ACADEMY / PAYMENT REVIEW", "Registrations & Payment Receipts", "Review registration records, payment submissions and verify real transfer receipts."],
+    accounting: ["ACADEMY / FINANCIAL LEDGER", "Financial & Marketers Ledger", "Accounting ledger, marketer commission breakdown, and official excel reporting."],
+    settings: ["STUDIO CONTROL / PREFERENCES", "Settings & Logs", "Workspace appearance, session security and system audit logs."],
   };
   const months = new Intl.DateTimeFormat("en", { month: "short" });
   let initialized = false;

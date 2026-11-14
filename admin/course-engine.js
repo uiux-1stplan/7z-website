@@ -116,11 +116,13 @@
     let totalCompanyProfit = 0;
     
     for (const item of items) {
-      const students = Number(item.studentsCount || 0);
-      const netSales = Number(item.netSalesAfterDiscount || 0);
-      const commPercent = Number(item.commissionPercent || 0);
-      const commDue = Number(item.commissionDue || 0);
-      const companyProfit = Number(item.companyNetProfit || 0);
+      const students = Number(item.studentsCount ?? item.students_count ?? 0);
+      const netSales = Number(item.netSalesAfterDiscount ?? item.net_sales_jod ?? 0);
+      const commPercent = Number(item.commissionPercent ?? item.commission_percent ?? 0);
+      const commDue = Number(item.commissionDue ?? item.commission_due_jod ?? 0);
+      const companyProfit = Number(item.companyNetProfit ?? item.company_net_jod ?? 0);
+      const isPaid = Boolean(item.paid);
+      const paidDate = item.paidAt || item.paid_at;
       
       totalStudents += students;
       totalNetSales += netSales;
@@ -129,13 +131,25 @@
       
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td><div class="engine-user"><strong>${escape(item.marketerName || "Affiliate")}</strong><span>Partner</span></div></td>
-        <td><code class="engine-code" style="color:#d4af37;font-weight:700;">${escape(item.code)}</code></td>
+        <td><div class="engine-user"><strong>${escape(item.marketerName || item.affiliate_name || "Affiliate")}</strong><span>Partner</span></div></td>
+        <td><code class="engine-code" style="color:#d4af37;font-weight:700;">${escape(item.code || item.coupon_code)}</code></td>
         <td><strong>${students}</strong></td>
         <td>${jod(netSales)}</td>
         <td><span class="engine-status is-active" style="display:inline-block;padding:2px 8px;font-weight:700;">${commPercent}%</span></td>
         <td><strong style="color:#10b981;">${jod(commDue)}</strong></td>
         <td><strong style="color:#38bdf8;">${jod(companyProfit)}</strong></td>
+        <td>
+          <span class="engine-status ${isPaid ? "is-active" : "is-pending"}" style="font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:6px;font-size:11px;">
+            <i style="width:6px;height:6px;border-radius:50%;background:${isPaid ? "#10b981" : "#f59e0b"};display:inline-block;"></i>
+            ${isPaid ? "مدفوع (PAID)" : "غير مدفوع (UNPAID)"}
+          </span>
+          ${paidDate ? `<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-top:2px;">${new Date(paidDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>` : ""}
+        </td>
+        <td>
+          <button type="button" class="small-button ${isPaid ? "is-unpaid-action" : "is-confirm"}" data-toggle-payout="${escape(item.code || item.coupon_code)}" data-paid="${isPaid ? "false" : "true"}" style="font-weight:600;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;${isPaid ? "background:rgba(255,255,255,0.06);color:#cbd5e1;border:1px solid rgba(255,255,255,0.18);" : "background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 2px 8px rgba(16,185,129,0.3);"}">
+            ${isPaid ? "Mark Unpaid ↺" : "Mark Paid ✓"}
+          </button>
+        </td>
       `;
       body.append(row);
     }
@@ -149,6 +163,7 @@
           <td>—</td>
           <td style="color:#10b981;font-size:14px;">${jod(totalCommissionDue)}</td>
           <td style="color:#38bdf8;font-size:14px;">${jod(totalCompanyProfit)}</td>
+          <td colspan="2" style="color:rgba(255,255,255,0.5);font-size:11px;text-align:center;">—</td>
         </tr>
       ` : "";
     }
@@ -397,7 +412,7 @@
         form.elements.commissionPercent.value = "20";
       }
     });
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", async (event) => {
       const editButton = event.target.closest("[data-engine-edit]");
       if (editButton) { editRecord(editButton); return; }
       const adjustmentEdit = event.target.closest("[data-adjustment-edit]");
@@ -415,6 +430,16 @@
       const adjustmentDelete = event.target.closest("[data-adjustment-delete]");
       if (adjustmentDelete) {
         if (window.confirm(`Delete this audited revenue adjustment (${Number(adjustmentDelete.dataset.amount).toFixed(3)} JOD)? This will recalculate reported revenue.`)) post({ action: "delete-revenue-adjustment", id: adjustmentDelete.dataset.adjustmentDelete }, "Revenue adjustment deleted and totals recalculated.");
+        return;
+      }
+      const togglePayout = event.target.closest("[data-toggle-payout]");
+      if (togglePayout) {
+        const code = togglePayout.getAttribute("data-toggle-payout");
+        const targetPaid = togglePayout.getAttribute("data-paid") === "true";
+        if (!code) return;
+        togglePayout.disabled = true;
+        togglePayout.textContent = "Saving…";
+        await post({ action: "toggle-commission-paid", code, paid: targetPaid }, `Payout status for ${code} set to ${targetPaid ? "PAID" : "UNPAID"}.`);
         return;
       }
       const viewReceipt = event.target.closest("[data-view-receipt]");
