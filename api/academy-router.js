@@ -35,9 +35,15 @@ export default async function handler(req, res) {
   const searchPath = `${rawPath} ${matchedPath}`;
 
   try {
-    if (searchPath.includes("validate-code") || url.searchParams.has("code") || Boolean(req.query?.code)) {
-      const code = url.searchParams.get("code") || req.query?.code || "";
-      const course = url.searchParams.get("course") || req.query?.course || "all";
+    if (searchPath.includes("validate-code") || url.searchParams.has("code") || Boolean(req.query?.code) || Boolean(req.body?.code)) {
+      let body = {};
+      if (req.body) {
+        try {
+          body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+        } catch (_) {}
+      }
+      const code = body?.code || url.searchParams.get("code") || req.query?.code || "";
+      const course = body?.courseId || body?.course || url.searchParams.get("course") || req.query?.course || "all";
       const result = await handleValidateCode(code, course);
       return res.status(200).json(result);
     }
