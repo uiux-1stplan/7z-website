@@ -153,6 +153,7 @@ async function getCodes(sql) {
 }
 
 async function getAccounting(sql) {
+  try { await ensureDbSchema(); } catch (e) { console.error('Schema sync warning:', e); }
   let rows = [];
   let adjustments = [];
   let totals = { gross: 0, revenue: 0, pending: 0, discounts: 0, commissionsDue: 0, commissionsTotal: 0, studioNet: 0 };
