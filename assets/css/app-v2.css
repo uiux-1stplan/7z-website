@@ -71,14 +71,68 @@ html[data-z7-core][data-theme="light"] .z7-brand img, html[data-z7-core][data-th
 html[data-z7-core] .z7-loader, html[data-z7-core] .z7-transition { display: none !important; }
 
 /* Distinctive home hero: canvas + metallic title + live 3D Bento */
-html[data-z7-core] .logo-hero { position: relative; display: grid; min-height: 700px; min-height: min(780px, 100svh); padding: 120px 24px 60px; overflow: clip; background: radial-gradient(ellipse at 50% 32%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 48%), var(--bg-primary); }
+html[data-z7-core] .logo-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: clamp(540px, 86svh, 920px);
+  padding: clamp(60px, 11vh, 120px) clamp(16px, 4vw, 36px) clamp(28px, 5vh, 52px);
+  overflow: clip;
+  background: radial-gradient(ellipse at 50% 32%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 48%), var(--bg-primary);
+}
 html[data-z7-core] #hero-constellation { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .88; }
-html[data-z7-core] .logo-hero__stage { position: relative; z-index: 1; display: grid; align-content: center; justify-items: center; gap: 26px; width: min(100%, 1040px); margin: auto; perspective: 1200px; transform-style: preserve-3d; }
-html[data-z7-core] .logo-hero__copy { display: grid; justify-items: center; width: min(720px, 100%); text-align: center; }
-html[data-z7-core] .logo-hero__mark { width: 48px; height: 54px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 0 22px var(--accent-soft)); transform: translate3d(var(--logo-x, 0), var(--logo-y, 0), 26px) rotateX(var(--logo-rx, 0deg)) rotateY(var(--logo-ry, 0deg)); }
-html[data-z7-core] .logo-hero .eyebrow { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 11px; color: var(--text-secondary); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; }
+html[data-z7-core] .logo-hero__stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.4vh, 26px);
+  width: min(100%, 1040px);
+  margin: auto;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+html[data-z7-core] .logo-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(760px, 100%);
+  text-align: center;
+  gap: clamp(10px, 1.8vh, 18px);
+}
+html[data-z7-core] .logo-hero__mark { width: 48px; height: 54px; margin-bottom: 8px; object-fit: contain; filter: drop-shadow(0 0 22px var(--accent-soft)); transform: translate3d(var(--logo-x, 0), var(--logo-y, 0), 26px) rotateX(var(--logo-rx, 0deg)) rotateY(var(--logo-ry, 0deg)); }
+html[data-z7-core] .logo-hero .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: clamp(0.7rem, 1.1vw, 0.82rem);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
 html[data-z7-core] .logo-hero .eyebrow::before { width: 6px; height: 6px; border-radius: 50%; background: #72e0ad; box-shadow: 0 0 12px rgba(114,224,173,.7); content: ""; }
-html[data-z7-core] .logo-hero h1 { max-width: 700px; margin-bottom: 0; background: linear-gradient(105deg, #fff 8%, #9cacc2 32%, #f7f9fc 48%, #8294aa 68%, #fff 90%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: z7-metal 9s ease-in-out infinite; }
+html[data-z7-core] .logo-hero h1 {
+  max-width: min(740px, 92vw);
+  margin: 0;
+  font-size: clamp(1.45rem, 3.2vw + 0.5rem, 2.75rem) !important;
+  line-height: clamp(1.22, 1.32, 1.42) !important;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  word-break: break-word;
+  background: linear-gradient(105deg, #fff 8%, #9cacc2 32%, #f7f9fc 48%, #8294aa 68%, #fff 90%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: z7-metal 9s ease-in-out infinite;
+}
 html[data-theme="light"][data-z7-core] .logo-hero h1 { background-image: linear-gradient(105deg, #0f172a 8%, #64748b 35%, #111827 55%, #475569 78%, #0f172a 95%); }
 @keyframes z7-metal { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 html[data-z7-core] .logo-hero__halo { position: absolute; z-index: -1; top: -160px; left: 50%; width: min(78vw, 780px); height: 440px; border-radius: 50%; background: radial-gradient(ellipse, var(--accent-soft), transparent 68%); filter: blur(38px); transform: translateX(-50%); pointer-events: none; }

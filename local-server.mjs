@@ -701,20 +701,22 @@ async function handleApi(req, res, url) {
       const adminData = await getAdminData();
       if (url.searchParams.get("view") === "accounting") {
         sendJson(res, 200, {
-          registrations: adminData.registrations.map((r) => ({
+          registrations: (adminData.registrations || []).map((r) => ({
             id: r.id || r.reference,
             full_name: r.fullName,
             email: r.email,
+            phone: r.phone || "",
+            location: r.city || r.location || "",
             course_id: r.courseId,
             created_at: r.createdAt || r.submittedAt,
-            coupon_code: r.promoCode,
-            price_jod: 250,
-            discount_jod: r.discountJod,
+            coupon_code: r.promoCode || r.coupon_code || "",
+            price_jod: Number(r.finalPrice || r.priceJod || 250),
+            discount_jod: Number(r.discountJod || 0),
             commission_percent: 20,
             commission_jod: r.discountJod > 0 ? (250 - r.discountJod) * 0.2 : 50,
-            commission_status: r.paymentStatus === "APPROVED" ? "PAYABLE" : "PENDING_PAYMENT_REVIEW",
+            commission_status: (r.paymentStatus === "APPROVED" || r.paymentStatus === "PAID") ? "PAYABLE" : "PENDING_PAYMENT_REVIEW",
             payment_status: r.paymentStatus,
-            payment_reference: r.receiptUrl || r.receiptName,
+            payment_reference: r.reference || r.payment_reference || r.receiptUrl || r.receiptName,
             receipt_url: r.receiptUrl || r.receiptBase64
           })),
           adjustments: [],

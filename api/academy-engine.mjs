@@ -104,7 +104,39 @@ export async function ensureDbSchema() {
   if (!sql) return;
 
   try {
-    // 1. Academy Registrations
+    // 1. Course Registrations Base Table (Must exist first)
+    await sql`
+      CREATE TABLE IF NOT EXISTS course_registrations (
+        id BIGSERIAL PRIMARY KEY,
+        seat_number INTEGER,
+        full_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        location TEXT,
+        experience TEXT,
+        preferred_language TEXT DEFAULT 'ar',
+        goal TEXT DEFAULT '',
+        previous_course_email TEXT DEFAULT '',
+        course_id TEXT NOT NULL DEFAULT 'cinematic-film',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        payment_submitted_at TIMESTAMPTZ DEFAULT NOW(),
+        payment_status TEXT NOT NULL DEFAULT 'PENDING_REVIEW',
+        price_jod NUMERIC(10,3) NOT NULL DEFAULT 250,
+        discount_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
+        coupon_code TEXT DEFAULT '',
+        affiliate_name TEXT DEFAULT '',
+        commission_percent NUMERIC(5,2) DEFAULT 0,
+        commission_jod NUMERIC(10,3) DEFAULT 0,
+        commission_status TEXT DEFAULT 'NOT_APPLICABLE',
+        payment_provider TEXT DEFAULT 'CliQ / Western Union',
+        payment_reference TEXT DEFAULT '',
+        receipt_url TEXT DEFAULT '',
+        receipt_name TEXT DEFAULT '',
+        receipt_base64 TEXT DEFAULT ''
+      );
+    `;
+
+    // 2. Academy Registrations Table
     await sql`
       CREATE TABLE IF NOT EXISTS academy_registrations (
         id BIGSERIAL PRIMARY KEY,
@@ -130,70 +162,50 @@ export async function ensureDbSchema() {
       );
     `;
 
-    // 2. Legacy / Admin Shared course_registrations + Auto-Sync to Admin Dashboard
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS seat_number INTEGER;`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS location TEXT DEFAULT '';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS experience TEXT DEFAULT '';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS preferred_language TEXT DEFAULT 'ar';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS goal TEXT DEFAULT '';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT DEFAULT '';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_submitted_at TIMESTAMPTZ DEFAULT NOW();`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS affiliate_name TEXT DEFAULT '';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_percent INTEGER DEFAULT 0;`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_jod NUMERIC(12,3) DEFAULT 0;`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_status TEXT DEFAULT 'NOT_APPLICABLE';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_provider TEXT DEFAULT 'CliQ / Western Union';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_url TEXT DEFAULT '';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_name TEXT DEFAULT '';`;
-    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_base64 TEXT DEFAULT '';`;
-    await sql`
-      INSERT INTO course_registrations (
-        seat_number, full_name, email, phone, location, experience, course_id,
-        price_jod, discount_jod, coupon_code, payment_status, payment_reference,
-        receipt_url, receipt_name, receipt_base64, created_at
-      )
-      SELECT
-        ar.seat_number, ar.full_name, ar.email, ar.phone, ar.city, ar.experience,
-        CASE WHEN ar.course_id LIKE '%engineer%' THEN 'ai-engineering' ELSE 'cinematic-film' END,
-        ar.final_price, ar.discount_jod, ar.promo_code, ar.payment_status, ar.reference,
-        ar.receipt_url, ar.receipt_name, ar.receipt_base64, ar.created_at
-      FROM academy_registrations ar
-      WHERE NOT EXISTS (
-        SELECT 1 FROM course_registrations cr WHERE cr.payment_reference = ar.reference
-      );
-    `;
-    await sql`
-      CREATE TABLE IF NOT EXISTS course_registrations (
-        id BIGSERIAL PRIMARY KEY,
-        seat_number INTEGER,
-        full_name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        phone TEXT,
-        location TEXT,
-        experience TEXT,
-        preferred_language TEXT DEFAULT 'ar',
-        goal TEXT,
-        previous_course_email TEXT,
-        course_id TEXT NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        payment_submitted_at TIMESTAMPTZ DEFAULT NOW(),
-        payment_status TEXT NOT NULL DEFAULT 'PENDING_REVIEW',
-        price_jod NUMERIC(10,3) NOT NULL DEFAULT 250,
-        discount_jod NUMERIC(10,3) NOT NULL DEFAULT 0,
-        coupon_code TEXT,
-        affiliate_name TEXT,
-        commission_percent NUMERIC(5,2) DEFAULT 0,
-        commission_jod NUMERIC(10,3) DEFAULT 0,
-        commission_status TEXT DEFAULT 'NOT_APPLICABLE',
-        payment_provider TEXT DEFAULT 'manual',
-        payment_reference TEXT,
-        receipt_url TEXT,
-        receipt_name TEXT,
-        receipt_base64 TEXT
-      );
-    `;
+    // 3. Ensure all columns exist in course_registrations
+    try {
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS seat_number INTEGER;`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS location TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS experience TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS preferred_language TEXT DEFAULT 'ar';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS goal TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_submitted_at TIMESTAMPTZ DEFAULT NOW();`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS affiliate_name TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_percent INTEGER DEFAULT 0;`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_jod NUMERIC(12,3) DEFAULT 0;`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_status TEXT DEFAULT 'NOT_APPLICABLE';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_provider TEXT DEFAULT 'CliQ / Western Union';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_url TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_name TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_base64 TEXT DEFAULT '';`;
+    } catch (e) {
+      console.warn("Column migration notice:", e.message);
+    }
 
-    // 3. Coupons
+    // 4. Bidirectional Sync from academy_registrations to course_registrations
+    try {
+      await sql`
+        INSERT INTO course_registrations (
+          seat_number, full_name, email, phone, location, experience, course_id,
+          price_jod, discount_jod, coupon_code, payment_status, payment_reference,
+          receipt_url, receipt_name, receipt_base64, created_at
+        )
+        SELECT
+          ar.seat_number, ar.full_name, ar.email, ar.phone, ar.city, ar.experience,
+          CASE WHEN ar.course_id LIKE '%engineer%' THEN 'ai-engineering' ELSE 'cinematic-film' END,
+          ar.final_price, ar.discount_jod, ar.promo_code, ar.payment_status, ar.reference,
+          ar.receipt_url, ar.receipt_name, ar.receipt_base64, ar.created_at
+        FROM academy_registrations ar
+        WHERE NOT EXISTS (
+          SELECT 1 FROM course_registrations cr WHERE cr.payment_reference = ar.reference
+        );
+      `;
+    } catch (e) {
+      console.warn("Sync migration notice:", e.message);
+    }
+
+    // 5. Coupons Table
     await sql`
       CREATE TABLE IF NOT EXISTS academy_coupons (
         id BIGSERIAL PRIMARY KEY,

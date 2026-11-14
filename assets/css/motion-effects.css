@@ -115,3 +115,144 @@ html.theme-light .z7-cursor-dot {
     transform: none !important;
   }
 }
+
+
+/* ==========================================================================
+   5. Universal Hero Responsive Typography & Anti-Overlap Protection
+   ========================================================================== */
+.logo-hero,
+section.logo-hero,
+html[data-z7-core] .logo-hero,
+.z7-home .logo-hero {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: clamp(520px, 86svh, 920px) !important;
+  height: auto !important;
+  padding: clamp(60px, 11vh, 120px) clamp(16px, 4vw, 36px) clamp(28px, 5vh, 52px) !important;
+  box-sizing: border-box !important;
+  background-image: none !important;
+}
+
+.logo-hero__stage,
+html[data-z7-core] .logo-hero__stage,
+.z7-home .logo-hero__stage {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: clamp(14px, 2.6vh, 28px) !important;
+  width: 100% !important;
+  max-width: min(1040px, 100%) !important;
+  margin: auto !important;
+  min-height: auto !important;
+}
+
+.logo-hero__copy,
+html[data-z7-core] .logo-hero__copy,
+.z7-home .logo-hero__copy {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: min(780px, 100%) !important;
+  text-align: center !important;
+  gap: clamp(12px, 2.2vh, 22px) !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+}
+
+.logo-hero__logo3d,
+html[data-z7-core] .logo-hero__logo3d {
+  display: block !important;
+  position: relative !important;
+  flex: 0 0 auto !important;
+  width: clamp(170px, 18vw, 230px) !important;
+  max-width: min(72vw, 230px) !important;
+  aspect-ratio: 390 / 433 !important;
+  max-height: clamp(150px, 26svh, 230px) !important;
+  margin: 0 auto !important;
+}
+
+.logo-hero .eyebrow,
+html[data-z7-core] .logo-hero .eyebrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  font-size: clamp(0.72rem, 1.15vw, 0.85rem) !important;
+  letter-spacing: 0.16em !important;
+  line-height: 1.4 !important;
+  text-transform: uppercase !important;
+}
+
+.logo-hero h1,
+html[data-z7-core] .logo-hero h1,
+.logo-hero__copy h1,
+html[data-z7-core] .logo-hero__copy h1 {
+  font-size: clamp(1.45rem, 3.2vw + 0.45rem, 2.85rem) !important;
+  line-height: clamp(1.25, 1.35, 1.48) !important;
+  letter-spacing: -0.025em !important;
+  margin: 0 !important;
+  max-width: min(760px, 92vw) !important;
+  text-wrap: balance !important;
+  word-break: break-word !important;
+}
+
+/* Mobile & Small Viewport Protections */
+@media (max-width: 768px) {
+  .logo-hero,
+  section.logo-hero,
+  html[data-z7-core] .logo-hero,
+  .z7-home .logo-hero {
+    min-height: auto !important;
+    padding-top: clamp(85px, 15vh, 115px) !important;
+    padding-bottom: clamp(32px, 6vh, 48px) !important;
+  }
+  .logo-hero__stage,
+  html[data-z7-core] .logo-hero__stage,
+  .z7-home .logo-hero__stage {
+    gap: clamp(12px, 2.2vh, 20px) !important;
+  }
+  .logo-hero__copy,
+  html[data-z7-core] .logo-hero__copy,
+  .z7-home .logo-hero__copy {
+    gap: clamp(10px, 1.8vh, 18px) !important;
+  }
+  .logo-hero__logo3d,
+  html[data-z7-core] .logo-hero__logo3d {
+    width: clamp(130px, 36vw, 175px) !important;
+    max-height: 22svh !important;
+  }
+  .logo-hero h1,
+  html[data-z7-core] .logo-hero h1,
+  .logo-hero__copy h1,
+  html[data-z7-core] .logo-hero__copy h1 {
+    font-size: clamp(1.22rem, 5.2vw, 1.8rem) !important;
+    line-height: 1.38 !important;
+  }
+}
+
+/* Universal Anti-Colliding Line-Heights for All Headings across Pages */
+h1, h2, h3 {
+  line-height: clamp(1.18, 1.25, 1.35) !important;
+  text-wrap: balance;
+}
+
+/* Protection for Secondary Heroes (About, Services, Websites, Academy) */
+.about-hero, .services-hero, .websites-hero, .academy-hero, .course-hero {
+  box-sizing: border-box;
+}
+.about-hero h1, .services-hero h1, .websites-hero h1, .academy-hero h1, .course-hero h1 {
+  line-height: clamp(1.18, 1.26, 1.4) !important;
+  word-break: break-word !important;
+}

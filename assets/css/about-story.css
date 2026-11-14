@@ -32,7 +32,7 @@ html[data-z7-core] .about-hero__grid { display: grid; grid-template-columns: min
 html[data-z7-core] .about-eyebrow,.about-kicker,.about-hero__baseline,.about-hero__field-note,.about-chapter__index,.about-discipline__tag,.about-work__corner,.about-work__caption > span,.about-all-work,.about-finale__signoff { font-family: var(--z7-mono); text-transform: uppercase; }
 html[data-z7-core] .about-eyebrow { display: flex; align-items: center; gap: 11px; margin: 0 0 clamp(25px,4.2vw,52px); color: var(--about-copy); font-size: 9px; letter-spacing: .15em; }
 html[data-z7-core] .about-eyebrow__signal { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: #7bd3ad; box-shadow: 0 0 18px rgba(123,211,173,.78); }
-html[data-z7-core] .about-hero h1 { max-width: 900px; margin: 0; font-size: clamp(4.2rem,9.2vw,9.2rem)!important; font-weight: 450!important; line-height: .86!important; letter-spacing: -.085em!important; text-wrap: balance; }
+html[data-z7-core] .about-hero h1 { max-width: 900px; margin: 0; font-size: clamp(3.2rem,7.5vw,7.2rem)!important; font-weight: 450!important; line-height: clamp(1.15, 1.25, 1.35)!important; letter-spacing: -.03em!important; text-wrap: balance; }
 html[data-z7-core] .about-hero h1 em,.z7-about-story em { color: var(--about-accent); font-family: Georgia,"Times New Roman",serif; font-weight: 400; letter-spacing: -.075em; }
 html[data-z7-core] .about-hero__lead { max-width: 490px; margin: clamp(24px,3vw,36px) 0 0; font-size: clamp(1rem,1.2vw,1.13rem); line-height: 1.78; }
 html[data-z7-core] .about-text-link { display: inline-flex; align-items: center; gap: 16px; min-height: 46px; margin-top: 22px; color: var(--z7-text)!important; font-size: .82rem; }

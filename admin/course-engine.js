@@ -117,24 +117,38 @@
     for (const registration of rows) {
       const paymentStatus = String(registration.payment_status || "PENDING_REVIEW").toUpperCase();
       const isPaid = ["PAID", "APPROVED", "VERIFIED"].includes(paymentStatus);
-      const isPending = paymentStatus === "PENDING_REVIEW";
+      const isRejected = paymentStatus === "REJECTED";
+      const isPending = !isPaid && !isRejected;
       const course = { "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" }[registration.course_id] || registration.course_id;
-      const due = Math.max(0, Number(registration.price_jod || 0) - Number(registration.discount_jod || 0));
+      const due = Math.max(0, Number(registration.price_jod || 250) - Number(registration.discount_jod || 0));
       const date = registration.created_at ? new Date(registration.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", year: "numeric", month: "short", day: "numeric" }) : "—";
       const row = document.createElement("tr");
-      row.dataset.registrationId = String(registration.id);
+      const recordId = escape(registration.id || registration.payment_reference || registration.seat_number);
+      row.dataset.registrationId = String(registration.id || "");
       const paymentAction = isPending
-        ? `<button class="small-button is-confirm" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="PAID">VERIFY PAYMENT</button><button class="small-button danger" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="REJECTED">REJECT</button>`
-        : isPaid ? `<button class="small-button" type="button" data-engine-action="set-payment-status" data-id="${escape(registration.id)}" data-status="PENDING_REVIEW">REOPEN REVIEW</button>` : `<span class="engine-dash">—</span>`;
-      const rawReceipt = String(registration.receipt_url || registration.payment_proof_pathname || registration.payment_reference || registration.receipt_base64 || "").trim();
+        ? `<button class="small-button is-confirm" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="PAID">VERIFY PAYMENT</button><button class="small-button danger" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="REJECTED">REJECT</button>`
+        : isPaid
+          ? `<button class="small-button" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="PENDING_REVIEW">REOPEN REVIEW</button>`
+          : `<button class="small-button is-confirm" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="PAID">APPROVE</button><button class="small-button" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="PENDING_REVIEW">REOPEN</button>`;
+      const rawReceipt = String(registration.receipt_url || registration.receipt_base64 || registration.payment_proof_pathname || "").trim();
       const hasReceipt = rawReceipt.length > 5;
       const receiptCell = hasReceipt
-        ? `<button class="small-button is-confirm" type="button" data-view-receipt="${escape(rawReceipt)}" data-student="${escape(registration.full_name)}">VIEW RECEIPT</button>`
-        : `<code class="engine-code">—</code>`;
+        ? `<div style="display:flex;flex-direction:column;gap:3px;"><button class="small-button is-confirm" type="button" data-view-receipt="${escape(rawReceipt)}" data-student="${escape(registration.full_name)}">VIEW RECEIPT</button>${registration.payment_reference ? `<code class="engine-code" style="font-size:0.7em;opacity:0.85;">${escape(registration.payment_reference)}</code>` : ""}</div>`
+        : (registration.payment_reference ? `<code class="engine-code">${escape(registration.payment_reference)}</code>` : `<code class="engine-code">—</code>`);
       const commissionAction = isPaid && Number(registration.commission_jod || 0) > 0
-        ? `<button class="small-button" type="button" data-engine-action="set-commission-status" data-id="${escape(registration.id)}" data-status="${registration.commission_status === "PAID" ? "PAYABLE" : "PAID"}">${registration.commission_status === "PAID" ? "REOPEN PAYOUT" : "MARK COMMISSION PAID"}</button>`
+        ? `<button class="small-button" type="button" data-engine-action="set-commission-status" data-id="${recordId}" data-status="${registration.commission_status === "PAID" ? "PAYABLE" : "PAID"}">${registration.commission_status === "PAID" ? "REOPEN PAYOUT" : "MARK COMMISSION PAID"}</button>`
         : "";
-      row.innerHTML = `<td><div class="engine-user"><strong>${escape(registration.full_name)}</strong><span>${escape(registration.email)}</span></div></td><td>${escape(course)}</td><td>${date}</td><td><code class="engine-code">${escape(registration.coupon_code || "—")}</code></td><td>${jod(due)}</td><td>${Number(registration.commission_percent || 0)}% · ${Number(registration.commission_jod || 0).toFixed(2)} JOD<br><small class="engine-subvalue">${escape(registration.commission_status || "NOT_APPLICABLE")}</small></td><td>${receiptCell}</td><td><span class="engine-status ${isPaid ? "is-active" : isPending ? "is-pending" : "is-inactive"}">${escape(paymentStatus.replaceAll("_", " "))}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="registration" data-id="${escape(registration.id)}" data-name="${escape(registration.full_name)}" data-email="${escape(registration.email)}" data-course="${escape(registration.course_id)}" data-price="${Number(registration.price_jod || 0)}" data-discount="${Number(registration.discount_jod || 0)}" data-commission="${Number(registration.commission_percent || 0)}" data-status="${escape(paymentStatus)}">EDIT</button>${paymentAction}${commissionAction}<button class="small-button danger" type="button" data-engine-action="delete-registration" data-id="${escape(registration.id)}" data-name="${escape(registration.full_name)}">DELETE</button></div></td>`;
+
+      const studentPhone = registration.phone ? String(registration.phone).trim() : "";
+      const waNumber = studentPhone.replace(/[^0-9]/g, "");
+      const phoneHtml = studentPhone
+        ? `<small class="engine-phone" style="display:block;margin-top:3px;"><a href="https://wa.me/${escape(waNumber)}" target="_blank" rel="noopener noreferrer" style="color:#38bdf8;text-decoration:none;font-size:0.82em;display:inline-flex;align-items:center;gap:4px;">💬 ${escape(studentPhone)}</a></small>`
+        : "";
+      const locationHtml = registration.location
+        ? `<small style="display:block;color:rgba(255,255,255,0.55);font-size:0.76em;margin-top:2px;">📍 ${escape(registration.location)}</small>`
+        : "";
+
+      row.innerHTML = `<td><div class="engine-user"><strong>${escape(registration.full_name)}</strong><span>${escape(registration.email)}</span>${phoneHtml}${locationHtml}</div></td><td>${escape(course)}</td><td>${date}</td><td><code class="engine-code">${escape(registration.coupon_code || "—")}</code></td><td>${jod(due)}</td><td>${Number(registration.commission_percent || 0)}% · ${Number(registration.commission_jod || 0).toFixed(2)} JOD<br><small class="engine-subvalue">${escape(registration.commission_status || "NOT_APPLICABLE")}</small></td><td>${receiptCell}</td><td><span class="engine-status ${isPaid ? "is-active" : isPending ? "is-pending" : "is-inactive"}">${escape(paymentStatus.replaceAll("_", " "))}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="registration" data-id="${recordId}" data-name="${escape(registration.full_name)}" data-email="${escape(registration.email)}" data-course="${escape(registration.course_id)}" data-price="${Number(registration.price_jod || 250)}" data-discount="${Number(registration.discount_jod || 0)}" data-commission="${Number(registration.commission_percent || 0)}" data-status="${escape(paymentStatus)}">EDIT</button>${paymentAction}${commissionAction}<button class="small-button danger" type="button" data-engine-action="delete-registration" data-id="${recordId}" data-name="${escape(registration.full_name)}">DELETE</button></div></td>`;
       body.append(row);
     }
   }

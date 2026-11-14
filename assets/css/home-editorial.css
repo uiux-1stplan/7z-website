@@ -18,8 +18,8 @@
 .z7-spatial:hover::after { opacity: 1; }
 
 /* Home opening: the official mark is the only element in this scene. */
-.z7-home .logo-hero { display: grid; place-items: center; min-height: calc(100svh - 12px); padding: 40px 20px 16px; background: #090a0c; perspective: 1000px; }
-.z7-home .logo-hero__stage { display: grid; place-items: center; width: 100%; min-height: inherit; }
+.z7-home .logo-hero { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: clamp(520px, 86svh, 880px); padding: clamp(40px, 8vh, 80px) clamp(16px, 4vw, 24px) clamp(20px, 4vh, 40px); background: #090a0c; perspective: 1000px; }
+.z7-home .logo-hero__stage { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: auto; }
 .z7-home .logo-hero__mark { --logo-scroll-scale: 1; --logo-scroll-y: 0px; --logo-scroll-opacity: 1; --logo-scroll-blur: 0px; --logo-rx: 0deg; --logo-ry: 0deg; width: clamp(160px,17vw,220px); max-height: 47svh; object-fit: contain; transform: translate3d(0,var(--logo-scroll-y),0) rotateX(var(--logo-rx)) rotateY(var(--logo-ry)) scale(var(--logo-scroll-scale)); opacity: var(--logo-scroll-opacity); filter: blur(var(--logo-scroll-blur)); transform-style: preserve-3d; will-change: transform,opacity; }
 
 /* Homepage scene one: one film plane with text kept in its own column. */
@@ -169,8 +169,8 @@
   .studio-suite__intro { position: static; }
 }
 @media (max-width: 700px) {
-  .z7-home .logo-hero { min-height: 82svh; }
-  .z7-home .logo-hero__mark { width: min(55vw,205px); }
+  .z7-home .logo-hero { min-height: auto !important; padding-top: clamp(75px, 14vh, 100px) !important; padding-bottom: clamp(30px, 6vh, 45px) !important; }
+  .z7-home .logo-hero__mark { width: min(48vw,180px); }
   .z7-home .manifest, .z7-home .service-loop, .z7-home .home-showcase, .z7-home .home-partners, .z7-home .home-founders, .z7-home .home-about-teaser { width: calc(100% - 36px); }
   .z7-home .manifest { grid-template-columns: 1fr; padding-block: 45px; }
   .manifest__media { order: 1; min-height: 0; aspect-ratio: 1.2; }
