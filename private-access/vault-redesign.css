@@ -11,11 +11,41 @@
   --vault-card-bg: linear-gradient(160deg, rgba(16, 21, 31, 0.94), rgba(7, 9, 14, 0.98));
   --vault-border: rgba(212, 175, 55, 0.28);
   --vault-border-subtle: rgba(255, 255, 255, 0.08);
+  --vault-title: #ffffff;
+  --vault-text: #e8e8e4;
+  --vault-intro: rgba(232, 232, 228, 0.68);
+  --vault-input-bg: rgba(5, 7, 10, 0.88);
+  --vault-input-text: #ffffff;
+  --vault-input-border: rgba(255, 255, 255, 0.14);
+  --vault-input-placeholder: rgba(255, 255, 255, 0.28);
+  --vault-input-focus-bg: rgba(8, 11, 16, 0.98);
+  --vault-security-border: rgba(255, 255, 255, 0.08);
+  --vault-security-text: rgba(255, 255, 255, 0.45);
+}
+
+html[data-theme="light"] {
+  --vault-gold: #b8860b;
+  --vault-gold-light: #996515;
+  --vault-gold-glow: rgba(184, 134, 11, 0.16);
+  --vault-bg-deep: #f8fafc;
+  --vault-card-bg: linear-gradient(160deg, #ffffff, #f1f5f9);
+  --vault-border: rgba(184, 134, 11, 0.35);
+  --vault-border-subtle: rgba(15, 23, 42, 0.08);
+  --vault-title: #0f172a;
+  --vault-text: #1e293b;
+  --vault-intro: #475569;
+  --vault-input-bg: #ffffff;
+  --vault-input-text: #0f172a;
+  --vault-input-border: rgba(15, 23, 42, 0.16);
+  --vault-input-placeholder: rgba(15, 23, 42, 0.35);
+  --vault-input-focus-bg: #f8fafc;
+  --vault-security-border: rgba(15, 23, 42, 0.08);
+  --vault-security-text: #64748b;
 }
 
 html[data-z7-core] body.z7pa-page {
   background-color: var(--vault-bg-deep) !important;
-  color: #e8e8e4 !important;
+  color: var(--vault-text) !important;
   min-height: 100vh !important;
   overflow-x: hidden !important;
 }
@@ -175,7 +205,7 @@ html.z7icx-preauth[data-z7-core] .z7-login-vault,
 
 .z7-login-vault__title {
   margin: 0 !important;
-  color: #ffffff !important;
+  color: var(--vault-title) !important;
   font-size: clamp(1.85rem, 4.2vw, 2.35rem) !important;
   font-weight: 600 !important;
   line-height: 1.15 !important;
@@ -185,7 +215,7 @@ html.z7icx-preauth[data-z7-core] .z7-login-vault,
 
 .z7-login-vault .z7icx__intro {
   margin: 0 0 8px !important;
-  color: rgba(232, 232, 228, 0.68) !important;
+  color: var(--vault-intro) !important;
   font-size: 0.88rem !important;
   line-height: 1.6 !important;
 }
@@ -217,10 +247,10 @@ html.z7icx-preauth[data-z7-core] .z7-login-vault,
   height: 48px !important;
   min-height: 48px !important;
   padding: 0 16px !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid var(--vault-input-border) !important;
   border-radius: 12px !important;
-  background: rgba(5, 7, 10, 0.88) !important;
-  color: #ffffff !important;
+  background: var(--vault-input-bg) !important;
+  color: var(--vault-input-text) !important;
   font-size: 14px !important;
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6) !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
@@ -228,12 +258,12 @@ html.z7icx-preauth[data-z7-core] .z7-login-vault,
 }
 
 .z7-login-vault .z7icx__field input::placeholder {
-  color: rgba(255, 255, 255, 0.28) !important;
+  color: var(--vault-input-placeholder) !important;
 }
 
 .z7-login-vault .z7icx__field input:focus {
   border-color: var(--vault-gold) !important;
-  background: rgba(8, 11, 16, 0.98) !important;
+  background: var(--vault-input-focus-bg) !important;
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.22), inset 0 2px 5px rgba(0, 0, 0, 0.6) !important;
   outline: none !important;
 }
@@ -298,8 +328,8 @@ html.z7icx-preauth[data-z7-core] .z7-login-vault,
   gap: 8px !important;
   margin-top: 6px !important;
   padding-top: 14px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: rgba(255, 255, 255, 0.45) !important;
+  border-top: 1px solid var(--vault-security-border) !important;
+  color: var(--vault-security-text) !important;
   font: 500 10px/1.4 var(--z7-mono, ui-monospace, monospace) !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;

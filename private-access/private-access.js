@@ -445,20 +445,25 @@
           }
         );
 
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          applyAccess(null);
+        }
+        return;
+      }
+
       const payload =
         await response.json();
 
-      applyAccess(
-        response.ok
-          ? payload
-          : null
-      );
+      applyAccess(payload);
 
     } catch {
 
-      applyAccess(
-        null
-      );
+      if (!currentAuthenticated) {
+        applyAccess(
+          null
+        );
+      }
     }
   }
 
@@ -649,7 +654,6 @@
             true
         });
 
-
         broadcastAuth(
           true
         );
@@ -657,14 +661,6 @@
         if (typeof window.__Z7_REFRESH_FILES__ === "function") {
           window.__Z7_REFRESH_FILES__();
         }
-
-
-        /* Z7_ROOT_LOGIN_REFRESH_V1 */
-
-        window.setTimeout(
-          loadStatus,
-          80
-        );
 
 
       } catch {
