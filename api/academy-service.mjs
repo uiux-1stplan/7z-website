@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 7Z MAGIC ACADEMY â€” SERVICE ROUTER
  * Handles Registration, Code Validation, Admin Data & Actions
  */
@@ -86,7 +86,15 @@ export async function handleValidateCode(codeStr, courseId = "all") {
 // 2. Register Student & Upload Receipt
 export async function handleRegistration(body) {
   const local = readLocalData();
-  const nextSeat = (local.counter || 0) + 1;
+  const sqlForSeat = getSqlClient();
+  let dbMaxSeat = 0;
+  if (sqlForSeat) {
+    try {
+      const [cntRow] = await sqlForSeat`SELECT GREATEST(COALESCE(MAX(seat_number), 0), COUNT(*))::int AS max_seat FROM academy_registrations;`;
+      dbMaxSeat = Number(cntRow?.max_seat || 0);
+    } catch {}
+  }
+  const nextSeat = Math.max(local.counter || 0, dbMaxSeat) + 1;
   const ref = `7Z-REG-${Math.floor(100000 + Math.random() * 900000)}`;
 
   let receiptFilePath = "";
@@ -165,18 +173,27 @@ export async function handleRegistration(body) {
   local.counter = nextSeat;
   saveLocalData(local);
 
-  // Send automated emails in background
-  sendAdminRegistrationAlert(regRecord).catch((e) => console.error("Admin alert error:", e.message));
-  sendStudentRegistrationConfirmation(regRecord).catch((e) => console.error("Student confirm error:", e.message));
+  // Await automated emails before Vercel freezes the serverless function
+  const [adminMailRes, studentMailRes] = await Promise.allSettled([
+    sendAdminRegistrationAlert(regRecord),
+    sendStudentRegistrationConfirmation(regRecord)
+  ]);
 
-  // Trigger 20-registrations excel report if counter % 20 === 0
   if (nextSeat > 0 && nextSeat % 20 === 0) {
-    trigger20RegistrationExcelReport(local.registrations, nextSeat).catch((e) =>
+    await trigger20RegistrationExcelReport(local.registrations, nextSeat).catch((e) =>
       console.error("20 Excel trigger error:", e.message)
     );
   }
 
-  return { ok: true, reference: ref, seatNumber: nextSeat };
+  return {
+    ok: true,
+    reference: ref,
+    seatNumber: nextSeat,
+    emailStatus: {
+      admin: adminMailRes.status === "fulfilled" ? adminMailRes.value : { error: adminMailRes.reason?.message },
+      student: studentMailRes.status === "fulfilled" ? studentMailRes.value : { error: studentMailRes.reason?.message }
+    }
+  };
 }
 
 // 3. Admin Data Provider
@@ -323,7 +340,7 @@ export async function handleAdminAction(action, body) {
     if (foundReg) {
       foundReg.paymentStatus = "APPROVED";
       saveLocalData(local);
-      sendPaymentApprovedEmail(foundReg).catch((e) => console.error("Approve email error:", e.message));
+      await sendPaymentApprovedEmail(foundReg).catch((e) => console.error("Approve email error:", e.message));
       return { ok: true, status: "APPROVED", registration: foundReg };
     }
     return { ok: false, error: "Registration not found" };
@@ -364,7 +381,7 @@ export async function handleAdminAction(action, body) {
     if (foundReg) {
       foundReg.paymentStatus = "REJECTED";
       saveLocalData(local);
-      sendPaymentRejectedEmail(foundReg, reason).catch((e) => console.error("Reject email error:", e.message));
+      await sendPaymentRejectedEmail(foundReg, reason).catch((e) => console.error("Reject email error:", e.message));
       return { ok: true, status: "REJECTED", registration: foundReg };
     }
     return { ok: false, error: "Registration not found" };

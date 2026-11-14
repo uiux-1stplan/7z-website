@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 7Z MAGIC ACADEMY â€” FULL-STACK ENGINE
  * Neon Postgres Database, Zoho SMTP Email Engine, 20-Milestone Excel Automation via ExcelJS
  */
@@ -130,7 +130,38 @@ export async function ensureDbSchema() {
       );
     `;
 
-    // 2. Legacy / Admin Shared course_registrations
+    // 2. Legacy / Admin Shared course_registrations + Auto-Sync to Admin Dashboard
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS seat_number INTEGER;`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS location TEXT DEFAULT '';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS experience TEXT DEFAULT '';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS preferred_language TEXT DEFAULT 'ar';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS goal TEXT DEFAULT '';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT DEFAULT '';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_submitted_at TIMESTAMPTZ DEFAULT NOW();`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS affiliate_name TEXT DEFAULT '';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_percent INTEGER DEFAULT 0;`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_jod NUMERIC(12,3) DEFAULT 0;`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS commission_status TEXT DEFAULT 'NOT_APPLICABLE';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_provider TEXT DEFAULT 'CliQ / Western Union';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_url TEXT DEFAULT '';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_name TEXT DEFAULT '';`;
+    await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_base64 TEXT DEFAULT '';`;
+    await sql`
+      INSERT INTO course_registrations (
+        seat_number, full_name, email, phone, location, experience, course_id,
+        price_jod, discount_jod, coupon_code, payment_status, payment_reference,
+        receipt_url, receipt_name, receipt_base64, created_at
+      )
+      SELECT
+        ar.seat_number, ar.full_name, ar.email, ar.phone, ar.city, ar.experience,
+        CASE WHEN ar.course_id LIKE '%engineer%' THEN 'ai-engineering' ELSE 'cinematic-film' END,
+        ar.final_price, ar.discount_jod, ar.promo_code, ar.payment_status, ar.reference,
+        ar.receipt_url, ar.receipt_name, ar.receipt_base64, ar.created_at
+      FROM academy_registrations ar
+      WHERE NOT EXISTS (
+        SELECT 1 FROM course_registrations cr WHERE cr.payment_reference = ar.reference
+      );
+    `;
     await sql`
       CREATE TABLE IF NOT EXISTS course_registrations (
         id BIGSERIAL PRIMARY KEY,
