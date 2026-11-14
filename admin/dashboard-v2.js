@@ -237,6 +237,8 @@
     $("#analytics-revenue").innerHTML = $("#finance-revenue").innerHTML;
     $("#analytics-gross").innerHTML = $("#finance-gross").innerHTML;
     $("#analytics-commission").innerHTML = $("#finance-commissions").innerHTML;
+    if ($("#analytics-studio-net") && $("#finance-studio-net")) $("#analytics-studio-net").innerHTML = $("#finance-studio-net").innerHTML;
+    if ($("#analytics-discounts") && $("#finance-discounts")) $("#analytics-discounts").innerHTML = $("#finance-discounts").innerHTML;
     $("#analytics-conversion").textContent = `${conversion}%`;
     $("#overview-admin-name").textContent = $("#admin-name")?.textContent.trim() || "Admin";
     $("#settings-account-name").textContent = $("#admin-name")?.textContent.trim() || "Administrator";

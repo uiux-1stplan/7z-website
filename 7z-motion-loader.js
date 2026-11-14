@@ -228,6 +228,9 @@
     (document.head || document.documentElement).appendChild(style);
 
     function initMotionLoader() {
+        if (typeof window !== 'undefined' && (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/private-access'))) {
+            return;
+        }
         if (!document.body) return;
 
         // إزالة بقايا قديمة فوراً إن وجدت
@@ -261,7 +264,8 @@
 
             // تقدم العداد بسلاسة تامة وهدوء فخم يستغرق حوالي 2.5 ثانية
             const startTime = performance.now();
-            const duration = 2500; // 2.5 ثانية بالضبط
+            const isMobile = Boolean(window.innerWidth <= 768 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches));
+            const duration = isMobile ? 650 : 2500;
 
             function updateProgress(currentTime) {
                 const elapsed = currentTime - startTime;
@@ -357,7 +361,7 @@
             // تجاهل روابط نفس الصفحة أو التمرير للهاش الداخلي
             if (url.pathname === window.location.pathname && url.search === window.location.search && (url.hash || link.getAttribute('href')?.startsWith('#'))) return;
             // حماية واستثناء لوحة تحكم الآدمن المقفلة
-            if (url.pathname.startsWith('/admin')) return;
+            if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/private-access')) return;
 
             e.preventDefault();
             e.stopPropagation();

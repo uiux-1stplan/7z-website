@@ -17,6 +17,17 @@
     selector: 'h1, h2, h3, h4, h5, h6'
   };
 
+    const isMobileOrCoarse = () => {
+    if (typeof window === 'undefined') return false;
+    return Boolean(
+      window.innerWidth <= 768 ||
+      (window.matchMedia && (
+        window.matchMedia('(pointer: coarse)').matches ||
+        window.matchMedia('(max-width: 768px)').matches
+      ))
+    );
+  };
+
   const isReducedMotion = () =>
     window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -30,7 +41,7 @@
     }
 
     init() {
-      if (isReducedMotion()) return;
+      if (isReducedMotion() || isMobileOrCoarse()) return;
       this.setupObserver();
       this.bindEvents();
     }
@@ -59,7 +70,7 @@
       const headings = document.querySelectorAll(CONFIG.selector);
       headings.forEach((h) => {
         // Skip headings inside admin or explicitly excluded
-        if (h.closest('.admin-wrap') || h.closest('#adminRoot') || h.dataset.noSpring !== undefined) {
+        if (h.closest('.admin-wrap') || h.closest('#adminRoot') || h.closest('.z7-login-vault') || h.dataset.noSpring !== undefined) {
           return;
         }
         if (!h.__z7SpringInitialText) {
