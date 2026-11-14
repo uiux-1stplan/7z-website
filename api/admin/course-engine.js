@@ -33,6 +33,7 @@ function percent(value) {
 }
 
 async function ensureSchema(sql) {
+  await ensureDbSchema();
   await sql`CREATE TABLE IF NOT EXISTS course_admin_affiliates (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
@@ -425,7 +426,7 @@ export default async function handler(req, res) {
         : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي (AI Filmmaking)";
 
       if (status === "PAID" && registration.email) {
-        sendPaymentApprovedEmail({
+        await sendPaymentApprovedEmail({
           fullName: registration.full_name,
           email: registration.email,
           courseName,
@@ -433,7 +434,7 @@ export default async function handler(req, res) {
           reference: registration.payment_reference || `7Z-REG-${registration.id}`
         }).catch((err) => console.error("Admin approve email error:", err.message));
       } else if (status === "REJECTED" && registration.email) {
-        sendPaymentRejectedEmail({
+        await sendPaymentRejectedEmail({
           fullName: registration.full_name,
           email: registration.email,
           courseName,
