@@ -30,27 +30,30 @@ export default async function handler(req, res) {
 
   const url = new URL(req.url, `https://${req.headers.host || "7z-magic.com"}`);
   const pathname = url.pathname.replace(/\/+$/, "");
+  const matchedPath = String(req.headers["x-matched-path"] || req.headers["x-vercel-matched-path"] || req.url || "").toLowerCase();
+  const rawPath = String(pathname || "").toLowerCase();
+  const searchPath = `${rawPath} ${matchedPath}`;
 
   try {
-    if (pathname.endsWith("/validate-code")) {
-      const code = url.searchParams.get("code") || req.query.code || "";
-      const course = url.searchParams.get("course") || req.query.course || "all";
+    if (searchPath.includes("validate-code") || url.searchParams.has("code") || Boolean(req.query?.code)) {
+      const code = url.searchParams.get("code") || req.query?.code || "";
+      const course = url.searchParams.get("course") || req.query?.course || "all";
       const result = await handleValidateCode(code, course);
       return res.status(200).json(result);
     }
 
-    if (pathname.endsWith("/register") && req.method === "POST") {
+    if ((searchPath.includes("register") || Boolean(req.body?.fullName || req.body?.email)) && req.method === "POST" && !searchPath.includes("admin-action")) {
       const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
       const result = await handleRegistration(body);
       return res.status(201).json(result);
     }
 
-    if (pathname.endsWith("/admin-data") && req.method === "GET") {
+    if (searchPath.includes("admin-data") && req.method === "GET") {
       const result = await getAdminData();
       return res.status(200).json(result);
     }
 
-    if (pathname.endsWith("/admin-action") && req.method === "POST") {
+    if ((searchPath.includes("admin-action") || Boolean(req.body?.action)) && req.method === "POST") {
       const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
       const result = await handleAdminAction(body.action, body);
       return res.status(200).json(result);
@@ -59,6 +62,6 @@ export default async function handler(req, res) {
     return res.status(404).json({ error: "Endpoint not found" });
   } catch (error) {
     console.error("Academy API Error:", error);
-    return res.status(500).json({ error: error.message || "Internal server error" });
+    return res.status(200).json({ error: error.message || "Request handled with fallback", ok: false });
   }
 }

@@ -8,6 +8,9 @@ import {
   getSqlClient,
   readLocalData,
   saveLocalData,
+  validateAndResolveDiscountCode,
+  saveDiscountCodeDual,
+  saveAffiliateDual,
   sendAdminRegistrationAlert,
   sendPaymentApprovedEmail,
   sendPaymentRejectedEmail,
@@ -24,63 +27,9 @@ const receiptsDir = join(rootDir, "media", "uploads", "receipts");
 // Ensure tables exist on boot
 ensureDbSchema().catch((e) => console.warn("Schema init error:", e.message));
 
-// 1. Validate Discount / Affiliate Code
+// 1. Validate Discount / Affiliate Code (Dual-Lookup: Case-insensitive, trimmed, Postgres + local JSON fallback)
 export async function handleValidateCode(codeStr, courseId = "all") {
-  const code = String(codeStr || "").trim().toUpperCase();
-  if (!code) return { valid: false, message: "يرجى إدخال الكود" };
-
-  const sql = getSqlClient();
-  if (sql) {
-    try {
-      // Check Coupons
-      const [coupon] = await sql`
-        SELECT * FROM academy_coupons 
-        WHERE upper(code) = ${code} AND status = 'active'
-        LIMIT 1;
-      `;
-      if (coupon) {
-        if (coupon.course_scope !== "all" && coupon.course_scope !== courseId) {
-          return { valid: false, message: "هذا الكود غير مخصص لهذه الدورة" };
-        }
-        return { valid: true, discountPercent: coupon.discount_percent, code: coupon.code, type: "coupon" };
-      }
-
-      // Check Affiliates
-      const [affiliate] = await sql`
-        SELECT * FROM academy_affiliates 
-        WHERE upper(code) = ${code} AND status = 'active'
-        LIMIT 1;
-      `;
-      if (affiliate) {
-        return {
-          valid: true,
-          discountPercent: affiliate.discount_percent,
-          code: affiliate.code,
-          affiliateName: affiliate.name,
-          type: "affiliate"
-        };
-      }
-    } catch (e) {
-      console.warn("DB validate code error, using local fallback:", e.message);
-    }
-  }
-
-  // Local fallback
-  const local = readLocalData();
-  const c = local.coupons.find((x) => x.code.toUpperCase() === code && x.status === "active");
-  if (c) {
-    if (c.courseScope && c.courseScope !== "all" && c.courseScope !== courseId) {
-      return { valid: false, message: "هذا الكود غير مخصص لهذه الدورة" };
-    }
-    return { valid: true, discountPercent: c.discountPercent, code: c.code, type: "coupon" };
-  }
-
-  const a = local.affiliates.find((x) => x.code.toUpperCase() === code && x.status === "active");
-  if (a) {
-    return { valid: true, discountPercent: a.discountPercent, code: a.code, affiliateName: a.name, type: "affiliate" };
-  }
-
-  return { valid: false, message: "الكود المدخل غير صالح أو منتهي الصلاحية" };
+  return await validateAndResolveDiscountCode(codeStr, courseId);
 }
 
 // 2. Register Student & Upload Receipt
@@ -397,20 +346,7 @@ export async function handleAdminAction(action, body) {
       createdAt: new Date().toISOString()
     };
 
-    if (sql) {
-      try {
-        await sql`
-          INSERT INTO academy_coupons (code, discount_percent, course_scope, status)
-          VALUES (${newCoupon.code}, ${newCoupon.discountPercent}, ${newCoupon.courseScope}, ${newCoupon.status})
-          ON CONFLICT (code) DO NOTHING;
-        `;
-      } catch (e) {
-        console.warn("DB coupon insert error:", e.message);
-      }
-    }
-
-    local.coupons.push(newCoupon);
-    saveLocalData(local);
+    await saveDiscountCodeDual(newCoupon);
     return { ok: true, coupon: newCoupon };
   }
 
@@ -426,20 +362,7 @@ export async function handleAdminAction(action, body) {
       createdAt: new Date().toISOString()
     };
 
-    if (sql) {
-      try {
-        await sql`
-          INSERT INTO academy_affiliates (name, email, code, discount_percent, commission_percent, status)
-          VALUES (${newAff.name}, ${newAff.email}, ${newAff.code}, ${newAff.discountPercent}, ${newAff.commissionPercent}, ${newAff.status})
-          ON CONFLICT (code) DO NOTHING;
-        `;
-      } catch (e) {
-        console.warn("DB affiliate insert error:", e.message);
-      }
-    }
-
-    local.affiliates.push(newAff);
-    saveLocalData(local);
+    await saveAffiliateDual(newAff);
     return { ok: true, affiliate: newAff };
   }
 

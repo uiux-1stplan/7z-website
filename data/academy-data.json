@@ -40,6 +40,17 @@
       "courseScope": "all",
       "status": "active",
       "createdAt": "2026-11-13T16:44:46.288Z"
+    },
+    {
+      "id": "c_1794668600429",
+      "code": "PROD5575",
+      "discountPercent": 18,
+      "courseScope": "all",
+      "commissionPercent": 0,
+      "affiliateName": "",
+      "status": "active",
+      "maxRedemptions": null,
+      "createdAt": "2026-11-14T15:03:20.429Z"
     }
   ],
   "affiliates": [
@@ -62,6 +73,17 @@
       "commissionPercent": 20,
       "status": "active",
       "createdAt": "2026-11-13T16:44:46.288Z"
+    },
+    {
+      "id": "a_1794668600461",
+      "name": "Test Partner Architect",
+      "email": "partner@7z-magic.com",
+      "company": "",
+      "code": "PARTNER693",
+      "discountPercent": 22,
+      "commissionPercent": 25,
+      "status": "active",
+      "createdAt": "2026-11-14T15:03:20.461Z"
     }
   ],
   "counter": 0

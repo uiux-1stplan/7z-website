@@ -11,6 +11,9 @@ import {
   ensureDbSchema,
   readLocalData,
   saveLocalData,
+  validateAndResolveDiscountCode,
+  saveDiscountCodeDual,
+  saveAffiliateDual,
   sendPaymentApprovedEmail,
   sendPaymentRejectedEmail
 } from "../academy-engine.mjs";
@@ -410,52 +413,25 @@ export default async function handler(req, res) {
         return send(res, 400, { error: "Enter a name, valid email and commission between 0 and 100." });
       }
 
-      let affiliate = null;
-      if (sql) {
-        try {
-          const [a] = await sql`INSERT INTO course_admin_affiliates (name,email,company,commission_percent)
-            VALUES (${name},${email || null},${company},${commission}) RETURNING id,name,email,company,commission_percent,status,created_at`;
-          affiliate = a;
-        } catch (e) {
-          console.warn("SQL create-affiliate notice:", e.message);
-        }
-      }
+      const affObj = {
+        id: `aff_${Date.now()}`,
+        name,
+        email,
+        company,
+        commissionPercent: commission,
+        discountPercent: 15,
+        status: "active"
+      };
 
-      if (!affiliate) {
-        affiliate = {
-          id: `aff_${Date.now()}`,
-          name,
-          email,
-          company,
-          commission_percent: commission,
-          status: "active",
-          created_at: new Date().toISOString()
-        };
-      }
-
-      try {
-        const local = readLocalData();
-        if (!Array.isArray(local.affiliates)) local.affiliates = [];
-        local.affiliates.push({
-          id: affiliate.id,
-          name: affiliate.name,
-          email: affiliate.email,
-          code: `${name.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)}15`,
-          discountPercent: 15,
-          commissionPercent: commission,
-          status: "active",
-          createdAt: affiliate.created_at
-        });
-        saveLocalData(local);
-      } catch (e) {}
+      await saveAffiliateDual(affObj);
 
       if (gate?.auth?.userId) {
         try {
-          await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliate_created", targetType: "course_affiliate", targetId: affiliate.id, details: { email, commissionPercent: commission } });
+          await writeAudit({ actorUserId: gate.auth.userId, action: "course_affiliate_created", targetType: "course_affiliate", targetId: affObj.id, details: { email, commissionPercent: commission } });
         } catch {}
       }
 
-      return send(res, 201, { affiliate });
+      return send(res, 201, { affiliate: affObj });
     }
 
     if (body.action === "create-code") {
@@ -490,55 +466,27 @@ export default async function handler(req, res) {
       const commission = commissionInput ?? 0;
       const maxUses = body.maxRedemptions ? Number(body.maxRedemptions) : null;
 
-      let coupon = null;
-      if (sql) {
-        try {
-          const [c] = await sql`INSERT INTO course_discount_codes
-            (code,affiliate_id,affiliate_name,course_id,discount_percent,commission_percent,max_redemptions)
-            VALUES (${code},${affiliateId || null},${affiliateName},${courseId},${discount},${commission},${maxUses})
-            RETURNING id,code,affiliate_id,affiliate_name,course_id,discount_percent,commission_percent,status,max_redemptions,created_at`;
-          coupon = c;
-        } catch (e) {
-          console.warn("SQL create-code notice:", e.message);
-        }
-      }
+      const couponObj = {
+        id: `code_${Date.now()}`,
+        code,
+        affiliateId,
+        affiliateName,
+        courseScope: courseId,
+        discountPercent: discount,
+        commissionPercent: commission,
+        status: "active",
+        maxRedemptions: maxUses
+      };
 
-      if (!coupon) {
-        coupon = {
-          id: `code_${Date.now()}`,
-          code,
-          affiliate_id: affiliateId,
-          affiliate_name: affiliateName,
-          course_id: courseId,
-          discount_percent: discount,
-          commission_percent: commission,
-          status: "active",
-          max_redemptions: maxUses,
-          created_at: new Date().toISOString()
-        };
-      }
-
-      try {
-        const local = readLocalData();
-        if (!Array.isArray(local.coupons)) local.coupons = [];
-        local.coupons.push({
-          id: coupon.id,
-          code: coupon.code,
-          discountPercent: coupon.discount_percent,
-          courseScope: coupon.course_id,
-          status: "active",
-          createdAt: coupon.created_at
-        });
-        saveLocalData(local);
-      } catch (e) {}
+      await saveDiscountCodeDual(couponObj);
 
       if (gate?.auth?.userId) {
         try {
-          await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_created", targetType: "course_discount_code", targetId: coupon.id, details: { code, courseId, discountPercent: discount, commissionPercent: commission } });
+          await writeAudit({ actorUserId: gate.auth.userId, action: "course_discount_code_created", targetType: "course_discount_code", targetId: couponObj.id, details: { code, courseId, discountPercent: discount, commissionPercent: commission } });
         } catch {}
       }
 
-      return send(res, 201, { coupon });
+      return send(res, 201, { coupon: couponObj });
     }
 
     if (body.action === "toggle-affiliate") {

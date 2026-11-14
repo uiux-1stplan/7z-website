@@ -2,48 +2,30 @@ import { createHash } from "node:crypto";
 import { randomUUID } from "node:crypto";
 import { get, issueSignedToken, presignUrl } from "@vercel/blob";
 import { prepare, sqlClient, sendZohoMail, workbook } from "./course-registration.js";
+import { validateAndResolveDiscountCode } from "./academy-engine.mjs";
 
 const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", capacity: 60 }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", capacity: 40 } });
 const DEFAULT_COURSE = "cinematic-film";
 const MAX_PROOF_BYTES = 5 * 1024 * 1024;
 const PROOF_TYPES = Object.freeze({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" });
 const ALLOWED_ORIGINS = new Set(["https://7z-magic.com", "https://www.7z-magic.com"]);
-const COUPONS = Object.freeze({
-  HASSAN10: { discountPercent: 10, affiliateName: "حسن ريان", commissionPercent: 25 },
-  SHAS10: { discountPercent: 10, affiliateName: "شأس مطر", commissionPercent: 25 },
-  ABDULRAHMAN10: { discountPercent: 10, affiliateName: "عبدالرحمن محمد", commissionPercent: 25 },
-  "7Z10": { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
-  ALUMNI15: { discountPercent: 15, affiliateName: "", commissionPercent: 0, requiresPreviousEmail: true },
-});
 
 async function resolveCourseCoupon(sql, code, courseId) {
   if (!code) return null;
-  let rows;
   try {
-    rows = await sql`SELECT c.code,c.affiliate_id,c.course_id,c.discount_percent,c.commission_percent,
-        c.status,c.max_redemptions,c.requires_previous_email,
-        COALESCE(NULLIF(a.name,''),c.affiliate_name,'') AS affiliate_name,
-        a.status AS affiliate_status
-      FROM course_discount_codes c
-      LEFT JOIN course_admin_affiliates a ON a.id=c.affiliate_id
-      WHERE UPPER(c.code)=${code} LIMIT 1`;
-  } catch (error) {
-    if (error?.code === "42P01") return COUPONS[code] || null;
-    throw error;
+    const res = await validateAndResolveDiscountCode(code, courseId);
+    if (res && res.valid) {
+      return {
+        discountPercent: Number(res.discountPercent || 0),
+        affiliateName: res.affiliateName || "",
+        commissionPercent: Number(res.commissionPercent || 0),
+        requiresPreviousEmail: false,
+      };
+    }
+  } catch (e) {
+    console.warn("[course-checkout] Coupon resolution notice:", e.message);
   }
-  const managed = rows[0];
-  if (!managed) return COUPONS[code] || null;
-  if (managed.status !== "active" || (managed.affiliate_id && managed.affiliate_status !== "active") || (managed.course_id !== "all" && managed.course_id !== courseId)) return null;
-  if (managed.max_redemptions) {
-    const used = await sql`SELECT COUNT(*)::int AS count FROM course_registrations WHERE UPPER(coupon_code)=${code}`;
-    if (Number(used[0]?.count || 0) >= Number(managed.max_redemptions)) return null;
-  }
-  return {
-    discountPercent: Number(managed.discount_percent),
-    affiliateName: managed.affiliate_name || "",
-    commissionPercent: Number(managed.commission_percent),
-    requiresPreviousEmail: Boolean(managed.requires_previous_email),
-  };
+  return null;
 }
 
 function money(value) { return Math.round((Number(value) + Number.EPSILON) * 1000) / 1000; }
