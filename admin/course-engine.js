@@ -100,13 +100,88 @@
     }
   }
 
+  function renderMarketersLedger(ledger) {
+    const body = $("#marketers-ledger-body");
+    const empty = $("#marketers-ledger-empty");
+    const foot = $("#marketers-ledger-foot");
+    if (!body) return;
+    body.replaceChildren();
+    
+    const items = Array.isArray(ledger) ? ledger : [];
+    if (empty) empty.hidden = items.length > 0;
+    
+    let totalStudents = 0;
+    let totalNetSales = 0;
+    let totalCommissionDue = 0;
+    let totalCompanyProfit = 0;
+    
+    for (const item of items) {
+      const students = Number(item.studentsCount || 0);
+      const netSales = Number(item.netSalesAfterDiscount || 0);
+      const commPercent = Number(item.commissionPercent || 0);
+      const commDue = Number(item.commissionDue || 0);
+      const companyProfit = Number(item.companyNetProfit || 0);
+      
+      totalStudents += students;
+      totalNetSales += netSales;
+      totalCommissionDue += commDue;
+      totalCompanyProfit += companyProfit;
+      
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><div class="engine-user"><strong>${escape(item.marketerName || "Affiliate")}</strong><span>Partner</span></div></td>
+        <td><code class="engine-code" style="color:#d4af37;font-weight:700;">${escape(item.code)}</code></td>
+        <td><strong>${students}</strong></td>
+        <td>${jod(netSales)}</td>
+        <td><span class="engine-status is-active" style="display:inline-block;padding:2px 8px;font-weight:700;">${commPercent}%</span></td>
+        <td><strong style="color:#10b981;">${jod(commDue)}</strong></td>
+        <td><strong style="color:#38bdf8;">${jod(companyProfit)}</strong></td>
+      `;
+      body.append(row);
+    }
+    
+    if (foot) {
+      foot.innerHTML = items.length ? `
+        <tr style="background:rgba(212,175,55,0.06);border-top:2px solid rgba(212,175,55,0.3);font-weight:700;">
+          <td colspan="2" style="color:#d4af37;text-transform:uppercase;letter-spacing:1px;font-size:12px;">TOTAL COMMISSIONS SUMMARY</td>
+          <td><strong>${totalStudents}</strong></td>
+          <td>${jod(totalNetSales)}</td>
+          <td>—</td>
+          <td style="color:#10b981;font-size:14px;">${jod(totalCommissionDue)}</td>
+          <td style="color:#38bdf8;font-size:14px;">${jod(totalCompanyProfit)}</td>
+        </tr>
+      ` : "";
+    }
+  }
+
   function renderAccounting(totals) {
-    $("#finance-gross").innerHTML = jod(totals.gross);
-    $("#finance-revenue").innerHTML = jod(totals.revenue);
-    $("#finance-pending").innerHTML = jod(totals.pending);
-    $("#finance-discounts").innerHTML = jod(totals.discounts);
-    $("#finance-commissions").innerHTML = jod(totals.commissionsDue);
-    $("#finance-studio-net").innerHTML = jod(totals.studioNet);
+    const netSales = totals.netSalesAfterDiscount ?? totals.revenue;
+    const commissionsTotal = totals.commissionsTotal ?? totals.commissionsDue;
+    const studioNet = totals.studioNet;
+
+    // Registrations & Payments view
+    if ($("#finance-gross")) $("#finance-gross").innerHTML = jod(totals.gross);
+    if ($("#finance-discounts")) $("#finance-discounts").innerHTML = jod(totals.discounts);
+    if ($("#finance-revenue")) $("#finance-revenue").innerHTML = jod(netSales);
+    if ($("#finance-commissions")) $("#finance-commissions").innerHTML = jod(commissionsTotal);
+    if ($("#finance-studio-net")) $("#finance-studio-net").innerHTML = jod(studioNet);
+    if ($("#finance-pending")) $("#finance-pending").innerHTML = jod(totals.pending);
+
+    // Financial Center in Analytics view
+    if ($("#analytics-gross")) $("#analytics-gross").innerHTML = jod(totals.gross);
+    if ($("#analytics-discounts")) $("#analytics-discounts").innerHTML = jod(totals.discounts);
+    if ($("#analytics-revenue")) $("#analytics-revenue").innerHTML = jod(netSales);
+    if ($("#analytics-commission")) $("#analytics-commission").innerHTML = jod(commissionsTotal);
+    if ($("#analytics-studio-net")) $("#analytics-studio-net").innerHTML = jod(studioNet);
+
+    // Overview KPIs
+    if ($("#overview-gross")) $("#overview-gross").innerHTML = jod(totals.gross);
+    if ($("#overview-discounts")) $("#overview-discounts").innerHTML = jod(totals.discounts);
+    if ($("#overview-revenue")) $("#overview-revenue").innerHTML = jod(netSales);
+    if ($("#overview-commissions")) $("#overview-commissions").innerHTML = jod(commissionsTotal);
+    if ($("#overview-studio-net")) $("#overview-studio-net").innerHTML = jod(studioNet);
+
+    renderMarketersLedger(state.marketersLedger);
     const history = $("#revenue-adjustment-history");
     if (history) history.innerHTML = state.adjustments.length ? state.adjustments.map(item => `<div class="adjustment-row"><span>${new Date(item.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", month: "short", day: "numeric", year: "numeric" })}</span><strong class="${Number(item.amount_jod) < 0 ? "is-negative" : "is-positive"}">${Number(item.amount_jod) > 0 ? "+" : ""}${Number(item.amount_jod).toFixed(3)} JOD</strong><small>${escape(item.reason)}</small><div class="adjustment-actions"><button type="button" class="small-button" data-adjustment-edit="${escape(item.id)}" data-amount="${Number(item.amount_jod)}" data-reason="${escape(item.reason)}">EDIT</button><button type="button" class="small-button danger" data-adjustment-delete="${escape(item.id)}" data-amount="${Number(item.amount_jod)}">DELETE</button></div></div>`).join("") : '<p class="adjustment-empty">No manual adjustments yet. Every change will be recorded here.</p>';
     const selectedCourse = $("#finance-course-filter").value;
@@ -131,9 +206,9 @@
           ? `<button class="small-button" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="PENDING_REVIEW">REOPEN REVIEW</button>`
           : `<button class="small-button is-confirm" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="PAID">APPROVE</button><button class="small-button" type="button" data-engine-action="set-payment-status" data-id="${recordId}" data-status="PENDING_REVIEW">REOPEN</button>`;
       const rawReceipt = String(registration.receipt_url || registration.receipt_base64 || registration.payment_proof_pathname || "").trim();
-      const hasReceipt = rawReceipt.length > 5;
+      const hasReceipt = rawReceipt.length > 5 || Boolean(registration.receipt_base64);
       const receiptCell = hasReceipt
-        ? `<div style="display:flex;flex-direction:column;gap:3px;"><button class="small-button is-confirm" type="button" data-view-receipt="${escape(rawReceipt)}" data-student="${escape(registration.full_name)}">VIEW RECEIPT</button>${registration.payment_reference ? `<code class="engine-code" style="font-size:0.7em;opacity:0.85;">${escape(registration.payment_reference)}</code>` : ""}</div>`
+        ? `<div style="display:flex;flex-direction:column;gap:3px;"><button class="small-button is-confirm" type="button" data-view-receipt="${escape(rawReceipt)}" data-reg-id="${escape(registration.id || "")}" data-student="${escape(registration.full_name)}">VIEW RECEIPT</button>${registration.payment_reference ? `<code class="engine-code" style="font-size:0.7em;opacity:0.85;">${escape(registration.payment_reference)}</code>` : ""}</div>`
         : (registration.payment_reference ? `<code class="engine-code">${escape(registration.payment_reference)}</code>` : `<code class="engine-code">—</code>`);
       const commissionAction = isPaid && Number(registration.commission_jod || 0) > 0
         ? `<button class="small-button" type="button" data-engine-action="set-commission-status" data-id="${recordId}" data-status="${registration.commission_status === "PAID" ? "PAYABLE" : "PAID"}">${registration.commission_status === "PAID" ? "REOPEN PAYOUT" : "MARK COMMISSION PAID"}</button>`
@@ -161,6 +236,7 @@
       state.registrations = accounting.registrations || [];
       state.adjustments = accounting.adjustments || [];
       state.totals = accounting.totals || {};
+      state.marketersLedger = accounting.marketersLedger || [];
       renderAffiliates();
       renderCodes();
       renderAccounting(state.totals);
@@ -178,7 +254,13 @@
       if (affiliate) state.codes = state.codes.filter(item => String(item.affiliate_id || "") !== id);
       renderAffiliates(); renderCodes();
     } else if (body.action === "delete-code") {
-      state.codes = state.codes.filter(item => String(item.id) !== id);
+      const codeId = String(body.id || "");
+      const codeName = String(body.code || body.name || "").toUpperCase();
+      state.codes = state.codes.filter(item => {
+        const matchesId = codeId && String(item.id) === codeId;
+        const matchesName = codeName && String(item.code || "").toUpperCase() === codeName;
+        return !matchesId && !matchesName;
+      });
       renderCodes();
     } else if (body.action === "delete-registration") {
       state.registrations = state.registrations.filter(item => String(item.id) !== id);
@@ -238,129 +320,30 @@
     dialog.showModal();
   }
 
-  function exportExcelReport() {
-    const registrations = state.registrations;
-    const courseNames = { "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" };
-    const paid = row => ["PAID", "APPROVED", "VERIFIED"].includes(String(row.payment_status || "").toUpperCase());
-    const net = row => Math.max(0, Number(row.price_jod || 0) - Number(row.discount_jod || 0));
-    const group = new Map();
-    for (const row of registrations) {
-      const key = row.course_id || "unknown";
-      if (!group.has(key)) group.set(key, { id: key, total: 0, paid: 0, pending: 0, rejected: 0, gross: 0, revenue: 0, pendingValue: 0, discounts: 0, commissions: 0 });
-      const item = group.get(key);
-      item.total += 1;
-      item.paid += paid(row) ? 1 : 0;
-      item.pending += row.payment_status === "PENDING_REVIEW" ? 1 : 0;
-      item.rejected += row.payment_status === "REJECTED" ? 1 : 0;
-      item.gross += paid(row) ? Number(row.price_jod || 0) : 0;
-      item.revenue += paid(row) ? net(row) : 0;
-      item.pendingValue += row.payment_status === "PENDING_REVIEW" ? net(row) : 0;
-      item.discounts += Number(row.discount_jod || 0);
-      item.commissions += paid(row) ? Number(row.commission_jod || 0) : 0;
+  async function exportExcelReport() {
+    try {
+      notify("Generating official 7Z Magic financial workbook (.xlsx)...");
+      const token = await window.Clerk?.session?.getToken?.();
+      const response = await fetch(endpoint + "?view=export-excel", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        credentials: "same-origin",
+      });
+      if (!response.ok) {
+        throw new Error("Unable to download the branded Excel report.");
+      }
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `7Z-Magic-Academy-Financial-Report-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      notify("Official 7Z Magic Excel workbook downloaded successfully.");
+    } catch (err) {
+      notify(err.message || "Failed to export report.", "error");
     }
-    const monthly = new Map();
-    for (const row of registrations) if (paid(row) && row.created_at) {
-      const date = new Date(row.created_at);
-      if (Number.isNaN(date.getTime())) continue;
-      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-      if (!monthly.has(key)) monthly.set(key, { month: key, count: 0, gross: 0, discounts: 0, revenue: 0, commissions: 0 });
-      const item = monthly.get(key);
-      item.count += 1;
-      item.gross += Number(row.price_jod || 0);
-      item.discounts += Number(row.discount_jod || 0);
-      item.revenue += net(row);
-      item.commissions += Number(row.commission_jod || 0);
-    }
-    const rowsFor = (headers, rows) => [
-      { kind: "title", cells: ["7Z MAGIC  /  ACADEMY FINANCIAL REPORT"] },
-      { kind: "subtitle", cells: [`Generated ${new Date().toLocaleString("en-US", { timeZone: "Asia/Amman", dateStyle: "long", timeStyle: "short" })}  ·  Reporting currency: JOD  ·  Source: live administration ledger`] },
-      { kind: "blank", cells: [] },
-      { kind: "header", cells: headers },
-      ...rows.map((cells, index) => ({ kind: index % 2 ? "zebra" : "body", cells, styles: headers.map(header => /JOD/i.test(header) ? "currency" : /%/.test(header) ? "percent" : null) })),
-    ];
-    const sheets = [
-      { name: "Executive Summary", widths: [30, 19, 68], filter: false, rows: [
-        { kind: "title", cells: ["7Z MAGIC  /  ACADEMY FINANCIAL REPORT"] },
-        { kind: "subtitle", cells: [`Generated ${new Date().toLocaleString("en-US", { timeZone: "Asia/Amman", dateStyle: "long", timeStyle: "short" })}  ·  Currency: JOD  ·  Live course and affiliate ledger`] },
-        { kind: "blank", cells: [] },
-        { kind: "section", cells: ["STUDIO FINANCIAL POSITION"] },
-        { kind: "header", cells: ["Metric", "Amount (JOD)", "Definition"] },
-        ...[["Gross verified sales", state.totals.gross, "List price for registrations marked paid or verified."], ["Verified revenue", state.totals.revenue, "Paid net receipts, including audited manual adjustments."], ["Pending payment value", state.totals.pending, "Submitted payments awaiting administrator verification; excluded from verified revenue."], ["Discounts granted", state.totals.discounts, "Recorded discounts across registrations."], ["Affiliate commissions due", state.totals.commissionsDue, "Verified commissions not yet marked paid."], ["Total verified commissions", state.totals.commissionsTotal, "All affiliate commissions on verified registrations."], ["Studio net after commissions", state.totals.studioNet, "Verified revenue less total verified commissions; before operating costs."]].map((row, i) => ({ kind: i % 2 ? "zebra" : "body", cells: row, styles: [null, "currency", null] })),
-        { kind: "blank", cells: [] },
-        { kind: "section", cells: ["REGISTRATION PIPELINE"] },
-        { kind: "header", cells: ["Status", "Registrations", "Revenue treatment"] },
-        ...[["Paid / verified", registrations.filter(paid).length, "Included in verified revenue."], ["Pending review", registrations.filter(row => row.payment_status === "PENDING_REVIEW").length, "Not included until verified."], ["Rejected", registrations.filter(row => row.payment_status === "REJECTED").length, "Excluded from verified revenue."]].map((row, i) => ({ kind: i % 2 ? "zebra" : "body", cells: row })),
-        { kind: "blank", cells: [] },
-        { kind: "section", cells: ["COURSE PERFORMANCE"] },
-        { kind: "header", cells: ["Course", "Paid revenue (JOD)", "Enrollments / paid / pending"] },
-        ...[...group.values()].map((row, i) => ({ kind: i % 2 ? "zebra" : "body", cells: [courseNames[row.id] || row.id, row.revenue, `${row.total} total  ·  ${row.paid} paid  ·  ${row.pending} pending`], styles: [null, "currency", null] })),
-      ] },
-      { name: "Registration Ledger", widths: [10, 11, 20, 30, 34, 28, 19, 18, 26, 17, 15, 19, 18, 20, 15, 17, 24, 15, 18, 24, 34, 25, 34], filter: true, rows: rowsFor(["ID", "Seat", "Submitted", "Student", "Email", "Course", "Payment status", "Provider", "Transfer reference", "List price (JOD)", "Discount (JOD)", "Net due (JOD)", "Coupon", "Affiliate", "Commission %", "Commission (JOD)", "Commission status", "Phone", "Location", "Experience", "Student goal", "Preferred language", "Previous-course email"], registrations.map(row => [Number(row.id), Number(row.seat_number || 0), row.created_at ? new Date(row.created_at).toISOString() : "", row.full_name, row.email, courseNames[row.course_id] || row.course_id, row.payment_status, row.payment_provider, row.payment_reference, Number(row.price_jod || 0), Number(row.discount_jod || 0), net(row), row.coupon_code, row.affiliate_name, Number(row.commission_percent || 0) / 100, Number(row.commission_jod || 0), row.commission_status, row.phone, row.location, row.experience, row.goal, row.preferred_language, row.previous_course_email])) },
-      { name: "Affiliate Performance", widths: [27, 31, 24, 18, 14, 13, 16, 17, 18, 21, 21], filter: true, rows: rowsFor(["Affiliate", "Email", "Company", "Status", "Default commission %", "Codes", "Registrations", "Verified sales (JOD)", "Commission earned (JOD)", "Commission outstanding (JOD)", "Affiliate ID"], state.affiliates.map(row => [row.name, row.email, row.company, row.status, Number(row.commission_percent || 0) / 100, Number(row.code_count || 0), Number(row.registration_count || 0), Number(row.net_sales_jod || 0), Number(row.earned_commission_jod || 0), Number(row.outstanding_commission_jod || 0), row.id])) },
-      { name: "Discount Code Register", widths: [20, 28, 27, 14, 16, 16, 15, 18, 14, 20, 22], filter: true, rows: rowsFor(["Code", "Affiliate", "Course", "Discount %", "Commission %", "Redemptions", "Maximum uses", "Status", "Requires prior email", "Created", "Code ID"], state.codes.map(row => [row.code, row.affiliate_name || "Studio", row.course_id === "all" ? "All courses" : courseNames[row.course_id] || row.course_id, Number(row.discount_percent || 0) / 100, Number(row.commission_percent || 0) / 100, Number(row.redemption_count || 0), row.max_redemptions || "Unlimited", row.status, row.requires_previous_email ? "Yes" : "No", row.created_at ? new Date(row.created_at).toISOString() : "", row.id])) },
-      { name: "Course Comparison", widths: [31, 15, 15, 15, 19, 18, 19, 20, 23], filter: true, rows: rowsFor(["Course", "Registrations", "Paid", "Pending", "Rejected", "Gross verified (JOD)", "Discounts (JOD)", "Verified revenue (JOD)", "Verified commissions (JOD)"], [...group.values()].map(row => [courseNames[row.id] || row.id, row.total, row.paid, row.pending, row.rejected, row.gross, row.discounts, row.revenue, row.commissions])) },
-      { name: "Monthly Revenue", widths: [17, 17, 20, 20, 22, 24], filter: true, rows: rowsFor(["Month", "Paid registrations", "Gross sales (JOD)", "Discounts (JOD)", "Verified revenue (JOD)", "Verified commissions (JOD)"], [...monthly.values()].sort((a, b) => a.month.localeCompare(b.month)).map(row => [row.month, row.count, row.gross, row.discounts, row.revenue, row.commissions])) },
-      { name: "Manual Adjustments", widths: [22, 20, 19, 60, 28], filter: true, rows: rowsFor(["Adjustment ID", "Created", "Amount (JOD)", "Reason", "Created by"], state.adjustments.map(row => [row.id, row.created_at ? new Date(row.created_at).toISOString() : "", Number(row.amount_jod || 0), row.reason, row.created_by])) },
-    ];
-    const esc = value => String(value ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]);
-    const columnName = number => { let name = ""; for (let n = number + 1; n; n = Math.floor((n - 1) / 26)) name = String.fromCharCode(65 + ((n - 1) % 26)) + name; return name; };
-    const styleFor = (kind, value, requested) => {
-      if (requested === "currency") return "6";
-      if (requested === "percent") return "7";
-      if (kind === "title") return "1";
-      if (kind === "subtitle") return "2";
-      if (kind === "section") return "3";
-      if (kind === "header") return "4";
-      if (kind === "zebra") return "5";
-      return "0";
-    };
-    const rowsXml = sheet => sheet.rows.map((row, ri) => {
-      if (row.kind === "blank") return `<row r="${ri + 1}"/>`;
-      const cells = row.cells.map((value, ci) => {
-        const ref = `${columnName(ci)}${ri + 1}`;
-        const style = styleFor(row.kind, value, row.styles?.[ci]);
-        return typeof value === "number" && Number.isFinite(value) ? `<c r="${ref}" s="${style}"><v>${value}</v></c>` : `<c r="${ref}" s="${style}" t="inlineStr"><is><t xml:space="preserve">${esc(value)}</t></is></c>`;
-      }).join("");
-      const merge = ["title", "subtitle", "section"].includes(row.kind) && sheet.widths.length > 1 ? ` spans="1:${sheet.widths.length}"` : "";
-      return `<row r="${ri + 1}"${merge}>${cells}</row>`;
-    }).join("");
-    const encoder = new TextEncoder();
-    const fileEntries = {};
-    fileEntries["[Content_Types].xml"] = `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`;
-    fileEntries["_rels/.rels"] = `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
-    fileEntries["xl/workbook.xml"] = `<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView/></bookViews><sheets>${sheets.map((sheet, i) => `<sheet name="${esc(sheet.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("")}</sheets><calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`;
-    fileEntries["xl/_rels/workbook.xml.rels"] = `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join("")}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
-    fileEntries["xl/styles.xml"] = `<?xml version="1.0" encoding="UTF-8"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="2"><numFmt numFmtId="164" formatCode="#,##0.000 &quot;JOD&quot;"/><numFmt numFmtId="165" formatCode="0.0%"/></numFmts><fonts count="5"><font><sz val="10"/><color rgb="FF253047"/><name val="Aptos"/></font><font><b/><sz val="18"/><color rgb="FFFFFFFF"/><name val="Aptos Display"/></font><font><sz val="10"/><color rgb="FFCBD5E1"/><name val="Aptos"/></font><font><b/><sz val="11"/><color rgb="FFF3F5FF"/><name val="Aptos"/></font><font><b/><sz val="10"/><color rgb="FFF5F7FF"/><name val="Aptos"/></font></fonts><fills count="5"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF141A29"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FF292342"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF1F4FB"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color rgb="FFE2E8F2"/></left><right style="thin"><color rgb="FFE2E8F2"/></right><top/><bottom style="hair"><color rgb="FFE2E8F2"/></bottom><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="8"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="2" fillId="2" borderId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="3" fillId="3" borderId="0"/><xf numFmtId="0" fontId="4" fillId="2" borderId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="1" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="1" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
-    sheets.forEach((sheet, index) => {
-      const lastCol = columnName(sheet.widths.length - 1);
-      const lastRow = sheet.rows.length;
-      const filter = sheet.filter && lastRow >= 4 ? `<autoFilter ref="A4:${lastCol}${lastRow}"/>` : "";
-      const merges = sheet.rows.map((row, ri) => ["title", "subtitle", "section"].includes(row.kind) && sheet.widths.length > 1 ? `<mergeCell ref="A${ri + 1}:${lastCol}${ri + 1}"/>` : "").join("");
-      const uniqueMerges = [...new Set(merges.match(/<mergeCell[^>]+\/>/g) || [])].join("");
-      fileEntries[`xl/worksheets/sheet${index + 1}.xml`] = `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${lastCol}${lastRow}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="22"/><cols>${sheet.widths.map((width, i) => `<col min="${i + 1}" max="${i + 1}" width="${width}" customWidth="1"/>`).join("")}</cols><sheetData>${rowsXml(sheet)}</sheetData>${filter}${uniqueMerges ? `<mergeCells count="${(uniqueMerges.match(/<mergeCell/g) || []).length}">${uniqueMerges}</mergeCells>` : ""}</worksheet>`;
-    });
-    const crc32 = bytes => { let crc = 0xffffffff; for (const byte of bytes) { crc ^= byte; for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0); } return (crc ^ 0xffffffff) >>> 0; };
-    const zipParts = [];
-    const centralParts = [];
-    let offset = 0;
-    const viewOf = (length, entries) => { const buffer = new Uint8Array(length); const view = new DataView(buffer.buffer); for (const [method, at, value] of entries) view[method](at, value, true); return buffer; };
-    for (const [name, xml] of Object.entries(fileEntries)) {
-      const filename = encoder.encode(name), data = encoder.encode(xml), crc = crc32(data);
-      const local = viewOf(30, [["setUint32",0,0x04034b50],["setUint16",4,20],["setUint16",6,0x800],["setUint16",8,0],["setUint32",14,crc],["setUint32",18,data.length],["setUint32",22,data.length],["setUint16",26,filename.length]]);
-      zipParts.push(local, filename, data);
-      const central = viewOf(46, [["setUint32",0,0x02014b50],["setUint16",4,20],["setUint16",6,20],["setUint16",8,0x800],["setUint16",10,0],["setUint32",16,crc],["setUint32",20,data.length],["setUint32",24,data.length],["setUint16",28,filename.length],["setUint32",42,offset]]);
-      centralParts.push(central, filename);
-      offset += local.length + filename.length + data.length;
-    }
-    const centralSize = centralParts.reduce((sum, part) => sum + part.length, 0);
-    const end = viewOf(22, [["setUint32",0,0x06054b50],["setUint16",8,Object.keys(fileEntries).length],["setUint16",10,Object.keys(fileEntries).length],["setUint32",12,centralSize],["setUint32",16,offset]]);
-    const blob = new Blob([...zipParts, ...centralParts, end], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `7z-magic-academy-financial-report-${new Date().toISOString().slice(0, 10)}.xlsx`;
-    link.click();
-    window.setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-    notify("Formatted Excel workbook downloaded.");
   }
 
   function bind() {
@@ -380,6 +363,8 @@
       if (window.confirm("Reset the reported revenue total to zero? This adds an audited offset; original registration and payment records remain unchanged.")) post({ action: "reset-revenue" }, "Reported revenue reset with an audited adjustment.");
     });
     $("#report-export")?.addEventListener("click", exportExcelReport);
+    $("#financial-center-export-excel")?.addEventListener("click", exportExcelReport);
+    $("#registrations-export-excel")?.addEventListener("click", exportExcelReport);
     $("#course-edit-cancel")?.addEventListener("click", () => $("#course-edit-dialog")?.close());
     $("#course-edit-close")?.addEventListener("click", () => $("#course-edit-dialog")?.close());
     $("#course-edit-form")?.addEventListener("submit", async event => {
@@ -435,26 +420,43 @@
       const viewReceipt = event.target.closest("[data-view-receipt]");
       if (viewReceipt) {
         const src = viewReceipt.getAttribute("data-view-receipt");
+        const regId = viewReceipt.getAttribute("data-reg-id");
         const student = viewReceipt.getAttribute("data-student") || "Student";
         const dialog = $("#receipt-modal-dialog");
         const modalBody = $("#receipt-modal-body");
         const studentLabel = $("#receipt-modal-student");
         const downloadLink = $("#receipt-modal-download");
-        if (dialog && modalBody) {
-          studentLabel.textContent = `Receipt proof submitted by ${student}`;
-          if (src.endsWith(".pdf") || src.includes("application/pdf")) {
-            modalBody.innerHTML = `<iframe src="${src}" style="width:100%;height:450px;border:none;"></iframe>`;
-          } else {
-            modalBody.innerHTML = `<img src="${src}" alt="Receipt" style="max-width:100%;max-height:450px;object-fit:contain;border-radius:8px;">`;
+        const openTabLink = $("#receipt-modal-open-tab");
+
+        let receiptUrl = src;
+        if (!receiptUrl || receiptUrl === "undefined" || receiptUrl === "null" || (!receiptUrl.startsWith("data:") && !receiptUrl.startsWith("http://") && !receiptUrl.startsWith("https://") && !receiptUrl.startsWith("/api/"))) {
+          if (regId) {
+            receiptUrl = `/api/admin/course-engine?action=receipt&id=${encodeURIComponent(regId)}`;
           }
-          if (downloadLink) downloadLink.href = src;
+        }
+
+        if (dialog && modalBody) {
+          if (studentLabel) studentLabel.textContent = `Official transfer receipt for ${student}`;
+          const isPdf = receiptUrl && (receiptUrl.endsWith(".pdf") || receiptUrl.includes("application/pdf"));
+          if (isPdf) {
+            modalBody.innerHTML = `<iframe src="${receiptUrl}" style="width:100%;height:520px;border:none;border-radius:8px;background:#fff;"></iframe>`;
+          } else {
+            modalBody.innerHTML = `<img src="${receiptUrl}" alt="Payment Receipt" style="max-width:100%;max-height:520px;object-fit:contain;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,0.6);" onerror="if(!this.dataset.retried && '${regId}'){ this.dataset.retried=true; this.src='/api/admin/course-engine?action=receipt&id=${encodeURIComponent(regId)}'; } else { this.parentElement.innerHTML='<div style=\\'padding:30px;color:#ef4444;font-weight:600;\\'>⚠️ Receipt image could not be loaded directly. Click below to download or view.</div>'; }">`;
+          }
+          if (downloadLink) {
+            downloadLink.href = receiptUrl;
+            downloadLink.setAttribute("download", `receipt-${student.toLowerCase().replace(/[^a-z0-9]/g, "_")}.jpg`);
+          }
+          if (openTabLink) {
+            openTabLink.href = receiptUrl;
+          }
           dialog.showModal();
         }
         return;
       }
       const button = event.target.closest("[data-engine-action]");
       if (!button) return;
-      const body = { action: button.dataset.engineAction, id: button.dataset.id, status: button.dataset.status };
+      const body = { action: button.dataset.engineAction, id: button.dataset.id, status: button.dataset.status, code: button.dataset.name };
       const message = body.action === "set-payment-status" ? `Set payment status to ${body.status.replaceAll("_", " ")}?` : body.action === "set-commission-status" ? `Set commission status to ${body.status}?` : body.action === "toggle-affiliate" && body.status === "inactive" ? "Archive this affiliate and disable its active discount codes? Sales history will be retained." : body.action === "toggle-code" && body.status === "inactive" ? "Archive this discount code? Existing registrations will be retained." : body.action === "delete-affiliate" ? `Permanently delete ${button.dataset.name || "this affiliate"} and its discount codes? Historical registrations and their recorded totals remain in the ledger.` : body.action === "delete-code" ? `Permanently delete discount code ${button.dataset.name || ""}? Past registrations keep their recorded code and commission.` : body.action === "delete-registration" ? "Delete this student registration? It will disappear from Latest Activity and be removed from the registration ledger, recalculating verified revenue, discounts and commissions." : `Set status to ${body.status}?`;
       if (!window.confirm(message)) return;
       const success = body.action === "delete-affiliate" ? "Affiliate and its codes deleted. Historical ledger entries were retained." : body.action === "delete-code" ? "Discount code deleted. Historical registrations were retained." : body.action === "delete-registration" ? "Registration deleted; revenue and Latest Activity were recalculated." : "Course administration updated.";

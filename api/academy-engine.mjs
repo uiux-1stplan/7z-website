@@ -237,31 +237,55 @@ export async function ensureDbSchema() {
       );
     `;
 
-    // 7. Seed standard default coupons into BOTH academy_coupons & course_discount_codes
+    // 7. System Migrations and Deleted Codes Tracker
+    await sql`
+      CREATE TABLE IF NOT EXISTS academy_system_migrations (
+        migration_key TEXT PRIMARY KEY,
+        applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS deleted_discount_codes (
+        code TEXT PRIMARY KEY,
+        deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
+
+    // Seed standard default coupons ONCE only, respecting deleted codes
     try {
-      const defaultCodes = [
-        ["7ZVIP", 20, "all"],
-        ["MAGIC15", 15, "all"],
-        ["DIRECT15", 15, "all"],
-        ["HASSAN25", 25, "all"],
-        ["SHAAS25", 25, "all"],
-        ["HASSAN10", 10, "all"],
-        ["SHAS10", 10, "all"],
-        ["ABDULRAHMAN10", 10, "all"],
-        ["7Z10", 10, "all"],
-        ["ALUMNI15", 15, "all"]
-      ];
-      for (const [cd, disc, scope] of defaultCodes) {
-        await sql`
-          INSERT INTO academy_coupons (code, discount_percent, course_scope, status)
-          VALUES (${cd}, ${disc}, ${scope}, 'active')
-          ON CONFLICT (code) DO NOTHING;
-        `;
-        await sql`
-          INSERT INTO course_discount_codes (code, discount_percent, course_id, status)
-          VALUES (${cd}, ${disc}, ${scope}, 'active')
-          ON CONFLICT (code) DO NOTHING;
-        `;
+      const [seedMigration] = await sql`
+        INSERT INTO academy_system_migrations (migration_key)
+        VALUES ('initial_default_coupons_seed_v1')
+        ON CONFLICT (migration_key) DO NOTHING
+        RETURNING migration_key;
+      `;
+      if (seedMigration) {
+        const defaultCodes = [
+          ["7ZVIP", 20, "all"],
+          ["MAGIC15", 15, "all"],
+          ["DIRECT15", 15, "all"],
+          ["HASSAN25", 25, "all"],
+          ["SHAAS25", 25, "all"],
+          ["HASSAN10", 10, "all"],
+          ["SHAS10", 10, "all"],
+          ["ABDULRAHMAN10", 10, "all"],
+          ["7Z10", 10, "all"],
+          ["ALUMNI15", 15, "all"]
+        ];
+        for (const [cd, disc, scope] of defaultCodes) {
+          await sql`
+            INSERT INTO academy_coupons (code, discount_percent, course_scope, status)
+            SELECT ${cd}, ${disc}, ${scope}, 'active'
+            WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = UPPER(${cd}))
+            ON CONFLICT (code) DO NOTHING;
+          `;
+          await sql`
+            INSERT INTO course_discount_codes (code, discount_percent, course_id, status)
+            SELECT ${cd}, ${disc}, ${scope}, 'active'
+            WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = UPPER(${cd}))
+            ON CONFLICT (code) DO NOTHING;
+          `;
+        }
       }
     } catch (e) {
       console.warn("Coupon seed notice:", e.message);

@@ -240,12 +240,12 @@ export function buildStudentConfirmationHtml(record) {
           <div class="info-val" style="color: #fbbf24;">${record.courseName || record.courseId}</div>
         </div>
         <div class="info-row">
-          <div class="info-label">Training Type:</div>
-          <div class="info-val">Live Online Mentorship & Training</div>
+          <div class="info-label">Course Format:</div>
+          <div class="info-val">Fully Recorded Online Course (Anytime Access)</div>
         </div>
         <div class="info-row">
-          <div class="info-label">Seat Allocation:</div>
-          <div class="info-val">Unlimited Seats (Live Online)</div>
+          <div class="info-label">Access Type:</div>
+          <div class="info-val">Continuous Access Anytime</div>
         </div>
         <div class="info-row" style="border-bottom: none;">
           <div class="info-label">Total Amount:</div>
@@ -300,11 +300,11 @@ export function buildStudentConfirmationHtml(record) {
       </div>
       <div class="info-row">
         <div class="info-label">طبيعة البرنامج:</div>
-        <div class="info-val">توجيه وتدريب مباشر (أونلاين)</div>
+        <div class="info-val">دورة أونلاين مسجلة بالكامل (وصول في أي وقت)</div>
       </div>
       <div class="info-row">
-        <div class="info-label">حالة المقاعد:</div>
-        <div class="info-val">مقاعد غير محدودة (تدريب مباشر أونلاين)</div>
+        <div class="info-label">طبيعة الوصول:</div>
+        <div class="info-val">مشاهدة ووصول مستمر في أي وقت</div>
       </div>
       <div class="info-row" style="border-bottom: none;">
         <div class="info-label">المبلغ المطلوب:</div>
@@ -349,12 +349,12 @@ export function buildPaymentApprovedHtml(record) {
     </div>
 
     <div class="email-card">
-      <div style="font-size: 12px; color: #10b981; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">الخطوات القادمة للانضمام للتدريب المباشر:</div>
+      <div style="font-size: 12px; color: #10b981; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">الخطوات القادمة للوصول للدورة المسجلة:</div>
       
       <ol style="margin: 0; padding-right: 20px; color: #cbd5e1; font-size: 14px; line-height: 1.8;">
-        <li>سيتم إرسال روابط قاعات التدريب التفاعلي المباشر (Zoom / Studio Stream) وجدول المواعيد إلى بريدك هذا.</li>
-        <li>ستتم إضافتك إلى قناة التوجيه المباشر المغلقة للمتدربين للتواصل مع المدربين وفريق الاستوديو.</li>
-        <li>يرجى تجهيز حسابك وبيئتك التدريبية قبل موعد الجلسة الافتتاحية الأولى.</li>
+        <li>تم تفعيل وصولك لحقيبة وتسجيلات الدورة بالكامل عبر المنصة، ويمكنك المشاهدة والتعلم في أي وقت بالسرعة التي تناسبك.</li>
+        <li>ستتم إضافتك إلى قناة المتابعة والتوجيه للمتدربين لمشاركة التطبيقات العملية والتواصل المستمر مع المدربين وفريق الاستوديو.</li>
+        <li>يمكنك البدء فوراً بمتابعة الدروس والتطبيق خطوة بخطوة وإنجاز مشروعك المتكامل.</li>
       </ol>
     </div>
 

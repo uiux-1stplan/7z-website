@@ -17,6 +17,9 @@ import {
   sendPaymentApprovedEmail,
   sendPaymentRejectedEmail
 } from "../academy-engine.mjs";
+import ExcelJS from "exceljs";
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
 
 const courses = new Set(["all", "cinematic-film", "ai-engineering"]);
 
@@ -83,6 +86,11 @@ async function ensureSchema(sql) {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`;
 
+    await sql`CREATE TABLE IF NOT EXISTS deleted_discount_codes (
+      code TEXT PRIMARY KEY,
+      deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+
     await sql`CREATE TABLE IF NOT EXISTS course_admin_migrations (
       migration_key TEXT PRIMARY KEY,
       applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -112,10 +120,11 @@ async function ensureSchema(sql) {
       for (const [code, legacyKey, discount, commission, previousEmail] of legacyCodes) {
         await sql`INSERT INTO course_discount_codes
           (code, affiliate_id, affiliate_name, course_id, discount_percent, commission_percent, requires_previous_email, legacy_key)
-          VALUES (${code},
+          SELECT ${code},
             (SELECT id FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}),
             COALESCE((SELECT name FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}), ''),
-            ${discount}, ${commission}, ${previousEmail}, ${`legacy-code-${code}`})
+            'all', ${discount}, ${commission}, ${previousEmail}, ${`legacy-code-${code}`}
+          WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = UPPER(${code}))
           ON CONFLICT (code) DO NOTHING`;
       }
     }
@@ -220,11 +229,410 @@ async function getCodes(sql) {
   }
 }
 
+export async function generateExcelReportBuffer({ registrations, marketersLedger, totals }) {
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = "7Z Magic Studios";
+  workbook.lastModifiedBy = "7Z Magic Administrator";
+  workbook.created = new Date();
+
+  let logoImageId = null;
+  try {
+    const logoPath = join(process.cwd(), "assets", "brand", "7Z-LogoT(3).png");
+    if (existsSync(logoPath)) {
+      const logoBuffer = readFileSync(logoPath);
+      logoImageId = workbook.addImage({
+        buffer: logoBuffer,
+        extension: "png"
+      });
+    }
+  } catch (err) {
+    console.warn("[ExcelJS] Logo load notice:", err.message);
+  }
+
+  // Styles & Luxury Dark Palette matching 7Z Magic
+  const headerFill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF0B0F17" }
+  };
+  const titleFill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF06070D" }
+  };
+  const zebraFill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FFF8FAFC" }
+  };
+  const summaryFill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF141A29" }
+  };
+
+  const goldFont = {
+    name: "Segoe UI",
+    size: 11,
+    bold: true,
+    color: { argb: "FFD4AF37" }
+  };
+  const whiteHeaderFont = {
+    name: "Segoe UI",
+    size: 11,
+    bold: true,
+    color: { argb: "FFFFFFFF" }
+  };
+  const titleFont = {
+    name: "Segoe UI",
+    size: 15,
+    bold: true,
+    color: { argb: "FFFFFFFF" }
+  };
+  const subtitleFont = {
+    name: "Segoe UI",
+    size: 10,
+    italic: true,
+    color: { argb: "FF94A3B8" }
+  };
+
+  const thinBorder = {
+    top: { style: "thin", color: { argb: "FFE2E8F0" } },
+    left: { style: "thin", color: { argb: "FFE2E8F0" } },
+    bottom: { style: "thin", color: { argb: "FFE2E8F0" } },
+    right: { style: "thin", color: { argb: "FFE2E8F0" } }
+  };
+  const doubleBottomBorder = {
+    top: { style: "thin", color: { argb: "FFD4AF37" } },
+    left: { style: "thin", color: { argb: "FFCBD5E1" } },
+    bottom: { style: "double", color: { argb: "FFD4AF37" } },
+    right: { style: "thin", color: { argb: "FFCBD5E1" } }
+  };
+
+  // -------------------------------------------------------------
+  // Sheet 1: سجل الطلبات والمداخيل (Registrations & Revenue)
+  // -------------------------------------------------------------
+  const ws1 = workbook.addWorksheet("Registrations & Revenue", {
+    views: [{ state: "frozen", ySplit: 5 }]
+  });
+
+  if (logoImageId !== null) {
+    try {
+      ws1.addBackgroundImage(logoImageId);
+    } catch (_) {}
+  }
+
+  ws1.mergeCells("A1:N1");
+  const titleCell = ws1.getCell("A1");
+  titleCell.value = "7Z MAGIC STUDIO  |  ACADEMY FINANCIAL & REGISTRATION REPORT";
+  titleCell.font = titleFont;
+  titleCell.fill = titleFill;
+  titleCell.alignment = { horizontal: "center", vertical: "middle" };
+  ws1.getRow(1).height = 36;
+
+  ws1.mergeCells("A2:N2");
+  const subCell = ws1.getCell("A2");
+  subCell.value = `Generated: ${new Date().toLocaleString("en-US", { timeZone: "Asia/Amman", dateStyle: "long", timeStyle: "short" })} (Asia/Amman)  |  Currency: JOD  |  Accounting: Strict Discount & Commission Formula`;
+  subCell.font = subtitleFont;
+  subCell.fill = titleFill;
+  subCell.alignment = { horizontal: "center", vertical: "middle" };
+  ws1.getRow(2).height = 22;
+
+  ws1.getRow(3).height = 10;
+
+  const ws1Headers = [
+    "#",
+    "Student Name",
+    "Email",
+    "Phone",
+    "Course",
+    "Payment Status",
+    "Promo Code",
+    "Marketer / Partner",
+    "Base Price (JOD)",
+    "Discount Amount (JOD)",
+    "Net After Discount (JOD)",
+    "Commission %",
+    "Marketer Commission (JOD)",
+    "Academy Net Revenue (JOD)"
+  ];
+  const hRow1 = ws1.addRow(ws1Headers);
+  hRow1.height = 28;
+  hRow1.eachCell((cell, colNum) => {
+    cell.fill = headerFill;
+    cell.font = colNum >= 9 ? goldFont : whiteHeaderFont;
+    cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+    cell.border = thinBorder;
+  });
+
+  const courseNames = { "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" };
+
+  let rowIdx = 5;
+  let sumBase = 0;
+  let sumDiscount = 0;
+  let sumNet = 0;
+  let sumCommission = 0;
+  let sumAcademyNet = 0;
+
+  for (const reg of registrations) {
+    const isPaid = ["PAID", "APPROVED", "VERIFIED"].includes(String(reg.payment_status || "").toUpperCase());
+    const base = Number(reg.base_price || 250);
+    const disc = Number(reg.discount_jod || 0);
+    const net = Math.max(0, base - disc);
+    const commPct = Number(reg.commission_percent || 0);
+    const comm = Number(reg.commission_jod || 0);
+    const acadNet = Number(reg.academy_net_jod || Math.max(0, net - comm));
+
+    if (isPaid) {
+      sumBase += base;
+      sumDiscount += disc;
+      sumNet += net;
+      sumCommission += comm;
+      sumAcademyNet += acadNet;
+    }
+
+    const row = ws1.addRow([
+      reg.seat_number || reg.id || rowIdx - 4,
+      reg.full_name || "—",
+      reg.email || "—",
+      reg.phone || "—",
+      courseNames[reg.course_id] || reg.course_id || "7Z Course",
+      reg.payment_status || "PENDING",
+      reg.coupon_code || "—",
+      reg.affiliate_name || "Direct / Studio",
+      base,
+      disc,
+      net,
+      commPct / 100,
+      comm,
+      acadNet
+    ]);
+
+    row.height = 22;
+    const isZebra = (rowIdx % 2 === 0);
+    row.eachCell((cell, colNum) => {
+      cell.border = thinBorder;
+      cell.font = { name: "Segoe UI", size: 10 };
+      if (isZebra) cell.fill = zebraFill;
+      cell.alignment = { vertical: "middle" };
+
+      if ([9, 10, 11, 13, 14].includes(colNum)) {
+        cell.numFmt = '#,##0.00 "JOD"';
+        cell.alignment = { horizontal: "right", vertical: "middle" };
+      } else if (colNum === 12) {
+        cell.numFmt = "0.0%";
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+      } else if ([1, 6, 7].includes(colNum)) {
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+      }
+    });
+
+    rowIdx++;
+  }
+
+  // Summary Row Sheet 1
+  const totalRow = ws1.addRow([
+    "TOTALS",
+    `Total Verified: ${registrations.filter(r => ["PAID","APPROVED","VERIFIED"].includes(String(r.payment_status||"").toUpperCase())).length}`,
+    "", "", "", "", "", "Verified Totals:",
+    sumBase,
+    sumDiscount,
+    sumNet,
+    "",
+    sumCommission,
+    sumAcademyNet
+  ]);
+  totalRow.height = 28;
+  totalRow.eachCell((cell, colNum) => {
+    cell.fill = summaryFill;
+    cell.font = goldFont;
+    cell.border = doubleBottomBorder;
+    if ([9, 10, 11, 13, 14].includes(colNum)) {
+      cell.numFmt = '#,##0.00 "JOD"';
+      cell.alignment = { horizontal: "right", vertical: "middle" };
+    } else {
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+    }
+  });
+
+  ws1.columns.forEach((col, idx) => {
+    let maxLen = ws1Headers[idx] ? ws1Headers[idx].length : 12;
+    col.eachCell({ includeEmpty: false }, (cell) => {
+      const val = cell.value ? String(cell.value) : "";
+      if (val.length > maxLen) maxLen = Math.min(val.length, 36);
+    });
+    col.width = Math.max(maxLen + 3, 12);
+  });
+
+  // -------------------------------------------------------------
+  // Sheet 2: كشف عمولات المسوّقين (Marketers Commissions)
+  // -------------------------------------------------------------
+  const ws2 = workbook.addWorksheet("Marketers Commissions", {
+    views: [{ state: "frozen", ySplit: 5 }]
+  });
+
+  if (logoImageId !== null) {
+    try {
+      ws2.addBackgroundImage(logoImageId);
+    } catch (_) {}
+  }
+
+  ws2.mergeCells("A1:G1");
+  const titleCell2 = ws2.getCell("A1");
+  titleCell2.value = "7Z MAGIC STUDIO  |  MARKETERS & PARTNERS COMMISSION LEDGER";
+  titleCell2.font = titleFont;
+  titleCell2.fill = titleFill;
+  titleCell2.alignment = { horizontal: "center", vertical: "middle" };
+  ws2.getRow(1).height = 36;
+
+  ws2.mergeCells("A2:G2");
+  const subCell2 = ws2.getCell("A2");
+  subCell2.value = `Strict Commission Formula: Commission = Net Price After Discount × Commission %  |  Generated ${new Date().toISOString().slice(0, 10)}`;
+  subCell2.font = subtitleFont;
+  subCell2.fill = titleFill;
+  subCell2.alignment = { horizontal: "center", vertical: "middle" };
+  ws2.getRow(2).height = 22;
+
+  ws2.getRow(3).height = 10;
+
+  const ws2Headers = [
+    "Marketer / Partner Name",
+    "Promo Code",
+    "Students Count",
+    "Total Sales After Discount (JOD)",
+    "Commission Rate %",
+    "Commission Due (JOD)",
+    "Company Net Profit (JOD)"
+  ];
+  const hRow2 = ws2.addRow(ws2Headers);
+  hRow2.height = 28;
+  hRow2.eachCell((cell, colNum) => {
+    cell.fill = headerFill;
+    cell.font = [4, 6, 7].includes(colNum) ? goldFont : whiteHeaderFont;
+    cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+    cell.border = thinBorder;
+  });
+
+  let rowIdx2 = 5;
+  let totalMarketerSales = 0;
+  let totalMarketerComms = 0;
+  let totalCompanyProfit = 0;
+
+  for (const m of marketersLedger) {
+    totalMarketerSales += Number(m.net_sales_jod || 0);
+    totalMarketerComms += Number(m.commission_due_jod || 0);
+    totalCompanyProfit += Number(m.company_net_jod || 0);
+
+    const row = ws2.addRow([
+      m.affiliate_name || "—",
+      m.coupon_code || "—",
+      Number(m.students_count || 0),
+      Number(m.net_sales_jod || 0),
+      Number(m.commission_percent || 0) / 100,
+      Number(m.commission_due_jod || 0),
+      Number(m.company_net_jod || 0)
+    ]);
+    row.height = 22;
+    const isZebra = (rowIdx2 % 2 === 0);
+    row.eachCell((cell, colNum) => {
+      cell.border = thinBorder;
+      cell.font = { name: "Segoe UI", size: 10 };
+      if (isZebra) cell.fill = zebraFill;
+      cell.alignment = { vertical: "middle" };
+
+      if ([4, 6, 7].includes(colNum)) {
+        cell.numFmt = '#,##0.00 "JOD"';
+        cell.alignment = { horizontal: "right", vertical: "middle" };
+      } else if (colNum === 5) {
+        cell.numFmt = "0.0%";
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+      } else if (colNum === 3) {
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+      }
+    });
+    rowIdx2++;
+  }
+
+  // Totals for Sheet 2
+  const totalRow2 = ws2.addRow([
+    "TOTALS",
+    "",
+    marketersLedger.reduce((acc, cur) => acc + Number(cur.students_count || 0), 0),
+    totalMarketerSales,
+    "",
+    totalMarketerComms,
+    totalCompanyProfit
+  ]);
+  totalRow2.height = 28;
+  totalRow2.eachCell((cell, colNum) => {
+    cell.fill = summaryFill;
+    cell.font = goldFont;
+    cell.border = doubleBottomBorder;
+    if ([4, 6, 7].includes(colNum)) {
+      cell.numFmt = '#,##0.00 "JOD"';
+      cell.alignment = { horizontal: "right", vertical: "middle" };
+    } else {
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+    }
+  });
+
+  ws2.columns.forEach((col, idx) => {
+    let maxLen = ws2Headers[idx] ? ws2Headers[idx].length : 14;
+    col.eachCell({ includeEmpty: false }, (cell) => {
+      const val = cell.value ? String(cell.value) : "";
+      if (val.length > maxLen) maxLen = Math.min(val.length, 36);
+    });
+    col.width = Math.max(maxLen + 4, 14);
+  });
+
+  return await workbook.xlsx.writeBuffer();
+}
+
 async function getAccounting(sql) {
   try { await ensureDbSchema(); } catch (e) { console.warn('Schema sync warning:', e.message); }
   let rows = [];
   let adjustments = [];
-  let totals = { gross: 0, revenue: 0, pending: 0, discounts: 0, commissionsDue: 0, commissionsTotal: 0, studioNet: 0 };
+  let totals = {
+    gross: 0,
+    discounts: 0,
+    netSales: 0,
+    revenue: 0,
+    pending: 0,
+    commissionsDue: 0,
+    commissionsTotal: 0,
+    studioNet: 0
+  };
+
+  let dbCodes = [];
+  if (sql) {
+    try {
+      dbCodes = await sql`SELECT c.id, c.code, c.affiliate_id, COALESCE(a.name, c.affiliate_name, '') AS affiliate_name,
+        c.discount_percent, c.commission_percent, c.status
+        FROM course_discount_codes c
+        LEFT JOIN course_admin_affiliates a ON a.id = c.affiliate_id`;
+    } catch (e) {}
+  }
+  const local = readLocalData();
+  const allCodesMap = new Map();
+  for (const c of (dbCodes || [])) {
+    allCodesMap.set(String(c.code).toUpperCase(), {
+      code: String(c.code).toUpperCase(),
+      affiliateName: c.affiliate_name || "Direct / Studio",
+      commissionPercent: Number(c.commission_percent || 0),
+      discountPercent: Number(c.discount_percent || 10)
+    });
+  }
+  for (const c of (local.coupons || [])) {
+    const uc = String(c.code).toUpperCase();
+    if (!allCodesMap.has(uc)) {
+      allCodesMap.set(uc, {
+        code: uc,
+        affiliateName: c.affiliateName || "Direct / Studio",
+        commissionPercent: Number(c.commissionPercent || 0),
+        discountPercent: Number(c.discountPercent || 10)
+      });
+    }
+  }
 
   if (sql) {
     try {
@@ -293,7 +701,6 @@ async function getAccounting(sql) {
 
   // Merge local registrations
   try {
-    const local = readLocalData();
     if (Array.isArray(local.registrations)) {
       for (const lr of local.registrations) {
         const exists = rows.some(r =>
@@ -336,34 +743,100 @@ async function getAccounting(sql) {
     console.warn("Notice reading local registrations:", e.message);
   }
 
-  // Compute live totals
+  // Marketers Ledger Map (keyed by coupon code)
+  const marketersMap = new Map();
+  for (const [codeKey, codeInfo] of allCodesMap.entries()) {
+    if (codeInfo.commissionPercent > 0 || (codeInfo.affiliateName && codeInfo.affiliateName !== "Direct / Studio")) {
+      marketersMap.set(codeKey, {
+        affiliate_name: codeInfo.affiliateName || "Partner",
+        coupon_code: codeKey,
+        students_count: 0,
+        net_sales_jod: 0,
+        commission_percent: codeInfo.commissionPercent,
+        commission_due_jod: 0,
+        company_net_jod: 0
+      });
+    }
+  }
+
+  // Apply strict accounting formula:
+  // 1. Base price (basePrice): 250 JOD
+  // 2. Discount amount (discountAmount): deducted first -> netPriceAfterDiscount = basePrice - discountAmount
+  // 3. Marketer commission (commissionAmount): calculated EXCLUSIVELY from netPriceAfterDiscount:
+  //    commissionAmount = netPriceAfterDiscount * (commissionPercent / 100)
+  // 4. Academy net revenue (finalNetRevenue): netPriceAfterDiscount - commissionAmount
   for (const r of rows) {
     const status = String(r.payment_status || "").toUpperCase();
     const isPaid = ["PAID", "APPROVED", "VERIFIED"].includes(status);
     const isPending = status === "PENDING_REVIEW" || status === "PENDING";
-    const price = Number(r.price_jod || 250);
-    const discount = Number(r.discount_jod || 0);
-    const net = Math.max(0, price - discount);
-    const commission = Number(r.commission_jod || 0);
+
+    const basePrice = 250;
+    const discountAmount = Math.max(0, Number(r.discount_jod || 0));
+    const netPriceAfterDiscount = Math.max(0, basePrice - discountAmount);
+
+    const cCode = String(r.coupon_code || "").trim().toUpperCase();
+    let commPct = Number(r.commission_percent || 0);
+    let affName = r.affiliate_name || "";
+
+    if (cCode && (!commPct || !affName)) {
+      const known = allCodesMap.get(cCode);
+      if (known) {
+        if (!commPct) commPct = known.commissionPercent;
+        if (!affName) affName = known.affiliateName;
+      }
+    }
+
+    const commissionAmount = Math.round(netPriceAfterDiscount * (commPct / 100) * 1000) / 1000;
+    const finalNetRevenue = Math.round((netPriceAfterDiscount - commissionAmount) * 1000) / 1000;
+
+    r.base_price = basePrice;
+    r.discount_jod = discountAmount;
+    r.price_jod = netPriceAfterDiscount;
+    r.net_price_jod = netPriceAfterDiscount;
+    r.commission_percent = commPct;
+    r.commission_jod = commissionAmount;
+    r.affiliate_name = affName;
+    r.academy_net_jod = finalNetRevenue;
 
     if (isPaid) {
-      totals.gross += price;
-      totals.revenue += net;
-      totals.discounts += discount;
-      totals.commissionsTotal += commission;
+      totals.gross += basePrice;
+      totals.discounts += discountAmount;
+      totals.revenue += netPriceAfterDiscount;
+      totals.commissionsTotal += commissionAmount;
       if (r.commission_status !== "PAID") {
-        totals.commissionsDue += commission;
+        totals.commissionsDue += commissionAmount;
+      }
+
+      if (cCode) {
+        if (!marketersMap.has(cCode)) {
+          marketersMap.set(cCode, {
+            affiliate_name: affName || "Affiliate",
+            coupon_code: cCode,
+            students_count: 0,
+            net_sales_jod: 0,
+            commission_percent: commPct,
+            commission_due_jod: 0,
+            company_net_jod: 0
+          });
+        }
+        const m = marketersMap.get(cCode);
+        m.students_count += 1;
+        m.net_sales_jod = Math.round((m.net_sales_jod + netPriceAfterDiscount) * 1000) / 1000;
+        m.commission_due_jod = Math.round((m.commission_due_jod + commissionAmount) * 1000) / 1000;
+        m.company_net_jod = Math.round((m.company_net_jod + finalNetRevenue) * 1000) / 1000;
       }
     } else if (isPending) {
-      totals.pending += net;
+      totals.pending += netPriceAfterDiscount;
     }
   }
 
-  totals.studioNet = totals.revenue - totals.commissionsTotal;
+  totals.netSales = totals.revenue;
+  totals.studioNet = Math.max(0, totals.revenue - totals.commissionsTotal);
 
   return {
     totals: Object.fromEntries(Object.entries(totals).map(([key, value]) => [key, Math.round(value * 1000) / 1000])),
     registrations: rows,
+    marketersLedger: Array.from(marketersMap.values()),
     adjustments,
   };
 }
@@ -394,6 +867,56 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "GET") {
+      if (req.query?.action === "receipt" || req.query?.view === "receipt") {
+        const id = text(req.query.id, 64);
+        let receiptBase64 = "";
+        let receiptName = "payment-receipt.jpg";
+        if (sql && id) {
+          try {
+            const [r] = await sql`SELECT receipt_base64, receipt_name FROM course_registrations WHERE id::text=${id} OR payment_reference=${id} LIMIT 1`;
+            if (r) {
+              receiptBase64 = r.receipt_base64 || "";
+              receiptName = r.receipt_name || "payment-receipt.jpg";
+            }
+            if (!receiptBase64) {
+              const [ar] = await sql`SELECT receipt_base64, receipt_name FROM academy_registrations WHERE id::text=${id} OR reference=${id} LIMIT 1`;
+              if (ar) {
+                receiptBase64 = ar.receipt_base64 || "";
+                receiptName = ar.receipt_name || "payment-receipt.jpg";
+              }
+            }
+          } catch {}
+        }
+        if (!receiptBase64) {
+          const local = readLocalData();
+          const found = (local.registrations || []).find(r => String(r.id) === id || r.reference === id);
+          if (found) {
+            receiptBase64 = found.receiptBase64 || "";
+            receiptName = found.receiptName || "payment-receipt.jpg";
+          }
+        }
+        if (!receiptBase64) {
+          return send(res, 404, { error: "Receipt image not found" });
+        }
+        const match = receiptBase64.match(/^data:([^;]+);base64,(.+)$/);
+        const mimeType = match ? match[1] : (receiptName.endsWith(".pdf") ? "application/pdf" : "image/jpeg");
+        const buffer = Buffer.from(match ? match[2] : receiptBase64, "base64");
+        res.setHeader("Content-Type", mimeType);
+        res.setHeader("Content-Disposition", `inline; filename="${receiptName}"`);
+        res.setHeader("Cache-Control", "private, max-age=3600");
+        return res.status(200).send(buffer);
+      }
+
+      if (req.query?.view === "export-excel" || req.query?.action === "export-excel") {
+        const accountingData = await getAccounting(sql);
+        const buffer = await generateExcelReportBuffer(accountingData);
+        const filename = `7z-magic-academy-financial-report-${new Date().toISOString().slice(0, 10)}.xlsx`;
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+        res.setHeader("Cache-Control", "no-store");
+        return res.status(200).send(buffer);
+      }
+
       if (req.query?.view === "accounting") {
         const accountingData = await getAccounting(sql);
         return send(res, 200, accountingData);
@@ -594,17 +1117,35 @@ export default async function handler(req, res) {
 
     if (body.action === "delete-code") {
       const id = text(body.id, 64);
+      let codeVal = text(body.code || body.name, 64).toUpperCase();
       if (sql) {
         try {
-          await sql`DELETE FROM course_discount_codes WHERE id::text=${id}`;
-        } catch {}
+          if (!codeVal && id) {
+            const [found] = await sql`SELECT code FROM course_discount_codes WHERE id::text=${id} LIMIT 1`;
+            if (found?.code) codeVal = String(found.code).toUpperCase();
+          }
+          if (id) {
+            await sql`DELETE FROM course_discount_codes WHERE id::text=${id}`;
+          }
+          if (codeVal) {
+            await sql`DELETE FROM course_discount_codes WHERE UPPER(code)=${codeVal}`;
+            await sql`DELETE FROM academy_coupons WHERE UPPER(code)=${codeVal}`;
+            await sql`DELETE FROM academy_affiliates WHERE UPPER(code)=${codeVal}`;
+            await sql`INSERT INTO deleted_discount_codes (code) VALUES (${codeVal}) ON CONFLICT DO NOTHING`;
+          }
+        } catch (e) {
+          console.warn("[delete-code] SQL deletion notice:", e.message);
+        }
       }
       try {
         const local = readLocalData();
-        local.coupons = (local.coupons || []).filter(c => String(c.id) !== id);
+        local.coupons = (local.coupons || []).filter(c => String(c.id) !== id && String(c.code).toUpperCase() !== codeVal);
+        if (codeVal) {
+          local.affiliates = (local.affiliates || []).filter(a => String(a.code).toUpperCase() !== codeVal);
+        }
         saveLocalData(local);
       } catch {}
-      return send(res, 200, { deleted: true });
+      return send(res, 200, { deleted: true, id, code: codeVal });
     }
 
     if (body.action === "update-code") {

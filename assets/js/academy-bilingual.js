@@ -32,14 +32,14 @@
 
       // Badges (Pure Arabic & Corrected Policy)
       badge_projects: "مشاريع عملية متكاملة",
-      badge_mentorship: "توجيه وتدريب مباشر (أونلاين)",
-      badge_unlimited_seats: "مقاعد غير محدودة (تدريب مباشر أونلاين)",
+      badge_mentorship: "دورة أونلاين مسجلة بالكامل (وصول في أي وقت)",
+      badge_unlimited_seats: "مشاهدة ووصول مستمر في أي وقت",
       badge_instructors_c2: "4 محاضرين متخصصين",
       badge_gift_c2: "هدية مجانية: دورة صناعة المحتوى",
       badge_corner_1: "01 / مسار تدريبي",
       badge_corner_2: "02 / مسار تدريبي",
-      c1_seats: "مقاعد غير محدودة (تدريب مباشر أونلاين)",
-      c2_seats: "مقاعد غير محدودة (تدريب مباشر أونلاين)",
+      c1_seats: "دورة أونلاين مسجلة بالكامل (وصول في أي وقت)",
+      c2_seats: "دورة أونلاين مسجلة بالكامل (وصول في أي وقت)",
 
       // Global CTAs & Pricing
       enroll_now: "سجّل الآن",
@@ -71,7 +71,7 @@
       c1_m5_title: "05 / المونتاج، هندسة الصوت والإنتاج النهائي",
       c1_m5_desc: "تجميع المشاهد في جدول زمني سينمائي، هندسة الصوت والمؤثرات الصوتية والموسيقى التصويرية، توليد الدوبلاج والأصوات، وتصحيح الألوان لإخراج فيلم نهائي متكامل.",
       c1_final_box_title: "ابدأ صناعة فيلمك السينمائي الآن",
-      c1_final_box_desc: "تدريب وتوجيه مباشر أونلاين مع مقاعد غير محدودة ومتابعة عملية حتى إنجاز مشروعك بالكامل.",
+      c1_final_box_desc: "دورة أونلاين مسجلة بالكامل مع وصول ومتابعة مستمرة في أي وقت حتى إنجاز مشروعك بالكامل.",
       c1_final_box_btn: "سجّل الآن في الدورة — 250 د.أ",
 
       // Course 2: AI for Engineers
@@ -98,7 +98,7 @@
       c2_s5_title: "05 / الرندرة السينمائية وجولة الفيديو المعماري",
       c2_s5_desc: "تحريك كاميرات العرض الهندسي بدقة ميزانية، توليد جولة فيديو سينمائية داخل المشروع، وإخراج ملفات العرض التقديمي النهائي الجاهز للعملاء والجهات الاستثمارية.",
       c2_final_box_title: "ابدأ مشروعك الهندسي بالذكاء الاصطناعي",
-      c2_final_box_desc: "تدريب وتوجيه مباشر أونلاين ومقاعد غير محدودة مع هدية دورة صناعة المحتوى مجاناً.",
+      c2_final_box_desc: "دورة أونلاين مسجلة بالكامل مع وصول مستمر في أي وقت وهدية دورة صناعة المحتوى مجاناً.",
       c2_final_box_btn: "سجّل الآن في الدورة — 250 د.أ",
 
       // Step 1: Registration
@@ -211,14 +211,14 @@
 
       // Badges (Pure English & Corrected Policy)
       badge_projects: "End-to-End Real Projects",
-      badge_mentorship: "Live Online Mentorship & Training",
-      badge_unlimited_seats: "Unlimited Seats (Live Online)",
+      badge_mentorship: "Fully Recorded Online Course (Anytime Access)",
+      badge_unlimited_seats: "Continuous Access Anytime",
       badge_instructors_c2: "4 Specialized Instructors",
       badge_gift_c2: "Free Gift: Content Creation Masterclass",
       badge_corner_1: "01 / MASTERCLASS",
       badge_corner_2: "02 / MASTERCLASS",
-      c1_seats: "Unlimited Seats (Live Online)",
-      c2_seats: "Unlimited Seats (Live Online)",
+      c1_seats: "Fully Recorded Online Course (Anytime Access)",
+      c2_seats: "Fully Recorded Online Course (Anytime Access)",
 
       // Global CTAs & Pricing
       enroll_now: "Enroll Now",
@@ -250,7 +250,7 @@
       c1_m5_title: "05 / Editing, Sound Design & Final Mastering",
       c1_m5_desc: "Timeline assembly, cinematic foley and sound design, musical scoring, AI voice generation, color grading, and final delivery mastering for broadcast standards.",
       c1_final_box_title: "Start Producing Your Cinematic Film",
-      c1_final_box_desc: "Live online mentorship and training with unlimited seats and continuous guidance until your project is fully realized.",
+      c1_final_box_desc: "Fully recorded online masterclass with anytime access and continuous guidance until your project is fully realized.",
       c1_final_box_btn: "Enroll in Masterclass — 250 JOD",
 
       // Course 2: AI for Engineers
@@ -277,7 +277,7 @@
       c2_s5_title: "05 / Cinematic Rendering & Architectural Walkthrough Film",
       c2_s5_desc: "Keyframing architectural camera paths, generating cinematic walkthrough animations, and delivering client-ready presentations for investors and stakeholders.",
       c2_final_box_title: "Build Your Architectural Project with AI",
-      c2_final_box_desc: "Live online mentorship with unlimited seats, including the Content Creation masterclass as a free gift.",
+      c2_final_box_desc: "Fully recorded online masterclass with anytime access, including the Content Creation masterclass as a free gift.",
       c2_final_box_btn: "Enroll in Masterclass — 250 JOD",
 
       // Step 1: Registration

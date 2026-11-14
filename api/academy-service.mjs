@@ -85,6 +85,26 @@ export async function handleRegistration(body) {
     createdAt: new Date().toISOString()
   };
 
+  // Resolve affiliate and commission for the promo code
+  let affiliateName = "";
+  let commissionPercent = 0;
+  if (regRecord.promoCode) {
+    try {
+      const codeCheck = await validateAndResolveDiscountCode(regRecord.promoCode, regRecord.courseId);
+      if (codeCheck && codeCheck.valid) {
+        affiliateName = codeCheck.affiliateName || "";
+        commissionPercent = Number(codeCheck.commissionPercent || 0);
+      }
+    } catch {}
+  }
+  const basePrice = 250;
+  const netAfterDiscount = Math.max(0, basePrice - regRecord.discountJod);
+  const commissionJod = Math.round(netAfterDiscount * (commissionPercent / 100) * 1000) / 1000;
+
+  regRecord.affiliateName = affiliateName;
+  regRecord.commissionPercent = commissionPercent;
+  regRecord.commissionJod = commissionJod;
+
   // Try Neon DB Insert into both tables
   const sql = getSqlClient();
   if (sql) {
@@ -104,12 +124,14 @@ export async function handleRegistration(body) {
       await sql`
         INSERT INTO course_registrations (
           seat_number, full_name, email, phone, location, experience,
-          course_id, price_jod, discount_jod, coupon_code, payment_status,
-          payment_reference, receipt_url, receipt_name, receipt_base64
+          course_id, price_jod, discount_jod, coupon_code, affiliate_name,
+          commission_percent, commission_jod, commission_status,
+          payment_status, payment_reference, receipt_url, receipt_name, receipt_base64
         ) VALUES (
           ${regRecord.seatNumber}, ${regRecord.fullName}, ${regRecord.email}, ${regRecord.phone}, ${regRecord.city}, ${regRecord.experience},
-          ${regRecord.courseId}, ${regRecord.finalPrice}, ${regRecord.discountJod}, ${regRecord.promoCode}, ${regRecord.paymentStatus},
-          ${regRecord.reference}, ${regRecord.receiptUrl}, ${regRecord.receiptName}, ${regRecord.receiptBase64}
+          ${regRecord.courseId}, ${basePrice}, ${regRecord.discountJod}, ${regRecord.promoCode}, ${affiliateName},
+          ${commissionPercent}, ${commissionJod}, ${commissionPercent > 0 ? 'PAYABLE' : 'NOT_APPLICABLE'},
+          ${regRecord.paymentStatus}, ${regRecord.reference}, ${regRecord.receiptUrl}, ${regRecord.receiptName}, ${regRecord.receiptBase64}
         );
       `;
     } catch (e) {
