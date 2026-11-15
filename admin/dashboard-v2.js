@@ -17,20 +17,23 @@
   let frame = 0;
 
   function selectView(name, animate = true) {
+    if (name === "users") name = "media";
+    if (name === "overview") name = "accounting";
     if (!titles[name]) return;
-    const panels = $$("[data-dashboard-panel]");
-    const next = panels.find((panel) => panel.dataset.dashboardPanel === name);
+    const panels = $$(".admin-view, .dashboard-view, [data-dashboard-panel]");
+    const next = panels.find((panel) => panel.dataset.dashboardPanel === name || panel.id === name || panel.id === `${name}-view`);
     if (!next) return;
-    const current = panels.find((panel) => panel.classList.contains("is-active") && !panel.hidden);
+    const current = panels.find((panel) => panel.classList.contains("active") && !panel.hidden);
     panels.forEach((panel) => {
       const active = panel === next;
       panel.hidden = !active;
       panel.classList.toggle("is-active", active);
       panel.classList.toggle("active", active);
       panel.setAttribute("aria-hidden", String(!active));
+      panel.style.setProperty("display", active ? "block" : "none", "important");
     });
     $$("[data-dashboard-nav]").forEach((button) => {
-      const active = button.dataset.dashboardNav === name;
+      const active = button.dataset.dashboardNav === name || (name === "media" && button.dataset.dashboardNav === "users");
       button.classList.toggle("active", active);
       if (button.closest(".dashboard-nav")) {
         if (active) button.setAttribute("aria-current", "page");

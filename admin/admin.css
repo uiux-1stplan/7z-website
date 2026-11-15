@@ -1,7 +1,7 @@
 /* ==========================================================================
-   7Z MAGIC — ADMIN COMMAND CENTER DESIGN SYSTEM (ULTRA-CLEAN REBUILD)
+   7Z MAGIC — ADMIN COMMAND CENTER DESIGN SYSTEM (ULTRA-CLEAN REBUILD V2)
    Minimalist Dark Luxury — Dark Slate & Platinum Edition
-   Zero Bloat · Zero Gaudy Gradients · 60fps Performance
+   Zero Bloat · Zero Giant Black Blocks · Strict Tab Isolation
    ========================================================================== */
 
 :root {
@@ -142,7 +142,9 @@ body {
 /* ==========================================================================
    2. STRICT TAB ISOLATION (ZERO SECTION OVERLAP / ZERO BLEED)
    ========================================================================== */
+.admin-view,
 .dashboard-view,
+[data-dashboard-panel],
 #analytics-view,
 #registrations-view,
 #orders-view,
@@ -159,8 +161,12 @@ body {
 }
 
 /* Active tab display */
+.admin-view.active:not([hidden]),
+.admin-view.is-active:not([hidden]),
 .dashboard-view.active:not([hidden]),
 .dashboard-view.is-active:not([hidden]),
+[data-dashboard-panel].active:not([hidden]),
+[data-dashboard-panel].is-active:not([hidden]),
 #analytics-view.active:not([hidden]),
 #analytics-view.is-active:not([hidden]),
 #registrations-view.active:not([hidden]),
@@ -173,27 +179,21 @@ body {
 #clients-view.is-active:not([hidden]),
 #settings-view.active:not([hidden]),
 #settings-view.is-active:not([hidden]) {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 24px !important;
+  display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   height: auto !important;
   max-height: none !important;
   overflow: visible !important;
   pointer-events: auto !important;
-  animation: adminTabFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 /* Strict guarantee: any element with [hidden] is completely eliminated */
 [hidden],
+.admin-view[hidden],
 .dashboard-view[hidden],
-#analytics-view[hidden],
-#registrations-view[hidden],
-#orders-view[hidden],
-#files-view[hidden],
-#clients-view[hidden],
-#settings-view[hidden],
+[data-dashboard-panel][hidden],
+.admin-view:not(.is-active):not(.active),
 .dashboard-view:not(.is-active):not(.active) {
   display: none !important;
   visibility: hidden !important;
@@ -202,17 +202,6 @@ body {
   max-height: 0 !important;
   overflow: hidden !important;
   pointer-events: none !important;
-}
-
-@keyframes adminTabFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* ==========================================================================
@@ -837,12 +826,12 @@ html[data-theme="light"] .theme-pill__thumb {
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  padding: 6px 14px !important;
+  padding: 5px 12px !important;
   border: 1px solid var(--admin-accent-border) !important;
   border-radius: 999px !important;
   background: var(--admin-accent-soft) !important;
   color: var(--admin-accent) !important;
-  font: 700 9px var(--admin-font-mono) !important;
+  font: 700 8.5px var(--admin-font-mono) !important;
   letter-spacing: 0.12em !important;
 }
 
@@ -855,7 +844,8 @@ html[data-theme="light"] .theme-pill__thumb {
 
 /* Glass Panels & Common Containers */
 .glass-panel,
-.panel {
+.panel,
+.engine-panel {
   position: relative !important;
   border: 1px solid var(--admin-border) !important;
   border-radius: var(--admin-radius-lg) !important;
@@ -865,14 +855,15 @@ html[data-theme="light"] .theme-pill__thumb {
   box-sizing: border-box !important;
 }
 
-html[data-theme="light"] :is(.glass-panel, .panel) {
+html[data-theme="light"] :is(.glass-panel, .panel, .engine-panel) {
   background: #ffffff !important;
   border-color: rgba(15, 23, 42, 0.08) !important;
   box-shadow: 0 4px 20px -6px rgba(15, 23, 42, 0.05) !important;
 }
 
 .glass-panel__head,
-.panel-head {
+.panel-head,
+.engine-panel-head {
   display: flex !important;
   justify-content: space-between !important;
   align-items: flex-start !important;
@@ -882,7 +873,8 @@ html[data-theme="light"] :is(.glass-panel, .panel) {
 }
 
 .glass-panel__head h3,
-.panel-head h2 {
+.panel-head h2,
+.engine-panel-head h3 {
   margin: 4px 0 !important;
   color: var(--admin-text) !important;
   font-size: 1.25rem !important;
@@ -891,10 +883,31 @@ html[data-theme="light"] :is(.glass-panel, .panel) {
 }
 
 .glass-panel__head p,
-.panel-head p {
+.panel-head p,
+.engine-panel-head p {
   margin: 0 !important;
   color: var(--admin-text-muted) !important;
   font-size: 12.5px !important;
+}
+
+.engine-live {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 10px !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  border-radius: 999px !important;
+  background: var(--admin-emerald-soft) !important;
+  color: var(--admin-emerald) !important;
+  font: 700 8.5px var(--admin-font-mono) !important;
+  letter-spacing: 0.1em !important;
+}
+
+.engine-live i {
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: var(--admin-emerald) !important;
 }
 
 /* ==========================================================================
@@ -975,65 +988,70 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ==========================================================================
-   7. KPI CARDS & STATS GRID
+   7. TAB 1: FINANCIAL LEDGER & KPIS
    ========================================================================== */
-.kpi-grid,
-.stats-grid {
+.analytics-kpis,
+.kpi-grid {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
-  gap: 16px !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 14px !important;
   margin-bottom: 8px !important;
 }
 
-.kpi-card,
-.stat-card {
+.analytics-kpi,
+.kpi-card {
   display: flex !important;
   flex-direction: column !important;
-  gap: 8px !important;
-  padding: 18px 20px !important;
+  gap: 6px !important;
+  padding: 16px 18px !important;
   border: 1px solid var(--admin-border) !important;
   border-radius: var(--admin-radius-md) !important;
   background: var(--admin-card) !important;
   transition: all 0.18s ease !important;
 }
 
-html[data-theme="light"] :is(.kpi-card, .stat-card) {
+html[data-theme="light"] :is(.analytics-kpi, .kpi-card) {
   background: #ffffff !important;
   border-color: rgba(15, 23, 42, 0.08) !important;
 }
 
-.kpi-card:hover,
-.stat-card:hover {
+.analytics-kpi:hover,
+.kpi-card:hover {
   border-color: var(--admin-accent-border) !important;
   transform: translateY(-2px) !important;
 }
 
-.kpi-label,
-.stat-card span {
+.analytics-kpi > span,
+.kpi-label {
   color: var(--admin-text-subtle) !important;
-  font: 700 9px var(--admin-font-mono) !important;
-  letter-spacing: 0.14em !important;
+  font: 700 8.5px var(--admin-font-mono) !important;
+  letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
 }
 
-.kpi-value,
-.stat-card strong {
+.analytics-kpi > strong,
+.kpi-value {
   color: var(--admin-text) !important;
-  font-size: 1.6rem !important;
+  font-size: 1.55rem !important;
   font-weight: 700 !important;
   letter-spacing: -0.03em !important;
   line-height: 1.1 !important;
 }
 
-.kpi-subtext,
-.stat-card small {
+.analytics-kpi > strong small {
+  font-size: 0.6em !important;
   color: var(--admin-text-muted) !important;
-  font-size: 11.5px !important;
 }
 
-/* ==========================================================================
-   8. TABLES & LEDGERS
-   ========================================================================== */
+.analytics-kpi > p,
+.kpi-subtext {
+  margin: 0 !important;
+  color: var(--admin-text-muted) !important;
+  font-size: 11px !important;
+}
+
+/* Ledgers & Tables */
+.engine-table-wrap,
 .table-wrap,
 .admin-table-wrap {
   width: 100% !important;
@@ -1043,68 +1061,70 @@ html[data-theme="light"] :is(.kpi-card, .stat-card) {
   background: var(--admin-card) !important;
 }
 
-html[data-theme="light"] .admin-table-wrap {
+html[data-theme="light"] :is(.engine-table-wrap, .table-wrap, .admin-table-wrap) {
   background: #ffffff !important;
 }
 
+table,
 table.admin-table,
-.table-wrap table {
+.engine-table-wrap table {
   width: 100% !important;
   border-collapse: collapse !important;
   text-align: left !important;
   font-size: 12.5px !important;
 }
 
-table.admin-table th,
-.table-wrap th {
-  padding: 12px 16px !important;
+th {
+  padding: 12px 14px !important;
   border-bottom: 1px solid var(--admin-border) !important;
   background: var(--admin-surface) !important;
   color: var(--admin-text-subtle) !important;
-  font: 700 9px var(--admin-font-mono) !important;
+  font: 700 8.5px var(--admin-font-mono) !important;
   letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
   white-space: nowrap !important;
 }
 
-html[data-theme="light"] table.admin-table th {
+html[data-theme="light"] th {
   background: #f1f5f9 !important;
 }
 
-table.admin-table td,
-.table-wrap td {
-  padding: 12px 16px !important;
+td {
+  padding: 12px 14px !important;
   border-bottom: 1px solid var(--admin-border) !important;
   color: var(--admin-text) !important;
   vertical-align: middle !important;
 }
 
-table.admin-table tr:last-child td {
+tr:last-child td {
   border-bottom: none !important;
 }
 
-table.admin-table tbody tr:hover {
+tbody tr:hover {
   background: var(--admin-card-hover) !important;
 }
 
-html[data-theme="light"] table.admin-table tbody tr:hover {
+html[data-theme="light"] tbody tr:hover {
   background: #f8fafc !important;
 }
 
-/* Badges & Pills */
-.badge,
-.status-pill {
+/* Payout status buttons & pills */
+.engine-payout-btn,
+.engine-status {
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
-  padding: 3px 9px !important;
+  padding: 3px 10px !important;
   border-radius: 999px !important;
   font: 700 8.5px var(--admin-font-mono) !important;
-  letter-spacing: 0.1em !important;
+  letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   white-space: nowrap !important;
+  cursor: pointer !important;
+  border: none !important;
 }
 
+.engine-payout-btn.is-paid,
 .badge.is-success,
 .status-pill.is-verified,
 .status-pill.is-active {
@@ -1113,6 +1133,7 @@ html[data-theme="light"] table.admin-table tbody tr:hover {
   color: var(--admin-emerald) !important;
 }
 
+.engine-payout-btn.is-pending,
 .badge.is-warning,
 .status-pill.is-pending {
   border: 1px solid rgba(245, 158, 11, 0.3) !important;
@@ -1127,6 +1148,45 @@ html[data-theme="light"] table.admin-table tbody tr:hover {
   color: var(--admin-crimson) !important;
 }
 
+/* Revenue Adjustments Form */
+.revenue-adjustment-form {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  margin-top: 14px !important;
+}
+
+/* ==========================================================================
+   8. TAB 3: PROMO CODES & AFFILIATES
+   ========================================================================== */
+.admin-engine-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+.engine-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.engine-form label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  font-size: 11.5px !important;
+  color: var(--admin-text-muted) !important;
+}
+
+.engine-form-pair {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+}
+
 /* ==========================================================================
    9. TAB 4: CLIENTS & VAULT CARD GRID REBUILD
    ========================================================================== */
@@ -1137,7 +1197,6 @@ html[data-theme="light"] table.admin-table tbody tr:hover {
   margin-bottom: 20px !important;
 }
 
-/* Client Directory Hub */
 .z7-native-clients,
 #z7-native-clients,
 .z7-admin-file-library,
@@ -1200,7 +1259,6 @@ html[data-theme="light"] :is(.z7-native-clients, #z7-native-clients, .z7-admin-f
   text-transform: uppercase !important;
 }
 
-/* Client Creator Form */
 .z7nc-create-caption {
   margin: 14px 0 6px !important;
   color: var(--admin-accent) !important;
@@ -1246,21 +1304,6 @@ html[data-theme="light"] .z7nc-form {
   transform: translateY(-1px) !important;
 }
 
-.z7nc-message {
-  min-height: 18px !important;
-  margin: 4px 0 10px !important;
-  font-size: 12px !important;
-}
-
-.z7nc-message.is-success {
-  color: var(--admin-emerald) !important;
-}
-
-.z7nc-message.is-error {
-  color: var(--admin-crimson) !important;
-}
-
-/* Modern Client Cards Grid */
 .z7nc-list {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
@@ -1344,7 +1387,6 @@ html[data-theme="light"] .z7nc-client {
   font-size: 11.5px !important;
 }
 
-/* Card Bottom Actions */
 .z7nc-client-right {
   display: flex !important;
   align-items: center !important;
@@ -1594,7 +1636,179 @@ html[data-theme="light"] .admin-team-details {
 }
 
 /* ==========================================================================
-   10. MODALS & OVERLAYS
+   10. TAB 5: SETTINGS & SYSTEM AUDIT (ZERO BLOAT / ZERO BLACK BLOCKS)
+   ========================================================================== */
+.settings-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+.settings-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  padding: 20px !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: var(--admin-radius-md) !important;
+  background: var(--admin-card) !important;
+  transition: all 0.18s ease !important;
+}
+
+html[data-theme="light"] .settings-card {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.settings-card:hover {
+  border-color: var(--admin-accent-border) !important;
+  transform: translateY(-2px) !important;
+}
+
+.settings-card__top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+.settings-card__icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  background: var(--admin-card-subtle) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--admin-text) !important;
+}
+
+.settings-card__icon--green {
+  color: var(--admin-emerald) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  background: var(--admin-emerald-soft) !important;
+}
+
+.settings-card__icon--blue {
+  color: var(--admin-cyan) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  background: var(--admin-cyan-soft) !important;
+}
+
+.settings-card__icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  stroke-width: 1.6 !important;
+}
+
+.settings-card h3 {
+  margin: 6px 0 2px !important;
+  color: var(--admin-text) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.settings-card p {
+  margin: 0 !important;
+  color: var(--admin-text-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+.notification-email-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-top: 10px !important;
+}
+
+.notification-email-list a {
+  display: inline-flex !important;
+  align-items: center !important;
+  color: var(--admin-accent) !important;
+  font: 600 11px var(--admin-font-mono) !important;
+  text-decoration: none !important;
+  transition: color 0.16s ease !important;
+}
+
+.notification-email-list a:hover {
+  text-decoration: underline !important;
+}
+
+/* Clean Audit Trail Panel */
+.audit-panel {
+  border: 1px solid var(--admin-border) !important;
+  border-radius: var(--admin-radius-lg) !important;
+  background: var(--admin-card) !important;
+  padding: 20px 24px !important;
+}
+
+.audit-clear-button {
+  min-height: 32px !important;
+  padding: 0 12px !important;
+  font-size: 11px !important;
+}
+
+.system-audit-logs {
+  list-style: none !important;
+  margin: 14px 0 0 !important;
+  padding: 0 !important;
+  max-height: 260px !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  scrollbar-width: thin !important;
+}
+
+.audit-log-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 10px 14px !important;
+  border-radius: var(--admin-radius-sm) !important;
+  border: 1px solid var(--admin-border-subtle) !important;
+  background: var(--admin-surface) !important;
+  font-size: 12px !important;
+  color: var(--admin-text) !important;
+}
+
+.audit-log-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: var(--admin-cyan) !important;
+  flex: none !important;
+}
+
+.audit-log-action {
+  flex: 1 !important;
+  font-weight: 500 !important;
+}
+
+.audit-log-row time {
+  color: var(--admin-text-subtle) !important;
+  font: 600 10px var(--admin-font-mono) !important;
+  white-space: nowrap !important;
+}
+
+.audit-log-empty {
+  padding: 24px !important;
+  text-align: center !important;
+  color: var(--admin-text-subtle) !important;
+  font-size: 12px !important;
+  border-radius: var(--admin-radius-sm) !important;
+  background: var(--admin-surface) !important;
+  border: 1px dashed var(--admin-border) !important;
+}
+
+/* ==========================================================================
+   11. MODALS & OVERLAYS
    ========================================================================== */
 .z7nc-modal,
 dialog.course-edit-dialog {
@@ -1655,7 +1869,7 @@ dialog.course-edit-dialog {
 }
 
 /* ==========================================================================
-   11. MOBILE & RESPONSIVE OPTIMIZATIONS (< 1024px & < 768px)
+   12. MOBILE & RESPONSIVE OPTIMIZATIONS (< 1024px & < 768px)
    ========================================================================== */
 @media (max-width: 1024px) {
   .app.dashboard-app {
@@ -1672,8 +1886,10 @@ dialog.course-edit-dialog {
 }
 
 @media (max-width: 768px) {
+  .analytics-kpis,
   .kpi-grid,
-  .stats-grid {
+  .settings-grid,
+  .admin-engine-grid {
     grid-template-columns: 1fr !important;
   }
 
