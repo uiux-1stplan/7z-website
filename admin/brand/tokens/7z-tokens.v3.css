@@ -1,0 +1,210 @@
+/* ============================================================================
+   7Z DESIGN TOKENS — v3.0.0 "LIQUID GLASS" — 2026-11-10
+   Evolves v2.0.0 (blue-black identity, unchanged colour DNA) into a liquid,
+   glossy, futuristic material system.
+
+   BRAND DNA (carried over, do not change)
+     - Mark: machined geometry cut on the 68° diagonal. Aspect 0.898.
+     - Palette: near-black -> midnight navy -> electric azure -> ice -> cool white.
+     - Voice: "Precision, made visible."  Gold stays retired.
+
+   WHAT v3 ADDS
+     - Liquid spectrum: chrome / glacier / aurora gradients built from the ramp.
+     - Glass v3: refraction + specular gloss + rim light + inner glow (see 7z-glass.css).
+     - Liquid shapes: morphing orb radii, goo filter, caustic light.
+     - Display face: Space Grotesk (Latin) over Tajawal (Arabic) + JetBrains Mono.
+
+   RULES
+     1. Never hard-code a colour, radius, duration or easing. Consume a token.
+     2. Projects may override --accent-* and --client-* ONLY.
+     3. Dark is the default. Light is authored, not inverted.
+     4. Glass is for floating / hero surfaces. Dense working surfaces stay solid.
+   ============================================================================ */
+
+@property --rim-angle { syntax:"<angle>"; inherits:false; initial-value:0deg; }
+@property --sheen-x   { syntax:"<percentage>"; inherits:false; initial-value:-60%; }
+
+/* ─────────────  1 · RAW RAMP (identical to v2.0.0 + 3 liquid steps)  ───────── */
+:root{
+  --7z-void:      #020305;   /* NEW — deeper than black, glass backdrop floor */
+  --7z-black:     #05070A;
+  --7z-ink:       #080B11;
+  --7z-navy-900:  #0C1119;
+  --7z-navy-800:  #111823;
+  --7z-navy-700:  #17202D;
+  --7z-navy-600:  #1E2937;
+
+  --7z-blue-900:  #0A2A4D;
+  --7z-blue-800:  #123F6D;
+  --7z-blue-700:  #17548F;
+  --7z-blue-600:  #1F69B0;
+  --7z-blue-500:  #2E7FD1;   /* electric azure — the signature */
+  --7z-blue-400:  #4E93DC;
+  --7z-blue-300:  #6BA8E5;
+  --7z-blue-200:  #8FC0F0;
+  --7z-ice:       #A9CDF0;
+  --7z-ice-hi:    #D6EBFF;   /* NEW — specular ice, highlights only */
+  --7z-glow:      #5CC4FF;   /* NEW — light-source cyan, glow only, never text on light */
+  --7z-white:     #EAF1F8;   /* cool white — never pure #FFF for text */
+}
+
+/* ─────────────  2 · SEMANTIC (DARK = DEFAULT)  ───────────────────────────── */
+:root,
+:root[data-theme="dark"]{
+  color-scheme: dark;
+
+  --bg:            #05070A;
+  --surface:       #0C1119;
+  --surface-raised:#111823;
+  --surface-hi:    #17202D;
+  --line-faint:    #151D28;
+  --line:          #1F2A38;
+  --line-strong:   #2C3B4E;
+
+  --text:        #EAF1F8;
+  --text-2:      #A7B6C9;
+  --text-muted:  #7C8CA1;
+  --text-faint:  #5A697D;   /* decoration / large text only */
+
+  --accent:        #6BA8E5;
+  --accent-hover:  #8FC0F0;
+  --accent-active: #4E93DC;
+  --accent-strong: #2E7FD1;
+  --accent-soft:   rgba(107,168,229,.12);
+  --accent-line:   rgba(107,168,229,.28);
+  --accent-glow:   rgba(46,127,209,.34);
+
+  --btn-primary-bg: #6BA8E5;
+  --btn-primary-fg: #05070A;
+
+  --ok:#3FA87E; --warn:#D2A24C; --danger:#E0655A; --info:#6BA8E5;
+  --focus-ring: #8FC0F0;
+  --selection:  rgba(46,127,209,.34);
+}
+
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bg:#F4F7FA; --surface:#FFFFFF; --surface-raised:#FFFFFF; --surface-hi:#EEF3F8;
+  --line-faint:#E2E9F1; --line:#D2DCE7; --line-strong:#B4C3D3;
+  --text:#0B1017; --text-2:#3C4959; --text-muted:#5E6C7E; --text-faint:#7E8C9E;
+  --accent:#17548F; --accent-hover:#123F6D; --accent-active:#0A2A4D; --accent-strong:#1F69B0;
+  --accent-soft:rgba(23,84,143,.09); --accent-line:rgba(23,84,143,.24); --accent-glow:rgba(31,105,176,.22);
+  --btn-primary-bg:#17548F; --btn-primary-fg:#FFFFFF;
+  --ok:#1F6B4C; --warn:#8A5F1B; --danger:#A63A2C; --info:#17548F;
+  --focus-ring:#17548F; --selection:rgba(23,84,143,.18);
+}
+
+/* ─────────────  3 · LIQUID SPECTRUM (gradients, all from the ramp)  ───────── */
+:root{
+  /* Chrome — the mark's finish. A bright upper sheen, a dark horizon line, a
+     cool azure body, and a returning ice edge. This is "liquid metal". */
+  --g-chrome: linear-gradient(168deg,
+      #FFFFFF 0%, #D6EBFF 16%, #8FC0F0 34%, #2E7FD1 50%,
+      #0A2A4D 54%, #1F69B0 68%, #8FC0F0 86%, #EAF6FF 100%);
+
+  /* Glacier — soft ice for large type and hero fields */
+  --g-glacier: linear-gradient(180deg, #FFFFFF 0%, #D6EBFF 38%, #6BA8E5 100%);
+
+  /* Liquid — the signature diagonal fill (68°) */
+  --g-liquid: linear-gradient(68deg, #0A2A4D 0%, #2E7FD1 42%, #5CC4FF 74%, #D6EBFF 100%);
+
+  /* Void — page atmosphere */
+  --g-void: radial-gradient(120% 80% at 50% -10%, #0A2A4D 0%, rgba(10,42,77,0) 58%),
+            radial-gradient(90% 70% at 100% 100%, rgba(18,63,109,.55) 0%, rgba(18,63,109,0) 60%),
+            linear-gradient(180deg, #05070A 0%, #020305 100%);
+
+  /* Aurora — three slow caustic lights used behind glass */
+  --aurora-1: radial-gradient(closest-side, rgba(46,127,209,.62), rgba(46,127,209,0));
+  --aurora-2: radial-gradient(closest-side, rgba(92,196,255,.40), rgba(92,196,255,0));
+  --aurora-3: radial-gradient(closest-side, rgba(18,63,109,.80), rgba(18,63,109,0));
+}
+
+/* ─────────────  4 · GLASS MATERIAL TOKENS  ──────────────────────────────── */
+:root{
+  /* tint layers (stacked: body tint + cool ice cast + dark floor) */
+  --glass-tint-a:   rgba(190,225,255,.10);
+  --glass-tint-b:   rgba(46,127,209,.06);
+  --glass-tint-c:   rgba(5,7,10,.34);
+  --glass-ice-a:    rgba(120,190,255,.20);   /* "ice" variant, bluer */
+  --glass-ice-b:    rgba(46,127,209,.10);
+
+  --glass-blur:     18px;
+  --glass-blur-lg:  34px;
+  --glass-sat:      170%;
+  --glass-bright:   1.06;
+
+  /* light on the edge */
+  --glass-spec:     rgba(255,255,255,.30);   /* top hairline */
+  --glass-spec-gloss:rgba(255,255,255,.15);  /* upper-half gloss */
+  --glass-rim-a:    rgba(214,235,255,.85);
+  --glass-rim-b:    rgba(92,196,255,.50);
+  --glass-edge:     rgba(150,195,240,.16);
+  --glass-inner-glow: rgba(120,185,255,.07);
+  --glass-shadow:   0 28px 70px rgba(0,0,0,.55), 0 6px 18px rgba(0,0,0,.35);
+
+  --r-glass:  22px;
+  --r-glass-lg: 32px;
+  --r-orb:    62% 38% 54% 46% / 48% 56% 44% 52%;   /* liquid morph start */
+  --r-orb-b:  40% 60% 38% 62% / 58% 40% 60% 42%;   /* liquid morph end   */
+}
+:root[data-theme="light"]{
+  --glass-tint-a:rgba(255,255,255,.70); --glass-tint-b:rgba(190,220,250,.28); --glass-tint-c:rgba(255,255,255,.18);
+  --glass-ice-a:rgba(190,225,255,.65);  --glass-ice-b:rgba(120,175,230,.20);
+  --glass-spec:rgba(255,255,255,.95); --glass-spec-gloss:rgba(255,255,255,.60);
+  --glass-rim-a:rgba(255,255,255,.95); --glass-rim-b:rgba(46,127,209,.40);
+  --glass-edge:rgba(30,70,120,.14); --glass-inner-glow:rgba(46,127,209,.06);
+  --glass-shadow:0 24px 60px rgba(18,45,80,.16), 0 4px 14px rgba(18,45,80,.08);
+}
+
+/* ─────────────  5 · TYPE  ───────────────────────────────────────────────── */
+:root{
+  --font-display:"Space Grotesk","Tajawal",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:   "Tajawal","Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:   "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --font-ar:     "Tajawal","IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif;
+
+  --t-hero:   clamp(3.2rem, 1.4rem + 8vw, 9rem);
+  --t-d1:     clamp(2.6rem, 1.3rem + 5vw, 5.5rem);
+  --t-d2:     clamp(2rem, 1.2rem + 3.4vw, 3.75rem);
+  --t-h2:     clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  --t-h3:     clamp(1.15rem, 1.05rem + .6vw, 1.45rem);
+  --t-lead:   clamp(1.05rem, 1rem + .45vw, 1.3rem);
+  --t-body:   1rem;
+  --t-caption:.8125rem;
+  --t-label:  .6875rem;
+
+  --tr-display:-.04em; --tr-heading:-.02em; --tr-label:.2em;
+}
+:root[dir="rtl"]{ --font-display:var(--font-ar); --font-body:var(--font-ar); --tr-display:0; --tr-heading:0; --tr-label:0; }
+
+/* ─────────────  6 · SPACE / RADIUS / MOTION  ─────────────────────────────── */
+:root{
+  --u:4px;
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px;
+  --s-7:48px; --s-8:64px; --s-9:96px; --s-10:128px;
+  --gutter:clamp(16px,4vw,64px);
+  --w-content:1240px;
+
+  --r-xs:4px; --r-sm:8px; --r-md:12px; --r-lg:18px; --r-xl:26px; --r-pill:999px;
+  --angle:68deg;                                   /* THE SIGNATURE DIAGONAL */
+
+  --ease-out:cubic-bezier(.22,.61,.36,1);
+  --ease-in:cubic-bezier(.55,.06,.68,.19);
+  --ease-inout:cubic-bezier(.65,.05,.36,1);
+  --ease-liquid:cubic-bezier(.34,1.2,.5,1);        /* soft overshoot, one hero per view */
+  --ease-cine:cubic-bezier(.16,1,.3,1);
+  --d-fast:160ms; --d-base:300ms; --d-slow:560ms; --d-cine:900ms;
+  --d-sheen:1800ms; --d-drift:22s; --d-morph:14s;
+}
+@media (prefers-reduced-motion: reduce){
+  :root{ --d-fast:0ms; --d-base:0ms; --d-slow:0ms; --d-cine:0ms; --d-sheen:0ms; --d-drift:0s; --d-morph:0s; }
+}
+
+/* ─────────────  7 · BRAND SLOTS  ─────────────────────────────────────────── */
+:root{
+  --brand-wordmark:"7Z";            --brand-wordmark-ar:"سفن زد";
+  --brand-legal:"Seven Z";          --brand-descriptor:"Creative Technology Studio";
+  --brand-descriptor-ar:"استوديو تقنيات إبداعية";
+  --brand-tagline:"Precision, made visible.";
+  --mark-aspect:.898; --mark-safe:.22;
+}
