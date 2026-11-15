@@ -59,6 +59,40 @@
     }
   }
 
+  function selectClientsSubtab(name, animate = true) {
+    if (name !== "accounts" && name !== "vault") name = "accounts";
+    const buttons = $$("[data-clients-subtab]");
+    const panels = $$(".clients-subpanel, [data-clients-subpanel]");
+    if (!buttons.length || !panels.length) return;
+
+    buttons.forEach((btn) => {
+      const active = btn.dataset.clientsSubtab === name;
+      btn.classList.toggle("active", active);
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-selected", String(active));
+      btn.setAttribute("tabindex", active ? "0" : "-1");
+    });
+
+    panels.forEach((panel) => {
+      const active = panel.dataset.clientsSubpanel === name;
+      panel.hidden = !active;
+      panel.classList.toggle("active", active);
+      panel.classList.toggle("is-active", active);
+      panel.setAttribute("aria-hidden", String(!active));
+      panel.style.setProperty("display", active ? "block" : "none", "important");
+      if (active && animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        panel.animate([{ opacity: 0, transform: "translateY(7px)" }, { opacity: 1, transform: "translateY(0)" }], {
+          duration: 200,
+          easing: "cubic-bezier(.2,.8,.2,1)",
+        });
+      }
+    });
+
+    try {
+      sessionStorage.setItem("z7_clients_active_subtab", name);
+    } catch (_) {}
+  }
+
   function parseMoney(value) {
     const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
     return Number.isFinite(number) ? number : 0;
@@ -340,6 +374,15 @@
     });
     setClock();
     refreshDashboard();
+    $$("[data-clients-subtab]").forEach((button) => button.addEventListener("click", (e) => {
+      e.preventDefault();
+      selectClientsSubtab(button.dataset.clientsSubtab, true);
+    }));
+    const savedSubtab = (() => {
+      try { return sessionStorage.getItem("z7_clients_active_subtab"); } catch (_) { return "accounts"; }
+    })() || "accounts";
+    selectClientsSubtab(savedSubtab, false);
+    window.z7SelectClientsSubtab = selectClientsSubtab;
   }
 
   document.addEventListener("z7:admin-ready", initialize);

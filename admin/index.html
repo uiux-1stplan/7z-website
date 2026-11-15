@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261112-session-cinematic-1">
-  <link rel="stylesheet" href="/admin/admin.css?v=20261115-dual-vault-1">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261115-subtabs-1">
 </head>
 
 <body class="z7-admin-shell">
@@ -442,29 +442,44 @@
     <section class="admin-view dashboard-view" id="clients-view" data-dashboard-panel="media" aria-labelledby="files-heading" hidden>
       <div class="view-intro">
         <div>
-          <span class="eyebrow">STUDIO REPOSITORY &amp; GOVERNANCE</span>
-          <h2 id="files-heading">Clients &amp; Vault Files</h2>
-          <p>Dual-zone command center: Client account governance &amp; cinematic interactive deliverables vault.</p>
+          <span class="eyebrow">CLIENTS &amp; VAULT ECOSYSTEM</span>
+          <h2 id="files-heading">Clients &amp; Deliverables Vault</h2>
+          <p>Switch seamlessly between Client Accounts governance and the Cinematic Deliverables Vault.</p>
         </div>
         <div class="view-intro-badges">
           <span class="secure-badge"><i></i> 256-BIT ENCRYPTED</span>
         </div>
       </div>
 
-      <!-- ============================================================= -->
-      <!-- ZONE 1: CLIENT MANAGEMENT HUB (حسابات وصلاحيات العملاء)       -->
-      <!-- ============================================================= -->
-      <div class="hub-zone hub-zone--clients" id="client-management-hub">
-        <div class="hub-zone__header">
-          <div class="hub-zone__tag">
-            <span class="hub-badge hub-badge--cyan">PART 01</span>
-            <div>
-              <h3>Client Management Hub</h3>
-              <p>Create client accounts, assign secure passcodes, and govern granular deliverable permissions.</p>
-            </div>
-          </div>
-        </div>
+      <!-- High-End Sub-Navigation Tab Bar -->
+      <nav class="clients-subnav" role="tablist" aria-label="Clients &amp; Vault Sub-Navigation">
+        <button type="button" class="clients-subnav-btn active is-active" id="clients-subtab-btn-accounts" role="tab" aria-selected="true" aria-controls="subtab-panel-accounts" data-clients-subtab="accounts">
+          <span class="subnav-btn-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <span class="subnav-btn-text">
+            <strong>Client Accounts &amp; Access</strong>
+            <small>Profiles · Credentials · Permissions Matrix</small>
+          </span>
+          <i class="subnav-btn-indicator" aria-hidden="true"></i>
+        </button>
 
+        <button type="button" class="clients-subnav-btn" id="clients-subtab-btn-vault" role="tab" aria-selected="false" aria-controls="subtab-panel-vault" data-clients-subtab="vault">
+          <span class="subnav-btn-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H10l2 2h5.5A2.5 2.5 0 0 1 20 7.5v10a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 9h16"/></svg>
+          </span>
+          <span class="subnav-btn-text">
+            <strong>Vault Files &amp; Cinematic Media</strong>
+            <small>Cloud Upload · Deliverables Showcase</small>
+          </span>
+          <i class="subnav-btn-indicator" aria-hidden="true"></i>
+        </button>
+      </nav>
+
+      <!-- ============================================================= -->
+      <!-- SUB-TAB 1: CLIENT ACCOUNTS & ACCESS (حسابات وصلاحيات العملاء) -->
+      <!-- ============================================================= -->
+      <div class="clients-subpanel active is-active" id="subtab-panel-accounts" role="tabpanel" aria-labelledby="clients-subtab-btn-accounts" data-clients-subpanel="accounts">
         <!-- 1. Client Creation Form & Directory Mount -->
         <section class="admin-vault-section" aria-labelledby="client-users-title">
           <div id="z7-native-clients-mount" class="client-directory-mount"></div>
@@ -565,19 +580,9 @@
       </div>
 
       <!-- ============================================================= -->
-      <!-- ZONE 2: CINEMATIC INTERACTIVE VAULT (خزينة الوسائط والتسليمات) -->
+      <!-- SUB-TAB 2: VAULT FILES & CINEMATIC MEDIA (خزينة الوسائط والملفات) -->
       <!-- ============================================================= -->
-      <div class="hub-zone hub-zone--vault" id="cinematic-interactive-vault" style="margin-top: 36px;">
-        <div class="hub-zone__header">
-          <div class="hub-zone__tag">
-            <span class="hub-badge hub-badge--gold">PART 02</span>
-            <div>
-              <h3>Cinematic Interactive Vault</h3>
-              <p>Curated architectural media, 4K video deliveries, and WebGL interactive experiences.</p>
-            </div>
-          </div>
-        </div>
-
+      <div class="clients-subpanel" id="subtab-panel-vault" role="tabpanel" aria-labelledby="clients-subtab-btn-vault" data-clients-subpanel="vault" hidden>
         <section class="admin-vault-section" aria-labelledby="vault-library-title">
           <div class="glass-panel files-intro">
             <span class="files-intro__mark" aria-hidden="true">7Z</span>
@@ -794,10 +799,9 @@
 
 <script src="/admin/admin.js?v=20261114-user-crud-1"></script>
 <script src="/admin/course-engine.js?v=20261114-marketer-payout-1"></script>
-<script src="/admin/dashboard-v2.js?v=20261115-neon-glass-1"></script>
+<script src="/admin/dashboard-v2.js?v=20261115-subtabs-1"></script>
 <script src="/admin/private-file-upload.bundle.js?v=20261114-media-scope-1"></script>
-<script src="/admin/native-clients.js?v=20261115-dual-vault-1"></script>
-<script src="/admin/legacy-file-access.js?v=20261114-glassy-admin-3"></script>
+<script src="/admin/native-clients.js?v=20261115-subtabs-1"></script>
 <script src="/admin/admin-files.js?v=20261114-media-scope-1"></script>
 <script src="/admin/admin-workspace-tools.js?v=20261114-admin-controls-1"></script>
 
