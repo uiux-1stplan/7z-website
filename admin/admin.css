@@ -2135,6 +2135,67 @@ html[data-theme="light"] .z7-cap-file {
   transition: width .2s ease !important;
 }
 
+/* ==========================================================================
+   ADMIN VAULT SECTIONS & TEAM DETAILS (Zero-Leakage Dark & Light)
+   ========================================================================== */
+.admin-vault-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  margin-bottom: 24px !important;
+}
+
+.admin-team-details {
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  padding: 16px 20px !important;
+  transition: all 0.25s ease !important;
+}
+
+html[data-theme="light"] .admin-team-details {
+  background: #F8FAFC !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.admin-team-details[open] {
+  border-color: var(--gold-border) !important;
+  background: rgba(212, 175, 55, 0.02) !important;
+}
+
+html[data-theme="light"] .admin-team-details[open] {
+  background: #FFFFFF !important;
+}
+
+.admin-team-summary {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  font-family: var(--z7-mono) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--silver) !important;
+  user-select: none !important;
+  list-style: none !important;
+}
+
+.admin-team-summary::-webkit-details-marker {
+  display: none !important;
+}
+
+.admin-team-summary:hover {
+  color: var(--gold) !important;
+}
+
+.admin-team-summary .eyebrow {
+  margin: 0 !important;
+  font-size: 9px !important;
+  color: var(--gold) !important;
+}
+
 /* Mobile Optimizations */
 @media (max-width: 768px) {
   .z7nc-list, .z7af-list {

@@ -449,47 +449,68 @@
     <section class="dashboard-view" id="files-view" data-dashboard-panel="media" aria-labelledby="files-heading" hidden>
       <div class="view-intro">
         <div>
-          <span class="eyebrow">CLIENT DELIVERY / PRIVATE STORAGE &amp; DIRECTORY</span>
+          <span class="eyebrow">CLIENT COMMAND CENTER / REPOSITORY &amp; VAULT</span>
           <h2 id="files-heading">Clients &amp; Vault Files</h2>
-          <p>Manage customer portal accounts, upload private deliverables, and assign view/download access.</p>
+          <p>Active client portals, private deliverables storage, and unified granular permissions.</p>
         </div>
-        <span class="secure-badge"><i></i> PRIVATE STORAGE</span>
+        <span class="secure-badge"><i></i> 256-BIT SECURE REPOSITORY</span>
       </div>
 
-      <!-- Client Accounts Directory -->
-      <section class="users-subsection users-subsection--clients" aria-labelledby="client-users-title" style="margin-bottom:22px;">
-        <div class="users-subsection-heading">
-          <div>
-            <span class="eyebrow">CLIENT DIRECTORY / NATIVE ACCOUNTS</span>
-            <h3 id="client-users-title">Client Accounts</h3>
-            <p>Active client portals and secure credentials.</p>
-          </div>
-        </div>
+      <!-- 1. Client Accounts Directory (Command Center Card Grid) -->
+      <section class="admin-vault-section" aria-labelledby="client-users-title">
         <div id="z7-native-clients-mount" class="client-directory-mount"></div>
       </section>
 
-      <!-- Portal Users & Create User Form -->
-      <section class="users-subsection users-subsection--accounts" aria-labelledby="portal-users-title" style="margin-bottom:22px;">
-        <div class="users-subsection-heading">
+      <!-- 2. Deliverables Vault & Upload Stage -->
+      <section class="admin-vault-section" aria-labelledby="vault-library-title">
+        <div class="glass-panel files-intro">
+          <span class="files-intro__mark" aria-hidden="true">7Z</span>
           <div>
-            <span class="eyebrow">PORTAL USERS / CREDENTIALS</span>
-            <h3 id="portal-users-title">Create &amp; Manage Accounts</h3>
-            <p>Create administrator or client portal accounts with custom credentials.</p>
+            <span class="eyebrow">PRIVATE VAULT / DELIVERABLES STAGE</span>
+            <strong id="vault-library-title">Every client deliverable has its own dedicated stage.</strong>
+            <p>Upload new high-resolution media, preview active assets, download, rename, or revoke access with one click.</p>
           </div>
-          <button id="refresh-users" type="button" class="button button-secondary">Refresh</button>
         </div>
-        <div class="workspace-grid">
+        <div id="z7af-message"></div>
+        <div id="client-files-mount"></div>
+      </section>
+
+      <!-- 3. Unified Access & Permissions Matrix -->
+      <section class="glass-panel access-matrix-panel" aria-labelledby="access-matrix-title">
+        <div class="glass-panel__head">
+          <div>
+            <span class="eyebrow">ACCESS MATRIX / GRANULAR PERMISSIONS</span>
+            <h3 id="access-matrix-title">Client Permissions Control</h3>
+            <p>Grant or revoke instant view and download access for any client account and media asset.</p>
+          </div>
+          <button class="button button-secondary" id="access-matrix-refresh" type="button">Refresh access</button>
+        </div>
+        <div class="access-client-picker">
+          <label for="access-client-select">SELECT CLIENT ACCOUNT</label>
+          <select id="access-client-select"><option value="">Loading client accounts…</option></select>
+        </div>
+        <div id="access-matrix-status" class="access-matrix-status" role="status"></div>
+        <div id="access-matrix-list" class="access-matrix-list"></div>
+      </section>
+
+      <!-- 4. Administrative Team & Portal Credentials -->
+      <details class="admin-team-details" style="margin-top: 14px;">
+        <summary class="admin-team-summary">
+          <span class="eyebrow">PORTAL DIRECTORY / TEAM CREDENTIALS</span>
+          <span>Administrative Accounts &amp; Access Controls ▾</span>
+        </summary>
+        <div class="workspace-grid" style="margin-top: 16px;">
           <article class="panel create-panel">
             <div class="panel-head">
               <div>
-                <span class="eyebrow">NEW ACCOUNT</span>
+                <span class="eyebrow">NEW STAFF</span>
                 <h2>Create User</h2>
               </div>
             </div>
             <form id="create-user-form">
               <label>
                 <span>Display Name</span>
-                <input id="create-name" name="displayName" autocomplete="off" required maxlength="120" placeholder="Client or team member">
+                <input id="create-name" name="displayName" autocomplete="off" required maxlength="120" placeholder="Team member name">
               </label>
               <label>
                 <span>Email Address</span>
@@ -497,7 +518,7 @@
               </label>
               <label>
                 <span>Company</span>
-                <input id="create-company" name="company" autocomplete="off" maxlength="160" placeholder="Company name">
+                <input id="create-company" name="company" autocomplete="off" maxlength="160" placeholder="7Z Magic / Partner">
               </label>
               <label>
                 <span>Initial Password</span>
@@ -520,9 +541,10 @@
           <article class="panel users-panel" id="users-panel">
             <div class="panel-head table-head">
               <div>
-                <span class="eyebrow">PORTAL DIRECTORY</span>
+                <span class="eyebrow">STAFF DIRECTORY</span>
                 <h2>Existing Accounts</h2>
               </div>
+              <button id="refresh-users" type="button" class="button button-secondary">Refresh</button>
             </div>
             <div id="users-loading" class="table-state">Loading users…</div>
             <div id="users-empty" class="table-state hidden">No users found.</div>
@@ -542,37 +564,7 @@
             </div>
           </article>
         </div>
-      </section>
-
-      <!-- Media Vault Deliverables Mount -->
-      <div class="glass-panel files-intro" style="margin-bottom:20px;">
-        <span class="files-intro__mark" aria-hidden="true">7Z</span>
-        <div>
-          <span class="eyebrow">PRIVATE VAULT / LIVE LIBRARY</span>
-          <strong>Every client handoff has its own secure stage.</strong>
-          <p>Preview, download, rename or remove a deliverable here. Grant and revoke access in the unified control below.</p>
-        </div>
-      </div>
-      <div id="z7af-message"></div>
-      <div id="client-files-mount"></div>
-
-      <!-- Unified Access Matrix -->
-      <section class="glass-panel access-matrix-panel" style="margin-top:22px;">
-        <div class="glass-panel__head">
-          <div>
-            <span class="eyebrow">PRIVATE STORAGE / PERMISSIONS</span>
-            <h3>Unified Access Control</h3>
-            <p>Grant or revoke view and download access for every client and media item.</p>
-          </div>
-          <button class="button button-secondary" id="access-matrix-refresh" type="button">Refresh access</button>
-        </div>
-        <div class="access-client-picker">
-          <label for="access-client-select">Client account</label>
-          <select id="access-client-select"><option value="">Loading client accounts…</option></select>
-        </div>
-        <div id="access-matrix-status" class="access-matrix-status" role="status"></div>
-        <div id="access-matrix-list" class="access-matrix-list"></div>
-      </section>
+      </details>
     </section>
 
     <!-- ================================================================= -->

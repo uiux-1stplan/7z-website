@@ -469,86 +469,50 @@
 
 
   async function signOut() {
-
-    if (!accessButton) return;
-
-    accessButton.disabled =
-      true;
-
-    const text =
-      accessButton.querySelector(
-        "span"
-      );
-
-    if (text) {
-      text.textContent =
-        "SIGNING OUT";
+    const portalBtn = window.document.getElementById("z7PortalSignoutBtn");
+    if (portalBtn) {
+      portalBtn.disabled = true;
+      portalBtn.textContent = "SIGNING OUT...";
+    }
+    if (accessButton) {
+      accessButton.disabled = true;
+      const text = accessButton.querySelector("span");
+      if (text) text.textContent = "SIGNING OUT";
     }
 
     try {
-
-      const response =
-        await fetch(
-          "/api/private-auth/hub-logout",
-          {
-            method:
-              "POST",
-
-            credentials:
-              "same-origin",
-
-            cache:
-              "no-store",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body:
-              "{}"
-          }
-        );
-
-      if (!response.ok) {
-        throw new Error(
-          "Logout failed"
-        );
-      }
-
-      if (clientId) {
-        clientId.value = "";
-      }
-
-      if (accessKey) {
-        accessKey.value = "";
-      }
-
-      applyAccess(
-        null
+      await fetch(
+        "/api/private-auth/hub-logout",
+        {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: "{}"
+        }
       );
-
-      broadcastAuth(
-        false
-      );
-
-      window.setTimeout(
-        focusLogin,
-        80
-      );
-
-    } catch {
-
-      await loadStatus();
-
+    } catch (error) {
+      console.warn("Logout request warning:", error);
     } finally {
+      if (clientId) clientId.value = "";
+      if (accessKey) accessKey.value = "";
+      if (message) message.textContent = "";
 
-      accessButton.disabled =
-        false;
+      applyAccess(null);
+      broadcastAuth(false);
 
-      updateHeaderButton(
-        currentAuthenticated
-      );
+      if (portalBtn) {
+        portalBtn.disabled = false;
+        portalBtn.textContent = "SIGN OUT ↗";
+      }
+      if (accessButton) {
+        accessButton.disabled = false;
+        updateHeaderButton(false);
+      }
+
+      window.setTimeout(focusLogin, 60);
     }
   }
 

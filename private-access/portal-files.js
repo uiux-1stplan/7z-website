@@ -20,428 +20,225 @@
 
   let serial = 0;
 
-
   function hideFiles() {
-
     if (!section) return;
-
     section.hidden = true;
-
-    section.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-    section.style.setProperty(
-      "display",
-      "none",
-      "important"
-    );
+    section.setAttribute("aria-hidden", "true");
+    section.style.setProperty("display", "none", "important");
   }
-
 
   function showFiles() {
-
     if (!section) return;
-
     section.hidden = false;
-
-    section.removeAttribute(
-      "hidden"
-    );
-
-    section.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-    section.style.setProperty(
-      "display",
-      "block",
-      "important"
-    );
-
-    section.style.setProperty(
-      "visibility",
-      "visible",
-      "important"
-    );
-
-    section.style.setProperty(
-      "opacity",
-      "1",
-      "important"
-    );
+    section.removeAttribute("hidden");
+    section.setAttribute("aria-hidden", "false");
+    section.style.setProperty("display", "block", "important");
+    section.style.setProperty("visibility", "visible", "important");
+    section.style.setProperty("opacity", "1", "important");
   }
-
 
   function formatBytes(value) {
-
     const bytes = Number(value || 0);
-
-    if (!bytes) return "";
-
+    if (!bytes) return "0 B";
     const units = ["B", "KB", "MB", "GB"];
-
-    const index =
-      Math.min(
-        Math.floor(
-          Math.log(bytes) /
-          Math.log(1024)
-        ),
-        units.length - 1
-      );
-
+    const index = Math.min(
+      Math.floor(Math.log(bytes) / Math.log(1024)),
+      units.length - 1
+    );
     return (
-      bytes /
-      Math.pow(1024, index)
-    ).toFixed(index ? 1 : 0) +
+      (bytes / Math.pow(1024, index)).toFixed(index ? 1 : 0) +
       " " +
-      units[index];
+      units[index]
+    );
   }
 
+  function getFileMeta(file) {
+    const name = String(file?.name || "").toLowerCase();
+    const type = String(file?.contentType || "").toLowerCase();
 
-  function typeOf(file) {
+    if (type.includes("html") || name.endsWith(".html") || name.endsWith(".htm")) {
+      return {
+        typeLabel: "INTERACTIVE 3D / WEB",
+        badgeClass: "is-html",
+        iconSvg: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+      };
+    }
 
-    const name =
-      String(file?.name || "")
-        .toLowerCase();
+    if (type.includes("pdf") || name.endsWith(".pdf")) {
+      return {
+        typeLabel: "EXECUTIVE PDF",
+        badgeClass: "is-pdf",
+        iconSvg: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'
+      };
+    }
 
-    const type =
-      String(file?.contentType || "")
-        .toLowerCase();
+    if (type.startsWith("image/")) {
+      return {
+        typeLabel: "HIGH-RES VISUAL",
+        badgeClass: "is-img",
+        iconSvg: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
+      };
+    }
 
-    if (
-      type.includes("html") ||
-      name.endsWith(".html") ||
-      name.endsWith(".htm")
-    ) return "HTML";
+    if (type.startsWith("video/")) {
+      return {
+        typeLabel: "CINEMATIC FILM",
+        badgeClass: "is-video",
+        iconSvg: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>'
+      };
+    }
 
-    if (
-      type.includes("pdf") ||
-      name.endsWith(".pdf")
-    ) return "PDF";
-
-    if (type.startsWith("image/")) return "IMG";
-    if (type.startsWith("video/")) return "VIDEO";
-
-    return "FILE";
+    return {
+      typeLabel: "STUDIO DELIVERABLE",
+      badgeClass: "is-generic",
+      iconSvg: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>'
+    };
   }
-
 
   function makeFile(file) {
+    const meta = getFileMeta(file);
+    const id = encodeURIComponent(String(file.id || ""));
+    const fileName = String(file.name || "Deliverable");
+    const formattedSize = formatBytes(file.sizeBytes);
 
-    const article =
-      D.createElement("article");
+    const article = D.createElement("article");
+    article.className = "z7cpf-card";
 
-    article.className =
-      "z7cpf-file";
-
-
-    const main =
-      D.createElement("div");
-
-    main.className =
-      "z7cpf-file-main";
-
-
-    const icon =
-      D.createElement("div");
-
-    icon.className =
-      "z7cpf-file-icon";
-
-    icon.textContent =
-      typeOf(file);
-
-
-    const copy =
-      D.createElement("div");
-
-    copy.className =
-      "z7cpf-file-copy";
-
-
-    const title =
-      D.createElement("strong");
-
-    title.textContent =
-      String(file.name || "File");
-
-
-    const size =
-      D.createElement("span");
-
-    size.textContent =
-      formatBytes(file.sizeBytes);
-
-
-    copy.append(
-      title,
-      size
-    );
-
-
-    main.append(
-      icon,
-      copy
-    );
-
-
-    const actions =
-      D.createElement("div");
-
-    actions.className =
-      "z7cpf-actions";
-
-
-    const id =
-      encodeURIComponent(
-        String(file.id || "")
-      );
-
-
+    let actionsHtml = "";
     if (file.canView !== false) {
-
-      const open =
-        D.createElement("a");
-
-      open.className =
-        "z7cpf-open";
-
-      open.href =
-        `/api/private-auth/portal-file?id=${id}&mode=view`;
-
-      open.target =
-        "_blank";
-
-      open.rel =
-        "noopener";
-
-      open.textContent =
-        "OPEN ↗";
-
-      actions.appendChild(open);
+      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--open" href="/api/private-auth/portal-file?id=${id}&mode=view" target="_blank" rel="noopener"><span>PREVIEW</span><b aria-hidden="true">↗</b></a>`;
     }
-
-
     if (file.canDownload === true) {
-
-      const download =
-        D.createElement("a");
-
-      download.className =
-        "z7cpf-download";
-
-      download.href =
-        `/api/private-auth/portal-file?id=${id}&mode=download`;
-
-      download.textContent =
-        "DOWNLOAD";
-
-      actions.appendChild(download);
+      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--download" href="/api/private-auth/portal-file?id=${id}&mode=download"><span>DOWNLOAD</span><b aria-hidden="true">⤓</b></a>`;
     }
 
-
-    article.append(
-      main,
-      actions
-    );
-
+    article.innerHTML = `
+      <div class="z7cpf-card__top">
+        <div class="z7cpf-card__icon ${meta.badgeClass}" aria-hidden="true">
+          ${meta.iconSvg}
+        </div>
+        <span class="z7cpf-card__pill ${meta.badgeClass}">${meta.typeLabel}</span>
+      </div>
+      <div class="z7cpf-card__body">
+        <h3 class="z7cpf-card__title" title="${fileName}">${fileName}</h3>
+        <div class="z7cpf-card__meta">
+          <span class="z7cpf-card__size"><i aria-hidden="true">💾</i> ${formattedSize}</span>
+          <span class="z7cpf-card__verified"><i aria-hidden="true">✓</i> Protected</span>
+        </div>
+      </div>
+      <div class="z7cpf-card__actions">
+        ${actionsHtml}
+      </div>
+    `;
 
     return article;
   }
 
-
   function render(files) {
-
-    if (
-      !section ||
-      !list
-    ) return;
-
+    if (!section || !list) return;
 
     list.replaceChildren();
 
-
     for (const file of files) {
-
-      list.appendChild(
-        makeFile(file)
-      );
+      list.appendChild(makeFile(file));
     }
 
+    // Update counter badge if available
+    const counter = section.querySelector("[data-z7cpf-counter]");
+    if (counter) {
+      counter.textContent = `${files.length} ${files.length === 1 ? 'DELIVERABLE' : 'DELIVERABLES'}`;
+    }
 
     showFiles();
 
-
-    /*
-     * Only when actual assigned files exist,
-     * hide the irrelevant Access Policy section.
-     *
-     * Nothing else on the page is touched.
-     */
     if (policy) {
       policy.hidden = true;
     }
   }
 
-
   async function refresh() {
-
-    const requestId =
-      ++serial;
-
+    const requestId = ++serial;
 
     try {
-
-      const response =
-        await window.fetch(
-          `/api/private-auth/portal-files?t=${Date.now()}`,
-          {
-            credentials:
-              "same-origin",
-
-            cache:
-              "no-store",
-
-            headers: {
-              "Cache-Control":
-                "no-cache, no-store"
-            }
+      const response = await window.fetch(
+        `/api/private-auth/portal-files?t=${Date.now()}`,
+        {
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store"
           }
-        );
-
+        }
+      );
 
       if (requestId !== serial) {
         return;
       }
 
-
-      if (
-        response.status === 401 ||
-        response.status === 403
-      ) {
-
+      if (response.status === 401 || response.status === 403) {
         hideFiles();
-
-        if (policy) {
-          policy.hidden = false;
-        }
-
+        if (policy) policy.hidden = false;
         return;
       }
-
 
       if (!response.ok) {
-
-        console.error(
-          "7Z file API HTTP",
-          response.status
-        );
-
+        console.error("7Z file API HTTP", response.status);
         return;
       }
 
+      const payload = await response.json();
+      const files = Array.isArray(payload?.files) ? payload.files : [];
 
-      const payload =
-        await response.json();
-
-
-      const files =
-        Array.isArray(payload?.files)
-          ? payload.files
-          : [];
-
-
-      if (
-        payload?.authenticated === true &&
-        files.length > 0
-      ) {
-
+      if (payload?.authenticated === true && files.length > 0) {
         render(files);
-
       } else if (payload?.authenticated === true) {
-
         if (list) {
           list.innerHTML = `
             <div class="z7cpf-empty-state">
-              <div class="z7cpf-empty-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <div class="z7cpf-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
               </div>
-              <h3>No Deliverables Published Yet</h3>
-              <p>Your private documents, presentations and cinematic assets will appear here immediately once published by the 7Z Magic team.</p>
+              <span class="z7cpf-empty-badge">PRIVATE VAULT ACTIVE</span>
+              <h3>Your Deliverables Vault is Primed</h3>
+              <p>Your high-resolution assets, cinematic cuts, and interactive deliverables are currently being prepared with signature 7Z precision and will appear here immediately once published.</p>
+              <div class="z7cpf-empty-footer">
+                <span><i class="z7cpf-dot"></i> End-to-End Encrypted</span>
+                <span><i class="z7cpf-dot"></i> Studio Direct Handoff</span>
+              </div>
             </div>
           `;
         }
-
         showFiles();
-
-        if (policy) {
-          policy.hidden = true;
-        }
-
+        if (policy) policy.hidden = true;
       } else {
-
         hideFiles();
-
-        if (policy) {
-          policy.hidden = false;
-        }
+        if (policy) policy.hidden = false;
       }
-
-
     } catch (error) {
-
-      console.error(
-        "7Z isolated file delivery:",
-        error
-      );
+      console.error("7Z isolated file delivery error:", error);
     }
   }
 
-
+  // Initial load
   refresh();
 
+  window.addEventListener("pageshow", refresh);
+  window.addEventListener("focus", refresh);
+  D.addEventListener("visibilitychange", () => {
+    if (!D.hidden) refresh();
+  });
 
-  window.addEventListener(
-    "pageshow",
-    refresh
-  );
+  window.__Z7_REFRESH_FILES__ = refresh;
 
-
-  window.addEventListener(
-    "focus",
-    refresh
-  );
-
-
-  D.addEventListener(
-    "visibilitychange",
-    () => {
-
-      if (!D.hidden) {
-        refresh();
-      }
+  window.addEventListener("z7pa:auth-changed", (event) => {
+    if (event.detail?.authenticated) {
+      refresh();
+    } else {
+      hideFiles();
     }
-  );
-
-
-  /* Periodic polling removed for turbo performance and zero race conditions */
-
-
-  window.__Z7_REFRESH_FILES__ =
-    refresh;
-
-  window.addEventListener(
-    "z7pa:auth-changed",
-    (event) => {
-      if (event.detail?.authenticated) {
-        refresh();
-      } else {
-        hideFiles();
-      }
-    }
-  );
+  });
 
 })();
