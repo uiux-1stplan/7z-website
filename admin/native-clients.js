@@ -169,43 +169,33 @@
       </div>
 
 
-      <div class="z7nc-create-caption">
-        CREATE NEW NATIVE CLIENT
-      </div>
-
-
-      <div class="z7nc-form">
-
-        <input
-          id="z7nc-name"
-          type="text"
-          autocomplete="off"
-          placeholder="Display Name">
-
-        <input
-          id="z7nc-client-id"
-          type="text"
-          autocomplete="off"
-          placeholder="Client ID">
-
-        <input
-          id="z7nc-company"
-          type="text"
-          autocomplete="off"
-          placeholder="Company">
-
-        <input
-          id="z7nc-password"
-          type="password"
-          autocomplete="new-password"
-          placeholder="Password — minimum 12 characters">
-
-        <button
-          type="button"
-          id="z7nc-create">
-          CREATE CLIENT
-        </button>
-
+      <div class="z7nc-create-box">
+        <div class="z7nc-create-box__head">
+          <span class="eyebrow">NEW CLIENT PROFILE</span>
+          <h3>Register Client Account</h3>
+          <p>Create a dedicated identity for the private access portal.</p>
+        </div>
+        <div class="z7nc-form">
+          <div class="z7nc-form-fields">
+            <label class="z7nc-field">
+              <span>Display Name</span>
+              <input id="z7nc-name" type="text" autocomplete="off" placeholder="e.g. Acme Corporation">
+            </label>
+            <label class="z7nc-field">
+              <span>Client ID</span>
+              <input id="z7nc-client-id" type="text" autocomplete="off" placeholder="e.g. acme-client">
+            </label>
+            <label class="z7nc-field">
+              <span>Company</span>
+              <input id="z7nc-company" type="text" autocomplete="off" placeholder="e.g. Acme Studios">
+            </label>
+            <label class="z7nc-field">
+              <span>Password (12+ chars)</span>
+              <input id="z7nc-password" type="password" autocomplete="new-password" placeholder="Minimum 12 characters">
+            </label>
+          </div>
+          <button type="button" id="z7nc-create" class="button button-primary">CREATE CLIENT ↗</button>
+        </div>
       </div>
 
 

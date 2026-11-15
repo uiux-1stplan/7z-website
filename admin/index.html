@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261112-session-cinematic-1">
-  <link rel="stylesheet" href="/admin/admin.css?v=20261115-neon-glass-1">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261115-dual-vault-1">
 </head>
 
 <body class="z7-admin-shell">
@@ -105,14 +105,7 @@
       </button>
     </nav>
 
-    <div class="sidebar-utilities">
-      <label class="admin-search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
-        <input id="admin-global-search" type="search" placeholder="Search workspace" aria-label="Search workspace">
-      </label>
-      <button class="admin-top-action sidebar-add-user" type="button" data-dashboard-nav="media" data-focus-create-user>
-        <span aria-hidden="true">+</span> Add client user
-      </button>
+    <div class="sidebar-footer">
       <button class="admin-theme-toggle theme-pill" type="button" data-theme-toggle aria-label="Switch light and dark mode" title="Switch light and dark mode" aria-pressed="false">
         <span class="theme-pill__label">Dark</span>
         <span class="theme-pill__track" aria-hidden="true">
@@ -121,15 +114,13 @@
           <i class="theme-pill__thumb"></i>
         </span>
       </button>
+
       <div class="sidebar-account">
         <div id="admin-copy"><strong id="admin-name">Administrator</strong><span id="admin-email"></span></div>
         <div id="clerk-user-button"></div>
       </div>
-    </div>
 
-    <div class="sidebar-footer">
       <div class="security-status"><span></span> SECURE SESSION</div>
-      <small>7Z Magic Studio Platform</small>
     </div>
 
   </aside>
@@ -144,6 +135,8 @@
 
     <!-- Hidden Bridge Elements for script compatibility -->
     <div style="display:none!important;" aria-hidden="true">
+      <input id="admin-global-search" type="hidden">
+      <button type="button" class="hidden" data-focus-create-user></button>
       <span id="stat-users">0</span>
       <span id="stat-active">0</span>
       <span id="stat-admins">0</span>
@@ -449,122 +442,156 @@
     <section class="admin-view dashboard-view" id="clients-view" data-dashboard-panel="media" aria-labelledby="files-heading" hidden>
       <div class="view-intro">
         <div>
-          <span class="eyebrow">CLIENT COMMAND CENTER / REPOSITORY &amp; VAULT</span>
+          <span class="eyebrow">STUDIO REPOSITORY &amp; GOVERNANCE</span>
           <h2 id="files-heading">Clients &amp; Vault Files</h2>
-          <p>Active client portals, private deliverables storage, and unified granular permissions.</p>
+          <p>Dual-zone command center: Client account governance &amp; cinematic interactive deliverables vault.</p>
         </div>
-        <span class="secure-badge"><i></i> 256-BIT SECURE REPOSITORY</span>
+        <div class="view-intro-badges">
+          <span class="secure-badge"><i></i> 256-BIT ENCRYPTED</span>
+        </div>
       </div>
 
-      <!-- 1. Client Accounts Directory (Command Center Card Grid) -->
-      <section class="admin-vault-section" aria-labelledby="client-users-title">
-        <div id="z7-native-clients-mount" class="client-directory-mount"></div>
-      </section>
-
-      <!-- 2. Deliverables Vault & Upload Stage -->
-      <section class="admin-vault-section" aria-labelledby="vault-library-title">
-        <div class="glass-panel files-intro">
-          <span class="files-intro__mark" aria-hidden="true">7Z</span>
-          <div>
-            <span class="eyebrow">PRIVATE VAULT / DELIVERABLES STAGE</span>
-            <strong id="vault-library-title">Every client deliverable has its own dedicated stage.</strong>
-            <p>Upload new high-resolution media, preview active assets, download, rename, or revoke access with one click.</p>
-          </div>
-        </div>
-        <div id="z7af-message"></div>
-        <div id="client-files-mount"></div>
-      </section>
-
-      <!-- 3. Unified Access & Permissions Matrix -->
-      <section class="glass-panel access-matrix-panel" aria-labelledby="access-matrix-title">
-        <div class="glass-panel__head">
-          <div>
-            <span class="eyebrow">ACCESS MATRIX / GRANULAR PERMISSIONS</span>
-            <h3 id="access-matrix-title">Client Permissions Control</h3>
-            <p>Grant or revoke instant view and download access for any client account and media asset.</p>
-          </div>
-          <button class="button button-secondary" id="access-matrix-refresh" type="button">Refresh access</button>
-        </div>
-        <div class="access-client-picker">
-          <label for="access-client-select">SELECT CLIENT ACCOUNT</label>
-          <select id="access-client-select"><option value="">Loading client accounts…</option></select>
-        </div>
-        <div id="access-matrix-status" class="access-matrix-status" role="status"></div>
-        <div id="access-matrix-list" class="access-matrix-list"></div>
-      </section>
-
-      <!-- 4. Administrative Team & Portal Credentials -->
-      <details class="admin-team-details" style="margin-top: 14px;">
-        <summary class="admin-team-summary">
-          <span class="eyebrow">PORTAL DIRECTORY / TEAM CREDENTIALS</span>
-          <span>Administrative Accounts &amp; Access Controls ▾</span>
-        </summary>
-        <div class="workspace-grid" style="margin-top: 16px;">
-          <article class="panel create-panel">
-            <div class="panel-head">
-              <div>
-                <span class="eyebrow">NEW STAFF</span>
-                <h2>Create User</h2>
-              </div>
+      <!-- ============================================================= -->
+      <!-- ZONE 1: CLIENT MANAGEMENT HUB (حسابات وصلاحيات العملاء)       -->
+      <!-- ============================================================= -->
+      <div class="hub-zone hub-zone--clients" id="client-management-hub">
+        <div class="hub-zone__header">
+          <div class="hub-zone__tag">
+            <span class="hub-badge hub-badge--cyan">PART 01</span>
+            <div>
+              <h3>Client Management Hub</h3>
+              <p>Create client accounts, assign secure passcodes, and govern granular deliverable permissions.</p>
             </div>
-            <form id="create-user-form">
-              <label>
-                <span>Display Name</span>
-                <input id="create-name" name="displayName" autocomplete="off" required maxlength="120" placeholder="Team member name">
-              </label>
-              <label>
-                <span>Email Address</span>
-                <input id="create-email" name="email" type="email" autocomplete="off" required placeholder="name@company.com">
-              </label>
-              <label>
-                <span>Company</span>
-                <input id="create-company" name="company" autocomplete="off" maxlength="160" placeholder="7Z Magic / Partner">
-              </label>
-              <label>
-                <span>Initial Password</span>
-                <div class="password-field">
-                  <input id="create-password" name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required placeholder="Minimum 8 characters">
-                  <button type="button" class="text-button toggle-password" data-target="create-password">SHOW</button>
+          </div>
+        </div>
+
+        <!-- 1. Client Creation Form & Directory Mount -->
+        <section class="admin-vault-section" aria-labelledby="client-users-title">
+          <div id="z7-native-clients-mount" class="client-directory-mount"></div>
+        </section>
+
+        <!-- 2. Integrated Permissions Matrix / Toggle Cards -->
+        <section class="glass-panel access-matrix-panel" aria-labelledby="access-matrix-title">
+          <div class="glass-panel__head">
+            <div>
+              <span class="eyebrow">GRANULAR PERMISSIONS / ACCESS MATRIX</span>
+              <h3 id="access-matrix-title">File Access Permissions Matrix</h3>
+              <p>Select any client account below to instantly inspect and toggle View &amp; Download rights per asset.</p>
+            </div>
+            <button class="button button-secondary" id="access-matrix-refresh" type="button">Refresh access ⟳</button>
+          </div>
+          <div class="access-client-picker">
+            <label for="access-client-select">SELECT CLIENT ACCOUNT</label>
+            <div class="select-wrapper">
+              <select id="access-client-select"><option value="">Loading client accounts…</option></select>
+            </div>
+          </div>
+          <div id="access-matrix-status" class="access-matrix-status" role="status"></div>
+          <div id="access-matrix-list" class="access-matrix-list"></div>
+        </section>
+
+        <!-- 3. Administrative Console Roles & Accounts -->
+        <details class="admin-team-details" style="margin-top: 14px;">
+          <summary class="admin-team-summary">
+            <span class="eyebrow">PORTAL DIRECTORY / TEAM CREDENTIALS</span>
+            <span>Administrative Accounts &amp; Access Controls ▾</span>
+          </summary>
+          <div class="workspace-grid" style="margin-top: 16px;">
+            <article class="panel create-panel">
+              <div class="panel-head">
+                <div>
+                  <span class="eyebrow">NEW STAFF</span>
+                  <h2>Create User</h2>
                 </div>
-              </label>
-              <label>
-                <span>Role</span>
-                <select id="create-role" name="role">
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </label>
-              <button id="create-submit" class="button button-primary full" type="submit">Create Account</button>
-            </form>
-          </article>
-
-          <article class="panel users-panel" id="users-panel">
-            <div class="panel-head table-head">
-              <div>
-                <span class="eyebrow">STAFF DIRECTORY</span>
-                <h2>Existing Accounts</h2>
               </div>
-              <button id="refresh-users" type="button" class="button button-secondary">Refresh</button>
+              <form id="create-user-form">
+                <label>
+                  <span>Display Name</span>
+                  <input id="create-name" name="displayName" autocomplete="off" required maxlength="120" placeholder="Team member name">
+                </label>
+                <label>
+                  <span>Email Address</span>
+                  <input id="create-email" name="email" type="email" autocomplete="off" required placeholder="name@company.com">
+                </label>
+                <label>
+                  <span>Company</span>
+                  <input id="create-company" name="company" autocomplete="off" maxlength="160" placeholder="7Z Magic / Partner">
+                </label>
+                <label>
+                  <span>Initial Password</span>
+                  <div class="password-field">
+                    <input id="create-password" name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required placeholder="Minimum 8 characters">
+                    <button type="button" class="text-button toggle-password" data-target="create-password">SHOW</button>
+                  </div>
+                </label>
+                <label>
+                  <span>Role</span>
+                  <select id="create-role" name="role">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </label>
+                <button id="create-submit" class="button button-primary full" type="submit">Create Account</button>
+              </form>
+            </article>
+
+            <article class="panel users-panel" id="users-panel">
+              <div class="panel-head table-head">
+                <div>
+                  <span class="eyebrow">STAFF DIRECTORY</span>
+                  <h2>Existing Accounts</h2>
+                </div>
+                <button id="refresh-users" type="button" class="button button-secondary">Refresh</button>
+              </div>
+              <div id="users-loading" class="table-state">Loading users…</div>
+              <div id="users-empty" class="table-state hidden">No users found.</div>
+              <div id="users-table-wrap" class="table-wrap hidden">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Company</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-body"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </details>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- ZONE 2: CINEMATIC INTERACTIVE VAULT (خزينة الوسائط والتسليمات) -->
+      <!-- ============================================================= -->
+      <div class="hub-zone hub-zone--vault" id="cinematic-interactive-vault" style="margin-top: 36px;">
+        <div class="hub-zone__header">
+          <div class="hub-zone__tag">
+            <span class="hub-badge hub-badge--gold">PART 02</span>
+            <div>
+              <h3>Cinematic Interactive Vault</h3>
+              <p>Curated architectural media, 4K video deliveries, and WebGL interactive experiences.</p>
             </div>
-            <div id="users-loading" class="table-state">Loading users…</div>
-            <div id="users-empty" class="table-state hidden">No users found.</div>
-            <div id="users-table-wrap" class="table-wrap hidden">
-              <table>
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Company</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="users-body"></tbody>
-              </table>
-            </div>
-          </article>
+          </div>
         </div>
-      </details>
+
+        <section class="admin-vault-section" aria-labelledby="vault-library-title">
+          <div class="glass-panel files-intro">
+            <span class="files-intro__mark" aria-hidden="true">7Z</span>
+            <div>
+              <span class="eyebrow">PRIVATE VAULT / DELIVERABLES STAGE</span>
+              <strong id="vault-library-title">Every client deliverable has its own dedicated stage.</strong>
+              <p>Upload new high-resolution media, preview active assets, download, rename, or revoke access with one click.</p>
+            </div>
+          </div>
+          <div id="z7af-message"></div>
+          <div id="client-files-mount"></div>
+        </section>
+      </div>
+
     </section>
 
     <!-- ================================================================= -->
@@ -769,7 +796,7 @@
 <script src="/admin/course-engine.js?v=20261114-marketer-payout-1"></script>
 <script src="/admin/dashboard-v2.js?v=20261115-neon-glass-1"></script>
 <script src="/admin/private-file-upload.bundle.js?v=20261114-media-scope-1"></script>
-<script src="/admin/native-clients.js?v=20261114-admin-architecture-4"></script>
+<script src="/admin/native-clients.js?v=20261115-dual-vault-1"></script>
 <script src="/admin/legacy-file-access.js?v=20261114-glassy-admin-3"></script>
 <script src="/admin/admin-files.js?v=20261114-media-scope-1"></script>
 <script src="/admin/admin-workspace-tools.js?v=20261114-admin-controls-1"></script>
