@@ -146,34 +146,28 @@
 
     panel.innerHTML = `
       <div class="z7nc-head">
-
         <div>
-
-          <div class="page-kicker">
-            CLIENT ACCOUNTS
-          </div>
-
-          <h2>
-            Client Accounts
-          </h2>
-
-          <p>
-            All legacy and native client
-            identities in one place.
-          </p>
-
+          <div class="page-kicker">CLIENT DIRECTORY / VIP PROFILES</div>
+          <h2>Client Directory</h2>
+          <p>Govern VIP identities, portal credentials, and project spaces.</p>
         </div>
-
-        <div class="z7nc-header-badges"><span class="z7nc-badge">UNIFIED</span><span class="z7nc-badge z7nc-client-count" id="z7nc-client-count" aria-live="polite">0 CLIENTS</span></div>
-
+        <div class="z7nc-header-actions">
+          <span class="z7nc-badge z7nc-client-count" id="z7nc-client-count" aria-live="polite">0 CLIENTS</span>
+          <button type="button" id="z7nc-toggle-create-btn" class="button button-primary z7nc-new-account-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            <span>New Client Account</span>
+          </button>
+        </div>
       </div>
 
-
-      <div class="z7nc-create-box">
+      <div class="z7nc-create-box z7nc-create-drawer hidden" id="z7nc-create-drawer">
         <div class="z7nc-create-box__head">
-          <span class="eyebrow">NEW CLIENT PROFILE</span>
-          <h3>Register Client Account</h3>
-          <p>Create a dedicated identity for the private access portal.</p>
+          <div>
+            <span class="eyebrow">NEW CLIENT PROFILE</span>
+            <h3>Register VIP Client Account</h3>
+            <p>Provision credentials for the private deliverables portal.</p>
+          </div>
+          <button type="button" class="z7nc-drawer-close" id="z7nc-close-drawer" aria-label="Close form">×</button>
         </div>
         <div class="z7nc-form">
           <div class="z7nc-form-fields">
@@ -182,11 +176,11 @@
               <input id="z7nc-name" type="text" autocomplete="off" placeholder="e.g. Acme Corporation">
             </label>
             <label class="z7nc-field">
-              <span>Client ID</span>
+              <span>Client ID / Username</span>
               <input id="z7nc-client-id" type="text" autocomplete="off" placeholder="e.g. acme-client">
             </label>
             <label class="z7nc-field">
-              <span>Company</span>
+              <span>Company / Organization</span>
               <input id="z7nc-company" type="text" autocomplete="off" placeholder="e.g. Acme Studios">
             </label>
             <label class="z7nc-field">
@@ -194,91 +188,49 @@
               <input id="z7nc-password" type="password" autocomplete="new-password" placeholder="Minimum 12 characters">
             </label>
           </div>
-          <button type="button" id="z7nc-create" class="button button-primary">CREATE CLIENT ↗</button>
+          <div class="z7nc-drawer-actions">
+            <button type="button" id="z7nc-create" class="button button-primary">CREATE CLIENT ACCOUNT ↗</button>
+            <button type="button" id="z7nc-cancel-drawer" class="button button-secondary">Cancel</button>
+          </div>
         </div>
       </div>
 
+      <div id="z7nc-message" class="z7nc-message"></div>
+      <div id="z7nc-list" class="z7nc-list"></div>
 
-      <div
-        id="z7nc-message"
-        class="z7nc-message">
-      </div>
-
-
-      <div
-        id="z7nc-list"
-        class="z7nc-list">
-      </div>
-
-
-      <div
-        id="z7nc-password-modal"
-        class="z7nc-modal"
-        hidden>
-
+      <div id="z7nc-password-modal" class="z7nc-modal" hidden>
         <div class="z7nc-modal-backdrop"></div>
-
         <div class="z7nc-modal-card">
-
           <div class="z7nc-modal-head">
-
             <div>
-
-              <div class="page-kicker">
-                SECURITY
-              </div>
-
-              <h3>
-                Change Client Password
-              </h3>
-
-              <p id="z7nc-password-client">
-              </p>
-
+              <div class="page-kicker">SECURITY</div>
+              <h3>Change Client Password</h3>
+              <p id="z7nc-password-client"></p>
             </div>
-
-            <button
-              type="button"
-              id="z7nc-modal-close"
-              class="z7nc-modal-close">
-              ×
-            </button>
-
+            <button type="button" id="z7nc-modal-close" class="z7nc-modal-close">×</button>
           </div>
-
-
-          <input
-            id="z7nc-new-password"
-            type="password"
-            autocomplete="new-password"
-            placeholder="New password — minimum 12 characters">
-
-
-          <input
-            id="z7nc-confirm-password"
-            type="password"
-            autocomplete="new-password"
-            placeholder="Confirm new password">
-
-
-          <div
-            id="z7nc-modal-message"
-            class="z7nc-message">
-          </div>
-
-
-          <button
-            type="button"
-            id="z7nc-password-save"
-            class="z7nc-password-save">
-            UPDATE PASSWORD
-          </button>
-
+          <input id="z7nc-new-password" type="password" autocomplete="new-password" placeholder="New password — minimum 12 characters">
+          <input id="z7nc-confirm-password" type="password" autocomplete="new-password" placeholder="Confirm new password">
+          <div id="z7nc-modal-message" class="z7nc-message"></div>
+          <button type="button" id="z7nc-password-save" class="z7nc-password-save">UPDATE PASSWORD</button>
         </div>
-
       </div>
     `;
 
+    // Wire drawer toggle
+    const toggleBtn = panel.querySelector("#z7nc-toggle-create-btn");
+    const drawer = panel.querySelector("#z7nc-create-drawer");
+    const closeBtn = panel.querySelector("#z7nc-close-drawer");
+    const cancelBtn = panel.querySelector("#z7nc-cancel-drawer");
+    if (toggleBtn && drawer) {
+      toggleBtn.addEventListener("click", () => {
+        const isClosed = drawer.classList.contains("hidden");
+        drawer.classList.toggle("hidden", !isClosed);
+        if (isClosed) panel.querySelector("#z7nc-name")?.focus();
+      });
+      closeBtn?.addEventListener("click", () => drawer.classList.add("hidden"));
+      cancelBtn?.addEventListener("click", () => drawer.classList.add("hidden"));
+    }
 
     panel.insertAdjacentHTML("beforeend", `
       <div id="z7nc-edit-modal" class="z7nc-modal" hidden>
@@ -611,144 +563,82 @@
 
 
     root.innerHTML =
-      clients.map(
-        client => {
+      clients.map(client => {
+        const isNative = client.auth_type === "native";
+        const active = client.status === "active";
+        const identifier = isNative ? client.username : client.legacy_scope;
+        const initials = (client.display_name || client.username || "CL")
+          .split(/\s+/)
+          .map(w => w[0])
+          .slice(0, 2)
+          .join("")
+          .toUpperCase();
 
-          const isNative =
-            client.auth_type ===
-            "native";
-
-
-          const active =
-            client.status ===
-            "active";
-
-
-          const identifier =
-            isNative
-              ? client.username
-              : client.legacy_scope;
-
-
-          return `
-            <article
-              class="z7nc-client"
-              data-client-key="${esc(
-                client.client_key
-              )}">
-
-              <div class="z7nc-client-info">
-
-                <div class="z7nc-client-title">
-
-                  <strong>
-                    ${esc(
-                      client.display_name
-                    )}
-                  </strong>
-
-                  <span class="z7nc-type ${
-                    isNative
-                      ? "is-native"
-                      : "is-legacy"
-                  }">
-                    ${
-                      isNative
-                        ? "NATIVE"
-                        : "LEGACY"
-                    }
-                  </span>
-
+        return `
+          <article class="z7nc-client vip-client-card" data-client-key="${esc(client.client_key)}">
+            <div class="vip-client-card__top">
+              <div class="vip-client-avatar" aria-hidden="true">${esc(initials)}</div>
+              <div class="vip-client-identity">
+                <div class="vip-client-name-row">
+                  <strong class="vip-client-name">${esc(client.display_name || "Private Client")}</strong>
+                  <span class="z7nc-type ${isNative ? "is-native" : "is-legacy"}">${isNative ? "VIP" : "LEGACY"}</span>
                 </div>
-
-                <span>
-                  ${esc(
-                    identifier || "—"
-                  )}
+                <span class="vip-client-id">${esc(identifier || "—")}</span>
+                <small class="vip-client-org">${esc(client.company || "Private Client Organization")}</small>
+              </div>
+              <div class="vip-client-status">
+                <span class="vip-status-pill ${active ? "is-active" : "is-disabled"}">
+                  <i class="vip-status-dot"></i> ${active ? "ACTIVE" : "DISABLED"}
                 </span>
-
-                <small>
-                  ${esc(
-                    client.company || "—"
-                  )}
-                </small>
-
               </div>
+            </div>
 
+            <div class="vip-client-card__actions">
+              <button type="button" class="vip-btn vip-btn--access" data-action="manage-access" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name || "")}" title="Configure per-asset permissions">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Manage Access</span>
+              </button>
 
-              <div class="z7nc-client-right">
+              <button type="button" class="vip-btn" data-action="password" data-client-key="${esc(client.client_key)}" data-username="${esc(client.username || "")}" title="Reset client password">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-2-2l2 2m-8 6h.01M16 12a4 4 0 11-8 0 4 4 0 018 0z"/><path d="M12 16v4"/></svg>
+                <span>Reset Pass</span>
+              </button>
 
-                <div class="z7nc-status ${
-                  active
-                    ? "is-active"
-                    : "is-disabled"
-                }">
+              ${isNative ? `
+                <button type="button" class="vip-btn" data-action="edit" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name)}" data-company="${esc(client.company || "")}" title="Edit client details">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                  <span>Edit</span>
+                </button>
 
-                  ${
-                    active
-                      ? "ACTIVE"
-                      : "DISABLED"
-                  }
+                <button type="button" class="vip-btn vip-btn--danger" data-action="delete" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name)}" title="Delete client account">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <span>Delete</span>
+                </button>
 
-                </div>
+                <button type="button" class="vip-btn ${active ? "vip-btn--subtle" : "vip-btn--success"}" data-action="status" data-client-key="${esc(client.client_key)}" data-current-status="${esc(client.status)}" title="${active ? "Disable access" : "Enable access"}">
+                  <span>${active ? "Disable" : "Enable"}</span>
+                </button>
+              ` : `
+                <span class="z7nc-legacy-note">LEGACY SCOPE</span>
+              `}
+            </div>
+          </article>
+        `;
+      }).join("");
 
-
-                ${
-                  isNative
-                    ? `
-                      <button type="button" class="z7nc-action" data-action="edit" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name)}" data-company="${esc(client.company || "")}">EDIT PROFILE</button>
-                      <button type="button" class="z7nc-action is-danger" data-action="delete" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name)}">DELETE CLIENT</button>
-
-                      <button
-                        type="button"
-                        class="z7nc-action"
-                        data-action="password"
-                        data-client-key="${esc(
-                          client.client_key
-                        )}"
-                        data-username="${esc(
-                          client.username
-                        )}">
-                        CHANGE PASSWORD
-                      </button>
-
-                      <button
-                        type="button"
-                        class="z7nc-action ${
-                          active
-                            ? "is-danger"
-                            : "is-success"
-                        }"
-                        data-action="status"
-                        data-client-key="${esc(
-                          client.client_key
-                        )}"
-                        data-current-status="${esc(
-                          client.status
-                        )}">
-
-                        ${
-                          active
-                            ? "DISABLE"
-                            : "ENABLE"
-                        }
-
-                      </button>
-                    `
-                    : `
-                      <span class="z7nc-legacy-note">
-                        LEGACY ACCESS
-                      </span>
-                    `
-                }
-
-              </div>
-
-            </article>
-          `;
+    root.querySelectorAll('[data-action="manage-access"]').forEach(button => {
+      button.addEventListener("click", () => {
+        const clientKey = button.dataset.clientKey;
+        if (window.z7SelectClientsSubtab) {
+          window.z7SelectClientsSubtab("matrix", true);
         }
-      ).join("");
-
+        const select = document.getElementById("access-client-select");
+        if (select) {
+          select.value = clientKey;
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      });
+    });
 
     root.querySelectorAll('[data-action="edit"]').forEach(button => button.addEventListener("click", () => openClientEdit(button)));
     root.querySelectorAll('[data-action="delete"]').forEach(button => button.addEventListener("click", () => deleteClient(button)));

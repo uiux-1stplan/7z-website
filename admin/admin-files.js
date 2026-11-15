@@ -225,6 +225,24 @@
   }
 
 
+  
+  function getFileCategory(name = "", type = "") {
+    const combined = (name + " " + type).toLowerCase();
+    if (combined.includes("video") || combined.includes(".mp4") || combined.includes(".mov") || combined.includes(".webm") || combined.includes(".mkv")) {
+      return { label: "4K VIDEO", tone: "video", icon: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>' };
+    }
+    if (combined.includes(".zip") || combined.includes(".rar") || combined.includes(".tar") || combined.includes(".gz") || combined.includes(".html") || combined.includes(".gltf") || combined.includes(".glb") || combined.includes("spline") || combined.includes("3d")) {
+      return { label: "3D/WEB", tone: "web", icon: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>' };
+    }
+    if (combined.includes("pdf") || combined.includes("document") || combined.includes(".doc")) {
+      return { label: "PDF DECK", tone: "doc", icon: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>' };
+    }
+    if (combined.includes("image") || combined.includes(".png") || combined.includes(".jpg") || combined.includes(".jpeg") || combined.includes(".webp") || combined.includes(".svg")) {
+      return { label: "IMAGE", tone: "image", icon: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' };
+    }
+    return { label: "PROTECTED ASSET", tone: "default", icon: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>' };
+  }
+
   async function loadFiles() {
 
     ensurePanel();
@@ -295,81 +313,55 @@
 
 
       list.innerHTML =
-        files.map(
-          file => `
-            <article class="z7af-file">
+        files.map(file => {
+          const cat = getFileCategory(file.name, file.contentType);
+          const rawDate = file.uploadedAt || file.created_at || file.createdAt;
+          const dateStr = rawDate && !isNaN(Date.parse(rawDate))
+            ? new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(rawDate))
+            : "Vault Deliverable";
 
-              <div class="z7af-file-info">
-
-                <strong>
-                  ${esc(
-                    file.name
-                  )}
-                </strong>
-
-                <span>
-                  ${esc(
-                    file.contentType ||
-                    "Private file"
-                  )}
-                </span>
-
-                <small>
-                  ${esc(
-                    bytes(
-                      file.sizeBytes
-                    )
-                  )}
-                </small>
-
+          return `
+            <article class="z7af-file bento-file-card" data-tone="${cat.tone}">
+              <div class="bento-file-card__top">
+                <div class="bento-file-badge bento-file-badge--${cat.tone}">
+                  <span class="badge-icon" aria-hidden="true">${cat.icon}</span>
+                  <span class="badge-text">${cat.label}</span>
+                </div>
+                <span class="bento-file-size">${esc(bytes(file.sizeBytes))}</span>
               </div>
 
-
-              <div class="z7af-actions">
-
-                <button
-                  type="button"
-                  class="z7af-open"
-                  data-open="${esc(
-                    file.id
-                  )}"
-                  data-name="${esc(
-                    file.name
-                  )}"
-                  data-type="${esc(
-                    file.contentType ||
-                    ""
-                  )}">
-                  OPEN
-                </button>
-
-
-                <button
-                  type="button"
-                  class="z7af-download"
-                  data-download="${esc(
-                    file.id
-                  )}"
-                  data-name="${esc(
-                    file.name
-                  )}">
-                  DOWNLOAD
-                </button>
-
-                <button type="button" class="z7af-manage" data-rename="${esc(file.id)}" data-name="${esc(file.name)}">RENAME</button>
-                <button type="button" class="z7af-manage is-danger" data-remove="${esc(file.id)}" data-name="${esc(file.name)}">REMOVE</button>
-
+              <div class="bento-file-card__body">
+                <strong class="bento-file-title" title="${esc(file.name)}">${esc(file.name)}</strong>
+                <div class="bento-file-meta">
+                  <span class="meta-type">${esc(file.contentType || "Asset")}</span>
+                  <span class="meta-dot">·</span>
+                  <span class="meta-date">${esc(dateStr)}</span>
+                </div>
               </div>
 
+              <div class="z7af-actions bento-file-actions">
+                <button type="button" class="z7af-open bento-action-btn bento-action-btn--primary" data-open="${esc(file.id)}" data-name="${esc(file.name)}" data-type="${esc(file.contentType || "")}" title="Preview file">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span>Preview ↗</span>
+                </button>
+                <button type="button" class="z7af-download bento-action-btn" data-download="${esc(file.id)}" data-name="${esc(file.name)}" title="Download file">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download</span>
+                </button>
+                <button type="button" class="z7af-manage bento-action-btn" data-rename="${esc(file.id)}" data-name="${esc(file.name)}" title="Rename file">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                  <span>Rename</span>
+                </button>
+                <button type="button" class="z7af-manage is-danger bento-action-btn bento-action-btn--danger" data-remove="${esc(file.id)}" data-name="${esc(file.name)}" title="Delete file">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <span>Delete</span>
+                </button>
+              </div>
             </article>
-          `
-        ).join("");
+          `;
+        }).join("");
 
-
-      list
-        .querySelectorAll(
-          "[data-open]"
-        )
+      list.querySelectorAll("[data-open]")
         .forEach(
           button => {
 

@@ -60,7 +60,8 @@
   }
 
   function selectClientsSubtab(name, animate = true) {
-    if (name !== "accounts" && name !== "vault") name = "accounts";
+    if (name === "accounts") name = "directory";
+    if (name !== "directory" && name !== "vault" && name !== "matrix") name = "directory";
     const buttons = $$("[data-clients-subtab]");
     const panels = $$(".clients-subpanel, [data-clients-subpanel]");
     if (!buttons.length || !panels.length) return;
@@ -82,8 +83,8 @@
       panel.style.setProperty("display", active ? "block" : "none", "important");
       if (active && animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         panel.animate([{ opacity: 0, transform: "translateY(7px)" }, { opacity: 1, transform: "translateY(0)" }], {
-          duration: 200,
-          easing: "cubic-bezier(.2,.8,.2,1)",
+          duration: 250,
+          easing: "cubic-bezier(.16, 1, .3, 1)",
         });
       }
     });
@@ -380,7 +381,7 @@
     }));
     const savedSubtab = (() => {
       try { return sessionStorage.getItem("z7_clients_active_subtab"); } catch (_) { return "accounts"; }
-    })() || "accounts";
+    })() || "directory";
     selectClientsSubtab(savedSubtab, false);
     window.z7SelectClientsSubtab = selectClientsSubtab;
   }
