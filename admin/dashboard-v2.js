@@ -26,6 +26,7 @@
       const active = panel === next;
       panel.hidden = !active;
       panel.classList.toggle("is-active", active);
+      panel.classList.toggle("active", active);
       panel.setAttribute("aria-hidden", String(!active));
     });
     $$("[data-dashboard-nav]").forEach((button) => {

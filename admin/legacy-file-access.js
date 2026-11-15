@@ -103,6 +103,7 @@
   function dashboardTarget() {
 
     return (
+      document.querySelector("#clients-view") ||
       document.querySelector("#files-view") ||
       document.querySelector(
         "#app main"
