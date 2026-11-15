@@ -67,7 +67,10 @@ const types = {
   ".svg": "image/svg+xml",
   ".mp4": "video/mp4",
   ".webm": "video/webm",
-  ".mov": "video/quicktime"
+  ".mov": "video/quicktime",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".ttf": "font/ttf"
 };
 
 function ensureStorage() {

@@ -1,90 +1,83 @@
 /* ==========================================================================
-   7Z MAGIC — CINEMATIC CLIENT LOGIN PORTAL & VAULT GATEWAY
-   Ultra-Modern Dark Glassmorphism with Neon Cyan / Teal Accents
-   Zero Old Muddy Colors · High-End Focus States · 60fps Mobile Performance
+   7Z MAGIC — VIP CLIENT PORTAL & LOGIN CHAMBER
+   Consumes Official 7Z Tokens v3.0.0 (Liquid Glass System)
+   Zero Raw Unscoped Colors · 68° Signature Diagonal Prism Cut
    ========================================================================== */
 
 :root {
-  /* Surface & Backgrounds: Deep Obsidian Space */
-  --vault-bg: #07090e;
-  --vault-card-bg: rgba(13, 19, 33, 0.78);
-  --vault-card-border: rgba(255, 255, 255, 0.08);
+  --vault-bg: var(--bg-void, var(--7z-void, #020305));
+  --vault-card-bg: var(--surface, #0C1119);
+  --vault-card-border: var(--line, #1F2A38);
   --vault-card-shadow: 0 32px 84px -24px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-  /* Typography: Crisp Platinum & Muted Slate */
-  --vault-title: #f8fafc;
-  --vault-text: #f1f5f9;
-  --vault-text-muted: #94a3b8;
-  --vault-text-subtle: #64748b;
+  --vault-title: var(--text, #EAF1F8);
+  --vault-text: var(--text, #EAF1F8);
+  --vault-text-muted: var(--text-2, #A7B6C9);
+  --vault-text-subtle: var(--text-muted, #7C8CA1);
 
-  /* Neon Cyan Accents */
-  --vault-accent: #00f2fe;
-  --vault-teal: #06b6d4;
-  --vault-accent-soft: rgba(6, 182, 212, 0.12);
-  --vault-accent-border: rgba(6, 182, 212, 0.32);
-  --vault-accent-glow: 0 0 24px rgba(6, 182, 212, 0.35);
+  --vault-accent: var(--accent-strong, #2E7FD1);
+  --vault-teal: var(--accent, #6BA8E5);
+  --vault-accent-soft: var(--accent-soft, rgba(107,168,229,.12));
+  --vault-accent-border: var(--accent-line, rgba(107,168,229,.28));
+  --vault-accent-glow: 0 0 24px var(--accent-glow, rgba(46,127,209,.34));
 
-  /* Input Fields: Deep Glass Surface */
-  --vault-input-bg: rgba(6, 9, 16, 0.88);
-  --vault-input-text: #f8fafc;
-  --vault-input-border: rgba(255, 255, 255, 0.1);
-  --vault-input-placeholder: rgba(148, 163, 184, 0.45);
-  --vault-input-focus-border: #00f2fe;
-  --vault-input-focus-ring: rgba(6, 182, 212, 0.22);
-  --vault-input-focus-bg: rgba(8, 13, 24, 0.98);
+  --vault-input-bg: var(--surface, #0C1119);
+  --vault-input-text: var(--text, #EAF1F8);
+  --vault-input-border: var(--line, #1F2A38);
+  --vault-input-placeholder: var(--text-faint, #5A697D);
+  --vault-input-focus-border: var(--focus-ring, #8FC0F0);
+  --vault-input-focus-ring: var(--accent-glow, rgba(46,127,209,.34));
+  --vault-input-focus-bg: var(--surface-raised, #111823);
 
-  /* Submit Button: Electric Neon Cyan / Teal Pill */
-  --vault-btn-bg: linear-gradient(135deg, #00f2fe 0%, #06b6d4 100%);
-  --vault-btn-hover: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-  --vault-btn-border: rgba(0, 242, 254, 0.5);
-  --vault-btn-text: #050d18;
-  --vault-btn-shadow: 0 8px 24px rgba(6, 182, 212, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  --vault-btn-bg: linear-gradient(135deg, var(--accent-strong, #2E7FD1) 0%, var(--accent-active, #4E93DC) 100%);
+  --vault-btn-hover: linear-gradient(135deg, var(--accent-hover, #8FC0F0) 0%, var(--accent-strong, #2E7FD1) 100%);
+  --vault-btn-border: var(--accent-line, rgba(107,168,229,.28));
+  --vault-btn-text: var(--btn-primary-fg, #05070A);
+  --vault-btn-shadow: 0 8px 24px var(--accent-glow, rgba(46,127,209,.34));
 
-  /* Security Pill */
-  --vault-emerald: #10b981;
-  --vault-emerald-glow: rgba(16, 185, 129, 0.3);
-  --vault-security-border: rgba(255, 255, 255, 0.08);
-  --vault-security-text: #64748b;
+  --vault-emerald: var(--ok, #3FA87E);
+  --vault-emerald-glow: rgba(63, 168, 126, 0.3);
+  --vault-security-border: var(--line-faint, #151D28);
+  --vault-security-text: var(--text-muted, #7C8CA1);
 
-  --z7-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+  --z7-mono: var(--font-mono, "JetBrains Mono", monospace);
 }
 
-/* Light Theme Overrides (Porcelain Glass & Deep Cyan) */
-html[data-theme="light"] {
-  --vault-bg: #f8fafc;
-  --vault-card-bg: rgba(255, 255, 255, 0.88);
-  --vault-card-border: rgba(15, 23, 42, 0.09);
-  --vault-card-shadow: 0 20px 50px -15px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+:root[data-theme="light"] {
+  --vault-bg: var(--bg, #F4F7FA);
+  --vault-card-bg: var(--surface, #FFFFFF);
+  --vault-card-border: var(--line, #D2DCE7);
+  --vault-card-shadow: 0 20px 50px -15px rgba(18, 45, 80, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
-  --vault-title: #0f172a;
-  --vault-text: #0f172a;
-  --vault-text-muted: #475569;
-  --vault-text-subtle: #64748b;
+  --vault-title: var(--text, #0B1017);
+  --vault-text: var(--text, #0B1017);
+  --vault-text-muted: var(--text-2, #3C4959);
+  --vault-text-subtle: var(--text-muted, #5E6C7E);
 
-  --vault-accent: #0284c7;
-  --vault-teal: #0891b2;
-  --vault-accent-soft: rgba(2, 132, 199, 0.08);
-  --vault-accent-border: rgba(2, 132, 199, 0.25);
-  --vault-accent-glow: 0 4px 16px rgba(2, 132, 199, 0.2);
+  --vault-accent: var(--accent-strong, #1F69B0);
+  --vault-teal: var(--accent, #17548F);
+  --vault-accent-soft: var(--accent-soft, rgba(23,84,143,.09));
+  --vault-accent-border: var(--accent-line, rgba(23,84,143,.24));
+  --vault-accent-glow: 0 4px 16px var(--accent-glow, rgba(31,105,176,.22));
 
-  --vault-input-bg: #ffffff;
-  --vault-input-text: #0f172a;
-  --vault-input-border: rgba(15, 23, 42, 0.15);
-  --vault-input-placeholder: rgba(15, 23, 42, 0.4);
-  --vault-input-focus-border: #0284c7;
-  --vault-input-focus-ring: rgba(2, 132, 199, 0.15);
-  --vault-input-focus-bg: #f8fafc;
+  --vault-input-bg: var(--surface-hi, #EEF3F8);
+  --vault-input-text: var(--text, #0B1017);
+  --vault-input-border: var(--line, #D2DCE7);
+  --vault-input-placeholder: var(--text-faint, #7E8C9E);
+  --vault-input-focus-border: var(--focus-ring, #17548F);
+  --vault-input-focus-ring: var(--accent-soft, rgba(23,84,143,.18));
+  --vault-input-focus-bg: var(--surface, #FFFFFF);
 
-  --vault-btn-bg: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-  --vault-btn-hover: linear-gradient(135deg, #0369a1 0%, #075985 100%);
-  --vault-btn-border: rgba(2, 132, 199, 0.4);
-  --vault-btn-text: #ffffff;
-  --vault-btn-shadow: 0 4px 16px rgba(2, 132, 199, 0.25);
+  --vault-btn-bg: linear-gradient(135deg, var(--accent-strong, #1F69B0) 0%, var(--accent-hover, #123F6D) 100%);
+  --vault-btn-hover: linear-gradient(135deg, var(--accent-hover, #123F6D) 0%, var(--accent-active, #0A2A4D) 100%);
+  --vault-btn-border: var(--accent-line, rgba(23,84,143,.24));
+  --vault-btn-text: var(--btn-primary-fg, #FFFFFF);
+  --vault-btn-shadow: 0 4px 16px var(--accent-glow, rgba(31,105,176,.22));
 
-  --vault-emerald: #059669;
-  --vault-emerald-glow: rgba(5, 150, 105, 0.2);
-  --vault-security-border: rgba(15, 23, 42, 0.08);
-  --vault-security-text: #64748b;
+  --vault-emerald: var(--ok, #1F6B4C);
+  --vault-emerald-glow: rgba(31, 107, 76, 0.2);
+  --vault-security-border: var(--line-faint, #E2E9F1);
+  --vault-security-text: var(--text-muted, #5E6C7E);
 }
 
 /* Page Base */
@@ -96,357 +89,262 @@ html[data-z7-core] body.z7pa-page {
   transition: background-color 0.25s ease, color 0.25s ease !important;
 }
 
-/* Background Atmosphere & Clean Grain */
 body.z7pa-page #atmosphere {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-  opacity: 0.3 !important;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
 }
 
 body.z7pa-page .grain {
-  position: fixed !important;
-  inset: 0 !important;
-  pointer-events: none !important;
-  z-index: 1 !important;
-  opacity: 0.06 !important;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
-  background-size: 24px 24px;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.035;
 }
 
-html[data-theme="light"] body.z7pa-page .grain {
-  opacity: 0.03 !important;
-  background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 0);
+/* Login Chamber Section */
+.z7-login-vault {
+  position: relative;
+  z-index: 10;
+  padding: clamp(60px, 10vh, 120px) 20px clamp(40px, 8vh, 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ==========================================================================
-   1. UNAUTHENTICATED STATE — PERFECTLY CENTERED LOGIN GATEWAY
-   ========================================================================== */
-html[data-z7-core] body:not(.z7pa-is-authenticated) main.subpage-main.z7pa-page,
-html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-height: 100vh !important;
-  min-height: 100dvh !important;
-  padding: 40px 20px !important;
-  box-sizing: border-box !important;
-  position: relative !important;
-  z-index: 10 !important;
-}
-
-/* Hide background marketing sections before login */
-html[data-z7-core] body:not(.z7pa-is-authenticated) :is(.z7pa-hero, .z7pa-library, .z7pa-policy, #z7-client-private-files),
-html.z7icx-preauth[data-z7-core] :is(.z7pa-hero, .z7pa-library, .z7pa-policy, #z7-client-private-files) {
-  display: none !important;
-}
-
-/* Vault Outer Container */
-html[data-z7-core] body:not(.z7pa-is-authenticated) .z7-login-vault,
-html.z7icx-preauth[data-z7-core] .z7-login-vault,
-.z7-login-vault[data-z7pa-login-panel] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  width: min(460px, 100%) !important;
-  margin: auto !important;
-  position: relative !important;
-  z-index: 20 !important;
-}
-
-/* Ambient Aura Glow behind the card */
 .z7-login-vault__aura {
-  position: absolute !important;
-  inset: -24px !important;
-  border-radius: 40px !important;
-  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.12) 0%, rgba(2, 132, 199, 0.05) 50%, transparent 70%) !important;
-  filter: blur(32px) !important;
-  pointer-events: none !important;
-  z-index: -1 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(650px, 90vw);
+  height: 480px;
+  background: radial-gradient(circle, var(--accent-soft, rgba(46,127,209,.15)) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(50px);
 }
 
-html[data-theme="light"] .z7-login-vault__aura {
-  background: radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.08) 0%, transparent 65%) !important;
-}
-
-/* Glassmorphism Luxury Card */
+/* Centered Liquid Glass Authentication Chamber */
 .z7-login-vault__card {
-  position: relative !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 16px !important;
-  padding: 38px 34px 30px !important;
-  border: 1px solid var(--vault-card-border) !important;
-  border-radius: 24px !important;
-  background: var(--vault-card-bg) !important;
-  box-shadow: var(--vault-card-shadow) !important;
-  backdrop-filter: blur(28px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
-  text-align: center !important;
-  box-sizing: border-box !important;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 40px);
+  border-radius: var(--r-glass, 22px);
+  background: var(--vault-card-bg);
+  border: 1px solid var(--vault-card-border);
+  box-shadow: var(--vault-card-shadow);
+  backdrop-filter: blur(var(--glass-blur, 18px)) saturate(var(--glass-sat, 170%));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 18px)) saturate(var(--glass-sat, 170%));
+  transition: transform var(--d-base, 300ms) var(--ease-out, ease), box-shadow var(--d-base, 300ms) var(--ease-out, ease);
 }
 
-.z7-login-vault__card:hover {
-  border-color: rgba(6, 182, 212, 0.25) !important;
-  box-shadow: 0 36px 90px -20px rgba(0, 0, 0, 0.95), 0 0 24px -6px rgba(6, 182, 212, 0.15) !important;
-}
-
-/* Brand Emblem & Pill */
 .z7-login-vault__brand {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 12px !important;
-}
-
-.z7-login-vault__mark {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: transform 0.2s ease !important;
-}
-
-.z7-login-vault__mark:hover {
-  transform: scale(1.04) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .z7-login-vault__mark img {
-  width: 48px !important;
-  height: 54px !important;
-  object-fit: contain !important;
-  filter: drop-shadow(0 2px 12px rgba(6, 182, 212, 0.25)) !important;
+  width: 48px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px var(--accent-glow, rgba(46,127,209,.34)));
 }
 
 .z7-login-vault__badge {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  padding: 4px 12px !important;
-  border: 1px solid var(--vault-accent-border) !important;
-  border-radius: 999px !important;
-  background: var(--vault-accent-soft) !important;
-  color: var(--vault-accent) !important;
-  font: 700 8.5px/1.2 var(--z7-mono) !important;
-  letter-spacing: 0.14em !important;
-  text-transform: uppercase !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  background: var(--vault-accent-soft);
+  border: 1px solid var(--vault-accent-border);
+  color: var(--vault-accent);
+  font: 700 10px var(--z7-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .z7-login-vault__badge i {
-  width: 5px !important;
-  height: 5px !important;
-  border-radius: 50% !important;
-  background: var(--vault-accent) !important;
-  box-shadow: 0 0 8px var(--vault-accent) !important;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vault-accent);
+  box-shadow: 0 0 8px var(--vault-accent);
 }
 
-/* Headings & Kickers */
+/* 68° Signature Diagonal Prism Accent Cut */
+.z7-login-vault__prism-cut {
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(var(--angle, 68deg), var(--accent-strong, #2E7FD1) 0%, var(--7z-glow, #5CC4FF) 50%, var(--7z-ice-hi, #D6EBFF) 100%);
+  box-shadow: 0 0 12px var(--accent-glow, rgba(46,127,209,.34));
+  margin: 14px 0 20px;
+  border-radius: 2px;
+  clip-path: polygon(0 0, 100% calc(3px * 0.404), 100% 100%, 0 calc(100% - 3px * 0.404));
+}
+
 .z7icx__form-kicker {
-  margin: 0 !important;
-  color: var(--vault-text-subtle) !important;
-  font: 700 9px/1.4 var(--z7-mono) !important;
-  letter-spacing: 0.2em !important;
-  text-transform: uppercase !important;
+  font: 700 10px var(--z7-mono);
+  letter-spacing: 0.18em;
+  color: var(--vault-accent);
+  text-transform: uppercase;
+  margin: 0 0 6px;
 }
 
 .z7-login-vault__title {
-  margin: 0 !important;
-  color: var(--vault-title) !important;
-  font-size: clamp(1.65rem, 3.5vw, 2.1rem) !important;
-  font-weight: 600 !important;
-  line-height: 1.15 !important;
-  letter-spacing: -0.035em !important;
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--vault-title);
+  margin: 0 0 8px;
+  line-height: 1.2;
 }
 
 .z7icx__intro {
-  margin: 0 0 4px !important;
-  color: var(--vault-text-muted) !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
+  font-size: 13.5px;
+  color: var(--vault-text-muted);
+  line-height: 1.5;
+  margin: 0 0 24px;
 }
 
-/* ==========================================================================
-   2. FORM INPUTS & UX FOCUS STATES
-   ========================================================================== */
+/* Form Fields */
 .z7icx__form {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 14px !important;
-  margin: 0 !important;
-  text-align: left !important;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .z7icx__field {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.z7icx__field > span {
-  color: var(--vault-text-muted) !important;
-  font: 700 9px/1.2 var(--z7-mono) !important;
-  letter-spacing: 0.14em !important;
-  text-transform: uppercase !important;
+.z7icx__field span {
+  font: 700 10px var(--z7-mono);
+  letter-spacing: 0.14em;
+  color: var(--vault-text-subtle);
+  text-transform: uppercase;
 }
 
 .z7icx__field input {
-  width: 100% !important;
-  height: 50px !important;
-  min-height: 50px !important;
-  padding: 0 16px !important;
-  border: 1px solid var(--vault-input-border) !important;
-  border-radius: 12px !important;
-  background: var(--vault-input-bg) !important;
-  color: var(--vault-input-text) !important;
-  font-size: 14px !important;
-  font-family: inherit !important;
-  font-weight: 500 !important;
-  box-sizing: border-box !important;
-  outline: none !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  height: 48px;
+  width: 100%;
+  padding-inline: 16px;
+  border-radius: 12px;
+  background: var(--vault-input-bg);
+  border: 1px solid var(--vault-input-border);
+  color: var(--vault-input-text);
+  font: 500 14px var(--z7-mono);
+  outline: none;
+  transition: all var(--d-fast, 160ms) ease;
 }
 
 .z7icx__field input::placeholder {
-  color: var(--vault-input-placeholder) !important;
+  color: var(--vault-input-placeholder);
+  font-family: inherit;
 }
 
 .z7icx__field input:focus {
-  border-color: var(--vault-input-focus-border) !important;
-  background: var(--vault-input-focus-bg) !important;
-  box-shadow: 0 0 0 3px var(--vault-input-focus-ring), 0 4px 18px rgba(0, 0, 0, 0.4) !important;
+  background: var(--vault-input-focus-bg);
+  border-color: var(--vault-input-focus-border);
+  box-shadow: 0 0 0 3px var(--vault-input-focus-ring);
 }
 
-/* ==========================================================================
-   3. SUBMIT BUTTON & FEEDBACK
-   ========================================================================== */
+/* Submit Button */
 .z7icx__submit {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  width: 100% !important;
-  height: 52px !important;
-  min-height: 52px !important;
-  margin-top: 6px !important;
-  padding: 0 20px !important;
-  border: 1px solid var(--vault-btn-border) !important;
-  border-radius: 12px !important;
-  background: var(--vault-btn-bg) !important;
-  color: var(--vault-btn-text) !important;
-  font: 700 11px/1 var(--z7-mono) !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  cursor: pointer !important;
-  box-shadow: var(--vault-btn-shadow) !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  height: 48px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 12px;
+  background: var(--vault-btn-bg);
+  border: 1px solid var(--vault-btn-border);
+  color: var(--vault-btn-text);
+  font: 700 12.5px var(--z7-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--vault-btn-shadow);
+  transition: all var(--d-fast, 160ms) var(--ease-cine, ease);
+  margin-top: 6px;
 }
 
 .z7icx__submit:hover {
-  background: var(--vault-btn-hover) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 10px 28px rgba(6, 182, 212, 0.45) !important;
+  background: var(--vault-btn-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px var(--vault-accent-glow);
 }
 
 .z7icx__submit:active {
-  transform: translateY(0) !important;
-}
-
-.z7icx__submit:disabled {
-  opacity: 0.6 !important;
-  cursor: wait !important;
+  transform: translateY(0);
 }
 
 .z7icx__submit b {
-  font-size: 16px !important;
-  font-weight: 700 !important;
-  color: var(--vault-btn-text) !important;
-  transition: transform 0.2s ease !important;
+  font-size: 15px;
+  transition: transform var(--d-fast, 160ms) ease;
 }
 
 .z7icx__submit:hover b {
-  transform: translate(2px, -2px) !important;
+  transform: translate(2px, -2px);
 }
 
-/* Status / Feedback message */
-.z7icx__message {
-  min-height: 18px !important;
-  margin: 2px 0 0 !important;
-  color: #f59e0b !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  text-align: center !important;
+.z7pa-login__message {
+  min-height: 20px;
+  font: 600 12px var(--z7-mono);
+  margin: 4px 0 0;
+  text-align: center;
 }
 
-/* Security Notice */
+.z7pa-login__message.is-error {
+  color: var(--danger, #E0655A);
+}
+
+.z7pa-login__message.is-success {
+  color: var(--ok, #3FA87E);
+}
+
+/* Security Note */
 .z7-login-vault__security {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  margin-top: 4px !important;
-  padding-top: 14px !important;
-  border-top: 1px solid var(--vault-security-border) !important;
-  color: var(--vault-security-text) !important;
-  font: 600 9.5px/1.4 var(--z7-mono) !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--vault-security-border);
+  font: 600 10.5px var(--z7-mono);
+  letter-spacing: 0.08em;
+  color: var(--vault-security-text);
 }
 
 .z7-login-vault__security span {
-  color: var(--vault-emerald) !important;
-  font-size: 7px !important;
-  display: inline-block !important;
-  animation: vaultPulse 2s ease-in-out infinite !important;
+  color: var(--vault-emerald);
+  font-size: 8px;
+  animation: pulse-dot 2s infinite ease-in-out;
 }
 
-@keyframes vaultPulse {
+@keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 0.45; transform: scale(0.85); }
 }
 
-/* ==========================================================================
-   4. AUTHENTICATED STATE — CLIENT FILES TRANSITION
-   ========================================================================== */
-body.z7pa-is-authenticated .z7-login-vault {
-  display: none !important;
-}
-
-body.z7pa-is-authenticated #z7-client-private-files:not([hidden]) {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-body.z7pa-is-authenticated main.subpage-main.z7pa-page {
-  display: block !important;
-  min-height: 80vh !important;
-  padding: 0 !important;
-}
-
-/* ==========================================================================
-   5. MOBILE PERFECTION (< 600px)
-   ========================================================================== */
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .z7-login-vault__card {
-    padding: 28px 20px 22px !important;
-    border-radius: 20px !important;
-  }
-
-  .z7-login-vault__title {
-    font-size: 1.55rem !important;
-  }
-
-  .z7icx__field input {
-    height: 46px !important;
-    min-height: 46px !important;
-  }
-
-  .z7icx__submit {
-    height: 48px !important;
-    min-height: 48px !important;
+    padding: 24px 20px;
+    border-radius: 18px;
   }
 }

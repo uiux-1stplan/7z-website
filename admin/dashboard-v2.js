@@ -46,6 +46,8 @@
     if (pageKicker) pageKicker.textContent = titles[name][0];
     if (pageTitle) pageTitle.textContent = titles[name][1];
     if (pageSubtitle) pageSubtitle.textContent = titles[name][2];
+    const viewport = $(".admin-main-viewport") || $("main");
+    if (viewport) viewport.scrollTop = 0;
     try {
       if (window.location.hash !== `#${name}`) {
         history.replaceState(null, "", `#${name}`);
@@ -93,6 +95,17 @@
       sessionStorage.setItem("z7_clients_active_subtab", name);
     } catch (_) {}
   }
+
+  window.z7SelectView = selectView;
+  window.z7SelectClientsSubtab = selectClientsSubtab;
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-clients-subtab]");
+    if (btn) {
+      e.preventDefault();
+      selectClientsSubtab(btn.dataset.clientsSubtab, true);
+    }
+  });
 
   function parseMoney(value) {
     const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
@@ -383,7 +396,6 @@
       try { return sessionStorage.getItem("z7_clients_active_subtab"); } catch (_) { return "accounts"; }
     })() || "directory";
     selectClientsSubtab(savedSubtab, false);
-    window.z7SelectClientsSubtab = selectClientsSubtab;
   }
 
   document.addEventListener("z7:admin-ready", initialize);

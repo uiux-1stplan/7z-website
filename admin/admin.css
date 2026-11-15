@@ -10,6 +10,11 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Surfaces & Viewport (Solid working surfaces; glass on hero/sidebar only) */
+  --bg-void: var(--7z-void, #020305);
+  --border: var(--line, #1F2A38);
+  --border-subtle: var(--line-faint, #151D28);
+  --border-focus: var(--focus-ring, #8FC0F0);
+  --text-3: var(--text-muted, #7C8CA1);
   --color-bg-viewport: var(--7z-void, #020305);
   --color-bg-sidebar: var(--surface, #0C1119);
   --color-bg-card: var(--surface, #0C1119);
@@ -77,7 +82,7 @@
 
   --z7-font-sans: var(--font-body, system-ui, -apple-system, sans-serif);
   --z7-mono: var(--font-mono, "JetBrains Mono", monospace);
-  --sidebar-w: 260px;
+  --sidebar-w: 268px;
 
   /* Motion Language Tokens mapped to official tokens */
   --dur-instant: var(--d-fast, 160ms);
@@ -134,6 +139,11 @@
 }
 
 :root[data-theme="light"] {
+  --bg-void: var(--bg, #F4F7FA);
+  --border: var(--line, #D2DCE7);
+  --border-subtle: var(--line-faint, #E2E9F1);
+  --border-focus: var(--focus-ring, #17548F);
+  --text-3: var(--text-muted, #5E6C7E);
   --color-bg-viewport: var(--bg, #F4F7FA);
   --color-bg-sidebar: var(--surface, #FFFFFF);
   --color-bg-card: var(--surface, #FFFFFF);
@@ -2182,4 +2192,315 @@ tbody tr:hover {
   .finance-stats {
     grid-template-columns: 1fr !important;
   }
+}
+
+
+/* --------------------------------------------------------------------------
+   V5 ENHANCEMENTS: CLIENT DRAWER OVERLAY, ROOM 2 PREVIEW PLATE, ROOM 3 BULK
+   -------------------------------------------------------------------------- */
+.z7nc-search-box, .z7af-search-box, .access-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 240px;
+}
+
+.z7nc-search-box svg, .z7af-search-box svg, .access-search-box svg {
+  position: absolute;
+  inset-inline-start: 12px;
+  pointer-events: none;
+  color: var(--color-text-muted);
+}
+
+.z7nc-search-input, .z7af-search-input, .access-search-input {
+  width: 100%;
+  height: 38px;
+  padding-inline-start: 36px !important;
+  padding-inline-end: 12px;
+  border-radius: 10px;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  font: 500 12.5px var(--z7-mono);
+  outline: none;
+  transition: all var(--dur-fast) ease;
+}
+
+.z7nc-search-input:focus, .z7af-search-input:focus, .access-search-input:focus {
+  border-color: var(--color-accent-core);
+  box-shadow: 0 0 0 2px var(--color-accent-glow);
+}
+
+/* Slide-Over Glass Creation Drawer Modal */
+.z7nc-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.z7nc-drawer-overlay.hidden {
+  display: none !important;
+}
+
+.z7nc-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 3, 5, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.z7nc-drawer-overlay .z7nc-create-drawer {
+  position: relative;
+  z-index: 1001;
+  width: min(640px, 94vw);
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--color-accent-border);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 32px 80px -20px rgba(0, 0, 0, 0.9), 0 0 40px -10px var(--color-accent-glow);
+  animation: modalPop var(--dur-motion) var(--ease-7z);
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.vip-client-meta-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  margin-bottom: 16px;
+  font: 500 11px var(--z7-mono);
+  color: var(--color-text-muted);
+}
+
+.vip-meta-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-accent-core);
+}
+
+/* Room 2 Filter Strip */
+.z7af-filter-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.z7af-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.z7af-pill {
+  padding: 6px 14px;
+  border-radius: 10px;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-muted);
+  font: 600 11.5px var(--z7-mono);
+  cursor: pointer;
+  transition: all var(--dur-fast) ease;
+}
+
+.z7af-pill:hover {
+  background: var(--color-bg-medium);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.z7af-pill.active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-core);
+  border-color: var(--color-accent-border);
+  box-shadow: 0 0 12px var(--color-accent-glow);
+}
+
+/* Architectural 7Z Preview Header (140px) */
+.bento-file-preview-header {
+  height: 140px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  position: relative;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.bento-file-preview-plate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, rgba(46, 127, 209, 0.12), transparent 70%),
+              linear-gradient(135deg, rgba(234, 241, 248, 0.02), rgba(0, 0, 0, 0.4));
+  overflow: hidden;
+}
+
+.bento-file-preview-plate.video {
+  background: radial-gradient(circle at 50% 40%, rgba(157, 125, 240, 0.18), transparent 70%),
+              linear-gradient(135deg, rgba(157, 125, 240, 0.04), rgba(0, 0, 0, 0.5));
+}
+
+.bento-file-preview-plate.web {
+  background: radial-gradient(circle at 50% 40%, rgba(46, 127, 209, 0.2), transparent 70%),
+              linear-gradient(135deg, rgba(46, 127, 209, 0.04), rgba(0, 0, 0, 0.5));
+}
+
+.bento-file-preview-plate.doc {
+  background: radial-gradient(circle at 50% 40%, rgba(210, 162, 76, 0.18), transparent 70%),
+              linear-gradient(135deg, rgba(210, 162, 76, 0.04), rgba(0, 0, 0, 0.5));
+}
+
+.bento-file-preview-plate.image {
+  background: radial-gradient(circle at 50% 40%, rgba(63, 168, 126, 0.18), transparent 70%),
+              linear-gradient(135deg, rgba(63, 168, 126, 0.04), rgba(0, 0, 0, 0.5));
+}
+
+.preview-cut-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(var(--angle, 68deg), var(--color-accent-border), transparent 70%);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  opacity: 0.6;
+}
+
+.preview-type-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font: 700 8.5px var(--z7-mono);
+  letter-spacing: 0.1em;
+  background: rgba(5, 7, 10, 0.7);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+}
+
+.preview-ext-tag {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font: 800 9px var(--z7-mono);
+  background: var(--color-bg-medium);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-accent-core);
+}
+
+.preview-icon-center {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(12, 17, 25, 0.65);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Room 3 Topbar & Bulk Actions */
+.access-matrix-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.access-bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   FUTURISTIC 7Z DRAG-AND-DROP UPLOAD DOCK (ROOM 2)
+   ========================================================================== */
+.z7-upload-dock {
+  background: var(--surface);
+  border: 1px dashed var(--border-focus);
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+  transition: all var(--dur-normal) var(--ease-liquid);
+  cursor: pointer;
+}
+.z7-upload-dock:hover,
+.z7-upload-dock.dragover {
+  border-color: var(--7z-blue-500);
+  background: var(--surface-raised);
+  box-shadow: 0 0 28px rgba(46, 127, 209, 0.16);
+}
+.z7-upload-dock__icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--surface-hi);
+  color: var(--7z-blue-500);
+  border: 1px solid var(--border);
+}
+.z7-upload-dock__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.z7-upload-dock__desc {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 14px;
+}
+.z7-upload-dock__badges {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.z7-upload-dock__badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-hi);
+  color: var(--text-2);
+  border: 1px solid var(--border-subtle);
+  font-variant-numeric: tabular-nums;
 }

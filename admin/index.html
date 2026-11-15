@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="/assets/css/core-system.css">
   <link rel="stylesheet" href="/assets/css/app-v2.css">
   <link rel="stylesheet" href="/assets/css/cinematic-overhaul.css?v=20261112-session-cinematic-1">
-  <link rel="stylesheet" href="/admin/brand/tokens/7z-fonts.css?v=20261115-dna-v4">
-  <link rel="stylesheet" href="/admin/brand/tokens/7z-tokens.v3.css?v=20261115-dna-v4">
-  <link rel="stylesheet" href="/admin/brand/tokens/7z-mark.css?v=20261115-dna-v4">
-  <link rel="stylesheet" href="/admin/brand/tokens/7z-glass.css?v=20261115-dna-v4">
-  <link rel="stylesheet" href="/admin/admin.css?v=20261115-dna-v4">
+  <link rel="stylesheet" href="/admin/brand/tokens/7z-fonts.css?v=20261116-7z-dna-v5">
+  <link rel="stylesheet" href="/admin/brand/tokens/7z-tokens.v3.css?v=20261116-7z-dna-v5">
+  <link rel="stylesheet" href="/admin/brand/tokens/7z-mark.css?v=20261116-7z-dna-v5">
+  <link rel="stylesheet" href="/admin/brand/tokens/7z-glass.css?v=20261116-7z-dna-v5">
+  <link rel="stylesheet" href="/admin/admin.css?v=20261116-7z-dna-v5">
 </head>
 
 <body class="z7-admin-shell">
@@ -589,6 +589,21 @@
             </div>
           </div>
           <div id="z7af-message"></div>
+                    <!-- Interactive Drag-and-Drop Upload Dock -->
+          <div class="z7-upload-dock" id="admin-files-dropzone" role="region" aria-label="Media asset upload dock">
+            <div class="z7-upload-dock__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="z7-upload-dock__title">Drag &amp; drop cinematic deliverable assets here</div>
+            <div class="z7-upload-dock__desc">or click to browse local files for 256-bit secure cloud vault delivery</div>
+            <div class="z7-upload-dock__badges">
+              <span class="z7-upload-dock__badge">4K VIDEO (MP4, MOV)</span>
+              <span class="z7-upload-dock__badge">3D / WEB BUNDLE (ZIP, HTML)</span>
+              <span class="z7-upload-dock__badge">EXECUTIVE PDF</span>
+              <span class="z7-upload-dock__badge">HIGH-RES VISUAL (PNG, JPG)</span>
+            </div>
+            <input type="file" id="admin-vault-file-input" style="display:none;" multiple>
+          </div>
           <div id="client-files-mount"></div>
         </section>
       </div>
@@ -606,10 +621,20 @@
             </div>
             <button class="button button-secondary" id="access-matrix-refresh" type="button">Refresh access ⟳</button>
           </div>
-          <div class="access-client-picker">
-            <label for="access-client-select">SELECT CLIENT ACCOUNT</label>
-            <div class="select-wrapper">
-              <select id="access-client-select"><option value="">Loading client accounts…</option></select>
+          <div class="access-matrix-topbar">
+            <div class="access-client-picker">
+              <label for="access-client-select">SELECT CLIENT ACCOUNT</label>
+              <div class="select-wrapper">
+                <select id="access-client-select"><option value="">Loading client accounts…</option></select>
+              </div>
+            </div>
+            <div class="access-search-box">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="search" id="access-file-search" class="access-search-input" placeholder="Filter files in matrix…" aria-label="Filter matrix files">
+            </div>
+            <div class="access-bulk-actions">
+              <button type="button" class="button button-secondary" id="access-grant-all">Grant All View</button>
+              <button type="button" class="button button-secondary" id="access-revoke-all">Revoke All</button>
             </div>
           </div>
           <div id="access-matrix-status" class="access-matrix-status" role="status"></div>
@@ -816,16 +841,16 @@
   </div>
 </dialog>
 
-<script src="/admin/admin.js?v=20261115-dna-v4"></script>
-<script src="/admin/course-engine.js?v=20261115-dna-v4"></script>
-<script src="/admin/dashboard-v2.js?v=20261115-dna-v4"></script>
-<script src="/admin/private-file-upload.bundle.js?v=20261115-dna-v4"></script>
-<script src="/admin/native-clients.js?v=20261115-dna-v4"></script>
-<script src="/admin/admin-files.js?v=20261115-dna-v4"></script>
-<script src="/admin/admin-workspace-tools.js?v=20261115-dna-v4"></script>
+<script src="/admin/admin.js?v=20261116-7z-dna-v5"></script>
+<script src="/admin/course-engine.js?v=20261116-7z-dna-v5"></script>
+<script src="/admin/dashboard-v2.js?v=20261116-7z-dna-v5"></script>
+<script src="/admin/private-file-upload.bundle.js?v=20261116-7z-dna-v5"></script>
+<script src="/admin/native-clients.js?v=20261116-7z-dna-v5"></script>
+<script src="/admin/admin-files.js?v=20261116-7z-dna-v5"></script>
+<script src="/admin/admin-workspace-tools.js?v=20261116-7z-dna-v5"></script>
 
 
-<script src="/admin/brand/tokens/7z-glass.js?v=20261115-dna-v4"></script>
+<script src="/admin/brand/tokens/7z-glass.js?v=20261116-7z-dna-v5"></script>
 <script src="/assets/js/app-v2.js?v=20261112-admin-motion-restore-1" defer></script>
 </body>
 </html>

@@ -102,28 +102,29 @@
     const formattedSize = formatBytes(file.sizeBytes);
 
     const article = D.createElement("article");
-    article.className = "z7cpf-card";
+    article.className = "z7cpf-card showroom-card";
 
     let actionsHtml = "";
     if (file.canView !== false) {
-      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--open" href="/api/private-auth/portal-file?id=${id}&mode=view" target="_blank" rel="noopener"><span>PREVIEW</span><b aria-hidden="true">↗</b></a>`;
+      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--open" href="/api/private-auth/portal-file?id=${id}&mode=view" target="_blank" rel="noopener"><span>Preview ↗</span></a>`;
     }
     if (file.canDownload === true) {
-      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--download" href="/api/private-auth/portal-file?id=${id}&mode=download"><span>DOWNLOAD</span><b aria-hidden="true">⤓</b></a>`;
+      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--download" href="/api/private-auth/portal-file?id=${id}&mode=download"><span>Download ⤓</span></a>`;
     }
 
     article.innerHTML = `
-      <div class="z7cpf-card__top">
-        <div class="z7cpf-card__icon ${meta.badgeClass}" aria-hidden="true">
-          ${meta.iconSvg}
+      <div class="showroom-card__preview">
+        <div class="showroom-preview-plate ${meta.badgeClass}">
+          <span class="showroom-prism-cut" aria-hidden="true"></span>
+          <span class="showroom-pill ${meta.badgeClass}">${meta.typeLabel}</span>
+          <div class="showroom-icon-center" aria-hidden="true">${meta.iconSvg}</div>
         </div>
-        <span class="z7cpf-card__pill ${meta.badgeClass}">${meta.typeLabel}</span>
       </div>
       <div class="z7cpf-card__body">
         <h3 class="z7cpf-card__title" title="${fileName}">${fileName}</h3>
         <div class="z7cpf-card__meta">
           <span class="z7cpf-card__size"><i aria-hidden="true">💾</i> ${formattedSize}</span>
-          <span class="z7cpf-card__verified"><i aria-hidden="true">✓</i> Protected</span>
+          <span class="z7cpf-card__verified"><i aria-hidden="true">✓</i> Protected Vault Asset</span>
         </div>
       </div>
       <div class="z7cpf-card__actions">

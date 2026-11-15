@@ -154,39 +154,29 @@
 
       panel.innerHTML = `
         <div class="z7af-head">
-
           <div>
-
-            <div class="page-kicker">
-              PRIVATE STORAGE
-            </div>
-
-            <h2>
-              File Library
-            </h2>
-
-            <p>
-              Open or download every private file
-              uploaded through the administration portal.
-            </p>
-
+            <div class="page-kicker">CINEMATIC MEDIA VAULT / DELIVERABLES</div>
+            <h2>Media &amp; Deliverables Library</h2>
+            <p>Govern 4K video cuts, 3D Web bundles, interactive PDFs, and master exports.</p>
           </div>
-
-
-          <button
-            type="button"
-            id="z7af-refresh"
-            class="z7af-refresh">
-            REFRESH
-          </button>
-
+          <button type="button" id="z7af-refresh" class="z7af-refresh">REFRESH</button>
         </div>
 
-
-        <div
-          id="z7af-message"
-          class="z7af-message">
+        <div class="z7af-filter-strip" role="toolbar" aria-label="Media vault filters">
+          <div class="z7af-pills">
+            <button type="button" class="z7af-pill active" data-z7af-filter="all">All</button>
+            <button type="button" class="z7af-pill" data-z7af-filter="video">Video</button>
+            <button type="button" class="z7af-pill" data-z7af-filter="web">3D / Web</button>
+            <button type="button" class="z7af-pill" data-z7af-filter="pdf">Executive PDF</button>
+            <button type="button" class="z7af-pill" data-z7af-filter="image">Images</button>
+          </div>
+          <div class="z7af-search-box">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="search" id="z7af-search-input" class="z7af-search-input" placeholder="Search deliverables by filename or extension…" aria-label="Search files">
+          </div>
         </div>
+
+        <div id="z7af-message" class="z7af-message"></div>
 
 
         <div
@@ -312,28 +302,37 @@
       }
 
 
-      list.innerHTML =
-        files.map(file => {
+      let cachedFiles = files;
+
+      function renderFilteredFiles(items) {
+        if (!items.length) {
+          list.innerHTML = `<div class="z7af-empty">No matching deliverables found.</div>`;
+          return;
+        }
+
+        list.innerHTML = items.map(file => {
           const cat = getFileCategory(file.name, file.contentType);
           const rawDate = file.uploadedAt || file.created_at || file.createdAt;
           const dateStr = rawDate && !isNaN(Date.parse(rawDate))
             ? new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(rawDate))
             : "Vault Deliverable";
+          const ext = String(file.name || "").split(".").pop().toUpperCase().slice(0, 5) || "FILE";
 
           return `
             <article class="z7af-file bento-file-card" data-tone="${cat.tone}">
-              <div class="bento-file-card__top">
-                <div class="bento-file-badge bento-file-badge--${cat.tone}">
-                  <span class="badge-icon" aria-hidden="true">${cat.icon}</span>
-                  <span class="badge-text">${cat.label}</span>
+              <div class="bento-file-preview-header">
+                <div class="bento-file-preview-plate ${cat.tone}">
+                  <span class="preview-cut-accent" aria-hidden="true"></span>
+                  <span class="preview-type-badge">${cat.label}</span>
+                  <span class="preview-ext-tag">${ext}</span>
+                  <div class="preview-icon-center" aria-hidden="true">${cat.icon}</div>
                 </div>
-                <span class="bento-file-size">${esc(bytes(file.sizeBytes))}</span>
               </div>
 
               <div class="bento-file-card__body">
                 <strong class="bento-file-title" title="${esc(file.name)}">${esc(file.name)}</strong>
                 <div class="bento-file-meta">
-                  <span class="meta-type">${esc(file.contentType || "Asset")}</span>
+                  <span class="meta-size">${esc(bytes(file.sizeBytes))}</span>
                   <span class="meta-dot">·</span>
                   <span class="meta-date">${esc(dateStr)}</span>
                 </div>
@@ -346,7 +345,7 @@
                 </button>
                 <button type="button" class="z7af-download bento-action-btn" data-download="${esc(file.id)}" data-name="${esc(file.name)}" title="Download file">
                   <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span>Download</span>
+                  <span>Download ⤓</span>
                 </button>
                 <button type="button" class="z7af-manage bento-action-btn" data-rename="${esc(file.id)}" data-name="${esc(file.name)}" title="Rename file">
                   <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
@@ -361,47 +360,41 @@
           `;
         }).join("");
 
-      list.querySelectorAll("[data-open]")
-        .forEach(
-          button => {
+        wireActionButtons();
+      }
 
-            button.addEventListener(
-              "click",
-              () =>
-                openFile(
-                  button.dataset.open,
-                  button.dataset.name,
-                  button.dataset.type
-                )
-            );
-          }
-        );
+      function wireActionButtons() {
+        list.querySelectorAll("[data-open]").forEach(button => {
+          button.addEventListener("click", () => openFile(button.dataset.open, button.dataset.name, button.dataset.type));
+        });
+        list.querySelectorAll("[data-download]").forEach(button => {
+          button.addEventListener("click", () => downloadFile(button.dataset.download, button.dataset.name, button));
+        });
+        list.querySelectorAll("[data-rename]").forEach(button => {
+          button.addEventListener("click", () => openRenameDialog(button.dataset.rename, button.dataset.name));
+        });
+        list.querySelectorAll("[data-remove]").forEach(button => {
+          button.addEventListener("click", () => removeFile(button.dataset.remove, button.dataset.name, button));
+        });
+      }
 
+      window.__z7af_apply_filter = (category, query) => {
+        let filtered = cachedFiles;
+        if (category && category !== "all") {
+          filtered = filtered.filter(f => {
+            const cat = getFileCategory(f.name, f.contentType);
+            return cat.tone === category;
+          });
+        }
+        if (query) {
+          filtered = filtered.filter(f => String(f.name || "").toLowerCase().includes(query));
+        }
+        renderFilteredFiles(filtered);
+      };
 
-      list
-        .querySelectorAll(
-          "[data-download]"
-        )
-        .forEach(
-          button => {
-
-            button.addEventListener(
-              "click",
-              () =>
-                downloadFile(
-                  button.dataset.download,
-                  button.dataset.name,
-                  button
-                )
-            );
-          }
-        );
-
-      list.querySelectorAll("[data-rename]").forEach(button => button.addEventListener("click", () => openRenameDialog(button.dataset.rename, button.dataset.name)));
-      list.querySelectorAll("[data-remove]").forEach(button => button.addEventListener("click", () => removeFile(button.dataset.remove, button.dataset.name, button)));
-
-
-    } catch (error) {
+      renderFilteredFiles(files);
+      return;
+} catch (error) {
 
       message.textContent =
         error.message ||
@@ -779,8 +772,7 @@
     ) {
 
       if (
-        window.Clerk?.user &&
-        window.Clerk?.session
+        (window.Clerk?.user || !document.querySelector('#app')?.classList.contains('hidden'))
       ) {
 
         ensurePanel();
@@ -823,6 +815,17 @@
     );
   }
 
+
+
+  document.addEventListener("z7:admin-ready", async () => {
+    ensurePanel();
+    await loadFiles();
+  });
+
+  window.z7EnsureAdminFilesPanel = async () => {
+    ensurePanel();
+    return loadFiles();
+  };
 
   if (
     document.readyState ===
