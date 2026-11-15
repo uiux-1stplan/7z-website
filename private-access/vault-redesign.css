@@ -1,63 +1,95 @@
 /* ==========================================================================
-   7Z MAGIC — CINEMATIC LUXURY CLIENT VAULT & AUTHENTICATION GATEWAY
-   Ground-Up Rewrite: Complete Zero-Leakage Dark/Light Sync
+   7Z MAGIC — CINEMATIC CLIENT LOGIN PORTAL & VAULT GATEWAY
+   Minimalist Dark/Light Luxury — Executive Platinum Edition
+   Zero Gaudy Gradients · High-End Focus States · 60fps Mobile Performance
    ========================================================================== */
 
 :root {
-  --vault-gold: #d4af37;
-  --vault-gold-light: #f5d77f;
-  --vault-gold-glow: rgba(212, 175, 55, 0.28);
-  --vault-gold-soft: rgba(212, 175, 55, 0.12);
-  --vault-bg-deep: #07090e;
-  --vault-card-bg: linear-gradient(160deg, rgba(16, 21, 31, 0.94), rgba(7, 9, 14, 0.98));
-  --vault-border: rgba(212, 175, 55, 0.32);
-  --vault-border-subtle: rgba(255, 255, 255, 0.08);
-  --vault-title: #ffffff;
+  /* Surface & Backgrounds: Deep Obsidian Slate */
+  --vault-bg: #090d16;
+  --vault-card-bg: linear-gradient(165deg, rgba(17, 24, 39, 0.88), rgba(9, 13, 22, 0.96));
+  --vault-card-border: rgba(148, 163, 184, 0.16);
+  --vault-card-shadow: 0 32px 84px -24px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  /* Typography: Crisp Platinum & Muted Slate */
+  --vault-title: #f8fafc;
   --vault-text: #f1f5f9;
-  --vault-intro: rgba(232, 232, 228, 0.72);
-  --vault-input-bg: rgba(5, 7, 10, 0.88);
-  --vault-input-text: #ffffff;
-  --vault-input-border: rgba(255, 255, 255, 0.14);
-  --vault-input-placeholder: rgba(255, 255, 255, 0.32);
-  --vault-input-focus-bg: rgba(8, 11, 16, 0.98);
-  --vault-security-border: rgba(255, 255, 255, 0.08);
-  --vault-security-text: rgba(255, 255, 255, 0.5);
+  --vault-text-muted: #94a3b8;
+  --vault-text-subtle: #64748b;
+  --vault-accent: #d4af37;
+  --vault-accent-soft: rgba(212, 175, 55, 0.08);
+  --vault-accent-border: rgba(212, 175, 55, 0.28);
+
+  /* Input Fields: Deep Slate Surface */
+  --vault-input-bg: rgba(6, 9, 15, 0.85);
+  --vault-input-text: #f8fafc;
+  --vault-input-border: rgba(148, 163, 184, 0.18);
+  --vault-input-placeholder: rgba(148, 163, 184, 0.42);
+  --vault-input-focus-border: rgba(212, 175, 55, 0.55);
+  --vault-input-focus-ring: rgba(212, 175, 55, 0.12);
+  --vault-input-focus-bg: rgba(8, 12, 20, 0.96);
+
+  /* Submit Button: Executive Dark Slate & Platinum/Gold */
+  --vault-btn-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --vault-btn-hover: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  --vault-btn-border: rgba(212, 175, 55, 0.4);
+  --vault-btn-text: #f8fafc;
+  --vault-btn-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  /* Security Pill */
   --vault-emerald: #10b981;
-  --z7-mono: "SFMono-Regular", Consolas, Menlo, Monaco, monospace;
+  --vault-emerald-glow: rgba(16, 185, 129, 0.3);
+  --vault-security-border: rgba(148, 163, 184, 0.12);
+  --vault-security-text: #64748b;
+
+  --z7-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
 }
 
+/* Light Theme Overrides (Minimalist Porcelain Slate) */
 html[data-theme="light"] {
-  --vault-gold: #b8860b;
-  --vault-gold-light: #996515;
-  --vault-gold-glow: rgba(184, 134, 11, 0.18);
-  --vault-gold-soft: rgba(184, 134, 11, 0.10);
-  --vault-bg-deep: #f8fafc;
-  --vault-card-bg: linear-gradient(160deg, #ffffff, #f1f5f9);
-  --vault-border: rgba(184, 134, 11, 0.38);
-  --vault-border-subtle: rgba(15, 23, 42, 0.08);
+  --vault-bg: #f8fafc;
+  --vault-card-bg: linear-gradient(165deg, #ffffff, #f8fafc);
+  --vault-card-border: rgba(15, 23, 42, 0.09);
+  --vault-card-shadow: 0 20px 50px -15px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
   --vault-title: #0f172a;
   --vault-text: #0f172a;
-  --vault-intro: #475569;
+  --vault-text-muted: #475569;
+  --vault-text-subtle: #64748b;
+  --vault-accent: #b3881e;
+  --vault-accent-soft: rgba(179, 136, 30, 0.08);
+  --vault-accent-border: rgba(179, 136, 30, 0.25);
+
   --vault-input-bg: #ffffff;
   --vault-input-text: #0f172a;
-  --vault-input-border: rgba(15, 23, 42, 0.16);
+  --vault-input-border: rgba(15, 23, 42, 0.15);
   --vault-input-placeholder: rgba(15, 23, 42, 0.38);
+  --vault-input-focus-border: rgba(179, 136, 30, 0.55);
+  --vault-input-focus-ring: rgba(179, 136, 30, 0.12);
   --vault-input-focus-bg: #f8fafc;
+
+  --vault-btn-bg: #0f172a;
+  --vault-btn-hover: #1e293b;
+  --vault-btn-border: rgba(179, 136, 30, 0.4);
+  --vault-btn-text: #ffffff;
+  --vault-btn-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
+
+  --vault-emerald: #059669;
+  --vault-emerald-glow: rgba(5, 150, 105, 0.2);
   --vault-security-border: rgba(15, 23, 42, 0.08);
   --vault-security-text: #64748b;
-  --vault-emerald: #059669;
 }
 
 /* Page Base */
 html[data-z7-core] body.z7pa-page {
-  background-color: var(--vault-bg-deep) !important;
+  background-color: var(--vault-bg) !important;
   color: var(--vault-text) !important;
   min-height: 100vh !important;
   overflow-x: hidden !important;
   transition: background-color 0.25s ease, color 0.25s ease !important;
 }
 
-/* Background Atmosphere */
+/* Background Atmosphere & Clean Grain */
 body.z7pa-page #atmosphere {
   position: fixed !important;
   inset: 0 !important;
@@ -65,7 +97,7 @@ body.z7pa-page #atmosphere {
   height: 100vh !important;
   pointer-events: none !important;
   z-index: 0 !important;
-  opacity: 0.35 !important;
+  opacity: 0.28 !important;
 }
 
 body.z7pa-page .grain {
@@ -73,18 +105,18 @@ body.z7pa-page .grain {
   inset: 0 !important;
   pointer-events: none !important;
   z-index: 1 !important;
-  opacity: 0.12 !important;
+  opacity: 0.08 !important;
   background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 0);
   background-size: 24px 24px;
 }
 
 html[data-theme="light"] body.z7pa-page .grain {
-  opacity: 0.06 !important;
+  opacity: 0.04 !important;
   background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 0);
 }
 
 /* ==========================================================================
-   1. UNAUTHENTICATED STATE — ICONIC CENTERED LOGIN GATEWAY
+   1. UNAUTHENTICATED STATE — PERFECTLY CENTERED LOGIN GATEWAY
    ========================================================================== */
 html[data-z7-core] body:not(.z7pa-is-authenticated) main.subpage-main.z7pa-page,
 html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page {
@@ -94,172 +126,157 @@ html.z7icx-preauth[data-z7-core] main.subpage-main.z7pa-page {
   justify-content: center !important;
   min-height: 100vh !important;
   min-height: 100dvh !important;
-  padding: clamp(80px, 12vh, 120px) var(--z7-gutter, 20px) 40px !important;
+  padding: 40px 20px !important;
   box-sizing: border-box !important;
   position: relative !important;
   z-index: 10 !important;
 }
 
-/* Hide legacy marketing sections before login */
+/* Hide background marketing sections before login */
 html[data-z7-core] body:not(.z7pa-is-authenticated) :is(.z7pa-hero, .z7pa-library, .z7pa-policy, #z7-client-private-files),
 html.z7icx-preauth[data-z7-core] :is(.z7pa-hero, .z7pa-library, .z7pa-policy, #z7-client-private-files) {
   display: none !important;
 }
 
-/* Vault Container Card */
+/* Vault Outer Container */
 html[data-z7-core] body:not(.z7pa-is-authenticated) .z7-login-vault,
 html.z7icx-preauth[data-z7-core] .z7-login-vault,
 .z7-login-vault[data-z7pa-login-panel] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  width: min(500px, 100%) !important;
+  width: min(460px, 100%) !important;
   margin: auto !important;
   position: relative !important;
   z-index: 20 !important;
-  border: 1px solid var(--vault-border) !important;
-  border-radius: 28px !important;
-  background: var(--vault-card-bg) !important;
-  box-shadow: 
-    0 35px 90px -25px rgba(0, 0, 0, 0.85),
-    0 0 60px -20px var(--vault-gold-glow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(28px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(140%) !important;
-  overflow: hidden !important;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
 }
 
-html[data-theme="light"] .z7-login-vault[data-z7pa-login-panel] {
-  box-shadow: 
-    0 25px 70px -20px rgba(15, 23, 42, 0.15),
-    0 0 40px -15px var(--vault-gold-glow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
-}
-
-/* Aura Background Glow */
+/* Ambient Aura Glow behind the card */
 .z7-login-vault__aura {
   position: absolute !important;
-  width: 26rem !important;
-  height: 26rem !important;
-  right: -25% !important;
-  top: -25% !important;
-  border-radius: 50% !important;
-  background: radial-gradient(circle, var(--vault-gold-glow) 0%, rgba(79, 140, 255, 0.08) 55%, transparent 72%) !important;
+  inset: -20px !important;
+  border-radius: 40px !important;
+  background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05) 0%, rgba(56, 189, 248, 0.03) 45%, transparent 70%) !important;
+  filter: blur(28px) !important;
   pointer-events: none !important;
-  filter: blur(48px) !important;
-  z-index: 0 !important;
+  z-index: -1 !important;
 }
 
-/* Card Inner Padding & Flow */
+html[data-theme="light"] .z7-login-vault__aura {
+  background: radial-gradient(circle at 50% 50%, rgba(179, 136, 30, 0.04) 0%, transparent 65%) !important;
+}
+
+/* Glassmorphism Luxury Card */
 .z7-login-vault__card {
   position: relative !important;
-  z-index: 1 !important;
-  padding: clamp(28px, 6vw, 42px) clamp(22px, 5vw, 36px) !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 14px !important;
-  text-align: start !important;
+  gap: 16px !important;
+  padding: 36px 32px 28px !important;
+  border: 1px solid var(--vault-card-border) !important;
+  border-radius: 24px !important;
+  background: var(--vault-card-bg) !important;
+  box-shadow: var(--vault-card-shadow) !important;
+  backdrop-filter: blur(24px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(130%) !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
 }
 
-/* Brand Mark & Badge */
+/* Brand Emblem & Pill */
 .z7-login-vault__brand {
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
-  justify-content: space-between !important;
-  margin-bottom: 6px !important;
+  gap: 12px !important;
 }
 
 .z7-login-vault__mark {
-  display: grid !important;
-  place-items: center !important;
-  width: 44px !important;
-  height: 48px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.2s ease !important;
 }
 
 .z7-login-vault__mark img {
-  width: 36px !important;
-  height: 42px !important;
+  width: 48px !important;
+  height: 54px !important;
   object-fit: contain !important;
-  filter: drop-shadow(0 0 14px var(--vault-gold-glow)) !important;
-}
-
-html[data-theme="light"] .z7-login-vault__mark img {
-  filter: drop-shadow(0 0 10px rgba(184, 134, 11, 0.35)) !important;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4)) !important;
 }
 
 .z7-login-vault__badge {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
-  min-height: 28px !important;
-  padding: 0 12px !important;
-  border: 1px solid var(--vault-border) !important;
+  gap: 6px !important;
+  padding: 4px 12px !important;
+  border: 1px solid var(--vault-accent-border) !important;
   border-radius: 999px !important;
-  background: var(--vault-gold-soft) !important;
-  color: var(--vault-gold) !important;
-  font: 700 9.5px var(--z7-mono) !important;
-  letter-spacing: 0.1em !important;
+  background: var(--vault-accent-soft) !important;
+  color: var(--vault-accent) !important;
+  font: 700 8.5px/1.2 var(--z7-mono) !important;
+  letter-spacing: 0.14em !important;
   text-transform: uppercase !important;
 }
 
 .z7-login-vault__badge i {
-  width: 6px !important;
-  height: 6px !important;
+  width: 5px !important;
+  height: 5px !important;
   border-radius: 50% !important;
-  background: var(--vault-emerald) !important;
-  box-shadow: 0 0 8px var(--vault-emerald) !important;
-  display: inline-block !important;
+  background: var(--vault-accent) !important;
 }
 
-/* Typography */
-.z7-login-vault .z7icx__form-kicker {
+/* Headings & Kickers */
+.z7icx__form-kicker {
   margin: 0 !important;
-  color: var(--vault-gold) !important;
+  color: var(--vault-text-subtle) !important;
   font: 700 9px/1.4 var(--z7-mono) !important;
-  letter-spacing: 0.22em !important;
+  letter-spacing: 0.2em !important;
   text-transform: uppercase !important;
 }
 
 .z7-login-vault__title {
   margin: 0 !important;
   color: var(--vault-title) !important;
-  font-size: clamp(1.75rem, 4vw, 2.25rem) !important;
+  font-size: clamp(1.65rem, 3.5vw, 2.1rem) !important;
   font-weight: 600 !important;
   line-height: 1.15 !important;
   letter-spacing: -0.035em !important;
 }
 
-.z7-login-vault .z7icx__intro {
-  margin: 0 0 6px !important;
-  color: var(--vault-intro) !important;
-  font-size: 0.9rem !important;
-  line-height: 1.55 !important;
+.z7icx__intro {
+  margin: 0 0 4px !important;
+  color: var(--vault-text-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
 }
 
-/* Login Form Structure */
-.z7-login-vault .z7icx__form {
+/* ==========================================================================
+   2. FORM INPUTS & UX FOCUS STATES
+   ========================================================================== */
+.z7icx__form {
   display: flex !important;
   flex-direction: column !important;
   gap: 14px !important;
   margin: 0 !important;
+  text-align: left !important;
 }
 
-.z7-login-vault .z7icx__field {
+.z7icx__field {
   display: flex !important;
   flex-direction: column !important;
-  gap: 7px !important;
+  gap: 6px !important;
   margin: 0 !important;
 }
 
-.z7-login-vault .z7icx__field > span {
-  color: var(--vault-gold) !important;
-  font: 700 9.5px/1.2 var(--z7-mono) !important;
-  letter-spacing: 0.16em !important;
+.z7icx__field > span {
+  color: var(--vault-text-muted) !important;
+  font: 700 9px/1.2 var(--z7-mono) !important;
+  letter-spacing: 0.14em !important;
   text-transform: uppercase !important;
 }
 
-.z7-login-vault .z7icx__field input {
+.z7icx__field input {
   width: 100% !important;
   height: 48px !important;
   min-height: 48px !important;
@@ -268,24 +285,28 @@ html[data-theme="light"] .z7-login-vault__mark img {
   border-radius: 12px !important;
   background: var(--vault-input-bg) !important;
   color: var(--vault-input-text) !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
   box-sizing: border-box !important;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+  outline: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.z7-login-vault .z7icx__field input::placeholder {
+.z7icx__field input::placeholder {
   color: var(--vault-input-placeholder) !important;
 }
 
-.z7-login-vault .z7icx__field input:focus {
-  border-color: var(--vault-gold) !important;
+.z7icx__field input:focus {
+  border-color: var(--vault-input-focus-border) !important;
   background: var(--vault-input-focus-bg) !important;
-  box-shadow: 0 0 0 3px var(--vault-gold-soft) !important;
-  outline: none !important;
+  box-shadow: 0 0 0 3px var(--vault-input-focus-ring), 0 4px 16px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Submit Button */
-.z7-login-vault .z7icx__submit {
+/* ==========================================================================
+   3. SUBMIT BUTTON & FEEDBACK
+   ========================================================================== */
+.z7icx__submit {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -294,42 +315,49 @@ html[data-theme="light"] .z7-login-vault__mark img {
   min-height: 50px !important;
   margin-top: 6px !important;
   padding: 0 20px !important;
-  border: none !important;
+  border: 1px solid var(--vault-btn-border) !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%) !important;
-  color: #07090e !important;
-  font: 700 11.5px/1 var(--z7-mono) !important;
+  background: var(--vault-btn-bg) !important;
+  color: var(--vault-btn-text) !important;
+  font: 700 11px/1 var(--z7-mono) !important;
   letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
   cursor: pointer !important;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35) !important;
-  transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease !important;
+  box-shadow: var(--vault-btn-shadow) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.z7-login-vault .z7icx__submit:hover {
-  transform: translateY(-2px) !important;
-  filter: brightness(1.1) !important;
-  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.48) !important;
+.z7icx__submit:hover {
+  background: var(--vault-btn-hover) !important;
+  border-color: var(--vault-accent) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
 }
 
-.z7-login-vault .z7icx__submit:active {
+.z7icx__submit:active {
   transform: translateY(0) !important;
 }
 
-.z7-login-vault .z7icx__submit:disabled {
+.z7icx__submit:disabled {
   opacity: 0.6 !important;
   cursor: wait !important;
 }
 
-.z7-login-vault .z7icx__submit b {
-  font-size: 18px !important;
+.z7icx__submit b {
+  font-size: 16px !important;
   font-weight: 400 !important;
+  color: var(--vault-accent) !important;
+  transition: transform 0.2s ease !important;
 }
 
-/* Feedback message */
-.z7-login-vault .z7icx__message {
+.z7icx__submit:hover b {
+  transform: translate(2px, -2px) !important;
+}
+
+/* Status / Feedback message */
+.z7icx__message {
   min-height: 18px !important;
-  margin: 4px 0 0 !important;
+  margin: 2px 0 0 !important;
   color: #f59e0b !important;
   font-size: 12px !important;
   font-weight: 500 !important;
@@ -342,22 +370,29 @@ html[data-theme="light"] .z7-login-vault__mark img {
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  margin-top: 6px !important;
+  margin-top: 4px !important;
   padding-top: 14px !important;
   border-top: 1px solid var(--vault-security-border) !important;
   color: var(--vault-security-text) !important;
   font: 600 9.5px/1.4 var(--z7-mono) !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
 }
 
 .z7-login-vault__security span {
   color: var(--vault-emerald) !important;
-  font-size: 8px !important;
+  font-size: 7px !important;
+  display: inline-block !important;
+  animation: vaultPulse 2s ease-in-out infinite !important;
+}
+
+@keyframes vaultPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
 }
 
 /* ==========================================================================
-   2. AUTHENTICATED STATE — CLIENT FILES WORKSPACE TRANSITION
+   4. AUTHENTICATED STATE — CLIENT FILES TRANSITION
    ========================================================================== */
 body.z7pa-is-authenticated .z7-login-vault {
   display: none !important;
@@ -375,12 +410,26 @@ body.z7pa-is-authenticated main.subpage-main.z7pa-page {
   padding: 0 !important;
 }
 
-/* Responsive adjustments */
+/* ==========================================================================
+   5. MOBILE PERFECTION (< 600px)
+   ========================================================================== */
 @media (max-width: 600px) {
   .z7-login-vault__card {
-    padding: 24px 18px 20px !important;
+    padding: 28px 20px 22px !important;
+    border-radius: 20px !important;
   }
+
   .z7-login-vault__title {
-    font-size: 1.65rem !important;
+    font-size: 1.55rem !important;
+  }
+
+  .z7icx__field input {
+    height: 46px !important;
+    min-height: 46px !important;
+  }
+
+  .z7icx__submit {
+    height: 48px !important;
+    min-height: 48px !important;
   }
 }
