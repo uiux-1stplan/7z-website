@@ -1,78 +1,85 @@
 /* ==========================================================================
    7Z MAGIC — CINEMATIC CLIENT LOGIN PORTAL & VAULT GATEWAY
-   Minimalist Dark/Light Luxury — Executive Platinum Edition
-   Zero Gaudy Gradients · High-End Focus States · 60fps Mobile Performance
+   Ultra-Modern Dark Glassmorphism with Neon Cyan / Teal Accents
+   Zero Old Muddy Colors · High-End Focus States · 60fps Mobile Performance
    ========================================================================== */
 
 :root {
-  /* Surface & Backgrounds: Deep Obsidian Slate */
-  --vault-bg: #090d16;
-  --vault-card-bg: linear-gradient(165deg, rgba(17, 24, 39, 0.88), rgba(9, 13, 22, 0.96));
-  --vault-card-border: rgba(148, 163, 184, 0.16);
-  --vault-card-shadow: 0 32px 84px -24px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  /* Surface & Backgrounds: Deep Obsidian Space */
+  --vault-bg: #07090e;
+  --vault-card-bg: rgba(13, 19, 33, 0.78);
+  --vault-card-border: rgba(255, 255, 255, 0.08);
+  --vault-card-shadow: 0 32px 84px -24px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
   /* Typography: Crisp Platinum & Muted Slate */
   --vault-title: #f8fafc;
   --vault-text: #f1f5f9;
   --vault-text-muted: #94a3b8;
   --vault-text-subtle: #64748b;
-  --vault-accent: #d4af37;
-  --vault-accent-soft: rgba(212, 175, 55, 0.08);
-  --vault-accent-border: rgba(212, 175, 55, 0.28);
 
-  /* Input Fields: Deep Slate Surface */
-  --vault-input-bg: rgba(6, 9, 15, 0.85);
+  /* Neon Cyan Accents */
+  --vault-accent: #00f2fe;
+  --vault-teal: #06b6d4;
+  --vault-accent-soft: rgba(6, 182, 212, 0.12);
+  --vault-accent-border: rgba(6, 182, 212, 0.32);
+  --vault-accent-glow: 0 0 24px rgba(6, 182, 212, 0.35);
+
+  /* Input Fields: Deep Glass Surface */
+  --vault-input-bg: rgba(6, 9, 16, 0.88);
   --vault-input-text: #f8fafc;
-  --vault-input-border: rgba(148, 163, 184, 0.18);
-  --vault-input-placeholder: rgba(148, 163, 184, 0.42);
-  --vault-input-focus-border: rgba(212, 175, 55, 0.55);
-  --vault-input-focus-ring: rgba(212, 175, 55, 0.12);
-  --vault-input-focus-bg: rgba(8, 12, 20, 0.96);
+  --vault-input-border: rgba(255, 255, 255, 0.1);
+  --vault-input-placeholder: rgba(148, 163, 184, 0.45);
+  --vault-input-focus-border: #00f2fe;
+  --vault-input-focus-ring: rgba(6, 182, 212, 0.22);
+  --vault-input-focus-bg: rgba(8, 13, 24, 0.98);
 
-  /* Submit Button: Executive Dark Slate & Platinum/Gold */
-  --vault-btn-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  --vault-btn-hover: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-  --vault-btn-border: rgba(212, 175, 55, 0.4);
-  --vault-btn-text: #f8fafc;
-  --vault-btn-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  /* Submit Button: Electric Neon Cyan / Teal Pill */
+  --vault-btn-bg: linear-gradient(135deg, #00f2fe 0%, #06b6d4 100%);
+  --vault-btn-hover: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  --vault-btn-border: rgba(0, 242, 254, 0.5);
+  --vault-btn-text: #050d18;
+  --vault-btn-shadow: 0 8px 24px rgba(6, 182, 212, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 
   /* Security Pill */
   --vault-emerald: #10b981;
   --vault-emerald-glow: rgba(16, 185, 129, 0.3);
-  --vault-security-border: rgba(148, 163, 184, 0.12);
+  --vault-security-border: rgba(255, 255, 255, 0.08);
   --vault-security-text: #64748b;
 
   --z7-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
 }
 
-/* Light Theme Overrides (Minimalist Porcelain Slate) */
+/* Light Theme Overrides (Porcelain Glass & Deep Cyan) */
 html[data-theme="light"] {
   --vault-bg: #f8fafc;
-  --vault-card-bg: linear-gradient(165deg, #ffffff, #f8fafc);
+  --vault-card-bg: rgba(255, 255, 255, 0.88);
   --vault-card-border: rgba(15, 23, 42, 0.09);
-  --vault-card-shadow: 0 20px 50px -15px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --vault-card-shadow: 0 20px 50px -15px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
   --vault-title: #0f172a;
   --vault-text: #0f172a;
   --vault-text-muted: #475569;
   --vault-text-subtle: #64748b;
-  --vault-accent: #b3881e;
-  --vault-accent-soft: rgba(179, 136, 30, 0.08);
-  --vault-accent-border: rgba(179, 136, 30, 0.25);
+
+  --vault-accent: #0284c7;
+  --vault-teal: #0891b2;
+  --vault-accent-soft: rgba(2, 132, 199, 0.08);
+  --vault-accent-border: rgba(2, 132, 199, 0.25);
+  --vault-accent-glow: 0 4px 16px rgba(2, 132, 199, 0.2);
 
   --vault-input-bg: #ffffff;
   --vault-input-text: #0f172a;
   --vault-input-border: rgba(15, 23, 42, 0.15);
-  --vault-input-placeholder: rgba(15, 23, 42, 0.38);
-  --vault-input-focus-border: rgba(179, 136, 30, 0.55);
-  --vault-input-focus-ring: rgba(179, 136, 30, 0.12);
+  --vault-input-placeholder: rgba(15, 23, 42, 0.4);
+  --vault-input-focus-border: #0284c7;
+  --vault-input-focus-ring: rgba(2, 132, 199, 0.15);
   --vault-input-focus-bg: #f8fafc;
 
-  --vault-btn-bg: #0f172a;
-  --vault-btn-hover: #1e293b;
-  --vault-btn-border: rgba(179, 136, 30, 0.4);
+  --vault-btn-bg: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  --vault-btn-hover: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  --vault-btn-border: rgba(2, 132, 199, 0.4);
   --vault-btn-text: #ffffff;
-  --vault-btn-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
+  --vault-btn-shadow: 0 4px 16px rgba(2, 132, 199, 0.25);
 
   --vault-emerald: #059669;
   --vault-emerald-glow: rgba(5, 150, 105, 0.2);
@@ -97,7 +104,7 @@ body.z7pa-page #atmosphere {
   height: 100vh !important;
   pointer-events: none !important;
   z-index: 0 !important;
-  opacity: 0.28 !important;
+  opacity: 0.3 !important;
 }
 
 body.z7pa-page .grain {
@@ -105,13 +112,13 @@ body.z7pa-page .grain {
   inset: 0 !important;
   pointer-events: none !important;
   z-index: 1 !important;
-  opacity: 0.08 !important;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 0);
+  opacity: 0.06 !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
   background-size: 24px 24px;
 }
 
 html[data-theme="light"] body.z7pa-page .grain {
-  opacity: 0.04 !important;
+  opacity: 0.03 !important;
   background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 0);
 }
 
@@ -154,16 +161,16 @@ html.z7icx-preauth[data-z7-core] .z7-login-vault,
 /* Ambient Aura Glow behind the card */
 .z7-login-vault__aura {
   position: absolute !important;
-  inset: -20px !important;
+  inset: -24px !important;
   border-radius: 40px !important;
-  background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05) 0%, rgba(56, 189, 248, 0.03) 45%, transparent 70%) !important;
-  filter: blur(28px) !important;
+  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.12) 0%, rgba(2, 132, 199, 0.05) 50%, transparent 70%) !important;
+  filter: blur(32px) !important;
   pointer-events: none !important;
   z-index: -1 !important;
 }
 
 html[data-theme="light"] .z7-login-vault__aura {
-  background: radial-gradient(circle at 50% 50%, rgba(179, 136, 30, 0.04) 0%, transparent 65%) !important;
+  background: radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.08) 0%, transparent 65%) !important;
 }
 
 /* Glassmorphism Luxury Card */
@@ -172,15 +179,21 @@ html[data-theme="light"] .z7-login-vault__aura {
   display: flex !important;
   flex-direction: column !important;
   gap: 16px !important;
-  padding: 36px 32px 28px !important;
+  padding: 38px 34px 30px !important;
   border: 1px solid var(--vault-card-border) !important;
   border-radius: 24px !important;
   background: var(--vault-card-bg) !important;
   box-shadow: var(--vault-card-shadow) !important;
-  backdrop-filter: blur(24px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(130%) !important;
+  backdrop-filter: blur(28px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
   text-align: center !important;
   box-sizing: border-box !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.z7-login-vault__card:hover {
+  border-color: rgba(6, 182, 212, 0.25) !important;
+  box-shadow: 0 36px 90px -20px rgba(0, 0, 0, 0.95), 0 0 24px -6px rgba(6, 182, 212, 0.15) !important;
 }
 
 /* Brand Emblem & Pill */
@@ -198,11 +211,15 @@ html[data-theme="light"] .z7-login-vault__aura {
   transition: transform 0.2s ease !important;
 }
 
+.z7-login-vault__mark:hover {
+  transform: scale(1.04) !important;
+}
+
 .z7-login-vault__mark img {
   width: 48px !important;
   height: 54px !important;
   object-fit: contain !important;
-  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4)) !important;
+  filter: drop-shadow(0 2px 12px rgba(6, 182, 212, 0.25)) !important;
 }
 
 .z7-login-vault__badge {
@@ -224,6 +241,7 @@ html[data-theme="light"] .z7-login-vault__aura {
   height: 5px !important;
   border-radius: 50% !important;
   background: var(--vault-accent) !important;
+  box-shadow: 0 0 8px var(--vault-accent) !important;
 }
 
 /* Headings & Kickers */
@@ -278,14 +296,14 @@ html[data-theme="light"] .z7-login-vault__aura {
 
 .z7icx__field input {
   width: 100% !important;
-  height: 48px !important;
-  min-height: 48px !important;
+  height: 50px !important;
+  min-height: 50px !important;
   padding: 0 16px !important;
   border: 1px solid var(--vault-input-border) !important;
   border-radius: 12px !important;
   background: var(--vault-input-bg) !important;
   color: var(--vault-input-text) !important;
-  font-size: 13.5px !important;
+  font-size: 14px !important;
   font-family: inherit !important;
   font-weight: 500 !important;
   box-sizing: border-box !important;
@@ -300,7 +318,7 @@ html[data-theme="light"] .z7-login-vault__aura {
 .z7icx__field input:focus {
   border-color: var(--vault-input-focus-border) !important;
   background: var(--vault-input-focus-bg) !important;
-  box-shadow: 0 0 0 3px var(--vault-input-focus-ring), 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 0 0 3px var(--vault-input-focus-ring), 0 4px 18px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* ==========================================================================
@@ -311,8 +329,8 @@ html[data-theme="light"] .z7-login-vault__aura {
   align-items: center !important;
   justify-content: space-between !important;
   width: 100% !important;
-  height: 50px !important;
-  min-height: 50px !important;
+  height: 52px !important;
+  min-height: 52px !important;
   margin-top: 6px !important;
   padding: 0 20px !important;
   border: 1px solid var(--vault-btn-border) !important;
@@ -329,9 +347,8 @@ html[data-theme="light"] .z7-login-vault__aura {
 
 .z7icx__submit:hover {
   background: var(--vault-btn-hover) !important;
-  border-color: var(--vault-accent) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 10px 28px rgba(6, 182, 212, 0.45) !important;
 }
 
 .z7icx__submit:active {
@@ -345,8 +362,8 @@ html[data-theme="light"] .z7-login-vault__aura {
 
 .z7icx__submit b {
   font-size: 16px !important;
-  font-weight: 400 !important;
-  color: var(--vault-accent) !important;
+  font-weight: 700 !important;
+  color: var(--vault-btn-text) !important;
   transition: transform 0.2s ease !important;
 }
 

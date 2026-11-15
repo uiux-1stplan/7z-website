@@ -496,23 +496,23 @@
     } catch (error) {
       console.warn("Logout request warning:", error);
     } finally {
+      try {
+        sessionStorage.clear();
+        localStorage.removeItem("z7_auth");
+        localStorage.removeItem("z7_session");
+        localStorage.removeItem("z7-private-access");
+      } catch (_) {}
+
       if (clientId) clientId.value = "";
       if (accessKey) accessKey.value = "";
       if (message) message.textContent = "";
 
       applyAccess(null);
       broadcastAuth(false);
+      window.dispatchEvent(new CustomEvent("z7pa:auth-changed", { detail: { authenticated: false } }));
 
-      if (portalBtn) {
-        portalBtn.disabled = false;
-        portalBtn.textContent = "SIGN OUT ↗";
-      }
-      if (accessButton) {
-        accessButton.disabled = false;
-        updateHeaderButton(false);
-      }
-
-      window.setTimeout(focusLogin, 60);
+      // Instant clean navigation to login view
+      window.location.replace("/private-access/");
     }
   }
 
@@ -669,7 +669,7 @@
   );
 
   window.document.addEventListener("click", (e) => {
-    const btn = e.target.closest("#z7PortalSignoutBtn");
+    const btn = e.target.closest("#z7PortalSignoutBtn, .z7cpf-logout-btn, [data-z7-logout]");
     if (btn) {
       e.preventDefault();
       signOut();

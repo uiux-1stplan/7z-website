@@ -1,6 +1,7 @@
 /* ==========================================================================
    7Z MAGIC — PRIVATE CLIENT VAULT & DELIVERABLES SHOWCASE
-   Ground-Up Rewrite: Cinematic Dark/Light Luxury Interface
+   Modern Dark Glassmorphism with Neon Cyan & Platinum Accents
+   Ultra-Smooth 60fps Mobile Performance · Zero Horizontal Overflow
    ========================================================================== */
 
 :root {
@@ -8,22 +9,30 @@
   --cpf-text: #f1f5f9;
   --cpf-text-muted: #94a3b8;
   --cpf-text-faint: #64748b;
-  --cpf-card-bg: linear-gradient(155deg, rgba(17, 23, 38, 0.8), rgba(9, 12, 20, 0.95));
+  --cpf-card-bg: rgba(13, 19, 33, 0.75);
   --cpf-card-border: rgba(255, 255, 255, 0.08);
-  --cpf-card-hover-border: rgba(212, 175, 55, 0.38);
+  --cpf-card-hover-border: rgba(6, 182, 212, 0.4);
+
+  /* Neon Cyan & Accent Palette */
+  --cpf-cyan: #00f2fe;
+  --cpf-teal: #06b6d4;
+  --cpf-cyan-glow: rgba(6, 182, 212, 0.35);
+  --cpf-cyan-soft: rgba(6, 182, 212, 0.12);
+
   --cpf-gold: #d4af37;
-  --cpf-gold-glow: rgba(212, 175, 55, 0.25);
   --cpf-gold-soft: rgba(212, 175, 55, 0.12);
-  --cpf-cyan: #38bdf8;
-  --cpf-cyan-soft: rgba(56, 189, 248, 0.12);
+
   --cpf-emerald: #10b981;
   --cpf-emerald-soft: rgba(16, 185, 129, 0.12);
+
   --cpf-purple: #c084fc;
   --cpf-purple-soft: rgba(192, 132, 252, 0.12);
+
   --cpf-btn-open-bg: rgba(255, 255, 255, 0.05);
   --cpf-btn-open-border: rgba(255, 255, 255, 0.14);
-  --cpf-btn-open-text: #e2e8f0;
-  --z7-mono: "SFMono-Regular", Consolas, Menlo, Monaco, monospace;
+  --cpf-btn-open-text: #f1f5f9;
+
+  --z7-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
 }
 
 html[data-theme="light"] {
@@ -31,18 +40,24 @@ html[data-theme="light"] {
   --cpf-text: #0f172a;
   --cpf-text-muted: #475569;
   --cpf-text-faint: #64748b;
-  --cpf-card-bg: linear-gradient(155deg, #ffffff, #f8fafc);
+  --cpf-card-bg: rgba(255, 255, 255, 0.88);
   --cpf-card-border: rgba(15, 23, 42, 0.09);
-  --cpf-card-hover-border: rgba(184, 134, 11, 0.45);
-  --cpf-gold: #b8860b;
-  --cpf-gold-glow: rgba(184, 134, 11, 0.18);
-  --cpf-gold-soft: rgba(184, 134, 11, 0.10);
+  --cpf-card-hover-border: rgba(2, 132, 199, 0.45);
+
   --cpf-cyan: #0284c7;
+  --cpf-teal: #0891b2;
+  --cpf-cyan-glow: rgba(2, 132, 199, 0.2);
   --cpf-cyan-soft: rgba(2, 132, 199, 0.08);
+
+  --cpf-gold: #b8860b;
+  --cpf-gold-soft: rgba(184, 134, 11, 0.10);
+
   --cpf-emerald: #059669;
   --cpf-emerald-soft: rgba(5, 150, 105, 0.08);
+
   --cpf-purple: #9333ea;
   --cpf-purple-soft: rgba(147, 51, 234, 0.08);
+
   --cpf-btn-open-bg: #f1f5f9;
   --cpf-btn-open-border: rgba(15, 23, 42, 0.12);
   --cpf-btn-open-text: #0f172a;
@@ -58,6 +73,7 @@ html[data-theme="light"] {
   box-sizing: border-box !important;
   position: relative !important;
   z-index: 10 !important;
+  overflow-x: hidden !important;
 }
 
 .z7-client-private-files[hidden] {
@@ -85,7 +101,7 @@ html[data-theme="light"] {
 
 .z7cpf-kicker {
   margin-bottom: 8px !important;
-  color: var(--cpf-gold) !important;
+  color: var(--cpf-cyan) !important;
   font: 700 9.5px/1.2 var(--z7-mono) !important;
   letter-spacing: 0.18em !important;
   text-transform: uppercase !important;
@@ -129,6 +145,7 @@ html[data-theme="light"] {
   font: 700 9.5px var(--z7-mono) !important;
   letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
+  backdrop-filter: blur(16px) !important;
 }
 
 .z7cpf-session-tag i {
@@ -146,9 +163,9 @@ html[data-theme="light"] {
   min-height: 34px !important;
   padding: 0 12px !important;
   border-radius: 999px !important;
-  border: 1px solid var(--cpf-gold-soft) !important;
-  background: var(--cpf-gold-soft) !important;
-  color: var(--cpf-gold) !important;
+  border: 1px solid var(--cpf-cyan-soft) !important;
+  background: var(--cpf-cyan-soft) !important;
+  color: var(--cpf-cyan) !important;
   font: 700 9.5px var(--z7-mono) !important;
   letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
@@ -161,21 +178,22 @@ html[data-theme="light"] {
   min-height: 36px !important;
   padding: 0 18px !important;
   border-radius: 999px !important;
-  border: 1px solid var(--cpf-card-border) !important;
+  border: 1px solid rgba(6, 182, 212, 0.3) !important;
   background: var(--cpf-card-bg) !important;
   color: var(--cpf-text) !important;
   font: 700 10px var(--z7-mono) !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   cursor: pointer !important;
+  backdrop-filter: blur(16px) !important;
   transition: all 0.22s ease !important;
 }
 
 .z7cpf-logout-btn:hover {
-  border-color: var(--cpf-gold) !important;
-  color: var(--cpf-gold) !important;
+  border-color: var(--cpf-cyan) !important;
+  color: var(--cpf-cyan) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 16px -4px var(--cpf-gold-glow) !important;
+  box-shadow: 0 6px 20px -4px var(--cpf-cyan-glow) !important;
 }
 
 .z7cpf-logout-btn:active {
@@ -197,13 +215,13 @@ html[data-theme="light"] {
   flex-direction: column !important;
   justify-content: space-between !important;
   min-height: 220px !important;
-  padding: 22px !important;
+  padding: 24px !important;
   border: 1px solid var(--cpf-card-border) !important;
   border-radius: 20px !important;
   background: var(--cpf-card-bg) !important;
-  box-shadow: 0 16px 40px -15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-  backdrop-filter: blur(24px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+  box-shadow: 0 16px 40px -15px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
   transition: all 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   overflow: hidden !important;
 }
@@ -211,7 +229,7 @@ html[data-theme="light"] {
 .z7cpf-card:hover {
   border-color: var(--cpf-card-hover-border) !important;
   transform: translateY(-3px) !important;
-  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.35), 0 0 24px -8px var(--cpf-gold-glow) !important;
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6), 0 0 24px -6px var(--cpf-cyan-glow) !important;
 }
 
 /* Card Top: Icon & Type Badge */
@@ -238,20 +256,20 @@ html[data-theme="light"] {
 }
 
 .z7cpf-card__icon.is-html {
-  background: var(--cpf-emerald-soft) !important;
-  border-color: rgba(16, 185, 129, 0.3) !important;
-  color: var(--cpf-emerald) !important;
+  background: var(--cpf-cyan-soft) !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
+  color: var(--cpf-cyan) !important;
 }
 
 .z7cpf-card__icon.is-pdf {
   background: var(--cpf-gold-soft) !important;
-  border-color: var(--cpf-gold-soft) !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
   color: var(--cpf-gold) !important;
 }
 
 .z7cpf-card__icon.is-video {
   background: var(--cpf-cyan-soft) !important;
-  border-color: rgba(56, 189, 248, 0.3) !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
   color: var(--cpf-cyan) !important;
 }
 
@@ -262,9 +280,9 @@ html[data-theme="light"] {
 }
 
 .z7cpf-card__icon.is-generic {
-  background: var(--cpf-gold-soft) !important;
-  border-color: var(--cpf-gold-soft) !important;
-  color: var(--cpf-gold) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--cpf-text) !important;
 }
 
 .z7cpf-card__pill {
@@ -279,9 +297,9 @@ html[data-theme="light"] {
 }
 
 .z7cpf-card__pill.is-html {
-  background: var(--cpf-emerald-soft) !important;
-  color: var(--cpf-emerald) !important;
-  border-color: rgba(16, 185, 129, 0.25) !important;
+  background: var(--cpf-cyan-soft) !important;
+  color: var(--cpf-cyan) !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
 }
 
 .z7cpf-card__pill.is-pdf {
@@ -293,143 +311,123 @@ html[data-theme="light"] {
 .z7cpf-card__pill.is-video {
   background: var(--cpf-cyan-soft) !important;
   color: var(--cpf-cyan) !important;
-  border-color: rgba(56, 189, 248, 0.25) !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
 }
 
 .z7cpf-card__pill.is-img {
   background: var(--cpf-purple-soft) !important;
   color: var(--cpf-purple) !important;
-  border-color: rgba(192, 132, 252, 0.25) !important;
+  border-color: rgba(192, 132, 252, 0.3) !important;
 }
 
 .z7cpf-card__pill.is-generic {
-  background: var(--cpf-gold-soft) !important;
-  color: var(--cpf-gold) !important;
-  border-color: var(--cpf-gold-soft) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--cpf-text-muted) !important;
 }
 
 /* Card Body */
 .z7cpf-card__body {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
-  margin-bottom: 18px !important;
+  margin-bottom: 20px !important;
 }
 
 .z7cpf-card__title {
-  margin: 0 !important;
-  color: var(--cpf-text) !important;
+  margin: 0 0 10px !important;
   font-size: 15px !important;
   font-weight: 600 !important;
-  line-height: 1.35 !important;
-  letter-spacing: -0.015em !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
+  color: var(--cpf-text) !important;
+  line-height: 1.4 !important;
+  word-break: break-word !important;
 }
 
 .z7cpf-card__meta {
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
-  font: 500 11px var(--z7-mono) !important;
+  font: 500 11.5px var(--z7-mono) !important;
   color: var(--cpf-text-muted) !important;
 }
 
-.z7cpf-card__size {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-}
-
 .z7cpf-card__verified {
+  color: var(--cpf-emerald) !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 4px !important;
-  color: var(--cpf-emerald) !important;
-  font-weight: 600 !important;
 }
 
 /* Card Actions */
 .z7cpf-card__actions {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
+  display: flex !important;
   gap: 10px !important;
-  padding-top: 14px !important;
-  border-top: 1px solid var(--cpf-card-border) !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
 }
 
 .z7cpf-btn {
-  min-height: 40px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important;
-  padding: 0 14px !important;
+  gap: 6px !important;
+  flex: 1 1 auto !important;
+  height: 38px !important;
+  padding: 0 16px !important;
   border-radius: 10px !important;
-  text-decoration: none !important;
   font: 700 10px var(--z7-mono) !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
-  transition: all 0.22s ease !important;
-  cursor: pointer !important;
+  text-decoration: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .z7cpf-btn--open {
-  border: 1px solid var(--cpf-btn-open-border) !important;
-  background: var(--cpf-btn-open-bg) !important;
-  color: var(--cpf-btn-open-text) !important;
+  background: var(--cpf-cyan-soft) !important;
+  border: 1px solid rgba(6, 182, 212, 0.35) !important;
+  color: var(--cpf-cyan) !important;
 }
 
 .z7cpf-btn--open:hover {
-  border-color: var(--cpf-gold) !important;
-  color: var(--cpf-gold) !important;
+  background: var(--cpf-cyan) !important;
+  color: #041018 !important;
+  box-shadow: 0 4px 16px var(--cpf-cyan-glow) !important;
   transform: translateY(-1px) !important;
 }
 
 .z7cpf-btn--download {
-  border: none !important;
-  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%) !important;
-  color: #07090e !important;
-  box-shadow: 0 4px 16px -2px var(--cpf-gold-glow) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--cpf-text) !important;
 }
 
 .z7cpf-btn--download:hover {
-  filter: brightness(1.1) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 20px -2px var(--cpf-gold-glow) !important;
 }
 
-/* ==========================================================================
-   LUXURY EMPTY STATE
-   ========================================================================== */
+/* Empty State */
 .z7cpf-empty-state {
   grid-column: 1 / -1 !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: clamp(50px, 10vh, 80px) 24px !important;
-  border: 1px dashed var(--cpf-card-border) !important;
-  border-radius: 24px !important;
-  background: var(--cpf-card-bg) !important;
   text-align: center !important;
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.2) !important;
+  padding: 48px 24px !important;
+  border: 1px dashed var(--cpf-card-border) !important;
+  border-radius: 20px !important;
+  background: var(--cpf-card-bg) !important;
+  backdrop-filter: blur(20px) !important;
 }
 
 .z7cpf-empty-icon {
-  width: 68px !important;
-  height: 68px !important;
+  width: 56px !important;
+  height: 56px !important;
   display: grid !important;
   place-items: center !important;
-  border-radius: 50% !important;
-  border: 1px solid var(--cpf-gold-soft) !important;
-  background: var(--cpf-gold-soft) !important;
-  color: var(--cpf-gold) !important;
+  border-radius: 16px !important;
+  background: var(--cpf-cyan-soft) !important;
+  border: 1px solid rgba(6, 182, 212, 0.25) !important;
+  color: var(--cpf-cyan) !important;
   margin-bottom: 16px !important;
-  box-shadow: 0 0 30px -8px var(--cpf-gold-glow) !important;
 }
 
 .z7cpf-empty-badge {
@@ -437,65 +435,49 @@ html[data-theme="light"] {
   align-items: center !important;
   padding: 4px 12px !important;
   border-radius: 999px !important;
-  border: 1px solid var(--cpf-gold-soft) !important;
-  background: var(--cpf-gold-soft) !important;
-  color: var(--cpf-gold) !important;
-  font: 700 9px var(--z7-mono) !important;
+  background: var(--cpf-cyan-soft) !important;
+  border: 1px solid rgba(6, 182, 212, 0.3) !important;
+  color: var(--cpf-cyan) !important;
+  font: 700 8.5px var(--z7-mono) !important;
   letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
-  margin-bottom: 14px !important;
+  margin-bottom: 12px !important;
 }
 
 .z7cpf-empty-state h3 {
-  margin: 0 0 10px !important;
+  margin: 0 0 8px !important;
+  font-size: 1.3rem !important;
   color: var(--cpf-text) !important;
-  font-size: clamp(1.25rem, 2.2vw, 1.6rem) !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.02em !important;
 }
 
 .z7cpf-empty-state p {
-  margin: 0 auto 20px !important;
-  max-width: 500px !important;
+  max-width: 480px !important;
+  margin: 0 0 20px !important;
   color: var(--cpf-text-muted) !important;
   font-size: 13.5px !important;
-  line-height: 1.6 !important;
+  line-height: 1.55 !important;
 }
 
 .z7cpf-empty-footer {
   display: flex !important;
-  align-items: center !important;
-  gap: 18px !important;
+  gap: 16px !important;
   font: 600 10px var(--z7-mono) !important;
   color: var(--cpf-text-faint) !important;
   letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
 }
 
 .z7cpf-dot {
-  width: 6px !important;
-  height: 6px !important;
-  border-radius: 50% !important;
-  background: var(--cpf-emerald) !important;
   display: inline-block !important;
-  margin-inline-end: 4px !important;
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: var(--cpf-cyan) !important;
+  margin-right: 4px !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Mobile */
+@media (max-width: 600px) {
   .z7cpf-list {
     grid-template-columns: 1fr !important;
-  }
-  .z7cpf-heading {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-  .z7cpf-card__actions {
-    grid-template-columns: 1fr !important;
-  }
-  .z7cpf-btn {
-    min-height: 44px !important;
   }
 }

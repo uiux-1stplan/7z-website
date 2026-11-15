@@ -46,6 +46,11 @@
     if (pageKicker) pageKicker.textContent = titles[name][0];
     if (pageTitle) pageTitle.textContent = titles[name][1];
     if (pageSubtitle) pageSubtitle.textContent = titles[name][2];
+    try {
+      if (window.location.hash !== `#${name}`) {
+        history.replaceState(null, "", `#${name}`);
+      }
+    } catch (_) {}
     if (animate && current !== next && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       next.animate([{ opacity: 0, transform: "translateY(9px)" }, { opacity: 1, transform: "translateY(0)" }], {
         duration: 250,
@@ -326,7 +331,13 @@
     const appObserver = new MutationObserver(refreshDashboard);
     appObserver.observe($("#app"), { attributes: true, attributeFilter: ["class"] });
     const initial = $("[data-dashboard-panel].is-active:not([hidden])") || $(`[data-dashboard-panel="overview"]`);
-    if (initial) selectView(initial.dataset.dashboardPanel, false);
+    const hash = window.location.hash.replace(/^#/, "");
+    const initialName = titles[hash] ? hash : (initial ? initial.dataset.dashboardPanel : "accounting");
+    selectView(initialName, false);
+    window.addEventListener("hashchange", () => {
+      const currentHash = window.location.hash.replace(/^#/, "");
+      if (titles[currentHash]) selectView(currentHash, true);
+    });
     setClock();
     refreshDashboard();
   }
