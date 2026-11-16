@@ -92,18 +92,24 @@
 
       return `
         <article class="access-file-row">
-          <div class="access-file-main">
+          <div class="access-file-col1">
             <span class="access-file-icon" aria-hidden="true">↗</span>
-            <div class="access-file-name">
+            <div class="access-file-info">
               <strong>${escape(file.name)}</strong>
-              <small><span class="badge-tag">${cat}</span> · ${escape(formatBytes(file.sizeBytes))}</small>
+              <small>${escape(file.fileId || file.name.split('.').pop()?.toUpperCase() || "MASTER")}</small>
             </div>
           </div>
-          <div class="access-toggles-cluster">
+          <div class="access-file-col2">
+            <span class="badge-tag">${cat}</span>
+            <span class="access-file-size">${escape(formatBytes(file.sizeBytes))}</span>
+          </div>
+          <div class="access-file-col3">
             <label class="access-toggle-pod" title="Toggle view permission">
               <span class="access-toggle-label">View Access</span>
               <input type="checkbox" class="access-pill-switch" data-access="view" data-file-id="${escape(file.fileId)}" ${canView ? "checked" : ""}>
             </label>
+          </div>
+          <div class="access-file-col4">
             <label class="access-toggle-pod" title="Toggle download permission">
               <span class="access-toggle-label">Download Access</span>
               <input type="checkbox" class="access-pill-switch" data-access="download" data-file-id="${escape(file.fileId)}" ${canDownload ? "checked" : ""}>

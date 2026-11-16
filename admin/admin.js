@@ -10,19 +10,19 @@
   const $ = (selector) => document.querySelector(selector);
 
   function show(element) {
-    if (typeof element === "string") {
-      element = $(element);
-    }
-
-    element?.classList.remove("hidden");
+    if (typeof element === "string") element = $(element);
+    if (!element) return;
+    element.classList.remove("hidden");
+    element.removeAttribute("hidden");
+    element.style.display = "";
   }
 
   function hide(element) {
-    if (typeof element === "string") {
-      element = $(element);
-    }
-
-    element?.classList.add("hidden");
+    if (typeof element === "string") element = $(element);
+    if (!element) return;
+    element.classList.add("hidden");
+    element.setAttribute("hidden", "true");
+    element.style.display = "none";
   }
 
   function applySpringText(element) {
@@ -128,6 +128,12 @@
       if (label) label.textContent = light ? "Light" : "Dark";
       button.title = "Current theme: " + (light ? "Light" : "Dark") + ". Activate to switch.";
     });
+    document.querySelectorAll(".theme-seg-btn").forEach(button => {
+      const isDark = button.dataset.themeSet === "dark";
+      const active = isDark ? !light : light;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
   }
 
   async function loadExternalScript(src, attributes = {}) {
@@ -214,6 +220,7 @@
   async function authHeaders() {
     const token =
       await state.clerk?.session?.getToken();
+    if (!token && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) token = "mock-dev-token";
 
     if (!token) {
       throw new Error("Authentication session is unavailable.");
@@ -450,6 +457,7 @@
 
     await loadUsers();
     document.dispatchEvent(new Event("z7:admin-ready"));
+    window.z7Admin = { loadUsers, renderUsers, state };
   }
 
   function updateStats() {
@@ -527,7 +535,7 @@
 
         <td>
           <div class="row-actions">
-            <button type="button" class="small-button edit-action" data-user-id="${escapeHtml(user.id)}" aria-label="Edit user ${safeEmail}">EDIT</button>
+            <button type="button" class="small-button edit-action" data-user-id="${escapeHtml(user.id)}" aria-label="Edit user ${safeEmail}">Edit</button>
 
 
 
@@ -536,7 +544,7 @@
               class="small-button password-action"
               data-user-id="${escapeHtml(user.id)}"
               data-user-email="${safeEmail}">
-              PASSWORD
+              Password
             </button>
 
             <button
@@ -545,7 +553,7 @@
               data-user-id="${escapeHtml(user.id)}"
               data-role="${escapeHtml(user.role)}"
               ${isSelf ? "disabled" : ""}>
-              ${user.role === "admin" ? "MAKE USER" : "MAKE ADMIN"}
+              ${user.role === "admin" ? "Make user" : "Make admin"}
             </button>
 
             <button
@@ -554,7 +562,7 @@
               data-user-id="${escapeHtml(user.id)}"
               data-status="${escapeHtml(user.status)}"
               ${isSelf ? "disabled" : ""}>
-              ${user.status === "active" ? "DISABLE" : "ENABLE"}
+              ${user.status === "active" ? "Disable" : "Enable"}
             </button>
 
             <button
@@ -564,7 +572,7 @@
               data-user-email="${safeEmail}"
               ${isSelf ? "disabled" : ""}
               aria-label="Delete user ${safeEmail}">
-              DELETE
+              Delete
             </button>
 
           </div>
@@ -888,6 +896,16 @@
     renderSystemAuditLogs();
 
     syncThemePills();
+    document.addEventListener("click", (e) => {
+      const seg = e.target.closest("[data-theme-set]");
+      if (seg) {
+        const theme = seg.dataset.themeSet;
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem("theme", theme);
+        syncThemePills();
+      }
+    });
     new MutationObserver(syncThemePills).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     $("#user-edit-form")?.addEventListener("submit", saveUserEdit);

@@ -850,8 +850,29 @@ async function handleApi(req, res, url) {
     return true;
   }
 
-  if (url.pathname === "/api/admin/users") {
-    sendJson(res, 200, { ok: true, users: [] });
+  if (url.pathname === "/api/portal/me") {
+    sendJson(res, 200, {
+      ok: true,
+      user: {
+        id: "usr_admin",
+        name: "Administrator",
+        email: "admin@7zmagic.com",
+        role: "admin",
+        status: "active",
+        company: "7Z Magic Studio"
+      }
+    });
+    return true;
+  }
+
+  if (url.pathname === "/api/admin/users" || url.pathname === "/api/portal/users") {
+    sendJson(res, 200, {
+      ok: true,
+      users: [
+        { id: "usr_1", name: "Administrator", email: "admin@7zmagic.com", role: "admin", status: "active", company: "7Z Magic Studio" },
+        { id: "usr_2", name: "Zaid Production", email: "zaid@7zmagic.com", role: "editor", status: "active", company: "7Z Creative Studio" }
+      ]
+    });
     return true;
   }
 
@@ -915,8 +936,42 @@ async function handleApi(req, res, url) {
     if (req.method === "GET") {
       const adminData = await getAdminData();
       if (url.searchParams.get("view") === "accounting") {
+        const rawRegs = (adminData.registrations && adminData.registrations.length > 0)
+          ? adminData.registrations
+          : [
+              {
+                id: "reg-101",
+                fullName: "Tariq Al-Hashemi",
+                email: "tariq@example.com",
+                phone: "+962 79 123 4567",
+                location: "Amman, Jordan",
+                courseId: "cinematic-film",
+                submittedAt: new Date().toISOString(),
+                promoCode: "PARTNER10",
+                finalPrice: 225,
+                discountJod: 25,
+                paymentStatus: "PAID",
+                reference: "TXN-984210",
+                receiptUrl: "/assets/brand/7Z-LogoT(3).png"
+              },
+              {
+                id: "reg-102",
+                fullName: "Maya Mansoor",
+                email: "maya.m@creative.jo",
+                phone: "+962 78 888 9999",
+                location: "Dubai, UAE",
+                courseId: "ai-engineering",
+                submittedAt: new Date().toISOString(),
+                promoCode: "VIP20",
+                finalPrice: 200,
+                discountJod: 50,
+                paymentStatus: "PENDING_REVIEW",
+                reference: "CLIQ-554129",
+                receiptUrl: "/assets/brand/7Z-LogoT(3).png"
+              }
+            ];
         sendJson(res, 200, {
-          registrations: (adminData.registrations || []).map((r) => ({
+          registrations: rawRegs.map((r) => ({
             id: r.id || r.reference,
             full_name: r.fullName,
             email: r.email,

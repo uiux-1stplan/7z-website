@@ -239,12 +239,21 @@ html, body {
   overflow: hidden !important;
 }
 
+html, body {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scroll-behavior: smooth !important;
+}
+
 body.z7-admin-shell {
-  height: 100dvh !important;
-  max-height: 100dvh !important;
+  height: auto !important;
+  min-height: 100dvh !important;
   margin: 0 !important;
   padding: 0 !important;
-  overflow: hidden !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
   background: var(--color-bg-viewport) !important;
   color: var(--color-text-primary) !important;
   font-family: var(--z7-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif) !important;
@@ -291,16 +300,14 @@ body.z7-admin-shell {
 }
 
 /* Spatial Command Shell */
-#app.dashboard-app.admin-shell {
+#app.dashboard-app.admin-shell, .admin-shell {
   position: relative;
   z-index: 10;
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-  width: 100vw !important;
-  overflow: hidden !important;
-  display: grid !important;
-  grid-template-columns: var(--sidebar-w, 272px) minmax(0, 1fr) !important;
-  grid-template-rows: minmax(0, 1fr) !important;
+  height: auto !important;
+  min-height: 100dvh !important;
+  width: 100% !important;
+  overflow: visible !important;
+  display: block !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -746,19 +753,14 @@ body.z7-admin-shell {
 /* --------------------------------------------------------------------------
    4. ACTIVE VIEWPORT CONTAINER (§5 Viewport Lock)
    -------------------------------------------------------------------------- */
-.main.admin-main-viewport {
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  overscroll-behavior-y: contain !important;
-  -webkit-overflow-scrolling: touch !important;
-  padding: 32px 36px 90px !important;
-  scroll-behavior: smooth !important;
-  scrollbar-width: thin !important;
-  scrollbar-color: var(--color-border-default) var(--transparent) !important;
+.main.admin-main-viewport, .admin-main-viewport {
+  margin-inline-start: 272px !important;
+  width: calc(100% - 272px) !important;
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow: visible !important;
+  padding: 28px 36px 72px !important;
+  box-sizing: border-box !important;
 }
 
 .main.admin-main-viewport::-webkit-scrollbar {
@@ -3193,4 +3195,473 @@ tbody tr:hover {
 .staff-directory-section select:focus {
   border-color: var(--7z-blue-500) !important;
   box-shadow: 0 0 0 2px rgba(46, 127, 209, 0.25) !important;
+}
+
+
+/* ==========================================================================
+   7Z CREATIVE STUDIO — PRODUCTION POLISH DIRECTIVE v6.0 FINAL OVERRIDES
+   ========================================================================== */
+
+/* FIX #1: Boot Screen & Auth Screen Constraints & Overlay */
+#boot-screen, #auth-screen, #denied-screen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  z-index: 9999 !important;
+  background: var(--bg-void, #020305) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#boot-screen.hidden, #boot-screen[hidden],
+#auth-screen.hidden, #auth-screen[hidden],
+#denied-screen.hidden, #denied-screen[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#boot-screen svg, #auth-screen svg, .boot-logo svg, .auth-logo svg,
+#boot-screen img, #auth-screen img, .boot-mark img, .boot-mark svg {
+  width: 52px !important;
+  height: 52px !important;
+  max-width: 52px !important;
+  max-height: 52px !important;
+  object-fit: contain !important;
+}
+
+/* FIX #2: Native Desktop Document Scrolling */
+@media (min-width: 769px) {
+  html, body {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scroll-behavior: smooth !important;
+  }
+
+  body.z7-admin-shell {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #app.dashboard-app.admin-shell, .admin-shell {
+    display: block !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    position: relative !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    inset-inline-start: 0 !important;
+    width: 272px !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    z-index: 40 !important;
+  }
+
+  .main.admin-main-viewport, .admin-main-viewport {
+    margin-inline-start: 272px !important;
+    width: calc(100% - 272px) !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    padding: 28px 36px 72px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .main.admin-main-viewport, .admin-main-viewport {
+    margin-inline-start: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    padding: 20px 16px 80px !important;
+  }
+}
+
+/* FIX #3: Unified 7Z Architectural Button System for All Tables */
+.small-button,
+.engine-actions button,
+.adjustment-actions button,
+[data-view-receipt],
+.engine-table td button,
+.engine-table tbody button,
+#admins-table tbody button,
+#users-table-wrap tbody button,
+.row-actions button,
+.data-table td button {
+  border-radius: 8px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0 11px !important;
+  font-size: 0.74rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid var(--border) !important;
+  background: var(--surface-raised, rgba(255, 255, 255, 0.04)) !important;
+  color: var(--text-1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+
+.engine-actions,
+.adjustment-actions,
+.engine-table td:last-child,
+#admins-table td:last-child {
+  white-space: nowrap !important;
+}
+
+.row-actions,
+.engine-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+}
+
+/* Positive actions: Mark paid, Approve, View receipt, Verify payment */
+.engine-actions button[data-action="mark-paid"],
+.engine-actions button[data-action="approve"],
+.engine-actions button[data-action="verify-payment"],
+[data-view-receipt],
+.engine-actions button.button-primary {
+  background: rgba(46, 127, 209, 0.16) !important;
+  border-color: rgba(46, 127, 209, 0.4) !important;
+  color: #60a5fa !important;
+}
+
+.engine-actions button[data-action="mark-paid"]:hover,
+.engine-actions button[data-action="approve"]:hover,
+.engine-actions button[data-action="verify-payment"]:hover,
+[data-view-receipt]:hover {
+  background: rgba(46, 127, 209, 0.28) !important;
+  border-color: var(--7z-blue-500) !important;
+  color: #ffffff !important;
+}
+
+/* Destructive actions: Delete, Disable, Reject */
+.engine-actions button[data-action="delete"],
+.engine-actions button[data-action="reject"],
+.engine-actions button[data-action="disable"],
+.engine-actions button.danger-button,
+#admins-table button[data-action="delete"],
+#admins-table button[data-action="disable"] {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #f87171 !important;
+}
+
+.engine-actions button[data-action="delete"]:hover,
+.engine-actions button[data-action="reject"]:hover,
+.engine-actions button[data-action="disable"]:hover,
+#admins-table button[data-action="delete"]:hover,
+#admins-table button[data-action="disable"]:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+/* FIX #4: Bento Card Grid for Partner & Campaign Forms */
+.admin-engine-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+  gap: 20px !important;
+  margin-bottom: 24px !important;
+}
+
+.engine-panel {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.engine-panel-head {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  margin-bottom: 6px !important;
+}
+
+.engine-panel-head .eyebrow {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--7z-blue-500) !important;
+  text-transform: uppercase !important;
+}
+
+.engine-panel-head h3 {
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  color: var(--text-1) !important;
+  margin: 0 !important;
+}
+
+.engine-form {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+}
+
+.engine-form label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  color: var(--text-2) !important;
+}
+
+.engine-form label span {
+  display: block !important;
+}
+
+.engine-form .engine-form-full,
+.engine-form > button {
+  grid-column: 1 / -1 !important;
+}
+
+.engine-form-pair {
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+}
+
+.engine-form input,
+.engine-form select {
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  border-radius: 8px !important;
+  background: var(--surface-raised, rgba(255, 255, 255, 0.04)) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-1) !important;
+  padding: 0 12px !important;
+  font-size: 0.85rem !important;
+  outline: none !important;
+  transition: border-color 0.15s ease !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.engine-form input:focus,
+.engine-form select:focus {
+  border-color: var(--7z-blue-500) !important;
+  box-shadow: 0 0 0 1px var(--7z-blue-500) !important;
+}
+
+.engine-form button[type="submit"] {
+  height: 44px !important;
+  min-height: 44px !important;
+  border-radius: 10px !important;
+  background: var(--7z-blue-500) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(46, 127, 209, 0.3) !important;
+  transition: all 0.15s ease !important;
+  margin-top: 6px !important;
+}
+
+.engine-form button[type="submit"]:hover {
+  background: #3b82f6 !important;
+  box-shadow: 0 4px 12px rgba(46, 127, 209, 0.4) !important;
+}
+
+/* FIX #5: Room 3 Full-Width Row Ledger */
+.access-matrix-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+.access-file-row {
+  display: grid !important;
+  grid-template-columns: minmax(240px, 1fr) 150px 185px 205px !important;
+  align-items: center !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  padding: 14px 20px !important;
+  gap: 16px !important;
+  transition: background 0.15s ease, border-color 0.15s ease !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.access-file-row:hover {
+  background: var(--surface-raised, rgba(255, 255, 255, 0.04)) !important;
+  border-color: rgba(46, 127, 209, 0.3) !important;
+}
+
+.access-file-col1 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+.access-file-icon {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 8px !important;
+  background: rgba(46, 127, 209, 0.12) !important;
+  border: 1px solid rgba(46, 127, 209, 0.28) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--7z-blue-500) !important;
+}
+
+.access-file-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+
+.access-file-info strong {
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: var(--text-1) !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+.access-file-info small {
+  font-size: 0.72rem !important;
+  color: var(--text-2) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.access-file-col2 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.access-file-size {
+  font-size: 0.78rem !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--text-2) !important;
+}
+
+.access-file-col3,
+.access-file-col4 {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.access-switch-pod {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.access-switch-pod .switch-label {
+  font-size: 0.75rem !important;
+  color: var(--text-2) !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 900px) {
+  .access-file-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .access-file-col2,
+  .access-file-col3,
+  .access-file-col4 {
+    padding-inline-start: 50px !important;
+  }
+}
+
+/* FIX #6: Settings Clean Icon Tiles & Segmented Theme Switcher */
+.settings-icon-tile {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 10px !important;
+  background: rgba(46, 127, 209, 0.12) !important;
+  border: 1px solid rgba(46, 127, 209, 0.28) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--7z-blue-500) !important;
+}
+
+.theme-segmented-switcher {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  height: 40px !important;
+  border-radius: 10px !important;
+  background: var(--surface-raised, rgba(255, 255, 255, 0.04)) !important;
+  border: 1px solid var(--border) !important;
+  padding: 3px !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+  margin-top: 14px !important;
+}
+
+.theme-seg-btn {
+  height: 100% !important;
+  border: none !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: var(--text-2) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  padding: 0 !important;
+}
+
+.theme-seg-btn:hover {
+  color: var(--text-1) !important;
+}
+
+.theme-seg-btn.active {
+  background: var(--7z-blue-500) !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
 }
