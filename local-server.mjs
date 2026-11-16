@@ -30,6 +30,84 @@ const adminPasswordHash =
   "d6a0ae206229cd3a41af4c01f8ceb7ce431e9a52bc41bcc0bc10b966171cd9d8af0223dcc3855fb5c6373652c3e36fabd50d70d25821391b711913dc61b3d19b";
 
 const sessions = new Map();
+
+let mockClients = [
+  {
+    client_key: "acme-luxury",
+    username: "acme-luxury",
+    display_name: "Acme Luxury Studios",
+    company: "Acme Holdings International",
+    auth_type: "native",
+    status: "active",
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString()
+  },
+  {
+    client_key: "apex-cinematics",
+    username: "apex-cinematics",
+    display_name: "Apex Cinematics",
+    company: "Apex Media Production",
+    auth_type: "native",
+    status: "active",
+    created_at: new Date(Date.now() - 86400000 * 12).toISOString()
+  },
+  {
+    client_key: "silla-royal",
+    username: "silla-royal",
+    display_name: "Silla Royal Experiences",
+    company: "Silla Hospitality Ltd.",
+    auth_type: "native",
+    status: "active",
+    created_at: new Date(Date.now() - 86400000 * 20).toISOString()
+  }
+];
+
+let mockFiles = [
+  {
+    id: "file-01",
+    fileId: "file-01",
+    name: "7Z_Cinematic_Showreel_4K_Cut.mp4",
+    contentType: "video/mp4",
+    sizeBytes: 428000000,
+    uploadedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    type: "file"
+  },
+  {
+    id: "file-02",
+    fileId: "file-02",
+    name: "Spatial_Architecture_3D_Experience.zip",
+    contentType: "application/zip",
+    sizeBytes: 85000000,
+    uploadedAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+    type: "file"
+  },
+  {
+    id: "file-03",
+    fileId: "file-03",
+    name: "Executive_VIP_Brand_Architecture.pdf",
+    contentType: "application/pdf",
+    sizeBytes: 24500000,
+    uploadedAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    type: "file"
+  },
+  {
+    id: "file-04",
+    fileId: "file-04",
+    name: "Master_Keyframe_Hero_Lighting.png",
+    contentType: "image/png",
+    sizeBytes: 18200000,
+    uploadedAt: new Date(Date.now() - 86400000 * 9).toISOString(),
+    type: "file"
+  }
+];
+
+let mockPermissions = [
+  { client_key: "acme-luxury", resource_key: "file:file-01", can_view: true, can_download: true },
+  { client_key: "acme-luxury", resource_key: "file:file-02", can_view: true, can_download: false },
+  { client_key: "acme-luxury", resource_key: "file:file-03", can_view: true, can_download: true },
+  { client_key: "acme-luxury", resource_key: "file:file-04", can_view: true, can_download: true },
+  { client_key: "apex-cinematics", resource_key: "file:file-01", can_view: true, can_download: false },
+  { client_key: "silla-royal", resource_key: "file:file-03", can_view: true, can_download: true }
+];
 const mediaSectionLabels = {
   architectureVideos: "Architectural Design",
   mediaProjects: "Marketing Media Production",
@@ -678,6 +756,140 @@ async function handleApi(req, res, url) {
     return true;
   }
 
+  // --- 7Z Admin & Client Delivery Vault APIs ---
+  if (url.pathname === "/api/admin/all-clients" || url.pathname === "/api/admin/clients") {
+    if (req.method === "GET") {
+      sendJson(res, 200, { ok: true, clients: mockClients });
+      return true;
+    }
+    if (req.method === "POST") {
+      const body = await readJsonBody(req).catch(() => ({}));
+      const newClient = {
+        client_key: body.client_key || String(body.username || body.name || `client-${Date.now()}`).toLowerCase().replace(/[^a-z0-9_-]/g, "-"),
+        username: String(body.username || body.name || "vip-client"),
+        display_name: String(body.display_name || body.name || "VIP Client"),
+        company: String(body.company || "VIP Enterprise"),
+        auth_type: "native",
+        status: "active",
+        created_at: new Date().toISOString()
+      };
+      mockClients.unshift(newClient);
+      sendJson(res, 200, { ok: true, client: newClient });
+      return true;
+    }
+  }
+
+  if (url.pathname === "/api/admin/files") {
+    if (req.method === "GET") {
+      sendJson(res, 200, { ok: true, files: mockFiles });
+      return true;
+    }
+  }
+
+  if (url.pathname === "/api/admin/file-manage") {
+    if (req.method === "POST") {
+      const body = await readJsonBody(req).catch(() => ({}));
+      if (body.action === "rename") {
+        const file = mockFiles.find((f) => f.id === body.id);
+        if (file) file.name = body.name || file.name;
+      } else if (body.action === "remove") {
+        mockFiles = mockFiles.filter((f) => f.id !== body.id);
+      }
+      sendJson(res, 200, { ok: true });
+      return true;
+    }
+  }
+
+  if (url.pathname === "/api/admin/client-file-access") {
+    if (req.method === "GET") {
+      sendJson(res, 200, {
+        ok: true,
+        clients: mockClients,
+        resources: mockFiles,
+        permissions: mockPermissions
+      });
+      return true;
+    }
+    if (req.method === "POST") {
+      const body = await readJsonBody(req).catch(() => ({}));
+      const { clientKey, resourceKey, fileId, canView, canDownload } = body;
+      const targetResource = resourceKey || (fileId ? `file:${fileId}` : "");
+      let existing = mockPermissions.find(
+        (p) => p.client_key === clientKey && (p.resource_key === targetResource || p.file_id === fileId)
+      );
+      if (existing) {
+        existing.can_view = !!canView;
+        existing.can_download = !!canDownload;
+      } else if (clientKey && targetResource) {
+        mockPermissions.push({
+          client_key: clientKey,
+          resource_key: targetResource,
+          file_id: fileId,
+          can_view: !!canView,
+          can_download: !!canDownload
+        });
+      }
+      sendJson(res, 200, { ok: true, permissions: mockPermissions });
+      return true;
+    }
+  }
+
+  if (url.pathname === "/api/admin/admin-accounts") {
+    sendJson(res, 200, {
+      ok: true,
+      currentAdminId: "admin-1",
+      admins: [
+        {
+          clerk_user_id: "admin-1",
+          email: adminEmail,
+          role: "superadmin",
+          created_at: new Date().toISOString()
+        }
+      ]
+    });
+    return true;
+  }
+
+  if (url.pathname === "/api/admin/users") {
+    sendJson(res, 200, { ok: true, users: [] });
+    return true;
+  }
+
+  // Client Portal Authentication & Deliverables
+  if (url.pathname === "/api/private-auth/hub-status") {
+    sendJson(res, 200, {
+      ok: true,
+      authenticated: false,
+      client: null
+    });
+    return true;
+  }
+
+  if (url.pathname === "/api/private-auth/hub-login") {
+    sendJson(res, 200, {
+      ok: true,
+      authenticated: true,
+      client: mockClients[0]
+    });
+    return true;
+  }
+
+  if (url.pathname === "/api/private-auth/hub-logout") {
+    sendJson(res, 200, {
+      ok: true,
+      authenticated: false
+    });
+    return true;
+  }
+
+  if (url.pathname === "/api/private-auth/portal-files") {
+    sendJson(res, 200, {
+      ok: true,
+      files: mockFiles
+    });
+    return true;
+  }
+
   if (url.pathname === "/api/academy/register" && req.method === "POST") {
     const body = await readJsonBody(req, 15 * 1024 * 1024);
     const result = await handleRegistration(body);
@@ -777,20 +989,33 @@ async function handleApi(req, res, url) {
   return false;
 }
 
+export function startServer(customPort = port) {
+  ensureStorage();
+  const server = createServer((req, res) => {
+    const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
+
+    handleApi(req, res, url)
+      .then((handled) => {
+        if (!handled) serveStatic(req, res, url);
+      })
+      .catch((error) => {
+        console.error(error);
+        sendJson(res, 500, { error: "Server error" });
+      });
+  });
+
+  return new Promise((resolveServer) => {
+    server.listen(customPort, "0.0.0.0", () => {
+      console.log(`7Z Magic local server running at http://localhost:${customPort}`);
+      resolveServer(server);
+    });
+  });
+}
+
 ensureStorage();
 setInterval(cleanExpiredSessions, 1000 * 60 * 15).unref();
 
-createServer((req, res) => {
-  const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
-
-  handleApi(req, res, url)
-    .then((handled) => {
-      if (!handled) serveStatic(req, res, url);
-    })
-    .catch((error) => {
-      console.error(error);
-      sendJson(res, 500, { error: "Server error" });
-    });
-}).listen(port, () => {
-  console.log(`7Z Magic local server running at http://localhost:${port}`);
-});
+const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
+if (isDirectRun) {
+  startServer(port);
+}

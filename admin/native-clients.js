@@ -159,7 +159,7 @@
           <span class="z7nc-badge z7nc-client-count" id="z7nc-client-count" aria-live="polite">0 CLIENTS</span>
           <button type="button" id="z7nc-toggle-create-btn" class="button button-primary z7nc-new-account-btn">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            <span>+ New Client Account</span>
+            <span>New Client Account</span>
           </button>
         </div>
       </div>
@@ -625,7 +625,7 @@
             <span class="vip-meta-scope">${isNative ? "Direct Portal Access" : "Legacy Resource Scope"}</span>
           </div>
           <div class="vip-client-card__actions">
-            <button type="button" class="vip-btn vip-btn--access" data-action="manage-access" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name || "")}" title="Configure per-asset permissions">
+            <button type="button" class="vip-btn vip-btn--access z7nc-card-btn-perm" data-action="manage-access" data-client-id="${esc(client.client_key)}" data-client-key="${esc(client.client_key)}" data-display-name="${esc(client.display_name || "")}" title="Configure per-asset permissions">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <span>Permissions ↗</span>
             </button>

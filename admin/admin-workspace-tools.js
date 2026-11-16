@@ -11,20 +11,29 @@
   }
 
   async function request(options = {}) {
-    const token = await window.Clerk?.session?.getToken?.();
-    if (!token) throw new Error("Your secure admin session has expired. Sign in again.");
+    let token = null;
+    try {
+      token = await window.Clerk?.session?.getToken?.();
+    } catch (_) {}
+    const headers = {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.body ? { "Content-Type": "application/json" } : {})
+    };
     const response = await fetch(API, {
       method: options.body ? "POST" : "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        ...(options.body ? { "Content-Type": "application/json" } : {})
-      },
+      headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
       credentials: "same-origin",
       cache: "no-store"
     });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || "Client permissions could not be loaded.");
+    const isJson = (response.headers.get("content-type") || "").includes("application/json");
+    const data = isJson ? await response.json().catch(() => ({})) : {};
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Your secure admin session has expired. Sign in again.");
+      }
+      throw new Error(data.error || "Client permissions could not be loaded.");
+    }
     return data;
   }
 
@@ -241,6 +250,7 @@
   $("#access-revoke-all")?.addEventListener("click", () => bulkAction("revoke"));
   $("#access-matrix-refresh")?.addEventListener("click", load);
   document.addEventListener("z7:admin-ready", load);
+  window.z7EnsureMatrixLoaded = load;
   if (window.Clerk?.user) load();
 
   const clientsMount = $("#z7-native-clients-mount");

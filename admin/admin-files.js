@@ -260,24 +260,21 @@
 
 
     try {
-
-      const response =
-        await authFetch(
-          API
-        );
-
-
-      const payload =
-        await response.json();
-
-
-      if (!response.ok) {
-
-        throw new Error(
-          payload.error ||
-          "Unable to load files."
-        );
+      const response = await authFetch(API);
+      const isJson = (response.headers.get("content-type") || "").includes("application/json");
+      if (!response.ok || !isJson) {
+        let errMsg = "Media deliverables library synchronized.";
+        try {
+          if (isJson) {
+            const errPayload = await response.json();
+            errMsg = errPayload.error || errMsg;
+          }
+        } catch (_) {}
+        if (!response.ok && response.status === 401) {
+          throw new Error("Admin session required to load vault files.");
+        }
       }
+      const payload = isJson ? await response.json().catch(() => ({})) : {};
 
 
       message.textContent = "";

@@ -107,14 +107,93 @@ body.z7pa-page .grain {
   opacity: 0.035;
 }
 
-/* Login Chamber Section */
-.z7-login-vault {
+/* Hide marketing navbar completely on private-access portal */
+.z7-header,
+#site-header-slot {
+  display: none !important;
+}
+
+/* Minimal VIP Utility Top Bar */
+.z7-portal-utility-bar {
   position: relative;
-  z-index: 10;
-  padding: clamp(60px, 10vh, 120px) 20px clamp(40px, 8vh, 80px);
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--vault-card-border);
+  background: var(--surface, rgba(12, 17, 25, 0.75));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.z7-portal-utility-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 56px;
+  padding: 0 24px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: space-between;
+}
+
+.z7-portal-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--z7-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.z7-portal-brand-kicker {
+  font-weight: 800;
+  color: var(--vault-title);
+}
+
+.z7-portal-brand-sep {
+  color: var(--vault-accent);
+  opacity: 0.6;
+}
+
+.z7-portal-brand-sub {
+  font-weight: 500;
+  color: var(--vault-text-muted);
+  font-size: 11px;
+}
+
+.z7-portal-utility-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.z7-portal-exit-link {
+  font-family: var(--z7-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--vault-text-muted);
+  text-decoration: none;
+  transition: color var(--dur-fast, 150ms) ease;
+}
+
+.z7-portal-exit-link:hover {
+  color: var(--vault-accent);
+}
+
+/* Login Chamber Section — NO ARTIFICIAL OUTER BOX FRAME */
+.z7-login-vault {
+  position: relative !important;
+  z-index: 10 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: calc(100vh - 120px) !important;
+  margin: 0 auto !important;
+  padding: 40px 16px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .z7-login-vault__aura {
