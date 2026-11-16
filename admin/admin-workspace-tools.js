@@ -92,19 +92,21 @@
 
       return `
         <article class="access-file-row">
-          <span class="access-file-icon" aria-hidden="true">↗</span>
-          <div class="access-file-name">
-            <strong>${escape(file.name)}</strong>
-            <small><span class="badge-tag">${cat}</span> · ${escape(formatBytes(file.sizeBytes))}</small>
+          <div class="access-file-main">
+            <span class="access-file-icon" aria-hidden="true">↗</span>
+            <div class="access-file-name">
+              <strong>${escape(file.name)}</strong>
+              <small><span class="badge-tag">${cat}</span> · ${escape(formatBytes(file.sizeBytes))}</small>
+            </div>
           </div>
           <div class="access-toggles-cluster">
-            <label class="access-toggle">
-              <input type="checkbox" data-access="view" data-file-id="${escape(file.fileId)}" ${canView ? "checked" : ""}>
-              <span>View Access</span>
+            <label class="access-toggle-pod" title="Toggle view permission">
+              <span class="access-toggle-label">View Access</span>
+              <input type="checkbox" class="access-pill-switch" data-access="view" data-file-id="${escape(file.fileId)}" ${canView ? "checked" : ""}>
             </label>
-            <label class="access-toggle">
-              <input type="checkbox" data-access="download" data-file-id="${escape(file.fileId)}" ${canDownload ? "checked" : ""}>
-              <span>Download Access</span>
+            <label class="access-toggle-pod" title="Toggle download permission">
+              <span class="access-toggle-label">Download Access</span>
+              <input type="checkbox" class="access-pill-switch" data-access="download" data-file-id="${escape(file.fileId)}" ${canDownload ? "checked" : ""}>
             </label>
           </div>
         </article>

@@ -527,79 +527,6 @@
         <section class="admin-vault-section" aria-labelledby="client-users-title">
           <div id="z7-native-clients-mount" class="client-directory-mount"></div>
         </section>
-
-        <!-- Administrative Console Roles & Accounts -->
-        <details class="admin-team-details" style="margin-top: 24px;">
-          <summary class="admin-team-summary">
-            <span class="eyebrow">PORTAL DIRECTORY / TEAM CREDENTIALS</span>
-            <span>Administrative Staff Directory &amp; Console Roles ▾</span>
-          </summary>
-          <div class="workspace-grid" style="margin-top: 16px;">
-            <article class="panel create-panel">
-              <div class="panel-head">
-                <div>
-                  <span class="eyebrow">NEW STAFF</span>
-                  <h2>Create Admin User</h2>
-                </div>
-              </div>
-              <form id="create-user-form">
-                <label>
-                  <span>Display Name</span>
-                  <input id="create-name" name="displayName" autocomplete="off" required maxlength="120" placeholder="Team member name">
-                </label>
-                <label>
-                  <span>Email Address</span>
-                  <input id="create-email" name="email" type="email" autocomplete="off" required placeholder="name@company.com">
-                </label>
-                <label>
-                  <span>Company</span>
-                  <input id="create-company" name="company" autocomplete="off" maxlength="160" placeholder="7Z Magic / Partner">
-                </label>
-                <label>
-                  <span>Initial Password</span>
-                  <div class="password-field">
-                    <input id="create-password" name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required placeholder="Minimum 8 characters">
-                    <button type="button" class="text-button toggle-password" data-target="create-password">SHOW</button>
-                  </div>
-                </label>
-                <label>
-                  <span>Role</span>
-                  <select id="create-role" name="role">
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </label>
-                <button id="create-submit" class="button button-primary full" type="submit">Create Staff Account</button>
-              </form>
-            </article>
-
-            <article class="panel users-panel" id="users-panel">
-              <div class="panel-head table-head">
-                <div>
-                  <span class="eyebrow">STAFF DIRECTORY</span>
-                  <h2>Console Administrators</h2>
-                </div>
-                <button id="refresh-users" type="button" class="button button-secondary">Refresh</button>
-              </div>
-              <div id="users-loading" class="table-state">Loading users…</div>
-              <div id="users-empty" class="table-state hidden">No users found.</div>
-              <div id="users-table-wrap" class="table-wrap hidden">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Company</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="users-body"></tbody>
-                </table>
-              </div>
-            </article>
-          </div>
-        </details>
       </div>
 
       <!-- ============================================================= -->
@@ -646,7 +573,6 @@
               <h3 id="access-matrix-title">Live File Access Matrix</h3>
               <p>Select any client account below to instantly inspect and toggle View &amp; Download rights per asset.</p>
             </div>
-            <button class="button button-secondary" id="access-matrix-refresh" type="button">Refresh access ⟳</button>
           </div>
           <div class="access-matrix-topbar">
             <div class="access-client-picker">
@@ -660,8 +586,9 @@
               <input type="search" id="access-file-search" class="access-search-input" placeholder="Filter files in matrix…" aria-label="Filter matrix files">
             </div>
             <div class="access-bulk-actions">
+              <button type="button" class="button button-secondary" id="access-matrix-refresh">Refresh access ⟳</button>
               <button type="button" class="button button-secondary" id="access-grant-all">Grant All View</button>
-              <button type="button" class="button button-secondary" id="access-revoke-all">Revoke All</button>
+              <button type="button" class="button button-danger" id="access-revoke-all">Revoke All</button>
             </div>
           </div>
           <div id="access-matrix-status" class="access-matrix-status" role="status"></div>
@@ -737,6 +664,82 @@
           </div>
         </article>
       </div>
+
+      <!-- Staff Directory & Console Roles Section (§Defect 4 Separation) -->
+      <section class="glass-panel staff-directory-section" id="admin-staff-section" style="margin-top: 24px;" aria-labelledby="staff-directory-title">
+        <div class="glass-panel__head">
+          <div>
+            <span class="eyebrow">PORTAL DIRECTORY / TEAM CREDENTIALS</span>
+            <h3 id="staff-directory-title">Administrative Staff Directory &amp; Console Roles</h3>
+            <p>Manage internal team members, administrative access levels, and console credentials.</p>
+          </div>
+          <button id="refresh-users" type="button" class="button button-secondary">Refresh staff</button>
+        </div>
+        <div class="workspace-grid" style="margin-top: 16px;">
+          <article class="panel create-panel">
+            <div class="panel-head">
+              <div>
+                <span class="eyebrow">NEW STAFF</span>
+                <h2>Create Admin User</h2>
+              </div>
+            </div>
+            <form id="create-user-form">
+              <label>
+                <span>Display Name</span>
+                <input id="create-name" name="displayName" autocomplete="off" required maxlength="120" placeholder="Team member name">
+              </label>
+              <label>
+                <span>Email Address</span>
+                <input id="create-email" name="email" type="email" autocomplete="off" required placeholder="name@company.com">
+              </label>
+              <label>
+                <span>Company</span>
+                <input id="create-company" name="company" autocomplete="off" maxlength="160" placeholder="7Z Magic / Partner">
+              </label>
+              <label>
+                <span>Initial Password</span>
+                <div class="password-field">
+                  <input id="create-password" name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required placeholder="Minimum 8 characters">
+                  <button type="button" class="text-button toggle-password" data-target="create-password">SHOW</button>
+                </div>
+              </label>
+              <label>
+                <span>Role</span>
+                <select id="create-role" name="role">
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
+              <button id="create-submit" class="button button-primary full" type="submit">Create Staff Account</button>
+            </form>
+          </article>
+
+          <article class="panel users-panel" id="users-panel">
+            <div class="panel-head table-head">
+              <div>
+                <span class="eyebrow">STAFF DIRECTORY</span>
+                <h2>Console Administrators</h2>
+              </div>
+            </div>
+            <div id="users-loading" class="table-state">Loading users…</div>
+            <div id="users-empty" class="table-state hidden">No users found.</div>
+            <div id="users-table-wrap" class="table-wrap hidden">
+              <table>
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Company</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="users-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
 
       <!-- Clean Audit Trail Panel (Zero Bloat / Zero Giant Black Boxes) -->
       <article class="glass-panel audit-panel">

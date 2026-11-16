@@ -159,7 +159,7 @@
             <h2>Media &amp; Deliverables Library</h2>
             <p>Govern 4K video cuts, 3D Web bundles, interactive PDFs, and master exports.</p>
           </div>
-          <button type="button" id="z7af-refresh" class="button button-secondary z7af-refresh">Refresh data</button>
+          <button type="button" id="z7af-refresh" class="button button-secondary z7af-refresh">Refresh vault</button>
         </div>
 
         <div class="z7af-filter-strip" role="toolbar" aria-label="Media vault filters">
