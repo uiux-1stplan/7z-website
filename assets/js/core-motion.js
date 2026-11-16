@@ -501,6 +501,14 @@
           gsap.to(loop, { timeScale: (reverse ? -1 : 1) * direction * Math.min(2.1, .72 + speed / 2200), duration: .3, overwrite: true });
         }});
         state.marqueeTriggers.push(velocityTrigger);
+
+        // Off-screen marquee lifecycle optimization: pause animation when out of view
+        const marqueeObserver = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting && !document.hidden) loop.play();
+          else loop.pause();
+        }, { rootMargin: "150px" });
+        marqueeObserver.observe(track);
+        state.abort.signal.addEventListener("abort", () => marqueeObserver.disconnect());
       });
       document.querySelectorAll(".service-card,.studio-card,.media-tile,.services-page .stats-strip > div,.services-page .reach-metric,.services-page .film-player").forEach((node, index) => gsap.fromTo(node, { autoAlpha: 0, y: 14 }, {
         autoAlpha: 1, y: 0, duration: .55, delay: index % 4 * .025, ease: "power2.out",

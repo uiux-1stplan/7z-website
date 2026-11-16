@@ -165,15 +165,38 @@ function mount(host,mode){
   window.addEventListener("pointermove",pointerMove,{passive:true});
   interactionArea.addEventListener("pointerleave",pointerLeave,{passive:true});
   if(mode==="scroll"){window.addEventListener("scroll",onScroll,{passive:true});onScroll();}
-  const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible)last=0;},{rootMargin:"100px"});
+  function startLoop(){
+    if(!alive||raf||!visible||document.hidden) return;
+    last=0;
+    raf=requestAnimationFrame(render);
+  }
+  function stopLoop(){
+    if(raf){
+      cancelAnimationFrame(raf);
+      raf=0;
+    }
+  }
+
+  const observer=new IntersectionObserver(([entry])=>{
+    visible=entry.isIntersecting;
+    if(visible && !document.hidden) startLoop();
+    else stopLoop();
+  },{rootMargin:"100px"});
   observer.observe(host);
-  const onVis=()=>{visible=!document.hidden;if(visible)last=0;};
+
+  const onVis=()=>{
+    if(!document.hidden && visible) startLoop();
+    else stopLoop();
+  };
   document.addEventListener("visibilitychange",onVis);
 
   function render(now){
     if(!alive)return;
+    if(!visible||document.hidden){
+      raf=0;
+      return;
+    }
     raf=requestAnimationFrame(render);
-    if(!visible)return;
     const time=last?Math.min(.05,(now-last)/1000):0;last=now;
     if(geometry){
       // Smooth physical damp/lerp for natural, calm cursor tracking
@@ -194,7 +217,7 @@ function mount(host,mode){
       renderer.render(scene,camera);
     } else renderer.render(scene,camera);
   }
-  raf=requestAnimationFrame(render);
+  startLoop();
   loadSvg().then(text=>{
     if(!alive)return;
     geometry=buildExtrusion(text);

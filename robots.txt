@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private-access/
+Disallow: /api/
+Disallow: /course-registration/form/
+
+Sitemap: https://7z-magic.com/sitemap.xml

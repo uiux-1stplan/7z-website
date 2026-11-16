@@ -220,14 +220,38 @@
           }
         }
       }
+      if (!isHeroVisible || document.hidden) {
+        canvasFrame = 0;
+        return;
+      }
       if (!reducedMotion.matches) canvasFrame = requestAnimationFrame(paint);
     }
+    let isHeroVisible = true;
+    const heroObserver = new IntersectionObserver(([entry]) => {
+      isHeroVisible = entry.isIntersecting;
+      if (isHeroVisible && !document.hidden && !reducedMotion.matches && !canvasFrame) {
+        state.lastPaint = 0;
+        canvasFrame = requestAnimationFrame(paint);
+      } else if (!isHeroVisible && canvasFrame) {
+        cancelAnimationFrame(canvasFrame);
+        canvasFrame = 0;
+      }
+    }, { rootMargin: "100px" });
+    heroObserver.observe(hero);
+    abort.signal.addEventListener("abort", () => heroObserver.disconnect());
+
+    let resizeTimer = 0;
+    const debouncedResize = () => {
+      cancelAnimationFrame(resizeTimer);
+      resizeTimer = requestAnimationFrame(resize);
+    };
+
     hero.addEventListener("pointermove", pointer, { passive: true, signal: abort.signal });
     window.addEventListener("scroll", onScroll, { passive: true, signal: abort.signal });
-    window.addEventListener("resize", resize, { passive: true, signal: abort.signal });
+    window.addEventListener("resize", debouncedResize, { passive: true, signal: abort.signal });
     document.addEventListener("visibilitychange", () => {
-      if (document.hidden && canvasFrame) { cancelAnimationFrame(canvasFrame); canvasFrame = 0; }
-      else if (!reducedMotion.matches && !canvasFrame) canvasFrame = requestAnimationFrame(paint);
+      if ((document.hidden || !isHeroVisible) && canvasFrame) { cancelAnimationFrame(canvasFrame); canvasFrame = 0; }
+      else if (!document.hidden && isHeroVisible && !reducedMotion.matches && !canvasFrame) canvasFrame = requestAnimationFrame(paint);
     }, { signal: abort.signal });
     resize();
     if (reducedMotion.matches) paint(performance.now(), true);

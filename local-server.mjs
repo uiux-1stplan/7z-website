@@ -148,7 +148,9 @@ const types = {
   ".mov": "video/quicktime",
   ".woff": "font/woff",
   ".woff2": "font/woff2",
-  ".ttf": "font/ttf"
+  ".ttf": "font/ttf",
+  ".txt": "text/plain; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8"
 };
 
 function ensureStorage() {
@@ -633,6 +635,11 @@ async function handleUpload(req, res) {
 
 function serveStatic(req, res, url) {
   const decodedPath = decodeURIComponent(url.pathname);
+  if (decodedPath === "/courses/ai-engineering" || decodedPath === "/courses/ai-engineering/") {
+    res.writeHead(301, { "Location": "/courses/ai-for-engineers/" });
+    res.end();
+    return;
+  }
   const requestedPath = decodedPath === "/" ? "/index.html" : decodedPath === "/admin" ? "/admin/index.html" : decodedPath;
   const safePath = normalize(requestedPath).replace(/^(\.\.[/\\])+/, "");
   let filePath = resolve(join(root, safePath));
@@ -684,12 +691,20 @@ function serveStatic(req, res, url) {
     return;
   }
 
-  res.writeHead(200, {
+  const isNoIndex = decodedPath.startsWith("/admin") || decodedPath.startsWith("/private-access") || decodedPath.startsWith("/course-registration/form");
+  const headers = {
     "Content-Length": stat.size,
     "Content-Type": type,
     "Accept-Ranges": type.startsWith("video/") ? "bytes" : "none",
-    "Cache-Control": cacheControl
-  });
+    "Cache-Control": cacheControl,
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Content-Security-Policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';"
+  };
+  if (isNoIndex) headers["X-Robots-Tag"] = "noindex, nofollow, noarchive";
+
+  res.writeHead(200, headers);
   createReadStream(filePath).pipe(res);
 }
 

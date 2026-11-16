@@ -148,3 +148,41 @@ html[data-academy-ui] .z7-lang-toggle { display:inline-grid; }
 .z7-footer__main { grid-template-columns:minmax(0,1.2fr) minmax(105px,.58fr) minmax(130px,.68fr) minmax(105px,.55fr) minmax(190px,.85fr); }
 @media (max-width:1180px) { .z7-footer__main { grid-template-columns:1.2fr .7fr .8fr; } .z7-footer__contact { grid-column:2 / -1; } }
 @media (max-width:700px) { .z7-footer__main { grid-template-columns:1fr 1fr; } .z7-footer__contact { grid-column:auto; } }
+
+/* ==========================================================================
+   7Z CREATIVE STUDIO — WCAG AA HIGH-CONTRAST BUTTON SYSTEM (Pillar 3)
+   Guarantees >= 4.5:1 text contrast for normal text and >= 3:1 for large text
+   across Light & Dark themes on "Explore all services", "Meet the founders", etc.
+   ========================================================================== */
+html[data-z7-core] .button--primary,
+html[data-z7-core] .services-cta,
+html[data-z7-core] .z7-header__contact,
+html[data-z7-core] .cta {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+html[data-z7-core][data-theme="dark"] .button--primary,
+html[data-z7-core][data-theme="dark"] .services-cta,
+html[data-z7-core][data-theme="dark"] .z7-header__contact,
+html[data-z7-core][data-theme="dark"] .cta {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+html[data-z7-core][data-theme="light"] .button--primary,
+html[data-z7-core][data-theme="light"] .services-cta,
+html[data-z7-core][data-theme="light"] .z7-header__contact,
+html[data-z7-core][data-theme="light"] .cta {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+html[data-z7-core] .button--primary:hover,
+html[data-z7-core] .services-cta:hover,
+html[data-z7-core] .z7-header__contact:hover,
+html[data-z7-core] .cta:hover {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
