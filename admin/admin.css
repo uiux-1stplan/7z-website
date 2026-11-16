@@ -3737,3 +3737,166 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
   display: none !important;
   pointer-events: none !important;
 }
+
+
+/* ==========================================================================
+   7Z CREATIVE STUDIO — FINAL MOBILE FINISHING DIRECTIVE · v6.2
+   ========================================================================== */
+
+/* FIX #1: Initial Password Row & SHOW Button Styling */
+#admin-staff-section .password-field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#admin-staff-section .password-field input {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+#admin-staff-section .toggle-password,
+#admin-staff-section .password-field .text-button {
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  padding: 0 14px !important;
+  border-radius: 10px !important;
+  background: var(--surface-raised) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  flex-shrink: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+#admin-staff-section .toggle-password:hover,
+#admin-staff-section .password-field .text-button:hover {
+  border-color: var(--7z-blue-500) !important;
+  color: #ffffff !important;
+}
+
+/* FIX #1 & #2: Mobile Responsive Refinements (@media (max-width: 900px)) */
+@media (max-width: 900px) {
+  #settings-view,
+  #admin-staff-section,
+  #admin-staff-section > div,
+  #admin-staff-section .glass-panel,
+  #admin-staff-section form,
+  #admin-staff-section .workspace-grid,
+  #admin-staff-section .panel,
+  #admin-staff-section .create-panel,
+  #admin-staff-section .users-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  #admin-staff-section .panel {
+    padding: 16px !important;
+  }
+
+  #admin-staff-section .workspace-grid,
+  #admin-staff-section [style*="grid-template-columns"] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #admin-staff-section input,
+  #admin-staff-section select,
+  #admin-staff-section textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Transform Console Administrators table into stacked mobile cards */
+  #admin-staff-section .table-wrap,
+  #admin-staff-section .table-scroll {
+    overflow-x: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #admin-staff-section table,
+  #admin-staff-section tbody,
+  #admin-staff-section tr,
+  #admin-staff-section td {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #admin-staff-section thead {
+    display: none !important;
+  }
+
+  #admin-staff-section tbody tr {
+    background: var(--bg-void) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    padding: 14px !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  #admin-staff-section tbody td {
+    padding: 0 !important;
+    border: none !important;
+    word-break: break-word !important;
+  }
+
+  /* Metadata badges row (Company, Role, Status) */
+  #admin-staff-section tbody td:nth-child(2),
+  #admin-staff-section tbody td:nth-child(3),
+  #admin-staff-section tbody td:nth-child(4) {
+    display: inline-flex !important;
+    width: auto !important;
+    margin-inline-end: 8px !important;
+    font-size: 0.76rem !important;
+  }
+
+  /* Action buttons grid at bottom of each mobile staff card */
+  #admin-staff-section tbody td:last-child,
+  #admin-staff-section tbody td .row-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding-top: 8px !important;
+    border-top: 1px solid var(--border) !important;
+    box-sizing: border-box !important;
+  }
+
+  #admin-staff-section tbody td:last-child button,
+  #admin-staff-section tbody td .row-actions button {
+    flex: 1 1 calc(33.33% - 8px) !important;
+    min-width: 78px !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+}
