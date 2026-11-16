@@ -6,7 +6,7 @@
 .z7pa-page {
   position: relative;
   z-index: 2;
-  overflow: clip;
+  overflow: visible;
 }
 
 .z7pa-shell {

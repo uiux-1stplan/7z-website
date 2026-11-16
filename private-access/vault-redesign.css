@@ -502,3 +502,36 @@ body.z7pa-page .grain {
     border-radius: 18px;
   }
 }
+
+
+/* ==========================================================================
+   7Z CREATIVE STUDIO — SURGICAL SCROLL UNLOCK DIRECTIVE · v6.1
+   ========================================================================== */
+
+html, body, html[data-z7-core], body[data-z7-core], body.z7pa-page {
+  height: auto !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  position: static !important;
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.subpage-main,
+.z7pa-page,
+.z7-login-vault,
+#z7-client-private-files,
+.z7-client-private-files,
+#portalVaultView,
+.z7-portal-shell,
+.portal-files-grid,
+.z7pa-hero,
+.z7pa-library {
+  min-height: 100dvh !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding-bottom: 64px !important;
+}

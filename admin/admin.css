@@ -3665,3 +3665,75 @@ tbody tr:hover {
   color: #ffffff !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
 }
+
+
+/* ==========================================================================
+   7Z CREATIVE STUDIO — SURGICAL SCROLL UNLOCK DIRECTIVE · v6.1
+   ========================================================================== */
+
+html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[data-z7-core], body.z7-admin-shell {
+  height: auto !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  position: static !important;
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+@media (min-width: 901px) {
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    inset-inline-start: 0 !important;
+    width: 272px !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    z-index: 40 !important;
+  }
+
+  #app.dashboard-app.admin-shell, .admin-shell,
+  .main.admin-main-viewport, .admin-main-viewport {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .main.admin-main-viewport, .admin-main-viewport {
+    margin-inline-start: 272px !important;
+    width: calc(100% - 272px) !important;
+    padding-bottom: 80px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none !important;
+  }
+
+  #app.dashboard-app.admin-shell, .admin-shell,
+  .main.admin-main-viewport, .admin-main-viewport {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin-inline-start: 0 !important;
+    width: 100% !important;
+    padding-top: 76px !important;
+    padding-bottom: 96px !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+}
+
+#z7nc-drawer-overlay:not(.is-open),
+#z7nc-drawer:not(.is-open),
+.modal[hidden],
+[data-drawer-overlay]:not(.is-open) {
+  display: none !important;
+  pointer-events: none !important;
+}
