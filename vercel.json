@@ -9,17 +9,17 @@
     {
       "source": "/academy",
       "destination": "/courses/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/academy/",
       "destination": "/courses/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/academy/:path*",
       "destination": "/courses/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/courses/ai-engineering",

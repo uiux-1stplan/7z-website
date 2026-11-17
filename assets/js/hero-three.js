@@ -309,7 +309,12 @@ async function mount(host, mode) {
   loadSvg()
     .then(async (text) => {
       if (!alive) return;
-      await yieldMainThread();
+      if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+        await new Promise((resolve) => window.requestIdleCallback(resolve, { timeout: 350 }));
+      } else {
+        await yieldMainThread();
+      }
+      if (!alive) return;
       geometry = buildExtrusion(text);
 
       caps = new THREE.MeshPhysicalMaterial({
