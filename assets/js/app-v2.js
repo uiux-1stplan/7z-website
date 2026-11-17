@@ -39,8 +39,10 @@
   async function loadPageSystems() {
     if (root.hasAttribute("data-z7-core")) {
       await loadScript("/assets/vendor/gsap.min.js");
-      await loadScript("/assets/vendor/ScrollTrigger.min.js");
-      await loadScript("/assets/vendor/lenis.min.js");
+      await Promise.all([
+        loadScript("/assets/vendor/ScrollTrigger.min.js"),
+        loadScript("/assets/vendor/lenis.min.js")
+      ]);
       if (root.hasAttribute("data-academy-ui")) await loadScript("/assets/js/academy-course.js?v=20261103-4");
       if (root.dataset.z7Visual === "spatial") await loadScript("/assets/js/home-content.js?v=20261112-logo-turn-1");
       else await loadScript("/assets/js/public-video.js");
@@ -90,10 +92,17 @@
     ].join(",");
     document.querySelectorAll(selector).forEach(surface => {
       surface.classList.add("z7-spotlight-surface");
+      let rect = null;
+      surface.addEventListener("pointerenter", () => {
+        rect = surface.getBoundingClientRect();
+      }, { passive: true, signal: abort.signal });
       surface.addEventListener("pointermove", event => {
-        const rect = surface.getBoundingClientRect();
+        if (!rect) rect = surface.getBoundingClientRect();
         surface.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
         surface.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
+      }, { passive: true, signal: abort.signal });
+      surface.addEventListener("pointerleave", () => {
+        rect = null;
       }, { passive: true, signal: abort.signal });
     });
   }
@@ -141,6 +150,7 @@
     const hero = canvas?.closest(".logo-hero");
     if (!canvas || !context || !hero) return;
     const state = { width: 0, height: 0, ratio: 1, pointerX: .5, pointerY: .42, targetX: .5, targetY: .42, points: [], scroll: 0, lastScroll: scrollY, time: 0, lastPaint: 0 };
+    let isHeroVisible = true;
     const resize = () => {
       const rect = hero.getBoundingClientRect();
       state.width = rect.width;
@@ -149,8 +159,11 @@
       canvas.width = Math.round(state.width * state.ratio);
       canvas.height = Math.round(state.height * state.ratio);
       context.setTransform(state.ratio, 0, 0, state.ratio, 0, 0);
-      const cols = Math.max(8, Math.floor(state.width / 88));
-      const rows = Math.max(6, Math.floor(state.height / 82));
+      const isMobile = window.innerWidth < 768;
+      const cellW = isMobile ? 120 : 92;
+      const cellH = isMobile ? 110 : 86;
+      const cols = Math.max(isMobile ? 5 : 8, Math.floor(state.width / cellW));
+      const rows = Math.max(isMobile ? 4 : 6, Math.floor(state.height / cellH));
       state.points = [];
       for (let row = 0; row <= rows; row++) for (let col = 0; col <= cols; col++) {
         state.points.push({ x: (col / cols) * state.width, y: (row / rows) * state.height, phase: Math.random() * Math.PI * 2, energy: .3 + Math.random() * .7 });
@@ -169,7 +182,7 @@
     };
     function paint(now, force = false) {
       canvasFrame = 0;
-      if (!live || document.hidden) return;
+      if (!live || document.hidden || (!isHeroVisible && !force)) return;
       if (!force && now - state.lastPaint < 28) { canvasFrame = requestAnimationFrame(paint); return; }
       const delta = Math.min(42, now - (state.lastPaint || now));
       state.lastPaint = now;
@@ -226,7 +239,6 @@
       }
       if (!reducedMotion.matches) canvasFrame = requestAnimationFrame(paint);
     }
-    let isHeroVisible = true;
     const heroObserver = new IntersectionObserver(([entry]) => {
       isHeroVisible = entry.isIntersecting;
       if (isHeroVisible && !document.hidden && !reducedMotion.matches && !canvasFrame) {

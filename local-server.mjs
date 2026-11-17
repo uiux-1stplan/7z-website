@@ -635,6 +635,11 @@ async function handleUpload(req, res) {
 
 function serveStatic(req, res, url) {
   const decodedPath = decodeURIComponent(url.pathname);
+  if (decodedPath === "/_vercel/insights/script.js") {
+    res.writeHead(200, { "Content-Type": "application/javascript; charset=utf-8" });
+    res.end("/* vercel insights mock */");
+    return;
+  }
   if (decodedPath === "/courses/ai-engineering" || decodedPath === "/courses/ai-engineering/") {
     res.writeHead(301, { "Location": "/courses/ai-for-engineers/" });
     res.end();
@@ -700,7 +705,7 @@ function serveStatic(req, res, url) {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Content-Security-Policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';"
+    "Content-Security-Policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';"
   };
   if (isNoIndex) headers["X-Robots-Tag"] = "noindex, nofollow, noarchive";
 

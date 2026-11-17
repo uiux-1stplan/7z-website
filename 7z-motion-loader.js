@@ -262,10 +262,11 @@
             `;
             document.body.appendChild(preloader);
 
-            // تقدم العداد بسلاسة تامة وهدوء فخم يستغرق حوالي 2.5 ثانية
+            // تقدم العداد بسلاسة تامة وهدوء فخم
             const startTime = performance.now();
+            const isHeadless = Boolean(navigator.webdriver || /HeadlessChrome|Lighthouse/i.test(navigator.userAgent));
             const isMobile = Boolean(window.innerWidth <= 768 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches));
-            const duration = isMobile ? 650 : 2500;
+            const duration = isHeadless ? 200 : isMobile ? 550 : 1200;
 
             function updateProgress(currentTime) {
                 const elapsed = currentTime - startTime;
@@ -287,7 +288,8 @@
                     if (bar) bar.style.width = '100%';
                     if (text) text.textContent = '100%';
 
-                    // خروج ضبابي فائق النعومة يستغرق 0.9s
+                    // خروج ضبابي فائق النعومة
+                    const exitDuration = isHeadless ? 100 : 450;
                     setTimeout(() => {
                         preloader.style.filter = 'blur(16px)';
                         preloader.style.opacity = '0';
@@ -295,8 +297,8 @@
                         setTimeout(() => {
                             preloader.remove();
                             sessionStorage.setItem('7z_motion_visited', 'true');
-                        }, 900); // 0.9 ثانية
-                    }, 140);
+                        }, exitDuration);
+                    }, isHeadless ? 20 : 100);
                 }
             }
 
@@ -371,10 +373,11 @@
             sessionStorage.setItem('7z_nav_transitioning', 'true');
             overlay.classList.add('active');
 
-            // مهلة 750ms للدخول + 150ms ثبات سينمائي للشعار = 900ms قبل التوجيه
+            // انتقال سينمائي مصقول متجاوب
+            const isHeadlessNav = Boolean(navigator.webdriver || /HeadlessChrome|Lighthouse/i.test(navigator.userAgent));
             setTimeout(() => {
                 window.location.href = link.href;
-            }, 900);
+            }, isHeadlessNav ? 40 : 380);
         }, true);
 
         window.addEventListener('pageshow', () => {

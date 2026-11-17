@@ -19,7 +19,17 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  const origin = req.headers.origin || "";
+  const ALLOWED_ORIGINS = new Set([
+    "https://7z-magic.com",
+    "https://www.7z-magic.com",
+    "http://localhost:3000",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173"
+  ]);
+  if (origin && ALLOWED_ORIGINS.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Cache-Control", "no-store");

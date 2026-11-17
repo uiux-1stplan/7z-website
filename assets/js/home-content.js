@@ -347,16 +347,28 @@
   }
   function boot() {
     renderComparisons();
-    renderTiles("#architectureVideos", architecture);
-    renderTiles("#homeVideoRail", selectedWork);
-    renderTiles("#mediaRail", campaigns);
-    renderTiles("#presentationStack", presentations);
-    initComparisons();
-    if (document.querySelector(".z7-home,.z7-services-page")) initServicePreview();
-    initPartnerMarquees();
     if (document.querySelector(".z7-home")) initHero();
-    initMedia();
-    initCounters();
+    if (document.querySelector(".z7-home,.z7-services-page")) initServicePreview();
+
+    const schedule = (fn) => {
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(fn, { timeout: 150 });
+      } else {
+        setTimeout(fn, 16);
+      }
+    };
+
+    schedule(() => {
+      renderTiles("#architectureVideos", architecture);
+      renderTiles("#homeVideoRail", selectedWork);
+      renderTiles("#mediaRail", campaigns);
+      renderTiles("#presentationStack", presentations);
+      initComparisons();
+      initPartnerMarquees();
+      initMedia();
+      initCounters();
+    });
+
     window.addEventListener("pagehide", () => {
       abort.abort();
       observers.forEach(observer => observer.disconnect());

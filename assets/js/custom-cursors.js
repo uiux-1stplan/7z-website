@@ -53,7 +53,46 @@
       this.boundOnPointerLeave = this.onPointerLeave.bind(this);
       this.boundOnResize = this.onResize.bind(this);
 
+      this.sleeping = false;
+      this.lastMoveTime = 0;
+      this.isDirty = true;
+      this.boundOnVisibilityChange = this.onVisibilityChange.bind(this);
+
       this.init();
+    }
+
+    onVisibilityChange() {
+      if (document.hidden) {
+        if (this.rafId) {
+          cancelAnimationFrame(this.rafId);
+          this.rafId = null;
+        }
+      } else {
+        this.wake();
+      }
+    }
+
+    wake() {
+      this.lastMoveTime = performance.now();
+      this.isDirty = true;
+      if (this.sleeping || !this.rafId) {
+        this.sleeping = false;
+        if (!this.rafId) {
+          this.rafId = requestAnimationFrame(this.boundStep);
+        }
+      }
+    }
+
+    onPointerMove(e) {
+      this.x = e.clientX;
+      this.y = e.clientY;
+      this.pointerActive = true;
+      this.wake();
+    }
+
+    onPointerLeave() {
+      this.pointerActive = false;
+      this.isDirty = true;
     }
 
     init() {
@@ -116,6 +155,7 @@
     bindListeners() {
       window.addEventListener('pointermove', this.boundOnPointerMove, { passive: true });
       document.addEventListener('pointerleave', this.boundOnPointerLeave, { passive: true });
+      document.addEventListener('visibilitychange', this.boundOnVisibilityChange, { passive: true });
       window.addEventListener('resize', this.boundOnResize, { passive: true });
 
       // Re-evaluate device capabilities on changes
@@ -250,11 +290,24 @@
         this.ctx.fill();
       }
 
+      const isSettled = !this.pointerActive || (
+        Math.abs(this.x - this.rx) < 0.15 &&
+        Math.abs(this.y - this.ry) < 0.15 &&
+        (performance.now() - this.lastMoveTime > 300)
+      );
+
+      if (isSettled && !this.isDirty) {
+        this.sleeping = true;
+        this.rafId = null;
+        return;
+      }
+      this.isDirty = false;
       this.rafId = requestAnimationFrame(this.boundStep);
     }
 
     teardown() {
       if (this.rafId) cancelAnimationFrame(this.rafId);
+      document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
       window.removeEventListener('pointermove', this.boundOnPointerMove);
       document.removeEventListener('pointerleave', this.boundOnPointerLeave);
       window.removeEventListener('resize', this.boundOnResize);

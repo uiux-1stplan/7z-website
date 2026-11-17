@@ -93,11 +93,12 @@
       field.scroll = Math.max(-30, Math.min(30, next - field.lastScroll));
       field.lastScroll = next;
     };
-    const spacing = () => field.width < 700 ? 44 : 38;
+    const spacing = () => field.width < 700 ? 56 : 38;
     function draw(now, force = false) {
       state.canvasRaf = 0;
       if (state.destroyed || (document.hidden && !force)) return;
-      if (!force && now - field.lastTime < 32) { state.canvasRaf = requestAnimationFrame(draw); return; }
+      const minInterval = field.width < 700 ? 48 : 32;
+      if (!force && now - field.lastTime < minInterval) { state.canvasRaf = requestAnimationFrame(draw); return; }
       field.lastTime = now;
       field.time += .002;
       field.pointerX += (field.targetX - field.pointerX) * .045;
