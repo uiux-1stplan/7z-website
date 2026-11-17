@@ -11,6 +11,10 @@ import {
   requireAdmin
 } from "../../lib/portal-runtime.mjs";
 
+import {
+  sendWebResponse
+} from "../../lib/vercel-api.mjs";
+
 
 function toWebRequest(req) {
 
@@ -122,9 +126,13 @@ export default async function handler(
 
   try {
 
-    await requireAdmin(
+    const gate = await requireAdmin(
       toWebRequest(req)
     );
+
+    if (!gate.ok) {
+      return sendWebResponse(res, gate.response);
+    }
 
 
     const sql =

@@ -202,6 +202,8 @@
           const image = document.createElement("img");
           image.src = sourceImage.currentSrc || sourceImage.src;
           image.alt = "";
+          image.width = 120;
+          image.height = 120;
           image.loading = repeat === 0 && index < 6 ? "eager" : "lazy";
           image.decoding = "async";
           image.setAttribute("aria-hidden", "true");

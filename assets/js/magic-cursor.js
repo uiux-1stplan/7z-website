@@ -1,6 +1,9 @@
 (() => {
   "use strict";
 
+  if (typeof window === "undefined") return;
+  if (!window.matchMedia || !window.matchMedia("(pointer: fine)").matches) return;
+
   /*
    * 7Z MAGIC — Signature Cinematic Custom Cursor
    * Desktop-only with smooth physics spring/lerp, theme-adaptive styling,

@@ -253,7 +253,7 @@
             preloader.innerHTML = `
                 <div class="z7-preloader-center">
                     <div class="z7-ambient-glow"></div>
-                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-logo-img">
+                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-logo-img" width="220" height="65">
                     <div class="z7-track">
                         <div class="z7-bar" id="z7-progress-bar"></div>
                     </div>

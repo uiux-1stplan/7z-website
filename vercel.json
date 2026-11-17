@@ -7,6 +7,16 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/academy",
+      "destination": "/courses/",
+      "permanent": true
+    },
+    {
+      "source": "/academy/:path*",
+      "destination": "/courses/",
+      "permanent": true
+    },
+    {
       "source": "/courses/ai-engineering",
       "destination": "/courses/ai-for-engineers/",
       "permanent": true
@@ -58,6 +68,10 @@
         {
           "key": "Referrer-Policy",
           "value": "no-referrer"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://7z-magic.com"
         }
       ]
     },
@@ -71,6 +85,10 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://7z-magic.com"
         }
       ]
     },
@@ -84,6 +102,10 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://7z-magic.com"
         }
       ]
     },
@@ -97,6 +119,10 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://7z-magic.com"
         }
       ]
     },

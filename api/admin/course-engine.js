@@ -912,12 +912,13 @@ async function getAccounting(sql) {
 
 export default async function handler(req, res) {
   try {
-    let gate = { ok: true, auth: { userId: "admin" } };
+    let gate;
     try {
       gate = await requireAdmin(toWebRequest(req));
       if (!gate.ok) return sendWebResponse(res, gate.response);
     } catch (authErr) {
-      console.warn("[course-engine] Auth verification notice:", authErr.message);
+      console.warn("[course-engine] Auth verification error:", authErr.message);
+      return send(res, 401, { error: "Authentication verification failed." });
     }
 
     if (!["GET", "POST"].includes(req.method)) return send(res, 405, { error: "Method not allowed." });

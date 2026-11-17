@@ -12,6 +12,7 @@
   'use strict';
 
   if (typeof window === 'undefined') return;
+  if (!window.matchMedia || !window.matchMedia('(pointer: fine)').matches) return;
 
   const isEligibleDevice = () => {
     const isTouchCoarse =
