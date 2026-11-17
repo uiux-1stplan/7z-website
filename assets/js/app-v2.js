@@ -39,15 +39,14 @@
   async function loadPageSystems() {
     if (root.hasAttribute("data-z7-core")) {
       await loadScript("/assets/vendor/gsap.min.js");
-      await Promise.all([
-        loadScript("/assets/vendor/ScrollTrigger.min.js"),
-        loadScript("/assets/vendor/lenis.min.js")
-      ]);
+      const vendors = [loadScript("/assets/vendor/ScrollTrigger.min.js")];
+      if (desktopPointer.matches) vendors.push(loadScript("/assets/vendor/lenis.min.js"));
+      await Promise.all(vendors);
       if (root.hasAttribute("data-academy-ui")) await loadScript("/assets/js/academy-course.js?v=20261103-4");
       if (root.dataset.z7Visual === "spatial") await loadScript("/assets/js/home-content.js?v=20261112-logo-turn-1");
       else await loadScript("/assets/js/public-video.js");
       await loadScript("/assets/js/core-motion.js?v=20261112-public-polish-2");
-      root.dataset.z7MotionState = window.gsap && window.ScrollTrigger && window.Lenis ? "ready" : "native-fallback";
+      root.dataset.z7MotionState = window.gsap && window.ScrollTrigger ? "ready" : "native-fallback";
     }
     await loadScript("/assets/js/site-theme.js");
     startVisibleInteractions();
@@ -109,6 +108,7 @@
 
   function bindVideoPolicy() {
     const enforce = video => {
+      if (video.closest("[data-seamless-backdrop]")) return;
       video.controls = false;
       video.removeAttribute("controls");
       video.autoplay = true;
@@ -421,7 +421,6 @@
     let changing = false;
     const source = videos[0].currentSrc || videos[0].src || videos[0].dataset.src;
 
-    // Deferred video playback: start smoothly after FCP without blocking initial LCP
     const startPlayback = () => {
       if (!videos[0].src && videos[0].dataset.src) {
         videos[0].src = videos[0].dataset.src;

@@ -1,7 +1,23 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js";
-import { SVGLoader } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/SVGLoader.js";
-import { RectAreaLightUniformsLib } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/lights/RectAreaLightUniformsLib.js";
-import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/environments/RoomEnvironment.js";
+// Module-level references & dynamic module loader for non-blocking critical path
+let THREE = null;
+let SVGLoader = null;
+let RectAreaLightUniformsLib = null;
+let RoomEnvironment = null;
+
+async function loadThree() {
+  if (THREE) return { THREE, SVGLoader, RectAreaLightUniformsLib, RoomEnvironment };
+  const [threeMod, svgMod, lightMod, envMod] = await Promise.all([
+    import("https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js"),
+    import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/SVGLoader.js"),
+    import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/lights/RectAreaLightUniformsLib.js"),
+    import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/environments/RoomEnvironment.js")
+  ]);
+  THREE = threeMod;
+  SVGLoader = svgMod.SVGLoader;
+  RectAreaLightUniformsLib = lightMod.RectAreaLightUniformsLib;
+  RoomEnvironment = envMod.RoomEnvironment;
+  return { THREE, SVGLoader, RectAreaLightUniformsLib, RoomEnvironment };
+}
 
 const VERSION = "0.158.0";
 const SVG_URL = "/assets/brand/7Z-LogoT.svg";
@@ -29,10 +45,12 @@ function yieldMainThread() {
   return new Promise((resolve) => setTimeout(resolve, 0));
 }
 
-function buildExtrusion(svgText) {
+async function buildExtrusion(svgText) {
   if (cachedGeometry) return cachedGeometry.clone();
 
   const parsed = new SVGLoader().parse(svgText.replace(/currentColor/gi, "#ffffff"));
+  await yieldMainThread();
+
   const shapes = [];
   let curveCount = 0, sourceSize = 0, smallestHole = Infinity;
 
@@ -64,6 +82,8 @@ function buildExtrusion(svgText) {
     }
   }
 
+  await yieldMainThread();
+
   if (!shapes.length || !sourceSize) throw Error("SVG contains no filled logo paths");
   const scaleFactor = 200 / sourceSize;
   const complexity = curveCount;
@@ -76,6 +96,9 @@ function buildExtrusion(svgText) {
     curveSegments,
     bevelEnabled: false
   });
+
+  await yieldMainThread();
+
   geometry.computeBoundingBox();
   geometry.center();
   geometry.scale(scaleFactor, -scaleFactor, scaleFactor);
@@ -119,6 +142,9 @@ async function mount(host, mode) {
   host.dataset.threeMounted = "true";
 
   let alive = true, raf = 0, last = 0, visible = false, meshReady = false;
+  await loadThree();
+  if (!alive) return;
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 1, 5000);
   camera.position.set(0, 0, 420);
@@ -315,7 +341,7 @@ async function mount(host, mode) {
         await yieldMainThread();
       }
       if (!alive) return;
-      geometry = buildExtrusion(text);
+      geometry = await buildExtrusion(text);
 
       caps = new THREE.MeshPhysicalMaterial({
         side: THREE.FrontSide,

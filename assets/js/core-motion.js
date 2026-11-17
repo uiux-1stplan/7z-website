@@ -355,78 +355,80 @@
     })));
     state.mutations.observe(document.body, { childList: true, subtree: true });
     const floaters = new WeakMap();
-    document.addEventListener("pointermove", event => {
-      const surface = event.target.closest?.(".z7-spatial");
-      if (surface && finePointer.matches) {
-        const rect = surface.getBoundingClientRect();
-        surface.style.setProperty("--z7-mx", (event.clientX - rect.left) + "px");
-        surface.style.setProperty("--z7-my", (event.clientY - rect.top) + "px");
-      }
-      const bespokeHero = event.target.closest?.("[data-hero-variant]:not([data-hero-variant='home-bento-stage'])");
-      if (bespokeHero && finePointer.matches && gsap && !reduced.matches) {
-        const rect = bespokeHero.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / Math.max(1, rect.width) - .5;
-        const y = (event.clientY - rect.top) / Math.max(1, rect.height) - .5;
-        const visual = bespokeHero.querySelector(".logo-hero__reel,.z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
-        if (visual) {
-          let tilt = floaters.get(visual);
-          if (!tilt) {
-            gsap.set(visual, { transformPerspective: 1000, transformStyle: "preserve-3d" });
-            tilt = {
-              x: gsap.quickTo(visual, "rotationX", { duration: .5, ease: "power3.out" }),
-              y: gsap.quickTo(visual, "rotationY", { duration: .5, ease: "power3.out" })
-            };
-            floaters.set(visual, tilt);
+    if (finePointer.matches) {
+      document.addEventListener("pointermove", event => {
+        const surface = event.target.closest?.(".z7-spatial");
+        if (surface && finePointer.matches) {
+          const rect = surface.getBoundingClientRect();
+          surface.style.setProperty("--z7-mx", (event.clientX - rect.left) + "px");
+          surface.style.setProperty("--z7-my", (event.clientY - rect.top) + "px");
+        }
+        const bespokeHero = event.target.closest?.("[data-hero-variant]:not([data-hero-variant='home-bento-stage'])");
+        if (bespokeHero && finePointer.matches && gsap && !reduced.matches) {
+          const rect = bespokeHero.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / Math.max(1, rect.width) - .5;
+          const y = (event.clientY - rect.top) / Math.max(1, rect.height) - .5;
+          const visual = bespokeHero.querySelector(".logo-hero__reel,.z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
+          if (visual) {
+            let tilt = floaters.get(visual);
+            if (!tilt) {
+              gsap.set(visual, { transformPerspective: 1000, transformStyle: "preserve-3d" });
+              tilt = {
+                x: gsap.quickTo(visual, "rotationX", { duration: .5, ease: "power3.out" }),
+                y: gsap.quickTo(visual, "rotationY", { duration: .5, ease: "power3.out" })
+              };
+              floaters.set(visual, tilt);
+            }
+            tilt.x(y * -3.2);
+            tilt.y(x * 4.2);
           }
-          tilt.x(y * -3.2);
-          tilt.y(x * 4.2);
         }
-      }
-      const row = event.target.closest?.(".service-card");
-      if (row) {
-        const rect = row.getBoundingClientRect();
-        row.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
-        row.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
-        const scope = row.closest(".service-loop__stage,.services-map");
-        const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
-        if (preview && finePointer.matches && gsap && !reduced.matches) {
-          preview.classList.add("is-visible", "is-following");
-          let move = floaters.get(preview);
-          if (!move) {
-            preview.style.left = "0px";
-            preview.style.top = "0px";
-            move = { x: gsap.quickTo(preview, "x", { duration: .42, ease: "power3.out" }), y: gsap.quickTo(preview, "y", { duration: .42, ease: "power3.out" }) };
-            floaters.set(preview, move);
+        const row = event.target.closest?.(".service-card");
+        if (row) {
+          const rect = row.getBoundingClientRect();
+          row.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
+          row.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
+          const scope = row.closest(".service-loop__stage,.services-map");
+          const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
+          if (preview && finePointer.matches && gsap && !reduced.matches) {
+            preview.classList.add("is-visible", "is-following");
+            let move = floaters.get(preview);
+            if (!move) {
+              preview.style.left = "0px";
+              preview.style.top = "0px";
+              move = { x: gsap.quickTo(preview, "x", { duration: .42, ease: "power3.out" }), y: gsap.quickTo(preview, "y", { duration: .42, ease: "power3.out" }) };
+              floaters.set(preview, move);
+            }
+            const offset = 18;
+            move.x(Math.max(12, Math.min(innerWidth - preview.offsetWidth - 12, event.clientX + offset)));
+            move.y(Math.max(12, Math.min(innerHeight - preview.offsetHeight - 12, event.clientY + offset)));
           }
-          const offset = 18;
-          move.x(Math.max(12, Math.min(innerWidth - preview.offsetWidth - 12, event.clientX + offset)));
-          move.y(Math.max(12, Math.min(innerHeight - preview.offsetHeight - 12, event.clientY + offset)));
         }
-      }
-      const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
-      if (!button || !finePointer.matches || reduced.matches || !gsap) return;
-      const rect = button.getBoundingClientRect();
-      gsap.to(button, { x: (event.clientX - rect.left - rect.width / 2) * .1, y: (event.clientY - rect.top - rect.height / 2) * .13, duration: .4, ease: "power3.out", overwrite: "auto" });
-    }, { passive: true, signal: state.abort.signal });
-    document.addEventListener("pointerout", event => {
-      const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
-      if (button && !button.contains(event.relatedTarget) && gsap) gsap.to(button, { x: 0, y: 0, duration: .5, ease: "power3.out", overwrite: "auto" });
-      const row = event.target.closest?.(".service-card");
-      if (row && !row.contains(event.relatedTarget)) {
-        const scope = row.closest(".service-loop__stage,.services-map");
-        const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
-        if (preview) {
-          preview.classList.remove("is-visible", "is-following");
-          if (gsap) gsap.set(preview, { clearProps: "transform" });
+        const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
+        if (!button || !finePointer.matches || reduced.matches || !gsap) return;
+        const rect = button.getBoundingClientRect();
+        gsap.to(button, { x: (event.clientX - rect.left - rect.width / 2) * .1, y: (event.clientY - rect.top - rect.height / 2) * .13, duration: .4, ease: "power3.out", overwrite: "auto" });
+      }, { passive: true, signal: state.abort.signal });
+      document.addEventListener("pointerout", event => {
+        const button = event.target.closest?.(".magnetic,.button,.z7-cinema__cta,.z7-header__contact");
+        if (button && !button.contains(event.relatedTarget) && gsap) gsap.to(button, { x: 0, y: 0, duration: .5, ease: "power3.out", overwrite: "auto" });
+        const row = event.target.closest?.(".service-card");
+        if (row && !row.contains(event.relatedTarget)) {
+          const scope = row.closest(".service-loop__stage,.services-map");
+          const preview = scope?.querySelector(".service-preview[data-follow-preview]") || scope?.querySelector(".service-preview");
+          if (preview) {
+            preview.classList.remove("is-visible", "is-following");
+            if (gsap) gsap.set(preview, { clearProps: "transform" });
+          }
         }
-      }
-      const hero = event.target.closest?.("[data-hero-variant]:not([data-hero-variant='home-bento-stage'])");
-      if (hero && !hero.contains(event.relatedTarget)) {
-        const visual = hero.querySelector(".logo-hero__reel,.z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
-        const tilt = visual && floaters.get(visual);
-        if (tilt) { tilt.x(0); tilt.y(0); }
-      }
-    }, { passive: true, signal: state.abort.signal });
+        const hero = event.target.closest?.("[data-hero-variant]:not([data-hero-variant='home-bento-stage'])");
+        if (hero && !hero.contains(event.relatedTarget)) {
+          const visual = hero.querySelector(".logo-hero__reel,.z7x-emblem,.z7f20__visual,.z7x-contact-panel,.academy-art,.hero-art,.websites-hero__copy,.services-intro__inner");
+          const tilt = visual && floaters.get(visual);
+          if (tilt) { tilt.x(0); tilt.y(0); }
+        }
+      }, { passive: true, signal: state.abort.signal });
+    }
   }
 
   function initMotion(state) {
@@ -480,8 +482,12 @@
           scrollTrigger: { trigger: scene, start: "top top", end: "bottom top", scrub: .6, invalidateOnRefresh: true }
         });
       });
-      // Stagger downstream ScrollTriggers across frames to prevent a single blocking long task
-      requestAnimationFrame(() => {
+      // Stagger downstream ScrollTriggers across idle frames to prevent a single blocking long task
+      const scheduleDownstream = typeof window.requestIdleCallback === "function"
+        ? (fn) => window.requestIdleCallback(fn, { timeout: 300 })
+        : (fn) => setTimeout(fn, 60);
+
+      scheduleDownstream(() => {
         if (state.destroyed) return;
         state.pageContext?.add(() => {
           document.querySelectorAll(".home-showcase__track > .media-tile").forEach(card => {
@@ -499,7 +505,7 @@
           document.querySelectorAll(".website-work").forEach(card => gsap.fromTo(card, { y: 12, autoAlpha: .9 }, { y: 0, autoAlpha: 1, duration: .45, ease: "power2.out", scrollTrigger: { trigger: card, start: "top 88%", once: true } }));
           document.querySelectorAll(".kinetic-strip__track,[data-z7-partner-track]").forEach(track => {
             const reverse = track.dataset.z7PartnerTrack === "reverse";
-            const loop = gsap.to(track, { xPercent: reverse ? 50 : -50, duration: reverse ? 32 : 27, ease: "none", repeat: -1 });
+            const loop = gsap.to(track, { xPercent: reverse ? 50 : -50, duration: reverse ? 32 : 27, ease: "none", repeat: -1, paused: true });
             const velocityTrigger = ST.create({ onUpdate: self => {
               const speed = Math.abs(self.getVelocity());
               const direction = self.direction < 0 ? -1 : 1;

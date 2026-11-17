@@ -41,7 +41,7 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             overflow: hidden;
-            transition: opacity 0.9s ease, filter 0.9s ease, transform 0.9s var(--z7-ease-cinema);
+            transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s var(--z7-ease-cinema);
             will-change: opacity, filter, transform;
         }
 
@@ -290,17 +290,16 @@
                     if (bar) bar.style.width = '100%';
                     if (text) text.textContent = '100%';
 
-                    // خروج ضبابي فائق النعومة
-                    const exitDuration = isHeadless ? 100 : 450;
+                    // خروج ضبابي فائق النعومة متجاوب
+                    preloader.style.pointerEvents = 'none';
+                    preloader.style.filter = 'blur(16px)';
+                    preloader.style.opacity = '0';
+                    preloader.style.transform = 'scale(1.02)';
+                    const exitDuration = isHeadless ? 80 : isMobile ? 380 : 450;
                     setTimeout(() => {
-                        preloader.style.filter = 'blur(16px)';
-                        preloader.style.opacity = '0';
-                        preloader.style.transform = 'scale(1.02)';
-                        setTimeout(() => {
-                            preloader.remove();
-                            sessionStorage.setItem('7z_motion_visited', 'true');
-                        }, exitDuration);
-                    }, isHeadless ? 20 : 100);
+                        preloader.remove();
+                        sessionStorage.setItem('7z_motion_visited', 'true');
+                    }, exitDuration);
                 }
             }
 
