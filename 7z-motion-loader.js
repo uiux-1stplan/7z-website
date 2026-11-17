@@ -316,7 +316,7 @@
             overlay.innerHTML = `
                 <div class="z7-trans-center">
                     <div class="z7-trans-glow"></div>
-                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-trans-logo">
+                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-trans-logo" width="85" height="94">
                 </div>
             `;
             const overlayLogo = overlay.querySelector('.z7-trans-logo');
