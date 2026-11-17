@@ -12,6 +12,11 @@
       "permanent": true
     },
     {
+      "source": "/academy/",
+      "destination": "/courses/",
+      "permanent": true
+    },
+    {
       "source": "/academy/:path*",
       "destination": "/courses/",
       "permanent": true
