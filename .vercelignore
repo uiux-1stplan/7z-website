@@ -37,3 +37,16 @@ _BACKUPS/
 _7Z_ROOT_CAUSE_PACKAGE/
 media/private-access/
 video-optimization-report.csv
+
+# Large local backup directories and diagnostic artifacts
+_CLEAN_BASELINES/
+Website Media/
+_SAFE_BACKUPS/
+7Z-Magic-Website_MASTER/
+7Z-Magic-Website_ANALYTICS_BACKUP_20261003_185302/
+scratch/
+node_modules/
+.lighthouseci/
+*.pdf
+audit-evidence-*
+
