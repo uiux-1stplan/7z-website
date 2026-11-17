@@ -342,6 +342,15 @@ async function mount(host, mode) {
       logoGroup.add(mesh);
       meshReady = true;
       resize();
+
+      // Non-blocking shader compilation using modern WebGL parallel compile
+      if (typeof renderer.compileAsync === "function") {
+        await renderer.compileAsync(scene, camera).catch(() => {});
+      } else {
+        await yieldMainThread();
+        renderer.compile(scene, camera);
+      }
+
       host.classList.add("is-webgl-active");
       if (visible && !document.hidden) startLoop();
     })
@@ -379,9 +388,9 @@ function start() {
 
 function scheduleStart() {
   if (window.requestIdleCallback) {
-    window.requestIdleCallback(() => start(), { timeout: 80 });
+    window.requestIdleCallback(() => start(), { timeout: 1200 });
   } else {
-    setTimeout(start, 50);
+    setTimeout(start, 250);
   }
 }
 

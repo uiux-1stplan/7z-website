@@ -350,7 +350,7 @@ function getSession(req) {
 function requireAdmin(req, res) {
   const session = getSession(req);
   if (!session) {
-    sendJson(res, 401, { error: "Not authenticated" });
+    sendJson(res, 401, { ok: false, error: "Not authenticated" });
     return null;
   }
   return session;
@@ -778,6 +778,7 @@ async function handleApi(req, res, url) {
 
   // --- 7Z Admin & Client Delivery Vault APIs ---
   if (url.pathname === "/api/admin/all-clients" || url.pathname === "/api/admin/clients") {
+    if (!requireAdmin(req, res)) return true;
     if (req.method === "GET") {
       sendJson(res, 200, { ok: true, clients: mockClients });
       return true;
@@ -800,6 +801,7 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/admin/files") {
+    if (!requireAdmin(req, res)) return true;
     if (req.method === "GET") {
       sendJson(res, 200, { ok: true, files: mockFiles });
       return true;
@@ -807,6 +809,7 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/admin/file-manage") {
+    if (!requireAdmin(req, res)) return true;
     if (req.method === "POST") {
       const body = await readJsonBody(req).catch(() => ({}));
       if (body.action === "rename") {
@@ -821,6 +824,7 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/admin/client-file-access") {
+    if (!requireAdmin(req, res)) return true;
     if (req.method === "GET") {
       sendJson(res, 200, {
         ok: true,
@@ -855,6 +859,7 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/admin/admin-accounts") {
+    if (!requireAdmin(req, res)) return true;
     sendJson(res, 200, {
       ok: true,
       currentAdminId: "admin-1",
@@ -871,6 +876,7 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/portal/me") {
+    if (!requireAdmin(req, res)) return true;
     sendJson(res, 200, {
       ok: true,
       user: {
@@ -886,6 +892,7 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/admin/users" || url.pathname === "/api/portal/users") {
+    if (!requireAdmin(req, res)) return true;
     sendJson(res, 200, {
       ok: true,
       users: [
@@ -924,6 +931,7 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/private-auth/portal-files") {
+    if (!requireAdmin(req, res)) return true;
     sendJson(res, 200, {
       ok: true,
       files: mockFiles
@@ -939,12 +947,14 @@ async function handleApi(req, res, url) {
   }
 
   if (url.pathname === "/api/academy/admin-data" && req.method === "GET") {
+    if (!requireAdmin(req, res)) return true;
     const result = await getAdminData();
     sendJson(res, 200, result);
     return true;
   }
 
   if (url.pathname === "/api/academy/admin-action" && req.method === "POST") {
+    if (!requireAdmin(req, res)) return true;
     const body = await readJsonBody(req);
     const result = await handleAdminAction(body.action, body);
     sendJson(res, 200, result);
@@ -953,6 +963,7 @@ async function handleApi(req, res, url) {
 
   // Course Engine Fallback for Local Server
   if (url.pathname === "/api/admin/course-engine") {
+    if (!requireAdmin(req, res)) return true;
     if (req.method === "GET") {
       const adminData = await getAdminData();
       if (url.searchParams.get("view") === "accounting") {

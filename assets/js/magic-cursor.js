@@ -7,6 +7,12 @@
    * and contextual reactive badges (VIEW / EXPLORE / PLAY).
    */
 
+  // Desktop pointer check: immediately abort on touch devices and coarse pointers
+  const isTouchDevice =
+    (window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches) ||
+    ("ontouchstart" in window && navigator.maxTouchPoints > 0 && !window.matchMedia("(pointer:fine)").matches);
+  if (isTouchDevice) return;
+
   const finePointer = window.matchMedia("(pointer:fine) and (hover:hover)");
   if (!finePointer.matches) return;
 

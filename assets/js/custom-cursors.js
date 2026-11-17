@@ -14,6 +14,10 @@
   if (typeof window === 'undefined') return;
 
   const isEligibleDevice = () => {
+    const isTouchCoarse =
+      (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) ||
+      ('ontouchstart' in window && navigator.maxTouchPoints > 0 && !window.matchMedia('(pointer: fine)').matches);
+    if (isTouchCoarse) return false;
     const hasFinePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     return hasFinePointer && !reducedMotion;
@@ -21,6 +25,7 @@
 
   class CinematicMotionLayer {
     constructor() {
+      if (!isEligibleDevice()) return;
       this.ring = null;
       this.dot = null;
       this.canvas = null;
