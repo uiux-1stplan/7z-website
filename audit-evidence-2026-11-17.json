@@ -3,7 +3,7 @@
     "auditName": "7Z Magic Multi-Domain Production Live Audit",
     "targetDomain": "https://7z-magic.com/",
     "auditDate": "2026-11-17",
-    "buildVersion": "v8.0 · Commit 393fc4d",
+    "buildVersion": "v8.0 \u00b7 Commit 393fc4d",
     "environment": "Production (Vercel Edge Anycast Network)",
     "operator": "Antigravity Executive QA Engine",
     "mode": "Read-Only Non-Intrusive Diagnostic Inspection"
@@ -38,17 +38,17 @@
       "seo": 100
     },
     "desktopMetrics": {
-      "fcp": "1.2 s",
+      "fcp": "1.2\u00a0s",
       "fcpMs": 1192,
-      "lcp": "2.5 s",
+      "lcp": "2.5\u00a0s",
       "lcpMs": 2466,
-      "tbt": "600 ms",
+      "tbt": "600\u00a0ms",
       "tbtMs": 601,
       "cls": "0.003",
       "clsNumeric": 0.0026,
-      "speedIndex": "2.5 s",
+      "speedIndex": "2.5\u00a0s",
       "speedIndexMs": 2474,
-      "interactive": "2.8 s",
+      "interactive": "2.8\u00a0s",
       "interactiveMs": 2792
     },
     "mobileScores": {
@@ -58,22 +58,22 @@
       "seo": 100
     },
     "mobileMetrics": {
-      "fcp": "1.9 s",
+      "fcp": "1.9\u00a0s",
       "fcpMs": 1907,
-      "lcp": "5.7 s",
+      "lcp": "5.7\u00a0s",
       "lcpMs": 5740,
-      "tbt": "4,060 ms",
+      "tbt": "4,060\u00a0ms",
       "tbtMs": 4061,
       "cls": "0.009",
       "clsNumeric": 0.0087,
-      "speedIndex": "4.6 s",
+      "speedIndex": "4.6\u00a0s",
       "speedIndexMs": 4577,
-      "interactive": "7.2 s",
+      "interactive": "7.2\u00a0s",
       "interactiveMs": 7237
     },
     "payloadSummary": {
       "totalBytes": 6666385,
-      "displayValue": "Total size was 6,510 KiB",
+      "displayValue": "Total size was 6,510\u00a0KiB",
       "resourceTypes": {
         "document": 5800,
         "script": 433600,
@@ -450,21 +450,21 @@
         ],
         "contentType": "text/html; charset=utf-8",
         "contentLength": 15024,
-        "title": "أكاديمية 7Z MAGIC | دورات الذكاء الاصطناعي وصناعة الأفلام",
+        "title": "\u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629 7Z MAGIC | \u062f\u0648\u0631\u0627\u062a \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0648\u0635\u0646\u0627\u0639\u0629 \u0627\u0644\u0623\u0641\u0644\u0627\u0645",
         "titleLength": 57,
-        "metaDescription": "استكشف برامج أكاديمية 7Z MAGIC التدريبية المتخصصة في الذكاء الاصطناعي للمهندسين وصناعة الأفلام السينمائية بأحدث الأدوات والتقنيات العملية.",
+        "metaDescription": "\u0627\u0633\u062a\u0643\u0634\u0641 \u0628\u0631\u0627\u0645\u062c \u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629 7Z MAGIC \u0627\u0644\u062a\u062f\u0631\u064a\u0628\u064a\u0629 \u0627\u0644\u0645\u062a\u062e\u0635\u0635\u0629 \u0641\u064a \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 \u0648\u0635\u0646\u0627\u0639\u0629 \u0627\u0644\u0623\u0641\u0644\u0627\u0645 \u0627\u0644\u0633\u064a\u0646\u0645\u0627\u0626\u064a\u0629 \u0628\u0623\u062d\u062f\u062b \u0627\u0644\u0623\u062f\u0648\u0627\u062a \u0648\u0627\u0644\u062a\u0642\u0646\u064a\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629.",
         "metaDescriptionLength": 138,
         "canonical": "https://7z-magic.com/courses/",
         "metaRobots": "index, follow, max-image-preview:large",
         "h1Count": 1,
         "h1Texts": [
-          "مسارات تصنع ما تتخيّله بالذكاء الاصطناعي بواقعية سينمائية."
+          "\u0645\u0633\u0627\u0631\u0627\u062a \u062a\u0635\u0646\u0639 \u0645\u0627 \u062a\u062a\u062e\u064a\u0651\u0644\u0647 \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0628\u0648\u0627\u0642\u0639\u064a\u0629 \u0633\u064a\u0646\u0645\u0627\u0626\u064a\u0629."
         ],
         "h2Count": 2,
         "h3Count": 0,
         "openGraph": {
-          "ogTitle": "أكاديمية 7Z MAGIC | دورات الذكاء الاصطناعي وصناعة الأفلام",
-          "ogDescription": "استكشف برامج أكاديمية 7Z MAGIC التدريبية المتخصصة في الذكاء الاصطناعي للمهندسين وصناعة الأفلام السينمائية بأحدث الأدوات والتقنيات العملية.",
+          "ogTitle": "\u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629 7Z MAGIC | \u062f\u0648\u0631\u0627\u062a \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0648\u0635\u0646\u0627\u0639\u0629 \u0627\u0644\u0623\u0641\u0644\u0627\u0645",
+          "ogDescription": "\u0627\u0633\u062a\u0643\u0634\u0641 \u0628\u0631\u0627\u0645\u062c \u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629 7Z MAGIC \u0627\u0644\u062a\u062f\u0631\u064a\u0628\u064a\u0629 \u0627\u0644\u0645\u062a\u062e\u0635\u0635\u0629 \u0641\u064a \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 \u0648\u0635\u0646\u0627\u0639\u0629 \u0627\u0644\u0623\u0641\u0644\u0627\u0645 \u0627\u0644\u0633\u064a\u0646\u0645\u0627\u0626\u064a\u0629 \u0628\u0623\u062d\u062f\u062b \u0627\u0644\u0623\u062f\u0648\u0627\u062a \u0648\u0627\u0644\u062a\u0642\u0646\u064a\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629.",
           "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
           "ogType": "website",
           "ogUrl": "https://7z-magic.com/courses/",
@@ -474,7 +474,7 @@
         "jsonLdTypes": "EducationalOrganization, BreadcrumbList",
         "jsonLdDetails": [
           {
-            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"EducationalOrganization\",\n      \"name\": \"أكاديمية 7Z MAGIC\",\n      \"url\": \"https://7z-magic.com/courses/\",\n      \"description\": \"برامج تدريبية احترافية في الذكاء الاصطناعي للمهندسين وصناعة المحتوى السينمائي.\"\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"الرئيسية\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"الأكاديمية\",\n          \"item\": \"https://7z-magic.com/courses/\"\n        }\n      ]\n    }\n  ]\n}",
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"EducationalOrganization\",\n      \"name\": \"\u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629 7Z MAGIC\",\n      \"url\": \"https://7z-magic.com/courses/\",\n      \"description\": \"\u0628\u0631\u0627\u0645\u062c \u062a\u062f\u0631\u064a\u0628\u064a\u0629 \u0627\u062d\u062a\u0631\u0627\u0641\u064a\u0629 \u0641\u064a \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 \u0648\u0635\u0646\u0627\u0639\u0629 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0627\u0644\u0633\u064a\u0646\u0645\u0627\u0626\u064a.\"\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"\u0627\u0644\u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629\",\n          \"item\": \"https://7z-magic.com/courses/\"\n        }\n      ]\n    }\n  ]\n}",
             "valid": true,
             "type": "EducationalOrganization, BreadcrumbList"
           }
@@ -509,21 +509,21 @@
         ],
         "contentType": "text/html; charset=utf-8",
         "contentLength": 14858,
-        "title": "دورة الذكاء الاصطناعي للمهندسين | 7Z MAGIC",
+        "title": "\u062f\u0648\u0631\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 | 7Z MAGIC",
         "titleLength": 42,
-        "metaDescription": "دورة الذكاء الاصطناعي للمهندسين من 7Z MAGIC: مشروع هندسي تطبيقي من مخطط AutoCAD إلى نموذج ثلاثي الأبعاد وفيديو معماري.",
+        "metaDescription": "\u062f\u0648\u0631\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 \u0645\u0646 7Z MAGIC: \u0645\u0634\u0631\u0648\u0639 \u0647\u0646\u062f\u0633\u064a \u062a\u0637\u0628\u064a\u0642\u064a \u0645\u0646 \u0645\u062e\u0637\u0637 AutoCAD \u0625\u0644\u0649 \u0646\u0645\u0648\u0630\u062c \u062b\u0644\u0627\u062b\u064a \u0627\u0644\u0623\u0628\u0639\u0627\u062f \u0648\u0641\u064a\u062f\u064a\u0648 \u0645\u0639\u0645\u0627\u0631\u064a.",
         "metaDescriptionLength": 118,
         "canonical": "https://7z-magic.com/courses/ai-for-engineers/",
         "metaRobots": "noindex, follow",
         "h1Count": 1,
         "h1Texts": [
-          "الذكاء الاصطناعي للمهندسينمن الفكرة إلى الواقع السينمائي"
+          "\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646\u0645\u0646 \u0627\u0644\u0641\u0643\u0631\u0629 \u0625\u0644\u0649 \u0627\u0644\u0648\u0627\u0642\u0639 \u0627\u0644\u0633\u064a\u0646\u0645\u0627\u0626\u064a"
         ],
         "h2Count": 7,
         "h3Count": 5,
         "openGraph": {
-          "ogTitle": "دورة الذكاء الاصطناعي للمهندسين | 7Z MAGIC",
-          "ogDescription": "من الفكرة إلى الواقع السينمائي — مشروع هندسي واحد من مخطط AutoCAD إلى فيديو معماري.",
+          "ogTitle": "\u062f\u0648\u0631\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 | 7Z MAGIC",
+          "ogDescription": "\u0645\u0646 \u0627\u0644\u0641\u0643\u0631\u0629 \u0625\u0644\u0649 \u0627\u0644\u0648\u0627\u0642\u0639 \u0627\u0644\u0633\u064a\u0646\u0645\u0627\u0626\u064a \u2014 \u0645\u0634\u0631\u0648\u0639 \u0647\u0646\u062f\u0633\u064a \u0648\u0627\u062d\u062f \u0645\u0646 \u0645\u062e\u0637\u0637 AutoCAD \u0625\u0644\u0649 \u0641\u064a\u062f\u064a\u0648 \u0645\u0639\u0645\u0627\u0631\u064a.",
           "ogImage": "https://7z-magic.com/assets/brand/7Z-LogoT(3).png",
           "ogType": "website",
           "ogUrl": "https://7z-magic.com/courses/ai-for-engineers/",
@@ -568,21 +568,21 @@
         ],
         "contentType": "text/html; charset=utf-8",
         "contentLength": 16474,
-        "title": "دورة الذكاء الاصطناعي للمهندسين | أكاديمية 7Z MAGIC",
+        "title": "\u062f\u0648\u0631\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 | \u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629 7Z MAGIC",
         "titleLength": 51,
-        "metaDescription": "دورة تطبيقية متكاملة لمهندسي العمارة والديكور: من مخطط AutoCAD عبر Claude إلى نماذج 3ds Max وفيديو معماري سينمائي عالي الواقعية مع 7Z.",
+        "metaDescription": "\u062f\u0648\u0631\u0629 \u062a\u0637\u0628\u064a\u0642\u064a\u0629 \u0645\u062a\u0643\u0627\u0645\u0644\u0629 \u0644\u0645\u0647\u0646\u062f\u0633\u064a \u0627\u0644\u0639\u0645\u0627\u0631\u0629 \u0648\u0627\u0644\u062f\u064a\u0643\u0648\u0631: \u0645\u0646 \u0645\u062e\u0637\u0637 AutoCAD \u0639\u0628\u0631 Claude \u0625\u0644\u0649 \u0646\u0645\u0627\u0630\u062c 3ds Max \u0648\u0641\u064a\u062f\u064a\u0648 \u0645\u0639\u0645\u0627\u0631\u064a \u0633\u064a\u0646\u0645\u0627\u0626\u064a \u0639\u0627\u0644\u064a \u0627\u0644\u0648\u0627\u0642\u0639\u064a\u0629 \u0645\u0639 7Z.",
         "metaDescriptionLength": 134,
         "canonical": "https://7z-magic.com/courses/ai-for-engineers/",
         "metaRobots": "index, follow, max-image-preview:large",
         "h1Count": 1,
         "h1Texts": [
-          "دورة الذكاء الاصطناعي للمهندسين"
+          "\u062f\u0648\u0631\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646"
         ],
         "h2Count": 2,
         "h3Count": 0,
         "openGraph": {
-          "ogTitle": "دورة الذكاء الاصطناعي للمهندسين | أكاديمية 7Z MAGIC",
-          "ogDescription": "دورة تطبيقية متكاملة لمهندسي العمارة والديكور: من مخطط AutoCAD عبر Claude إلى نماذج 3ds Max وفيديو معماري سينمائي عالي الواقعية مع 7Z.",
+          "ogTitle": "\u062f\u0648\u0631\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646 | \u0623\u0643\u0627\u062f\u064a\u0645\u064a\u0629 7Z MAGIC",
+          "ogDescription": "\u062f\u0648\u0631\u0629 \u062a\u0637\u0628\u064a\u0642\u064a\u0629 \u0645\u062a\u0643\u0627\u0645\u0644\u0629 \u0644\u0645\u0647\u0646\u062f\u0633\u064a \u0627\u0644\u0639\u0645\u0627\u0631\u0629 \u0648\u0627\u0644\u062f\u064a\u0643\u0648\u0631: \u0645\u0646 \u0645\u062e\u0637\u0637 AutoCAD \u0639\u0628\u0631 Claude \u0625\u0644\u0649 \u0646\u0645\u0627\u0630\u062c 3ds Max \u0648\u0641\u064a\u062f\u064a\u0648 \u0645\u0639\u0645\u0627\u0631\u064a \u0633\u064a\u0646\u0645\u0627\u0626\u064a \u0639\u0627\u0644\u064a \u0627\u0644\u0648\u0627\u0642\u0639\u064a\u0629 \u0645\u0639 7Z.",
           "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
           "ogType": "website",
           "ogUrl": "https://7z-magic.com/courses/ai-for-engineers/",
@@ -592,7 +592,7 @@
         "jsonLdTypes": "Course, BreadcrumbList",
         "jsonLdDetails": [
           {
-            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"Course\",\n      \"name\": \"دورة الذكاء الاصطناعي للمهندسين\",\n      \"description\": \"مشروع هندسي متكامل من مخطط AutoCAD إلى نموذج ثلاثي الأبعاد وفيديو معماري بواقعية سينمائية.\",\n      \"provider\": {\n        \"@type\": \"Organization\",\n        \"name\": \"7Z MAGIC\",\n        \"url\": \"https://7z-magic.com/\"\n      }\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"الرئيسية\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"الدورات\",\n          \"item\": \"https://7z-magic.com/courses/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 3,\n          \"name\": \"الذكاء الاصطناعي للمهندسين\",\n          \"item\": \"https://7z-magic.com/courses/ai-for-engineers/\"\n        }\n      ]\n    }\n  ]\n}",
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"Course\",\n      \"name\": \"\u062f\u0648\u0631\u0629 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646\",\n      \"description\": \"\u0645\u0634\u0631\u0648\u0639 \u0647\u0646\u062f\u0633\u064a \u0645\u062a\u0643\u0627\u0645\u0644 \u0645\u0646 \u0645\u062e\u0637\u0637 AutoCAD \u0625\u0644\u0649 \u0646\u0645\u0648\u0630\u062c \u062b\u0644\u0627\u062b\u064a \u0627\u0644\u0623\u0628\u0639\u0627\u062f \u0648\u0641\u064a\u062f\u064a\u0648 \u0645\u0639\u0645\u0627\u0631\u064a \u0628\u0648\u0627\u0642\u0639\u064a\u0629 \u0633\u064a\u0646\u0645\u0627\u0626\u064a\u0629.\",\n      \"provider\": {\n        \"@type\": \"Organization\",\n        \"name\": \"7Z MAGIC\",\n        \"url\": \"https://7z-magic.com/\"\n      }\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"\u0627\u0644\u062f\u0648\u0631\u0627\u062a\",\n          \"item\": \"https://7z-magic.com/courses/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 3,\n          \"name\": \"\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0644\u0644\u0645\u0647\u0646\u062f\u0633\u064a\u0646\",\n          \"item\": \"https://7z-magic.com/courses/ai-for-engineers/\"\n        }\n      ]\n    }\n  ]\n}",
             "valid": true,
             "type": "Course, BreadcrumbList"
           }
@@ -3081,5 +3081,79 @@
       "effort": "Very Low",
       "description": "Eliminate explicit role='region' on <section aria-label='...'> elements to clear the 3 W3C validator warnings."
     }
-  ]
+  ],
+  "postRemediationVerification_v8_1": {
+    "timestamp": "2026-11-17T15:28:00+03:00",
+    "productionDeployment": {
+      "id": "dpl_CXQrQxwZCT5hwDwqq6uUCh8c4NSB",
+      "url": "https://7z-website-5xioj2c1v-7zmagic-projects.vercel.app",
+      "domain": "https://7z-magic.com/"
+    },
+    "step1_heroVideoCompression": {
+      "originalSize": "55,668,311 bytes (~55.6 MB original LFS / ~3.9 MB published)",
+      "finalSize": "1,207,505 bytes (~1.15 MB)",
+      "target": "< 1.2 MB",
+      "compressionReduction": "69.0% reduction vs published / 97.8% vs original",
+      "codec": "H.264 (libx264, crf 27, preset slow, faststart, -an)",
+      "poster": "/media/posters/film/1.jpg",
+      "deferredStrategy": "preload=\"none\", data-src triggered via requestIdleCallback/timeout(150ms)"
+    },
+    "step2_cspHardening": {
+      "unsafeInlineInScriptSrc": false,
+      "scriptSrcDirective": "'self' 'sha256-CICeW+tNYPhTGEXMcCTtBoLtiURzJWPD75bvyqBbAdM=' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com",
+      "connectSrcDirective": "'self' https: wss: https://vitals.vercel-insights.com",
+      "liveCspViolationsCount": 0,
+      "liveConsoleErrorsCount": 0
+    },
+    "step3_accessibilityAndMarkup": {
+      "wcag21AAViolationsCount": 0,
+      "aboutPageContrast": "Color #94A3B8 on #0B0F17 -> 7.24:1 (exceeds WCAG AA 4.5:1)",
+      "servicesAriaCard": "Replaced aria-current with .is-active class; 0 ARIA violations",
+      "servicesScrollableRail": "Added tabindex=0 and aria-label; 0 scrollable region violations",
+      "websitesOutroContrast": "Updated button background to #1D4ED8 (6.48:1 contrast)",
+      "w3cRedundantRegionRoles": "Removed role=\"region\" from sections with accessible names; 0 warnings"
+    },
+    "step4_dnsAndHstsPreload": {
+      "hstsPreloadSubmission": {
+        "domain": "7z-magic.com",
+        "apiEndpoint": "https://hstspreload.org/api/v2/submit",
+        "statusEndpoint": "https://hstspreload.org/api/v2/status?domain=7z-magic.com",
+        "status": "pending (approved for preload inclusion)"
+      },
+      "dmarcRecord": {
+        "name": "_dmarc.7z-magic.com",
+        "record": "v=DMARC1; p=quarantine; pct=100; rua=mailto:creative@7z-magic.com",
+        "previousPolicy": "p=none",
+        "newPolicy": "p=quarantine (100% enforcement)",
+        "recordId": "rec_a5fc14882c5f055331264106"
+      }
+    },
+    "step6_realUserTelemetry": {
+      "vercelWebAnalytics": "Enabled on 7z-website",
+      "speedInsightsScript": "/_vercel/speed-insights/script.js",
+      "webAnalyticsScript": "/_vercel/insights/script.js",
+      "telemetryBridge": "/assets/js/telemetry.js",
+      "cspConnectSrcAllowed": "https://vitals.vercel-insights.com"
+    },
+    "benchmarks": {
+      "desktop": {
+        "performance": 88,
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100,
+        "fcp": "0.6s",
+        "lcp": "1.4s",
+        "tbt": "200ms",
+        "cls": 0.003,
+        "speedIndex": "1.2s"
+      },
+      "mobile": {
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100,
+        "cls": 0.009,
+        "totalPayload": "4,168 KiB (reduced from 6,505.7 KiB)"
+      }
+    }
+  }
 }
