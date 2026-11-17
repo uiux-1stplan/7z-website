@@ -34,14 +34,10 @@
     <link rel="stylesheet" href="/assets/css/home-editorial.css">
     <link rel="stylesheet" href="/assets/css/hero-three-cleanup.css?v=20261112-home-only-v3">
     <link rel="stylesheet" href="/assets/css/magic-cursor.css?v=20261112-cursor-restore-1" media="(pointer: fine)">
-    <script src="/_vercel/insights/script.js" defer></script>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js"
-  }
-}
-</script>
+    <script defer src="/assets/js/telemetry.js"></script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js"}}</script>
 
   <script type="application/ld+json">
 {
@@ -87,8 +83,8 @@
   <header class="z7-header" aria-label="Primary"><div class="z7-container z7-header__inner"><a class="z7-brand" href="/" aria-label="7Z Magic home"><img src="/assets/brand/7Z-LogoT(3).png" width="150" height="44" alt="7Z Magic" decoding="async"></a><nav class="z7-nav" id="z7MainNav" aria-label="Main navigation"><a href="/">Home</a><a href="/services/">Services</a><a href="/websites/">Websites</a><a href="/about/">About</a><a href="/founders/">Founders</a><a href="/partners/">Partners</a><a href="/contact/">Contact</a></nav><div class="z7-header__actions"><div class="z7-header__socials" role="group" aria-label="Connect with 7Z Magic"><a href="mailto:creative@7z-magic.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6.5h18v11H3zM3 7l9 7 9-7"/></svg></a><a href="https://www.instagram.com/7z.magic" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".7"/></svg></a><a href="https://web.facebook.com/7z.magic" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 21v-8h3l.5-3H14V8.5c0-1 .4-1.5 1.6-1.5H18V4.2c-.5-.1-1.7-.2-2.8-.2-3 0-4.7 1.8-4.7 4.9V10H8v3h2.5v8"/></svg></a><a href="https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.7 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5Z"/><path d="M9 8.5c-.6 0-.9.6-.7 1.3.7 2.4 2.7 4.4 5.1 5.1.7.2 1.3-.2 1.4-.8l.2-.8-1.6-.8-.8.7c-.8-.3-1.6-1.1-2-1.9l.7-.8-.8-1.6Z"/></svg></a></div><button class="z7-theme-toggle" id="theme" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme"><span aria-hidden="true">◐</span></button><button class="z7-lang-toggle" id="lang" type="button" aria-label="Switch language">EN</button><button class="z7-menu-toggle" id="z7MenuToggle" type="button" aria-expanded="false" aria-controls="z7MainNav" aria-label="Open navigation"><span class="z7-menu-toggle__bars" aria-hidden="true"></span></button></div></div></header>
 
   <main class="z7-main z7-home" id="mainContent" tabindex="-1">
-          <section class="logo-hero" id="intro" aria-label="7Z Magic interactive stage" data-z7-hero-stage data-hero-variant="home-bento-stage" data-z7-spatial role="region">
-  <div class="hero-backdrop" aria-hidden="true" data-seamless-backdrop><video class="hero-backdrop__layer is-live" autoplay loop muted playsinline preload="metadata" data-decorative-video src="/media/film/1.mp4"></video><video class="hero-backdrop__layer" autoplay loop muted playsinline preload="none" data-decorative-video></video></div>
+          <section class="logo-hero" id="intro" aria-label="7Z Magic interactive stage" data-z7-hero-stage data-hero-variant="home-bento-stage" data-z7-spatial>
+  <div class="hero-backdrop" aria-hidden="true" data-seamless-backdrop><video class="hero-backdrop__layer is-live" loop muted playsinline preload="none" poster="/media/posters/film/1.jpg" data-decorative-video data-src="/media/film/1.mp4"></video><video class="hero-backdrop__layer" loop muted playsinline preload="none" data-decorative-video></video></div>
   <canvas id="hero-constellation" aria-hidden="true"></canvas>
   <div class="logo-hero__stage" data-z7-spatial>
     <div class="logo-hero__copy">
@@ -101,8 +97,8 @@
   </div>
 </section>
 
-<section class="home-metrics" aria-label="7Z Magic capabilities" role="region"><div class="home-metrics__intro"><p class="eyebrow">A connected creative practice</p><h2>From first idea to final experience.</h2><p>Architecture, websites, media and brand systems connect through one creative process.</p></div><div class="home-metrics__strip"><div><strong>01</strong><span>Spatial design</span></div><div><strong>02</strong><span>Digital experiences</span></div><div><strong>03</strong><span>Moving image</span></div><div><strong>04</strong><span>Brand systems</span></div></div></section>
-      <section class="service-loop" aria-label="Explore 7Z Magic services" role="region">
+<section class="home-metrics" aria-label="7Z Magic capabilities"><div class="home-metrics__intro"><p class="eyebrow">A connected creative practice</p><h2>From first idea to final experience.</h2><p>Architecture, websites, media and brand systems connect through one creative process.</p></div><div class="home-metrics__strip"><div><strong>01</strong><span>Spatial design</span></div><div><strong>02</strong><span>Digital experiences</span></div><div><strong>03</strong><span>Moving image</span></div><div><strong>04</strong><span>Brand systems</span></div></div></section>
+      <section class="service-loop" aria-label="Explore 7Z Magic services">
         <div class="service-loop__inner">
           <div class="service-loop__intro">
             <p class="eyebrow">Explore Our Worlds</p>

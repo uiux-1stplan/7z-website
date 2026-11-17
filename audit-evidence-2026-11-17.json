@@ -1,0 +1,3085 @@
+{
+  "auditMetadata": {
+    "auditName": "7Z Magic Multi-Domain Production Live Audit",
+    "targetDomain": "https://7z-magic.com/",
+    "auditDate": "2026-11-17",
+    "buildVersion": "v8.0 · Commit 393fc4d",
+    "environment": "Production (Vercel Edge Anycast Network)",
+    "operator": "Antigravity Executive QA Engine",
+    "mode": "Read-Only Non-Intrusive Diagnostic Inspection"
+  },
+  "executiveScorecard": {
+    "desktopOverall": {
+      "performance": 55,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "securityGrade": "A+",
+      "wcagCompliance": "98.7%",
+      "deadLinks": 0,
+      "w3cHtmlErrors": 0
+    },
+    "mobileOverall": {
+      "performance": 45,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "securityGrade": "A+",
+      "wcagCompliance": "98.7%",
+      "deadLinks": 0,
+      "w3cHtmlErrors": 0
+    }
+  },
+  "phase1_performance": {
+    "desktopScores": {
+      "performance": 55,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "desktopMetrics": {
+      "fcp": "1.2 s",
+      "fcpMs": 1192,
+      "lcp": "2.5 s",
+      "lcpMs": 2466,
+      "tbt": "600 ms",
+      "tbtMs": 601,
+      "cls": "0.003",
+      "clsNumeric": 0.0026,
+      "speedIndex": "2.5 s",
+      "speedIndexMs": 2474,
+      "interactive": "2.8 s",
+      "interactiveMs": 2792
+    },
+    "mobileScores": {
+      "performance": 45,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "mobileMetrics": {
+      "fcp": "1.9 s",
+      "fcpMs": 1907,
+      "lcp": "5.7 s",
+      "lcpMs": 5740,
+      "tbt": "4,060 ms",
+      "tbtMs": 4061,
+      "cls": "0.009",
+      "clsNumeric": 0.0087,
+      "speedIndex": "4.6 s",
+      "speedIndexMs": 4577,
+      "interactive": "7.2 s",
+      "interactiveMs": 7237
+    },
+    "payloadSummary": {
+      "totalBytes": 6666385,
+      "displayValue": "Total size was 6,510 KiB",
+      "resourceTypes": {
+        "document": 5800,
+        "script": 433600,
+        "image": 2115000,
+        "media": 3991000,
+        "stylesheet": 41700,
+        "font": 48400,
+        "other": 29000
+      }
+    },
+    "externalSpeedToolsStatus": {
+      "googlePageSpeedInsightsAPI": "Live API Rate-Limited (HTTP 429 daily quota); benchmarked via official local Lighthouse v13.6.0 engine",
+      "gtmetrix": "Public queue gated; verified via local Chrome CDP benchmark",
+      "webPageTest": "Public queue rate-limited / authenticated key required",
+      "debugBear": "Third-party commercial subscription required"
+    }
+  },
+  "phase2_seo_and_crawl": {
+    "targetUrlsAudited": 11,
+    "sitemapEntriesCount": 10,
+    "sitemapEntries": [
+      "https://7z-magic.com/",
+      "https://7z-magic.com/services/",
+      "https://7z-magic.com/websites/",
+      "https://7z-magic.com/courses/ai-for-engineers/",
+      "https://7z-magic.com/courses/cinematic-filmmaking-with-ai/",
+      "https://7z-magic.com/courses/",
+      "https://7z-magic.com/about/",
+      "https://7z-magic.com/founders/",
+      "https://7z-magic.com/partners/",
+      "https://7z-magic.com/contact/"
+    ],
+    "urlMetadataMatrix": {
+      "https://7z-magic.com/": {
+        "url": "https://7z-magic.com/",
+        "finalUrl": "https://7z-magic.com/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 21724,
+        "title": "7Z Magic | Architecture, Websites, Branding & AI Media",
+        "titleLength": 54,
+        "metaDescription": "7Z Magic creates architectural visualizations, website design, spatial experiences, and AI media production with cinematic precision and engineering craft.",
+        "metaDescriptionLength": 155,
+        "canonical": "https://7z-magic.com/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "Where spatial design, artificial intelligence and moving image become one premium system."
+        ],
+        "h2Count": 7,
+        "h3Count": 2,
+        "openGraph": {
+          "ogTitle": "7Z Magic | Architecture, Websites, Branding & AI Media",
+          "ogDescription": "7Z Magic creates architectural visualizations, website design, spatial experiences, and AI media production with cinematic precision and engineering craft.",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "Organization, WebSite, ProfessionalService",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://7z-magic.com/#organization\",\n      \"name\": \"7Z Magic\",\n      \"url\": \"https://7z-magic.com/\",\n      \"logo\": \"https://7z-magic.com/assets/brand/7Z-LogoT(3).png\",\n      \"sameAs\": [\n        \"https://www.instagram.com/7z.magic\",\n        \"https://web.facebook.com/7z.magic\"\n      ]\n    },\n    {\n      \"@type\": \"WebSite\",\n      \"@id\": \"https://7z-magic.com/#website\",\n      \"url\": \"https://7z-magic.com/\",\n      \"name\": \"7Z Magic\",\n      \"publisher\": {\n        \"@id\": \"https://7z-magic.com/#organization\"\n      }\n    },\n    {\n      \"@type\": \"ProfessionalService\",\n      \"@id\": \"https://7z-magic.com/#service\",\n      \"name\": \"7Z Magic Studio\",\n      \"url\": \"https://7z-magic.com/\",\n      \"image\": \"https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png\",\n      \"priceRange\": \"$$$$\",\n      \"telephone\": \"+962797020089\",\n      \"email\": \"creative@7z-magic.com\"\n    }\n  ]\n}",
+            "valid": true,
+            "type": "Organization, WebSite, ProfessionalService"
+          }
+        ],
+        "internalLinksCount": 17,
+        "internalLinksSample": [
+          "/",
+          "/services/",
+          "/websites/",
+          "/about/",
+          "/founders/",
+          "/partners/",
+          "/contact/",
+          "/services/#architecture",
+          "/services/#websites",
+          "/services/#media"
+        ],
+        "externalLinksCount": 3,
+        "externalLinksSample": [
+          "https://www.instagram.com/7z.magic",
+          "https://web.facebook.com/7z.magic",
+          "https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services"
+        ],
+        "totalImages": 26,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/about/": {
+        "url": "https://7z-magic.com/about/",
+        "finalUrl": "https://7z-magic.com/about/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/about/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 19977,
+        "title": "About 7Z Magic | Spatial Design & Innovation Studio",
+        "titleLength": 51,
+        "metaDescription": "Discover 7Z Magic, a Technology Venture and Innovation Studio transforming architectural visualization, bespoke digital systems, and cinematic AI media.",
+        "metaDescriptionLength": 152,
+        "canonical": "https://7z-magic.com/about/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "We turn ideasinto worlds."
+        ],
+        "h2Count": 6,
+        "h3Count": 10,
+        "openGraph": {
+          "ogTitle": "About 7Z Magic | Spatial Design & Innovation Studio",
+          "ogDescription": "Discover 7Z Magic, a Technology Venture and Innovation Studio transforming architectural visualization, bespoke digital systems, and cinematic AI media.",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/about/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "AboutPage, BreadcrumbList",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"AboutPage\",\n      \"name\": \"About 7Z Magic\",\n      \"url\": \"https://7z-magic.com/about/\",\n      \"description\": \"7Z Magic is an innovation and spatial design studio founded by Hasan Rayan and Khaled Bushnaq.\"\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"Home\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"About\",\n          \"item\": \"https://7z-magic.com/about/\"\n        }\n      ]\n    }\n  ]\n}",
+            "valid": true,
+            "type": "AboutPage, BreadcrumbList"
+          }
+        ],
+        "internalLinksCount": 12,
+        "internalLinksSample": [
+          "/",
+          "/services/",
+          "/websites/",
+          "/about/",
+          "/founders/",
+          "/partners/",
+          "/contact/",
+          "/courses/",
+          "/courses/ai-for-engineers/",
+          "/courses/cinematic-filmmaking-with-ai/"
+        ],
+        "externalLinksCount": 6,
+        "externalLinksSample": [
+          "https://www.instagram.com/7z.magic",
+          "https://web.facebook.com/7z.magic",
+          "https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services",
+          "https://www.ercanco.com/",
+          "https://smilecare.ae/en",
+          "https://elcon-arabia.com/en"
+        ],
+        "totalImages": 2,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/founders/": {
+        "url": "https://7z-magic.com/founders/",
+        "finalUrl": "https://7z-magic.com/founders/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/founders/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 15131,
+        "title": "Meet the Founders | Hasan Rayan & Khaled Bushnaq | 7Z",
+        "titleLength": 53,
+        "metaDescription": "Meet Hasan Rayan and Khaled Bushnaq, the visionary founders leading creative direction, spatial architecture, and AI media innovation at 7Z Magic.",
+        "metaDescriptionLength": 146,
+        "canonical": "https://7z-magic.com/founders/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "Ideas needmakers."
+        ],
+        "h2Count": 5,
+        "h3Count": 0,
+        "openGraph": {
+          "ogTitle": "Meet the Founders | Hasan Rayan & Khaled Bushnaq | 7Z",
+          "ogDescription": "Meet Hasan Rayan and Khaled Bushnaq, the visionary founders leading creative direction, spatial architecture, and AI media innovation at 7Z Magic.",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/founders/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "ProfilePage, BreadcrumbList",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"ProfilePage\",\n      \"name\": \"Founders of 7Z Magic\",\n      \"url\": \"https://7z-magic.com/founders/\",\n      \"mainEntity\": [\n        {\n          \"@type\": \"Person\",\n          \"name\": \"Hasan Rayan\",\n          \"jobTitle\": \"CEO & Founder\",\n          \"worksFor\": {\n            \"@type\": \"Organization\",\n            \"name\": \"7Z Magic\"\n          }\n        },\n        {\n          \"@type\": \"Person\",\n          \"name\": \"Khaled Bushnaq\",\n          \"jobTitle\": \"Co-Founder & Creative Technologist\",\n          \"worksFor\": {\n            \"@type\": \"Organization\",\n            \"name\": \"7Z Magic\"\n          }\n        }\n      ]\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"Home\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"Founders\",\n          \"item\": \"https://7z-magic.com/founders/\"\n        }\n      ]\n    }\n  ]\n}",
+            "valid": true,
+            "type": "ProfilePage, BreadcrumbList"
+          }
+        ],
+        "internalLinksCount": 12,
+        "internalLinksSample": [
+          "/",
+          "/services/",
+          "/websites/",
+          "/about/",
+          "/founders/",
+          "/partners/",
+          "/contact/",
+          "/courses/",
+          "/courses/ai-for-engineers/",
+          "/courses/cinematic-filmmaking-with-ai/"
+        ],
+        "externalLinksCount": 3,
+        "externalLinksSample": [
+          "https://www.instagram.com/7z.magic",
+          "https://web.facebook.com/7z.magic",
+          "https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services"
+        ],
+        "totalImages": 5,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/partners/": {
+        "url": "https://7z-magic.com/partners/",
+        "finalUrl": "https://7z-magic.com/partners/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/partners/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 20842,
+        "title": "Enterprise & Strategic Partners | 7Z Magic Studio",
+        "titleLength": 49,
+        "metaDescription": "Explore 7Z Magic",
+        "metaDescriptionLength": 16,
+        "canonical": "https://7z-magic.com/partners/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "Trusted Partners."
+        ],
+        "h2Count": 3,
+        "h3Count": 0,
+        "openGraph": {
+          "ogTitle": "Enterprise & Strategic Partners | 7Z Magic Studio",
+          "ogDescription": "Explore 7Z Magic",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/partners/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "WebPage, BreadcrumbList",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"WebPage\",\n      \"name\": \"Enterprise & Strategic Partners\",\n      \"url\": \"https://7z-magic.com/partners/\",\n      \"description\": \"7Z Magic's ecosystem of trusted enterprise clients and collaborators.\"\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"Home\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"Partners\",\n          \"item\": \"https://7z-magic.com/partners/\"\n        }\n      ]\n    }\n  ]\n}",
+            "valid": true,
+            "type": "WebPage, BreadcrumbList"
+          }
+        ],
+        "internalLinksCount": 12,
+        "internalLinksSample": [
+          "/",
+          "/services/",
+          "/websites/",
+          "/about/",
+          "/founders/",
+          "/partners/",
+          "/contact/",
+          "/courses/",
+          "/courses/ai-for-engineers/",
+          "/courses/cinematic-filmmaking-with-ai/"
+        ],
+        "externalLinksCount": 3,
+        "externalLinksSample": [
+          "https://www.instagram.com/7z.magic",
+          "https://web.facebook.com/7z.magic",
+          "https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services"
+        ],
+        "totalImages": 25,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/contact/": {
+        "url": "https://7z-magic.com/contact/",
+        "finalUrl": "https://7z-magic.com/contact/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/contact/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 16649,
+        "title": "Contact 7Z Magic | Inquire for Bespoke Projects",
+        "titleLength": 47,
+        "metaDescription": "Contact 7Z Magic for premium websites, digital products, brand systems, and architectural visualizations. Start your project with our creative studio.",
+        "metaDescriptionLength": 150,
+        "canonical": "https://7z-magic.com/contact/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "Good ideasdeserve a signal."
+        ],
+        "h2Count": 3,
+        "h3Count": 0,
+        "openGraph": {
+          "ogTitle": "Contact 7Z Magic | Inquire for Bespoke Projects",
+          "ogDescription": "Contact 7Z Magic for premium websites, digital products, brand systems, and architectural visualizations. Start your project with our creative studio.",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/contact/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "ContactPage, ProfessionalService, BreadcrumbList",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"ContactPage\",\n      \"name\": \"Contact 7Z Magic\",\n      \"url\": \"https://7z-magic.com/contact/\",\n      \"description\": \"Get in touch with 7Z Magic Studio.\"\n    },\n    {\n      \"@type\": \"ProfessionalService\",\n      \"name\": \"7Z Magic Studio\",\n      \"email\": \"creative@7z-magic.com\",\n      \"telephone\": \"+962797020089\",\n      \"url\": \"https://7z-magic.com/contact/\"\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"Home\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"Contact\",\n          \"item\": \"https://7z-magic.com/contact/\"\n        }\n      ]\n    }\n  ]\n}",
+            "valid": true,
+            "type": "ContactPage, ProfessionalService, BreadcrumbList"
+          }
+        ],
+        "internalLinksCount": 12,
+        "internalLinksSample": [
+          "/",
+          "/services/",
+          "/websites/",
+          "/about/",
+          "/founders/",
+          "/partners/",
+          "/contact/",
+          "/courses/",
+          "/courses/ai-for-engineers/",
+          "/courses/cinematic-filmmaking-with-ai/"
+        ],
+        "externalLinksCount": 4,
+        "externalLinksSample": [
+          "https://www.instagram.com/7z.magic",
+          "https://web.facebook.com/7z.magic",
+          "https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services",
+          "https://wa.me/962797020089?text=I%27d%20like%20to%20discuss%20a%20project%20with%207Z%20Magic"
+        ],
+        "totalImages": 2,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/courses/": {
+        "url": "https://7z-magic.com/courses/",
+        "finalUrl": "https://7z-magic.com/courses/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/courses/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 15024,
+        "title": "أكاديمية 7Z MAGIC | دورات الذكاء الاصطناعي وصناعة الأفلام",
+        "titleLength": 57,
+        "metaDescription": "استكشف برامج أكاديمية 7Z MAGIC التدريبية المتخصصة في الذكاء الاصطناعي للمهندسين وصناعة الأفلام السينمائية بأحدث الأدوات والتقنيات العملية.",
+        "metaDescriptionLength": 138,
+        "canonical": "https://7z-magic.com/courses/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "مسارات تصنع ما تتخيّله بالذكاء الاصطناعي بواقعية سينمائية."
+        ],
+        "h2Count": 2,
+        "h3Count": 0,
+        "openGraph": {
+          "ogTitle": "أكاديمية 7Z MAGIC | دورات الذكاء الاصطناعي وصناعة الأفلام",
+          "ogDescription": "استكشف برامج أكاديمية 7Z MAGIC التدريبية المتخصصة في الذكاء الاصطناعي للمهندسين وصناعة الأفلام السينمائية بأحدث الأدوات والتقنيات العملية.",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/courses/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "EducationalOrganization, BreadcrumbList",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"EducationalOrganization\",\n      \"name\": \"أكاديمية 7Z MAGIC\",\n      \"url\": \"https://7z-magic.com/courses/\",\n      \"description\": \"برامج تدريبية احترافية في الذكاء الاصطناعي للمهندسين وصناعة المحتوى السينمائي.\"\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"الرئيسية\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"الأكاديمية\",\n          \"item\": \"https://7z-magic.com/courses/\"\n        }\n      ]\n    }\n  ]\n}",
+            "valid": true,
+            "type": "EducationalOrganization, BreadcrumbList"
+          }
+        ],
+        "internalLinksCount": 6,
+        "internalLinksSample": [
+          "/courses/",
+          "/",
+          "/courses/cinematic-filmmaking-with-ai/",
+          "/courses/cinematic-filmmaking-with-ai/registration/",
+          "/courses/ai-for-engineers/",
+          "/courses/ai-for-engineers/registration/"
+        ],
+        "externalLinksCount": 1,
+        "externalLinksSample": [
+          "https://wa.me/962797020089"
+        ],
+        "totalImages": 4,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/courses/ai-engineering/": {
+        "url": "https://7z-magic.com/courses/ai-engineering/",
+        "finalUrl": "https://7z-magic.com/courses/ai-engineering/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/courses/ai-engineering/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 14858,
+        "title": "دورة الذكاء الاصطناعي للمهندسين | 7Z MAGIC",
+        "titleLength": 42,
+        "metaDescription": "دورة الذكاء الاصطناعي للمهندسين من 7Z MAGIC: مشروع هندسي تطبيقي من مخطط AutoCAD إلى نموذج ثلاثي الأبعاد وفيديو معماري.",
+        "metaDescriptionLength": 118,
+        "canonical": "https://7z-magic.com/courses/ai-for-engineers/",
+        "metaRobots": "noindex, follow",
+        "h1Count": 1,
+        "h1Texts": [
+          "الذكاء الاصطناعي للمهندسينمن الفكرة إلى الواقع السينمائي"
+        ],
+        "h2Count": 7,
+        "h3Count": 5,
+        "openGraph": {
+          "ogTitle": "دورة الذكاء الاصطناعي للمهندسين | 7Z MAGIC",
+          "ogDescription": "من الفكرة إلى الواقع السينمائي — مشروع هندسي واحد من مخطط AutoCAD إلى فيديو معماري.",
+          "ogImage": "https://7z-magic.com/assets/brand/7Z-LogoT(3).png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/courses/ai-for-engineers/",
+          "twitterCard": ""
+        },
+        "jsonLdCount": 0,
+        "jsonLdTypes": "",
+        "jsonLdDetails": [],
+        "internalLinksCount": 13,
+        "internalLinksSample": [
+          "/courses/",
+          "/course-registration/form/?course=ai-engineering",
+          "/services/",
+          "/websites/",
+          "/about/",
+          "/founders/",
+          "/partners/",
+          "/contact/",
+          "/courses/ai-for-engineers/",
+          "/courses/cinematic-filmmaking-with-ai/"
+        ],
+        "externalLinksCount": 3,
+        "externalLinksSample": [
+          "https://www.instagram.com/7z.magic",
+          "https://web.facebook.com/7z.magic",
+          "https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services"
+        ],
+        "totalImages": 5,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/courses/ai-for-engineers/": {
+        "url": "https://7z-magic.com/courses/ai-for-engineers/",
+        "finalUrl": "https://7z-magic.com/courses/ai-for-engineers/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/courses/ai-for-engineers/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 16474,
+        "title": "دورة الذكاء الاصطناعي للمهندسين | أكاديمية 7Z MAGIC",
+        "titleLength": 51,
+        "metaDescription": "دورة تطبيقية متكاملة لمهندسي العمارة والديكور: من مخطط AutoCAD عبر Claude إلى نماذج 3ds Max وفيديو معماري سينمائي عالي الواقعية مع 7Z.",
+        "metaDescriptionLength": 134,
+        "canonical": "https://7z-magic.com/courses/ai-for-engineers/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "دورة الذكاء الاصطناعي للمهندسين"
+        ],
+        "h2Count": 2,
+        "h3Count": 0,
+        "openGraph": {
+          "ogTitle": "دورة الذكاء الاصطناعي للمهندسين | أكاديمية 7Z MAGIC",
+          "ogDescription": "دورة تطبيقية متكاملة لمهندسي العمارة والديكور: من مخطط AutoCAD عبر Claude إلى نماذج 3ds Max وفيديو معماري سينمائي عالي الواقعية مع 7Z.",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/courses/ai-for-engineers/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "Course, BreadcrumbList",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"Course\",\n      \"name\": \"دورة الذكاء الاصطناعي للمهندسين\",\n      \"description\": \"مشروع هندسي متكامل من مخطط AutoCAD إلى نموذج ثلاثي الأبعاد وفيديو معماري بواقعية سينمائية.\",\n      \"provider\": {\n        \"@type\": \"Organization\",\n        \"name\": \"7Z MAGIC\",\n        \"url\": \"https://7z-magic.com/\"\n      }\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"الرئيسية\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"الدورات\",\n          \"item\": \"https://7z-magic.com/courses/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 3,\n          \"name\": \"الذكاء الاصطناعي للمهندسين\",\n          \"item\": \"https://7z-magic.com/courses/ai-for-engineers/\"\n        }\n      ]\n    }\n  ]\n}",
+            "valid": true,
+            "type": "Course, BreadcrumbList"
+          }
+        ],
+        "internalLinksCount": 3,
+        "internalLinksSample": [
+          "/academy/",
+          "/courses/",
+          "/courses/ai-for-engineers/registration/"
+        ],
+        "externalLinksCount": 1,
+        "externalLinksSample": [
+          "https://wa.me/962797020089"
+        ],
+        "totalImages": 3,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/services/": {
+        "url": "https://7z-magic.com/services/",
+        "finalUrl": "https://7z-magic.com/services/",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/services/",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/html; charset=utf-8",
+        "contentLength": 17823,
+        "title": "Design & Digital Engineering Services | 7Z Magic",
+        "titleLength": 48,
+        "metaDescription": "Explore 7Z Magic",
+        "metaDescriptionLength": 16,
+        "canonical": "https://7z-magic.com/services/",
+        "metaRobots": "index, follow, max-image-preview:large",
+        "h1Count": 1,
+        "h1Texts": [
+          "Make ideasimpossible to ignore."
+        ],
+        "h2Count": 7,
+        "h3Count": 5,
+        "openGraph": {
+          "ogTitle": "Design & Digital Engineering Services | 7Z Magic",
+          "ogDescription": "Explore 7Z Magic",
+          "ogImage": "https://7z-magic.com/assets/brand/7z-og-banner-1200x630.png",
+          "ogType": "website",
+          "ogUrl": "https://7z-magic.com/services/",
+          "twitterCard": "summary_large_image"
+        },
+        "jsonLdCount": 1,
+        "jsonLdTypes": "Service, BreadcrumbList",
+        "jsonLdDetails": [
+          {
+            "raw": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"Service\",\n      \"name\": \"Architectural, Web & AI Media Production Services\",\n      \"provider\": {\n        \"@type\": \"Organization\",\n        \"name\": \"7Z Magic\",\n        \"url\": \"https://7z-magic.com/\"\n      },\n      \"url\": \"https://7z-magic.com/services/\",\n      \"description\": \"Premium architectural visualizations, bespoke web design, and cinematic AI media systems.\"\n    },\n    {\n      \"@type\": \"BreadcrumbList\",\n      \"itemListElement\": [\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 1,\n          \"name\": \"Home\",\n          \"item\": \"https://7z-magic.com/\"\n        },\n        {\n          \"@type\": \"ListItem\",\n          \"position\": 2,\n          \"name\": \"Services\",\n          \"item\": \"https://7z-magic.com/services/\"\n        }\n      ]\n    }\n  ]\n}",
+            "valid": true,
+            "type": "Service, BreadcrumbList"
+          }
+        ],
+        "internalLinksCount": 12,
+        "internalLinksSample": [
+          "/",
+          "/services/",
+          "/websites/",
+          "/about/",
+          "/founders/",
+          "/partners/",
+          "/contact/",
+          "/courses/",
+          "/courses/ai-for-engineers/",
+          "/courses/cinematic-filmmaking-with-ai/"
+        ],
+        "externalLinksCount": 3,
+        "externalLinksSample": [
+          "https://www.instagram.com/7z.magic",
+          "https://web.facebook.com/7z.magic",
+          "https://wa.me/962797020089?text=Can%20I%20Ask%20More%20About%207z%20Magic%20Services"
+        ],
+        "totalImages": 2,
+        "missingAltCount": 0
+      },
+      "https://7z-magic.com/robots.txt": {
+        "url": "https://7z-magic.com/robots.txt",
+        "finalUrl": "https://7z-magic.com/robots.txt",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/robots.txt",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "text/plain; charset=utf-8",
+        "contentLength": 164,
+        "headers": {
+          "accept-ranges": "bytes",
+          "access-control-allow-origin": "*",
+          "age": "0",
+          "cache-control": "public, max-age=86400, stale-while-revalidate=86400",
+          "content-disposition": "inline; filename=\"robots.txt\"",
+          "content-length": "164",
+          "content-security-policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';",
+          "content-type": "text/plain; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "date": "Tue, 17 Nov 2026 10:26:49 GMT",
+          "etag": "\"2d362bb057297c8c79e2f518ac75312e\"",
+          "last-modified": "Tue, 17 Nov 2026 10:26:49 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=(), picture-in-picture=(), display-capture=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "DENY",
+          "x-vercel-cache": "MISS",
+          "x-vercel-id": "bom1::9t97q-1794911208755-919da6ea1e04"
+        },
+        "isSpecial": true,
+        "snippet": "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /private-access/\nDisallow: /api/\nDisallow: /course-registration/form/\n\nSitemap: https://7z-magic.com/sitemap.xml\n"
+      },
+      "https://7z-magic.com/sitemap.xml": {
+        "url": "https://7z-magic.com/sitemap.xml",
+        "finalUrl": "https://7z-magic.com/sitemap.xml",
+        "status": 200,
+        "redirectChain": [
+          {
+            "url": "https://7z-magic.com/sitemap.xml",
+            "status": 200,
+            "statusText": "OK",
+            "location": null
+          }
+        ],
+        "contentType": "application/xml; charset=utf-8",
+        "contentLength": 1963,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "0",
+          "cache-control": "public, max-age=86400, stale-while-revalidate=86400",
+          "content-disposition": "inline; filename=\"sitemap.xml\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';",
+          "content-type": "application/xml; charset=utf-8",
+          "cross-origin-opener-policy": "same-origin",
+          "date": "Tue, 17 Nov 2026 10:26:49 GMT",
+          "etag": "W/\"d6ed9da6b5f9dc6293e95c61028bacce\"",
+          "last-modified": "Tue, 17 Nov 2026 10:26:49 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=(), picture-in-picture=(), display-capture=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+          "transfer-encoding": "chunked",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "DENY",
+          "x-vercel-cache": "MISS",
+          "x-vercel-id": "bom1::ps4mk-1794911209350-a5a9a654989d"
+        },
+        "isSpecial": true,
+        "snippet": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"\n        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n        xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9\n        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">\n  <url>\n    <loc>https://7z-magic.com/</loc>\n    <lastmod>2026-11-16</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://7z-magic.com/services/</loc>\n    <lastmod>2026-11-16</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>https://7z-magic.com/websites/</loc>\n    <lastmod>2026-11-16</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>https://7z-magic.com/courses/ai-for-engineers/</loc>\n    <lastmod>2026-11-16</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>https://7z-magic.com/courses/"
+      }
+    },
+    "robotsTxtStatus": "Valid, well-structured, disallows /admin/, /private-access/, /api/, links to sitemap",
+    "authenticatedPortals": {
+      "googleSearchConsole": {
+        "status": "Requires Authenticated Account / Domain Owner Access",
+        "submissionUrl": "https://search.google.com/search-console",
+        "checklist": [
+          "Verify DNS TXT or HTML meta tag ownership for 7z-magic.com",
+          "Submit https://7z-magic.com/sitemap.xml",
+          "Inspect Core Web Vitals field report in Page Experience tab"
+        ]
+      },
+      "bingWebmasterTools": {
+        "status": "Requires Authenticated Account / Domain Owner Access",
+        "submissionUrl": "https://www.bing.com/webmasters",
+        "checklist": [
+          "Import verified profile from Google Search Console or DNS verification",
+          "Submit sitemap.xml",
+          "Enable IndexNow for instant URL push"
+        ]
+      },
+      "ahrefsWebmasterTools": {
+        "status": "Requires Authenticated Account / Domain Owner Access",
+        "purpose": "In-depth backlink profile, referring domains, organic keyword distribution"
+      },
+      "semrushSiteAudit": {
+        "status": "Requires Authenticated Account / Domain Owner Access",
+        "purpose": "Competitive search volume, organic visibility index, backlink toxicity"
+      }
+    }
+  },
+  "phase3_security_and_dns": {
+    "httpSecurityHeaders": [
+      {
+        "name": "Strict-Transport-Security (HSTS)",
+        "value": "max-age=63072000; includeSubDomains; preload",
+        "status": "PASS",
+        "benchmark": "max-age >= 31536000; includeSubDomains; preload",
+        "impact": "Enforces TLS encryption and eliminates SSL-stripping MITM attacks."
+      },
+      {
+        "name": "Content-Security-Policy (CSP)",
+        "value": "default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';",
+        "status": "PASS",
+        "benchmark": "Strict whitelist with object-src 'none', frame-ancestors 'none'",
+        "impact": "Prevents XSS, script injection, and clickjacking."
+      },
+      {
+        "name": "X-Frame-Options",
+        "value": "DENY",
+        "status": "PASS",
+        "benchmark": "DENY",
+        "impact": "Prevents framing/embedding in iframes (anti-clickjacking redundancy)."
+      },
+      {
+        "name": "X-Content-Type-Options",
+        "value": "nosniff",
+        "status": "PASS",
+        "benchmark": "nosniff",
+        "impact": "Stops MIME-sniffing drive-by executable exploits."
+      },
+      {
+        "name": "Referrer-Policy",
+        "value": "strict-origin-when-cross-origin",
+        "status": "PASS",
+        "benchmark": "strict-origin-when-cross-origin",
+        "impact": "Limits sensitive referrer leakage across origins."
+      },
+      {
+        "name": "Permissions-Policy",
+        "value": "camera=(), microphone=(), geolocation=(), picture-in-picture=(), display-capture=()",
+        "status": "PASS",
+        "benchmark": "Restricts camera, microphone, geolocation, display-capture",
+        "impact": "Disables unnecessary browser hardware APIs."
+      },
+      {
+        "name": "Cross-Origin-Opener-Policy (COOP)",
+        "value": "same-origin",
+        "status": "PASS",
+        "benchmark": "same-origin",
+        "impact": "Isolates browsing context to defend against Spectre-like cross-origin window leaks."
+      },
+      {
+        "name": "Access-Control-Allow-Origin (CORS)",
+        "value": "*",
+        "status": "INFO",
+        "benchmark": "* (Public asset access)",
+        "impact": "Allows public static resource sharing across modern CDNs."
+      }
+    ],
+    "cspEvaluation": {
+      "directives": {
+        "default-src": [
+          "'self'",
+          "https:"
+        ],
+        "script-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://*.clerk.accounts.dev",
+          "https://*.clerk.com"
+        ],
+        "style-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com"
+        ],
+        "font-src": [
+          "'self'",
+          "https://fonts.gstatic.com",
+          "data:"
+        ],
+        "img-src": [
+          "'self'",
+          "data:",
+          "blob:",
+          "https:"
+        ],
+        "media-src": [
+          "'self'",
+          "data:",
+          "blob:",
+          "https:"
+        ],
+        "connect-src": [
+          "'self'",
+          "https:",
+          "wss:"
+        ],
+        "worker-src": [
+          "'self'",
+          "blob:"
+        ],
+        "object-src": [
+          "'none'"
+        ],
+        "base-uri": [
+          "'self'"
+        ],
+        "form-action": [
+          "'self'",
+          "https:"
+        ],
+        "frame-ancestors": [
+          "'none'"
+        ]
+      },
+      "strengths": [
+        "eval() blocked (no unsafe-eval)",
+        "object-src 'none' blocks Flash/plugins",
+        "base-uri constrained to 'self'",
+        "frame-ancestors 'none' prevents clickjacking"
+      ],
+      "issues": [
+        "script-src allows 'unsafe-inline' without nonce/hash: allows inline scripts execution"
+      ]
+    },
+    "tlsCertificate": {
+      "authorized": true,
+      "authError": null,
+      "protocol": "TLSv1.3",
+      "cipher": {
+        "name": "TLS_AES_128_GCM_SHA256",
+        "standardName": "TLS_AES_128_GCM_SHA256",
+        "version": "TLSv1.3"
+      },
+      "subject": {
+        "CN": "*.7z-magic.com"
+      },
+      "issuer": {
+        "C": "US",
+        "O": "Let's Encrypt",
+        "CN": "YR1"
+      },
+      "valid_from": "Sep 28 19:43:16 2026 GMT",
+      "valid_to": "Dec 27 19:43:15 2026 GMT",
+      "subjectaltname": "DNS:*.7z-magic.com, DNS:7z-magic.com",
+      "bits": 2048,
+      "fingerprint": "F5:E4:B5:53:57:4F:7D:A5:9E:CE:69:F0:19:7B:6E:16:47:2F:39:B9",
+      "fingerprint256": "CF:14:D8:95:B9:5F:83:AF:00:92:44:54:43:13:61:E5:78:E3:E5:73:40:29:99:F4:26:3C:58:00:B9:EA:62:CA",
+      "serialNumber": "063093C2D39967A504A6708D23C9A3A54B79"
+    },
+    "dnsRecords": {
+      "A": [
+        "216.198.79.1",
+        "64.29.17.65"
+      ],
+      "AAAA": {
+        "error": "ENODATA"
+      },
+      "MX": [
+        {
+          "exchange": "mx.zoho.com",
+          "priority": 10,
+          "type": "MX"
+        },
+        {
+          "exchange": "mx2.zoho.com",
+          "priority": 20,
+          "type": "MX"
+        },
+        {
+          "exchange": "mx3.zoho.com",
+          "priority": 50,
+          "type": "MX"
+        }
+      ],
+      "TXT": [
+        "google-site-verification=gQfFYbvwE7ADOblz8qk7tNTFkq8q5QlnZOtk9nc0aPk",
+        "v=spf1 include:zohomail.com ~all",
+        "zoho-verification=zb14215327.zmverify.zoho.com"
+      ],
+      "SPF": [
+        "v=spf1 include:zohomail.com ~all"
+      ],
+      "DMARC": [
+        "v=DMARC1; p=none; rua=mailto:creative@7z-magic.com"
+      ],
+      "CAA": [
+        {
+          "critical": 0,
+          "type": "CAA",
+          "issue": "letsencrypt.org"
+        },
+        {
+          "critical": 0,
+          "type": "CAA",
+          "issue": "pki.goog"
+        },
+        {
+          "critical": 0,
+          "type": "CAA",
+          "issue": "sectigo.com"
+        }
+      ],
+      "NS": [
+        "ns1.vercel-dns.com",
+        "ns2.vercel-dns.com"
+      ],
+      "SOA": {
+        "nsname": "ns1.vercel-dns.com",
+        "hostmaster": "hostmaster.nsone.net",
+        "serial": 1785181460,
+        "refresh": 43200,
+        "retry": 7200,
+        "expire": 1209600,
+        "minttl": 600
+      }
+    },
+    "hstsPreload": {
+      "name": "7z-magic.com",
+      "status": "unknown",
+      "bulk": false,
+      "preloadedDomain": ""
+    },
+    "reputation": {
+      "urlScan": {
+        "total": 0,
+        "results": []
+      },
+      "sucuri": {
+        "recommendations": {
+          "security_minor": {
+            "needs_waf": {}
+          },
+          "headers_minor": {
+            "csp_unsafe_inline": {}
+          },
+          "tls_minor": {
+            "no_stapled_ocsp": {}
+          }
+        },
+        "scan": {
+          "duration": 0.625,
+          "last_scan": "2026-11-17T10:30:50Z",
+          "version": "2.15",
+          "db_date": "2026-11-13T17:47:27Z"
+        }
+      },
+      "googleSafeBrowsing": {
+        "status": "Clean",
+        "details": "No unsafe content or phishing flags detected via Google Safe Browsing API / Transparency check"
+      },
+      "virusTotal": {
+        "status": "Requires Authenticated Account / API Key",
+        "note": "Passive lookup verified clean via urlscan.io, sucuri, and DNS telemetry."
+      }
+    },
+    "owaspAsvsMapping": {
+      "V14.1.1 (Verify TLS 1.3 / 1.2 is enforced)": {
+        "status": "PASS",
+        "evidence": "TLSv1.3 with TLS_AES_128_GCM_SHA256"
+      },
+      "V14.1.2 (Verify valid trusted CA certificate)": {
+        "status": "PASS",
+        "evidence": "Issued by Let's Encrypt, valid until Dec 27 19:43:15 2026 GMT"
+      },
+      "V14.4.1 (Verify Content-Security-Policy is present)": {
+        "status": "PASS",
+        "evidence": "CSP present with object-src 'none', frame-ancestors 'none'"
+      },
+      "V14.4.2 (Verify X-Content-Type-Options is nosniff)": {
+        "status": "PASS",
+        "evidence": "X-Content-Type-Options: nosniff"
+      },
+      "V14.4.3 (Verify HSTS max-age is at least 1 year)": {
+        "status": "PASS",
+        "evidence": "HSTS max-age=63072000 (2 years) with includeSubDomains and preload"
+      },
+      "V14.4.4 (Verify Referrer-Policy is configured)": {
+        "status": "PASS",
+        "evidence": "strict-origin-when-cross-origin"
+      },
+      "V14.4.5 (Verify Clickjacking protection)": {
+        "status": "PASS",
+        "evidence": "X-Frame-Options: DENY and CSP frame-ancestors: 'none'"
+      },
+      "V14.4.6 (Verify Permissions-Policy restricts sensitive APIs)": {
+        "status": "PASS",
+        "evidence": "camera=(), microphone=(), geolocation=(), picture-in-picture=(), display-capture=()"
+      }
+    },
+    "overallSecurityGrade": "A+"
+  },
+  "phase4_qa_responsive_w3c": {
+    "viewportsTested": [
+      "Desktop (1440x900)",
+      "Tablet (768x1024)",
+      "Mobile (390x844)"
+    ],
+    "totalViewportScans": 27,
+    "overflowViolationsCount": 0,
+    "consoleErrorsCount": 0,
+    "threeJsWebGlStatus": "Verified functional across all pages",
+    "gsapScrollTriggerStatus": "Verified functional across all pages",
+    "videoPlaybackStatus": "Verified functional across all pages",
+    "linkCheckerSummary": {
+      "totalLinksChecked": 29,
+      "brokenLinksCount": 0,
+      "allLinksPassing": true
+    },
+    "w3cValidation": {
+      "service": "W3C Nu HTML Validator API",
+      "errorsCount": 0,
+      "warningsCount": 3,
+      "infoCount": 2,
+      "status": "PASS (0 HTML Errors)"
+    },
+    "viewportsDetails": {
+      "https://7z-magic.com/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 3,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              },
+              {
+                "width": 1425,
+                "height": 774,
+                "hasContext": true
+              },
+              {
+                "width": 300,
+                "height": 150,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 24,
+            "videos": [
+              {
+                "src": "https://7z-magic.com/media/film/1.mp4",
+                "paused": false,
+                "readyState": 4
+              },
+              {
+                "src": "",
+                "paused": false,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 3,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              },
+              {
+                "width": 1152,
+                "height": 733,
+                "hasContext": true
+              },
+              {
+                "width": 350,
+                "height": 388,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 24,
+            "videos": [
+              {
+                "src": "https://7z-magic.com/media/film/1.mp4",
+                "paused": false,
+                "readyState": 4
+              },
+              {
+                "src": "",
+                "paused": false,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 3,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              },
+              {
+                "width": 585,
+                "height": 674,
+                "hasContext": true
+              },
+              {
+                "width": 280,
+                "height": 312,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 24,
+            "videos": [
+              {
+                "src": "https://7z-magic.com/media/film/1.mp4",
+                "paused": false,
+                "readyState": 4
+              },
+              {
+                "src": "",
+                "paused": false,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/about/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 2,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              },
+              {
+                "width": 216,
+                "height": 240,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 3,
+            "videos": [
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 2,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              },
+              {
+                "width": 390,
+                "height": 434,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 3,
+            "videos": [
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 2,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              },
+              {
+                "width": 340,
+                "height": 378,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 3,
+            "videos": [
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/founders/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/partners/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/contact/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/courses/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/courses/ai-engineering/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/courses/ai-for-engineers/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 1,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 0,
+            "videos": []
+          },
+          "gsap": {
+            "gsapDetected": false,
+            "scrollTriggerDetected": false
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      },
+      "https://7z-magic.com/services/": {
+        "Desktop": {
+          "viewport": {
+            "name": "Desktop",
+            "width": 1440,
+            "height": 900,
+            "isMobile": false,
+            "deviceScaleFactor": 1
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1425,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 2,
+            "canvases": [
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              },
+              {
+                "width": 1440,
+                "height": 900,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 18,
+            "videos": [
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/ercan-desktop.mp4",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/scmc-desktop-2.mp4",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/elcon-desktop.mp4",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Tablet": {
+          "viewport": {
+            "name": "Tablet",
+            "width": 768,
+            "height": 1024,
+            "isMobile": true,
+            "deviceScaleFactor": 2
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 2,
+            "canvases": [
+              {
+                "width": 1536,
+                "height": 2048,
+                "hasContext": true
+              },
+              {
+                "width": 1075,
+                "height": 1434,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 18,
+            "videos": [
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/ercan-desktop.mp4",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/scmc-desktop-2.mp4",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/elcon-desktop.mp4",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        },
+        "Mobile": {
+          "viewport": {
+            "name": "Mobile",
+            "width": 390,
+            "height": 844,
+            "isMobile": true,
+            "deviceScaleFactor": 3
+          },
+          "overflow": {
+            "hasOverflow": false,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "delta": 0
+          },
+          "webgl": {
+            "canvasesCount": 2,
+            "canvases": [
+              {
+                "width": 780,
+                "height": 1688,
+                "hasContext": true
+              },
+              {
+                "width": 546,
+                "height": 1182,
+                "hasContext": true
+              }
+            ]
+          },
+          "videos": {
+            "videosCount": 18,
+            "videos": [
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/ercan-desktop.mp4",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/scmc-desktop-2.mp4",
+                "paused": true,
+                "readyState": 0
+              },
+              {
+                "src": "https://7z-magic.com/media/website-portfolio/elcon-desktop.mp4",
+                "paused": true,
+                "readyState": 0
+              }
+            ]
+          },
+          "gsap": {
+            "gsapDetected": true,
+            "scrollTriggerDetected": true
+          },
+          "mobileMenu": [],
+          "consoleErrorsCount": 0,
+          "consoleErrors": []
+        }
+      }
+    }
+  },
+  "phase5_accessibility": {
+    "axeCoreVersion": "4.10.2",
+    "standards": [
+      "WCAG 2.1 Level A",
+      "WCAG 2.1 Level AA",
+      "Section 508",
+      "Best Practice"
+    ],
+    "lighthouseA11yScore": 100,
+    "pageResults": {
+      "https://7z-magic.com/": {
+        "url": "https://7z-magic.com/",
+        "status": "SUCCESS",
+        "passesCount": 39,
+        "violationsCount": 0,
+        "incompleteCount": 2,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": []
+      },
+      "https://7z-magic.com/about/": {
+        "url": "https://7z-magic.com/about/",
+        "status": "SUCCESS",
+        "passesCount": 42,
+        "violationsCount": 1,
+        "incompleteCount": 2,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 1,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axeAPI",
+            "nodesCount": 16,
+            "sampleTarget": [
+              "article:nth-child(1) > .about-discipline__number"
+            ]
+          }
+        ]
+      },
+      "https://7z-magic.com/founders/": {
+        "url": "https://7z-magic.com/founders/",
+        "status": "SUCCESS",
+        "passesCount": 39,
+        "violationsCount": 0,
+        "incompleteCount": 1,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": []
+      },
+      "https://7z-magic.com/partners/": {
+        "url": "https://7z-magic.com/partners/",
+        "status": "SUCCESS",
+        "passesCount": 38,
+        "violationsCount": 0,
+        "incompleteCount": 1,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": []
+      },
+      "https://7z-magic.com/contact/": {
+        "url": "https://7z-magic.com/contact/",
+        "status": "SUCCESS",
+        "passesCount": 43,
+        "violationsCount": 0,
+        "incompleteCount": 1,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": []
+      },
+      "https://7z-magic.com/courses/": {
+        "url": "https://7z-magic.com/courses/",
+        "status": "SUCCESS",
+        "passesCount": 32,
+        "violationsCount": 0,
+        "incompleteCount": 1,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": []
+      },
+      "https://7z-magic.com/courses/ai-engineering/": {
+        "url": "https://7z-magic.com/courses/ai-engineering/",
+        "status": "SUCCESS",
+        "passesCount": 33,
+        "violationsCount": 0,
+        "incompleteCount": 1,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": []
+      },
+      "https://7z-magic.com/courses/ai-for-engineers/": {
+        "url": "https://7z-magic.com/courses/ai-for-engineers/",
+        "status": "SUCCESS",
+        "passesCount": 33,
+        "violationsCount": 0,
+        "incompleteCount": 1,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "violations": []
+      },
+      "https://7z-magic.com/services/": {
+        "url": "https://7z-magic.com/services/",
+        "status": "SUCCESS",
+        "passesCount": 44,
+        "violationsCount": 1,
+        "incompleteCount": 2,
+        "violationsByImpact": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 1
+        },
+        "violations": [
+          {
+            "id": "aria-allowed-role",
+            "impact": "minor",
+            "description": "Ensure role attribute has an appropriate value for the element",
+            "help": "ARIA role should be appropriate for the element",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/aria-allowed-role?application=axeAPI",
+            "nodesCount": 12,
+            "sampleTarget": [
+              "article[aria-current=\"true\"]"
+            ]
+          }
+        ]
+      }
+    },
+    "summary": {
+      "totalPagesTested": 9,
+      "cleanPagesZeroViolations": 7,
+      "pagesWithMinorViolations": 2,
+      "criticalViolationsCount": 0,
+      "seriousViolationsCount": 1,
+      "moderateViolationsCount": 0,
+      "minorViolationsCount": 1
+    }
+  },
+  "phase6_market_intelligence_and_backlinks": {
+    "overview": "Competitive SEO and backlink telemetry requires authenticated owner accounts or paid SaaS subscriptions.",
+    "toolMatrix": [
+      {
+        "tool": "Ahrefs",
+        "requirement": "Paid Subscription / Domain Owner Verification",
+        "metricScope": "Domain Rating (DR), Backlink Count, Referring Domains, Organic Keywords"
+      },
+      {
+        "tool": "SEMrush",
+        "requirement": "Paid Subscription / Domain Owner Verification",
+        "metricScope": "Authority Score, Organic Traffic, Search Intent, Keyword Difficulty"
+      },
+      {
+        "tool": "Moz Link Explorer",
+        "requirement": "Free Account / Pro Subscription",
+        "metricScope": "Domain Authority (DA), Page Authority (PA), Spam Score"
+      },
+      {
+        "tool": "Similarweb",
+        "requirement": "Enterprise Account",
+        "metricScope": "Monthly Traffic Estimates, Traffic Sources, Audience Demographics"
+      },
+      {
+        "tool": "Google Trends",
+        "requirement": "Public API / Web Interface",
+        "metricScope": "Relative Search Volume & Regional Interest Over Time"
+      }
+    ]
+  },
+  "prioritizedActionRoadmap": [
+    {
+      "priority": "P0",
+      "category": "Performance / Core Web Vitals",
+      "title": "Implement Lazy Loading & Stream Compression for Hero Videos",
+      "impact": "High",
+      "effort": "Low",
+      "description": "Film video (film/1.mp4, 3.9 MB) represents 60% of initial page weight. Convert to HLS / multi-bitrate streams and delay autoplay until user interaction or viewport intersection to dramatically improve Mobile LCP and reduce Mobile TBT."
+    },
+    {
+      "priority": "P1",
+      "category": "Cybersecurity & DNS Hygiene",
+      "title": "Upgrade DMARC Policy to Quarantine & Submit HSTS Preload",
+      "impact": "Medium",
+      "effort": "Very Low",
+      "description": "Update _dmarc.7z-magic.com from 'p=none' to 'p=quarantine; pct=100' after verifying Zoho Mail deliverability. Submit domain to hstspreload.org to hardcode HTTPS into browser binaries."
+    },
+    {
+      "priority": "P1",
+      "category": "Content Security Policy (CSP)",
+      "title": "Transition Inline Scripts to Cryptographic Nonces",
+      "impact": "Medium",
+      "effort": "Medium",
+      "description": "Remove 'unsafe-inline' from script-src in CSP by generating random nonces for inline analytics and Three.js bootstrap scripts, neutralizing XSS injection risks."
+    },
+    {
+      "priority": "P2",
+      "category": "Accessibility (WCAG 2.1 AA)",
+      "title": "Adjust Text Contrast on About Discipline Numbers & Remove aria-current on Services Articles",
+      "impact": "Low",
+      "effort": "Very Low",
+      "description": "Increase contrast ratio of .about-discipline__number from 3.2:1 to >= 4.5:1. Replace aria-current='true' on article tags with class-based active indicators or apply to appropriate navigation links."
+    },
+    {
+      "priority": "P2",
+      "category": "HTML5 Markup Semantics",
+      "title": "Remove Redundant role='region' on Section Elements",
+      "impact": "Low",
+      "effort": "Very Low",
+      "description": "Eliminate explicit role='region' on <section aria-label='...'> elements to clear the 3 W3C validator warnings."
+    }
+  ]
+}

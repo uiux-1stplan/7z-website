@@ -705,7 +705,7 @@ function serveStatic(req, res, url) {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Content-Security-Policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';"
+    "Content-Security-Policy": "default-src 'self' https:; script-src 'self' 'sha256-CICeW+tNYPhTGEXMcCTtBoLtiURzJWPD75bvyqBbAdM=' https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss: https://vitals.vercel-insights.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'none';"
   };
   if (isNoIndex) headers["X-Robots-Tag"] = "noindex, nofollow, noarchive";
 
@@ -1079,6 +1079,11 @@ export function startServer(customPort = port) {
   ensureStorage();
   const server = createServer((req, res) => {
     const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
+    if (url.pathname.startsWith("/_vercel/")) {
+      res.writeHead(200, { "Content-Type": "application/javascript; charset=utf-8" });
+      res.end("// Vercel Telemetry Local Dev Stub");
+      return;
+    }
 
     handleApi(req, res, url)
       .then((handled) => {

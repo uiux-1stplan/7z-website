@@ -235,7 +235,7 @@
     );
     video.setAttribute("disablepictureinpicture", "");
     video.setAttribute("disableremoteplayback", "");
-    video.setAttribute("oncontextmenu", "return false;");
+    video.addEventListener("contextmenu", (e) => e.preventDefault());
 
     createSoundButton(video, host);
 

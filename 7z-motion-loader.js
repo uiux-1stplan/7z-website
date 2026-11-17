@@ -253,13 +253,15 @@
             preloader.innerHTML = `
                 <div class="z7-preloader-center">
                     <div class="z7-ambient-glow"></div>
-                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-logo-img" onerror="this.onerror=null;this.src='/7Z-LogoT(3).png';">
+                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-logo-img">
                     <div class="z7-track">
                         <div class="z7-bar" id="z7-progress-bar"></div>
                     </div>
                     <div class="z7-counter" id="z7-counter-text">0%</div>
                 </div>
             `;
+            const preloaderLogo = preloader.querySelector('.z7-logo-img');
+            if (preloaderLogo) preloaderLogo.addEventListener('error', function() { this.src = '/7Z-LogoT(3).png'; }, { once: true });
             document.body.appendChild(preloader);
 
             // تقدم العداد بسلاسة تامة وهدوء فخم
@@ -314,9 +316,11 @@
             overlay.innerHTML = `
                 <div class="z7-trans-center">
                     <div class="z7-trans-glow"></div>
-                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-trans-logo" onerror="this.onerror=null;this.src='/7Z-LogoT(3).png';">
+                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-trans-logo">
                 </div>
             `;
+            const overlayLogo = overlay.querySelector('.z7-trans-logo');
+            if (overlayLogo) overlayLogo.addEventListener('error', function() { this.src = '/7Z-LogoT(3).png'; }, { once: true });
             document.body.appendChild(overlay);
         }
 

@@ -103,8 +103,11 @@
       campaignRail.style.setProperty("--mirror-ripple-shift", `${Math.sin(rotation * Math.PI / 180) * energy * 13}px`);
       const selected = activeIndex();
       cards.forEach((card, index) => {
-        if (index === selected) card.setAttribute("aria-current", "true");
-        else card.removeAttribute("aria-current");
+        if (index === selected) {
+          card.classList.add("is-active");
+        } else {
+          card.classList.remove("is-active");
+        }
       });
       if (current) current.textContent = String(selected + 1).padStart(2, "0");
     };

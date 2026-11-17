@@ -419,7 +419,23 @@
     if (reducedMotion.matches || navigator.connection?.saveData) { videos[0].pause(); return; }
     let active = 0;
     let changing = false;
-    const source = videos[0].currentSrc || videos[0].src;
+    const source = videos[0].currentSrc || videos[0].src || videos[0].dataset.src;
+
+    // Deferred video playback: start smoothly after FCP without blocking initial LCP
+    const startPlayback = () => {
+      if (!videos[0].src && videos[0].dataset.src) {
+        videos[0].src = videos[0].dataset.src;
+        videos[0].load();
+      }
+      videos[0].play().catch(() => {});
+    };
+
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(() => window.setTimeout(startPlayback, 150), { timeout: 1200 });
+    } else {
+      window.setTimeout(startPlayback, 200);
+    }
+
     const observe = () => {
       const current = videos[active];
       if (changing || !Number.isFinite(current.duration) || current.duration < 2 || current.currentTime < current.duration - .85) return;

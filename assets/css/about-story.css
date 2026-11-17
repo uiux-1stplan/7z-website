@@ -76,7 +76,7 @@ html[data-z7-core] .about-chapter__head > p,.about-work__head > p { max-width: 3
 html[data-z7-core] .about-disciplines { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: clamp(18px,4vw,58px); margin-top: clamp(58px,9vw,112px); border-top: 1px solid var(--about-line); }
 html[data-z7-core] .about-discipline { position: relative; display: flex; min-height: 265px; flex-direction: column; align-items: flex-start; padding: 22px 0 20px; border-bottom: 1px solid var(--about-line); transition: border-color .25s ease,transform .3s ease; }
 html[data-z7-core] .about-discipline:hover { transform: translateY(-4px); border-color: var(--about-accent); }
-html[data-z7-core] .about-discipline__number { color: var(--about-accent); font: 9px var(--z7-mono); }
+html[data-z7-core] .about-discipline__number { color: #94A3B8; font: 10px var(--z7-mono); font-weight: 600; }
 html[data-z7-core] .about-discipline h3 { margin: auto 0 9px; font-size: clamp(2.3rem,4vw,4rem)!important; font-weight: 450!important; letter-spacing: -.065em!important; }
 html[data-z7-core] .about-discipline p { max-width: 34ch; min-height: 76px; margin: 0; font-size: .85rem; line-height: 1.72; }
 html[data-z7-core] .about-discipline__tag { margin-top: 21px; color: var(--about-copy); font-size: 7px; letter-spacing: .11em; }
@@ -123,7 +123,7 @@ html[data-z7-core] .about-finale__link { display: inline-flex; align-items: cent
 html[data-z7-core] .about-finale__link span { color: var(--about-accent); transition: transform .2s ease; }
 html[data-z7-core] .about-finale__link:hover span { transform: translate(3px,-3px); }
 html[data-z7-core] .about-finale__signoff { justify-self: stretch; margin-top: clamp(70px,10vw,120px); padding-top: 13px; border-top: 1px solid var(--about-line); color: var(--about-copy); font-size: 7px; letter-spacing: .13em; text-align: left; }
-html[data-z7-about-enhanced] .z7-about-story [data-about-reveal] { opacity: .12; filter: blur(8px); transform: translate3d(0,22px,0); transition: opacity .55s ease,filter .55s ease,transform .55s cubic-bezier(.2,.7,.2,1); }
+html[data-z7-about-enhanced] .z7-about-story [data-about-reveal] { opacity: 0; filter: blur(8px); transform: translate3d(0,22px,0); transition: opacity .55s ease,filter .55s ease,transform .55s cubic-bezier(.2,.7,.2,1); }
 html[data-z7-about-enhanced] .z7-about-story [data-about-reveal].is-visible { opacity: 1; filter: blur(0); transform: translate3d(0,0,0); }
 @keyframes about-mark-float { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(1.5deg); } }
 @media (max-width: 1000px) {
