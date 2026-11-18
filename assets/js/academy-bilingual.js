@@ -803,17 +803,19 @@
     });
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function boot() {
     applyTheme(currentTheme);
     applyLang(currentLang);
 
     const themeBtn = document.querySelector("[data-acad-theme-toggle]");
-    if (themeBtn) {
+    if (themeBtn && !themeBtn._z7Bound) {
+      themeBtn._z7Bound = true;
       themeBtn.addEventListener("click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
     }
 
     const langBtn = document.querySelector("[data-acad-lang-toggle]");
-    if (langBtn) {
+    if (langBtn && !langBtn._z7Bound) {
+      langBtn._z7Bound = true;
       langBtn.addEventListener("click", () => applyLang(currentLang === "ar" ? "en" : "ar"));
     }
 
@@ -822,7 +824,14 @@
     initCopyButtons();
     initStep1Registration();
     initStep2Payment();
-  });
+  }
+
+  if (document.body) {
+    boot();
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  }
 
   window.Z7Academy = {
     setLang: applyLang,

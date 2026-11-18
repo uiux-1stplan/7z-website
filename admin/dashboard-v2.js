@@ -15,6 +15,7 @@
   const months = new Intl.DateTimeFormat("en", { month: "short" });
   let initialized = false;
   let frame = 0;
+  const viewScrollMap = new Map();
 
   function selectView(name, animate = true) {
     if (name === "users") name = "media";
@@ -24,6 +25,13 @@
     const next = panels.find((panel) => panel.dataset.dashboardPanel === name || panel.id === name || panel.id === `${name}-view`);
     if (!next) return;
     const current = panels.find((panel) => panel.classList.contains("active") && !panel.hidden);
+
+    if (current) {
+      const currentKey = current.dataset.dashboardPanel || current.id;
+      const currentScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      viewScrollMap.set(currentKey, currentScroll);
+    }
+
     panels.forEach((panel) => {
       const active = panel === next;
       panel.hidden = !active;
@@ -46,8 +54,13 @@
     if (pageKicker) pageKicker.textContent = titles[name][0];
     if (pageTitle) pageTitle.textContent = titles[name][1];
     if (pageSubtitle) pageSubtitle.textContent = titles[name][2];
-    const viewport = $(".admin-main-viewport") || $("main");
-    if (viewport) viewport.scrollTop = 0;
+
+    const nextKey = next.dataset.dashboardPanel || next.id;
+    const savedScroll = viewScrollMap.get(nextKey) || 0;
+    window.scrollTo(0, savedScroll);
+    if (document.documentElement) document.documentElement.scrollTop = savedScroll;
+    if (document.body) document.body.scrollTop = savedScroll;
+
     try {
       if (window.location.hash !== `#${name}`) {
         history.replaceState(null, "", `#${name}`);

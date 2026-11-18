@@ -270,6 +270,16 @@
             const isMobile = Boolean(window.innerWidth <= 768 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches));
             const duration = isHeadless ? 120 : isMobile ? 280 : 350;
 
+            // Fail-safe timer: ensure preloader is dismissed within 1800ms under any condition
+            const failSafeId = setTimeout(() => {
+                if (preloader && preloader.parentNode) {
+                    preloader.style.pointerEvents = 'none';
+                    preloader.style.opacity = '0';
+                    setTimeout(() => preloader.remove(), 120);
+                    sessionStorage.setItem('7z_motion_visited', 'true');
+                }
+            }, 1800);
+
             function updateProgress(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progressRatio = Math.min(1, elapsed / duration);
@@ -286,6 +296,7 @@
                 if (progressRatio < 1) {
                     requestAnimationFrame(updateProgress);
                 } else {
+                    clearTimeout(failSafeId);
                     // وصول العداد إلى 100%
                     if (bar) bar.style.width = '100%';
                     if (text) text.textContent = '100%';
@@ -354,19 +365,25 @@
             themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme', 'class'] });
         }
 
-        // 5. ربط الانتقالات الموزونة الهادئة بالروابط الداخلية (750ms Fade in + 150ms Hold)
+        // 5. ربط الانتقالات الموزونة الهادئة بالروابط الداخلية مع استثناء التحميل والـ API والمفاتيح
         window.addEventListener('click', (e) => {
+            if (e.defaultPrevented || e.button !== 0) return;
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
             const link = e.target.closest('a');
             if (!link || !link.href) return;
             if (link.origin !== window.location.origin) return;
             if (link.getAttribute('target') && link.getAttribute('target') !== '_self') return;
             if (link.hasAttribute('download')) return;
+            if (link.protocol === 'mailto:' || link.protocol === 'tel:' || link.protocol === 'javascript:') return;
 
             const url = new URL(link.href, window.location.href);
-            // تجاهل روابط نفس الصفحة أو التمرير للهاش الداخلي
+            // Ignore same-page anchors or query jumps
             if (url.pathname === window.location.pathname && url.search === window.location.search && (url.hash || link.getAttribute('href')?.startsWith('#'))) return;
-            // حماية واستثناء لوحة تحكم الآدمن المقفلة
-            if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/private-access')) return;
+            // Never intercept admin, private access, or API routes
+            if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/private-access') || url.pathname.startsWith('/api') || url.pathname.startsWith('/_vercel')) return;
+            // Never intercept direct file downloads
+            if (/\.(pdf|pptx|ppt|zip|rar|tar|gz|docx|doc|xlsx|xls|png|jpg|jpeg|webp|mp4|mov|webm)$/i.test(url.pathname)) return;
 
             e.preventDefault();
             e.stopPropagation();
@@ -376,16 +393,30 @@
             sessionStorage.setItem('7z_nav_transitioning', 'true');
             overlay.classList.add('active');
 
-            // انتقال سينمائي مصقول متجاوب
+            // Fail-safe: release curtain after 2500ms if navigation fails or aborts
+            setTimeout(() => {
+                if (overlay && overlay.classList.contains('active')) {
+                    overlay.classList.remove('active');
+                    sessionStorage.removeItem('7z_nav_transitioning');
+                }
+            }, 2500);
+
             const isHeadlessNav = Boolean(navigator.webdriver || /HeadlessChrome|Lighthouse/i.test(navigator.userAgent));
             setTimeout(() => {
                 window.location.href = link.href;
             }, isHeadlessNav ? 40 : 380);
         }, true);
 
-        window.addEventListener('pageshow', () => {
+        // bfcache / Back & Forward button instantaneous restoration
+        const dismissAllOverlays = () => {
+            sessionStorage.removeItem('7z_nav_transitioning');
+            const p = document.getElementById('z7-preloader');
+            if (p) p.remove();
             if (overlay) overlay.classList.remove('active');
-        });
+        };
+
+        window.addEventListener('pageshow', dismissAllOverlays);
+        window.addEventListener('popstate', dismissAllOverlays);
     }
 
     if (document.body) {

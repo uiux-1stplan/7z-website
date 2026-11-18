@@ -7,7 +7,7 @@
 /* The logo hosts contain only their Three.js canvas. */
 html[data-z7-core] .logo-hero__logo3d,
 html[data-z7-core] .about-hero__logo-rotor {
-  position:relative; display:grid; place-items:center; isolation:isolate; overflow:hidden;
+  position:relative; display:grid; place-items:center; isolation:isolate; overflow:visible;
 }
 html[data-z7-core] .logo-hero__logo3d {
   flex:0 0 auto; width:clamp(220px,17vw,260px); aspect-ratio:390 / 433; max-height:32svh;
@@ -19,6 +19,15 @@ html[data-z7-core] .logo-hero__logo3d .hero-three-canvas,
 html[data-z7-core] .about-hero__logo-rotor .hero-three-canvas {
   position:absolute; inset:0; z-index:2; display:block; width:100%; height:100%;
   background:transparent!important; pointer-events:auto;
+}
+html[data-z7-core] .logo-hero__logo3d .hero-three-poster,
+html[data-z7-core] .about-hero__logo-rotor .hero-three-poster {
+  position:absolute; inset:0; z-index:1; display:block; width:100%; height:100%;
+  object-fit:contain; transition:opacity 0.45s ease; pointer-events:none;
+}
+html[data-z7-core] .logo-hero__logo3d.is-webgl-active .hero-three-poster,
+html[data-z7-core] .about-hero__logo-rotor.is-webgl-active .hero-three-poster {
+  opacity:0;
 }
 html[data-z7-core] .logo-hero__halo { display:none!important; }
 @media(max-width:700px){

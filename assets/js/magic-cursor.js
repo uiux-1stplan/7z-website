@@ -19,7 +19,11 @@
   const finePointer = window.matchMedia("(pointer:fine) and (hover:hover)");
   if (!finePointer.matches) return;
 
-  if (document.getElementById("z7MagicCursorLayer")) return;
+  // Remove any legacy or duplicate cursor instances
+  document.querySelectorAll(".z7-cursor-ring, .z7-cursor-dot, .cursor-dot, .cursor-ring, #custom-cursor").forEach(el => el.remove());
+
+  const existingLayer = document.getElementById("z7MagicCursorLayer");
+  if (existingLayer) existingLayer.remove();
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -87,13 +91,17 @@
   ].join(",");
 
   /* --------------------------------------------------
-     Position loop with smooth spring/lerp
+     Position loop with smooth spring/lerp and snap
      -------------------------------------------------- */
+  let hasPointerMoved = false;
+
   const render = () => {
-    // Smooth physical lerp follow
-    const lerpFactor = 0.22;
+    const lerpFactor = 0.25;
     haloX += (mouseX - haloX) * lerpFactor;
     haloY += (mouseY - haloY) * lerpFactor;
+
+    if (Math.abs(mouseX - haloX) < 0.1) haloX = mouseX;
+    if (Math.abs(mouseY - haloY) < 0.1) haloY = mouseY;
 
     halo.style.transform = `translate3d(${haloX}px,${haloY}px,0)`;
     core.style.transform = `translate3d(${mouseX}px,${mouseY}px,0)`;
@@ -103,7 +111,7 @@
   requestAnimationFrame(render);
 
   /* --------------------------------------------------
-     Subtle luminous dust particles
+     Subtle luminous dust particles with fail-safe cleanup
      -------------------------------------------------- */
   const spawnDust = (x, y, dx, dy) => {
     if (reducedMotion || particles.size >= ACTIVE_DUST_LIMIT) return;
@@ -133,10 +141,12 @@
       { duration, easing: "cubic-bezier(.16,.78,.28,1)", fill: "forwards" }
     );
 
-    anim.onfinish = () => {
+    const cleanup = () => {
       particles.delete(particle);
       particle.remove();
     };
+    anim.onfinish = cleanup;
+    setTimeout(cleanup, duration + 60);
   };
 
   /* --------------------------------------------------
@@ -147,6 +157,13 @@
 
     mouseX = event.clientX;
     mouseY = event.clientY;
+
+    if (!hasPointerMoved) {
+      hasPointerMoved = true;
+      haloX = mouseX;
+      haloY = mouseY;
+    }
+
     layer.classList.add("is-visible");
 
     const dx = mouseX - previousX;
@@ -228,19 +245,22 @@
   }, { passive: true });
 
   /* --------------------------------------------------
-     Viewport Enter / Leave
+     Viewport Enter / Leave / Focus / Scroll
      -------------------------------------------------- */
+  window.addEventListener("scroll", () => {
+    if (!hasPointerMoved) return;
+    const target = document.elementFromPoint(mouseX, mouseY);
+    if (target) updateHoverState(target);
+  }, { passive: true });
+
   document.documentElement.addEventListener("mouseleave", () => {
     layer.classList.remove("is-visible");
   });
   document.documentElement.addEventListener("mouseenter", () => {
-    layer.classList.add("is-visible");
+    if (hasPointerMoved) layer.classList.add("is-visible");
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) layer.classList.remove("is-visible");
-  });
-  window.addEventListener("focus", () => {
-    layer.classList.add("is-visible");
   });
   window.addEventListener("blur", () => {
     layer.classList.remove("is-visible");

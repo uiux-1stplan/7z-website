@@ -431,24 +431,48 @@ export default async function handler(
     }
 
 
-    if (
-      !upstream.headers.get(
-        "content-type"
-      )
-    ) {
-
-      res.setHeader(
-        "Content-Type",
-        file.content_type ||
-        "application/octet-stream"
-      );
-    }
-
+    const MIME_MAP = {
+      pdf: "application/pdf",
+      pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      ppt: "application/vnd.ms-powerpoint",
+      html: "text/html; charset=utf-8",
+      htm: "text/html; charset=utf-8",
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      webp: "image/webp",
+      svg: "image/svg+xml",
+      mp4: "video/mp4",
+      zip: "application/zip"
+    };
 
     const filename =
       safeFilename(
         file.original_name
       );
+
+    const ext = filename.split(".").pop().toLowerCase();
+    let contentType = upstream.headers.get("content-type") || file.content_type;
+    if (!contentType || contentType === "application/octet-stream") {
+      contentType = MIME_MAP[ext] || "application/octet-stream";
+    }
+
+    res.setHeader(
+      "Content-Type",
+      contentType
+    );
+
+    // If HTML or SVG, set isolated sandbox CSP so interactive 3D/JS executes without admin session access
+    if (
+      contentType.includes("text/html") ||
+      contentType.includes("application/xhtml") ||
+      contentType.includes("image/svg")
+    ) {
+      res.setHeader(
+        "Content-Security-Policy",
+        "sandbox allow-scripts allow-forms allow-modals allow-popups allow-downloads; default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;"
+      );
+    }
 
 
     const encoded =

@@ -289,10 +289,26 @@ export default async function handler(
       mode === "download";
 
 
-    const contentType =
-      result.blob?.contentType ||
-      file.content_type ||
-      "application/octet-stream";
+    const MIME_MAP = {
+      pdf: "application/pdf",
+      pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      ppt: "application/vnd.ms-powerpoint",
+      html: "text/html; charset=utf-8",
+      htm: "text/html; charset=utf-8",
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      webp: "image/webp",
+      svg: "image/svg+xml",
+      mp4: "video/mp4",
+      zip: "application/zip"
+    };
+
+    const ext = filename.split(".").pop().toLowerCase();
+    let contentType = result.blob?.contentType || file.content_type;
+    if (!contentType || contentType === "application/octet-stream") {
+      contentType = MIME_MAP[ext] || "application/octet-stream";
+    }
 
 
     res.statusCode = 200;

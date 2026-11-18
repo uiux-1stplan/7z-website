@@ -529,22 +529,6 @@
 
 
     try {
-
-      tab.document.body.innerHTML = `
-        <div style="
-          min-height:100vh;
-          display:grid;
-          place-items:center;
-          background:#050505;
-          color:#c9aa58;
-          font:12px Arial,sans-serif;
-          letter-spacing:.08em;
-        ">
-          LOADING PRIVATE FILE...
-        </div>
-      `;
-
-
       const response =
         await authFetch(
           `${API}?id=${
@@ -552,28 +536,22 @@
           }&mode=view`
         );
 
-
       if (!response.ok) {
-
         throw new Error(
           await response.text()
         );
       }
 
-
       const blob =
         await response.blob();
-
 
       const url =
         URL.createObjectURL(
           blob
         );
 
-
       // Directly render the uploaded file verbatim without any wrapper headers, iframes, or stripped layouts
       tab.location.replace(url);
-
 
       setTimeout(
         () =>

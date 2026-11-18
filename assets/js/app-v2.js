@@ -425,19 +425,52 @@
     let changing = false;
     const source = videos[0].currentSrc || videos[0].src || videos[0].dataset.src;
 
+    videos.forEach(v => {
+      v.muted = true;
+      v.defaultMuted = true;
+      v.playsInline = true;
+      v.setAttribute("muted", "");
+      v.setAttribute("playsinline", "");
+    });
+
     const startPlayback = () => {
       if (!videos[0].src && videos[0].dataset.src) {
         videos[0].src = videos[0].dataset.src;
         videos[0].load();
       }
-      videos[0].play().catch(() => {});
+      videos[0].muted = true;
+      const p = videos[0].play();
+      if (p !== undefined) {
+        p.catch(() => {
+          const unlock = () => {
+            videos[0].muted = true;
+            videos[0].play().catch(() => {});
+            window.removeEventListener("pointerdown", unlock);
+            window.removeEventListener("touchstart", unlock);
+            window.removeEventListener("scroll", unlock);
+          };
+          window.addEventListener("pointerdown", unlock, { once: true, passive: true });
+          window.addEventListener("touchstart", unlock, { once: true, passive: true });
+          window.addEventListener("scroll", unlock, { once: true, passive: true });
+        });
+      }
     };
 
+    startPlayback();
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(() => window.setTimeout(startPlayback, 150), { timeout: 1200 });
+      requestIdleCallback(() => window.setTimeout(startPlayback, 100), { timeout: 800 });
     } else {
-      window.setTimeout(startPlayback, 200);
+      window.setTimeout(startPlayback, 150);
     }
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        videos.forEach(v => v.pause());
+      } else {
+        videos[active].play().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility, { signal: abort.signal });
 
     const observe = () => {
       const current = videos[active];
@@ -445,6 +478,9 @@
       changing = true;
       const next = videos[1 - active];
       if (!next.src) next.src = source;
+      next.muted = true;
+      next.defaultMuted = true;
+      next.playsInline = true;
       next.currentTime = 0;
       next.play().then(() => {
         next.classList.add("is-live");

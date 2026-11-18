@@ -6,17 +6,32 @@ let RoomEnvironment = null;
 
 async function loadThree() {
   if (THREE) return { THREE, SVGLoader, RectAreaLightUniformsLib, RoomEnvironment };
-  const [threeMod, svgMod, lightMod, envMod] = await Promise.all([
-    import("https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js"),
-    import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/SVGLoader.js"),
-    import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/lights/RectAreaLightUniformsLib.js"),
-    import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/environments/RoomEnvironment.js")
-  ]);
-  THREE = threeMod;
-  SVGLoader = svgMod.SVGLoader;
-  RectAreaLightUniformsLib = lightMod.RectAreaLightUniformsLib;
-  RoomEnvironment = envMod.RoomEnvironment;
-  return { THREE, SVGLoader, RectAreaLightUniformsLib, RoomEnvironment };
+  try {
+    const [threeMod, svgMod, lightMod, envMod] = await Promise.all([
+      import("/assets/vendor/three/three.module.min.js"),
+      import("/assets/vendor/three/SVGLoader.js"),
+      import("/assets/vendor/three/RectAreaLightUniformsLib.js"),
+      import("/assets/vendor/three/RoomEnvironment.js")
+    ]);
+    THREE = threeMod;
+    SVGLoader = svgMod.SVGLoader;
+    RectAreaLightUniformsLib = lightMod.RectAreaLightUniformsLib;
+    RoomEnvironment = envMod.RoomEnvironment;
+    return { THREE, SVGLoader, RectAreaLightUniformsLib, RoomEnvironment };
+  } catch (localErr) {
+    console.warn("[7Z hero logo] Local vendor load fallback to CDN:", localErr);
+    const [threeMod, svgMod, lightMod, envMod] = await Promise.all([
+      import("https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.min.js"),
+      import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/SVGLoader.js"),
+      import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/lights/RectAreaLightUniformsLib.js"),
+      import("https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/environments/RoomEnvironment.js")
+    ]);
+    THREE = threeMod;
+    SVGLoader = svgMod.SVGLoader;
+    RectAreaLightUniformsLib = lightMod.RectAreaLightUniformsLib;
+    RoomEnvironment = envMod.RoomEnvironment;
+    return { THREE, SVGLoader, RectAreaLightUniformsLib, RoomEnvironment };
+  }
 }
 
 const VERSION = "0.158.0";
@@ -137,12 +152,28 @@ function getSharedEnvironment(renderer) {
   return cachedEnvTexture;
 }
 
+function renderImgFallback(host) {
+  if (!host || host.querySelector("img")) return;
+  const img = document.createElement("img");
+  img.src = "/assets/brand/7Z-LogoT(3).png";
+  img.alt = "7Z Magic";
+  img.style.cssText = "width: 100%; height: 100%; object-fit: contain; display: block;";
+  host.appendChild(img);
+  host.classList.add("is-webgl-active");
+}
+
 async function mount(host, mode) {
   if (host.dataset.threeMounted === "true") return;
   host.dataset.threeMounted = "true";
 
   let alive = true, raf = 0, last = 0, visible = false, meshReady = false;
-  await loadThree();
+  try {
+    await loadThree();
+  } catch (err) {
+    console.error("[7Z hero logo] Three.js loading failed:", err);
+    renderImgFallback(host);
+    return;
+  }
   if (!alive) return;
 
   const scene = new THREE.Scene();
@@ -200,23 +231,30 @@ async function mount(host, mode) {
     walls?.dispose(); walls = undefined;
     logoGroup.clear();
 
-    new THREE.TextureLoader().load(
-      SVG_URL,
-      (texture) => {
-        if (!alive) { texture.dispose(); return; }
-        texture.colorSpace = THREE.SRGBColorSpace;
-        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
-        const aspect = 390 / 433;
-        const mark = new THREE.Mesh(new THREE.PlaneGeometry(190 * aspect, 190), material);
-        mark.position.set(0, 0, 0);
-        logoGroup.add(mark);
-        meshReady = true;
-        host.classList.add("is-webgl-active");
-        if (visible) startLoop();
-      },
-      undefined,
-      (textureError) => console.error("[7Z hero logo] Fallback texture failed.", textureError)
-    );
+    if (THREE && THREE.TextureLoader) {
+      new THREE.TextureLoader().load(
+        SVG_URL,
+        (texture) => {
+          if (!alive) { texture.dispose(); return; }
+          texture.colorSpace = THREE.SRGBColorSpace;
+          const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
+          const aspect = 390 / 433;
+          const mark = new THREE.Mesh(new THREE.PlaneGeometry(190 * aspect, 190), material);
+          mark.position.set(0, 0, 0);
+          logoGroup.add(mark);
+          meshReady = true;
+          host.classList.add("is-webgl-active");
+          if (visible) startLoop();
+        },
+        undefined,
+        (textureError) => {
+          console.error("[7Z hero logo] Fallback texture failed.", textureError);
+          renderImgFallback(host);
+        }
+      );
+    } else {
+      renderImgFallback(host);
+    }
   }
 
   function resize() {
