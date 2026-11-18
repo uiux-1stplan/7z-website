@@ -24,12 +24,17 @@
     {
       "source": "/courses/ai-engineering",
       "destination": "/courses/ai-for-engineers/",
-      "permanent": true
+      "statusCode": 301
     },
     {
-      "source": "/courses/ai-engineering/:path*",
+      "source": "/courses/ai-engineering/",
       "destination": "/courses/ai-for-engineers/",
-      "permanent": true
+      "statusCode": 301
+    },
+    {
+      "source": "/courses/ai-engineering/(.*)",
+      "destination": "/courses/ai-for-engineers/$1",
+      "statusCode": 301
     }
   ],
   "headers": [

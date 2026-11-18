@@ -236,6 +236,12 @@
   document.documentElement.addEventListener("mouseenter", () => {
     layer.classList.add("is-visible");
   });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) layer.classList.remove("is-visible");
+  });
+  window.addEventListener("focus", () => {
+    layer.classList.add("is-visible");
+  });
   window.addEventListener("blur", () => {
     layer.classList.remove("is-visible");
   });

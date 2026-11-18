@@ -1274,3 +1274,23 @@ html[dir="rtl"] .acad-acc-content {
   margin-bottom: 28px;
   font-family: var(--font-en);
 }
+
+/* Explicit Card & Visual Layout Stability (Zero CLS Guarantee) */
+.acad-card__visual {
+  position: relative !important;
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  min-height: clamp(190px, 22vw, 290px) !important;
+  overflow: hidden !important;
+  background: #0d111c !important;
+}
+.acad-card__visual img {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+.acad-card {
+  contain: layout style;
+}

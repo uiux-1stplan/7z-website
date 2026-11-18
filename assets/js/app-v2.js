@@ -1,6 +1,10 @@
 (() => {
   "use strict";
 
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+    return;
+  }
+
   const root = document.documentElement;
   const abort = new AbortController();
   const loaded = new Set();

@@ -571,63 +571,8 @@
         );
 
 
-      if (
-        activeDocument(
-          name,
-          blob.type || type
-        )
-      ) {
-
-        tab.document.open();
-
-        tab.document.write(`
-          <!doctype html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>7Z Secure Preview</title>
-            <style>
-              html,body{
-                width:100%;
-                height:100%;
-                margin:0;
-                overflow:hidden;
-                background:#050505;
-              }
-
-              iframe{
-                width:100%;
-                height:100%;
-                border:0;
-                display:block;
-              }
-            </style>
-          </head>
-
-          <body>
-            <iframe
-              id="preview"
-              sandbox="allow-scripts allow-forms allow-modals allow-popups allow-downloads">
-            </iframe>
-          </body>
-          </html>
-        `);
-
-        tab.document.close();
-
-
-        tab.document
-          .getElementById(
-            "preview"
-          )
-          .src = url;
-
-      } else {
-
-        tab.location.replace(
-          url
-        );
-      }
+      // Directly render the uploaded file verbatim without any wrapper headers, iframes, or stripped layouts
+      tab.location.replace(url);
 
 
       setTimeout(

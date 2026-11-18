@@ -15,6 +15,28 @@
   <link rel="stylesheet" href="/admin/brand/tokens/7z-mark.css?v=20261116-7z-dna-v5">
   <link rel="stylesheet" href="/admin/brand/tokens/7z-glass.css?v=20261116-7z-dna-v5">
   <link rel="stylesheet" href="/admin/admin.css?v=20261116-7z-dna-v5">
+
+<style id="z7-admin-native-scroll-protection">
+  /* 7Z Admin: Buttery-smooth, hardware-accelerated native browser scrolling */
+  html, body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: auto !important;
+  }
+  .admin-shell, .admin-viewport, .admin-main, .tab-pane, .tab-content, .bento-panel {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: auto !important;
+  }
+  /* Eliminate sticky header jitter */
+  .admin-header {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+</style>
+
 </head>
 
 <body class="z7-admin-shell">
@@ -945,6 +967,6 @@
 
 
 <script src="/admin/brand/tokens/7z-glass.js?v=20261116-7z-dna-v5"></script>
-<script src="/assets/js/app-v2.js?v=20261112-admin-motion-restore-1" defer></script>
+
 </body>
 </html>

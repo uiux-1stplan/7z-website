@@ -316,7 +316,7 @@ export default async function handler(
 
 
     /*
-     * Active document hardening.
+     * Active document delivery: allow same-origin and full scripts so HTML presentations render 100% intact
      */
     if (
       contentType.includes(
@@ -332,7 +332,7 @@ export default async function handler(
 
       res.setHeader(
         "Content-Security-Policy",
-        "sandbox allow-scripts allow-forms allow-modals allow-popups allow-downloads"
+        "sandbox allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads"
       );
     }
 

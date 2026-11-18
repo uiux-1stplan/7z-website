@@ -1,11 +1,15 @@
 (() => {
   "use strict";
+
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+    return;
+  }
   const root = document.documentElement;
   if (!root.hasAttribute("data-z7-core")) return;
 
   const KEY = "z7:core-arrival:v1";
   const LOADER_KEY = "7z_loaded";
-  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/courses", "/courses/ai-engineering", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/ai-for-engineers", "/websites"]);
+  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/courses", "/courses/ai-for-engineers", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/ai-for-engineers", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)");
   const smoothDesktop = matchMedia("(min-width: 768px) and (pointer: fine)");
@@ -20,7 +24,7 @@
   const pathOf = url => url.pathname.replace(/\/+$/, "") || "/";
   const labelFor = url => ({
     "/": "Home", "/about": "About", "/founders": "Founders", "/partners": "Partners",
-    "/contact": "Contact", "/services": "Services", "/private-access": "Private Access", "/courses": "7Z Academy", "/courses/ai-engineering": "AI Engineering", "/courses/ai-for-engineers": "AI for Engineers", "/courses/cinematic-filmmaking-with-ai": "Cinematic Filmmaking", "/websites": "Websites"
+    "/contact": "Contact", "/services": "Services", "/private-access": "Private Access", "/courses": "7Z Academy", "/courses/ai-for-engineers": "AI Engineering", "/courses/ai-for-engineers": "AI for Engineers", "/courses/cinematic-filmmaking-with-ai": "Cinematic Filmmaking", "/websites": "Websites"
   }[pathOf(url)] || "7Z Magic");
   function timer(state, fn, delay) {
     const id = setTimeout(() => { state.timers.delete(id); fn(); }, delay);
@@ -196,7 +200,8 @@
         onComplete: () => gsap.set(logo, { clearProps: "transform,clipPath,filter,opacity,visibility" })
       });
       if (nodes.length) gsap.fromTo(nodes, { autoAlpha: 0, y: 18 }, {
-        autoAlpha: 1, y: 0, duration: .68, stagger: .07, ease: "power2.out"
+        autoAlpha: 1, y: 0, duration: .68, stagger: .07, ease: "power2.out",
+        onComplete: () => gsap.set(nodes, { clearProps: "transform,opacity,visibility" })
       });
     });
   }

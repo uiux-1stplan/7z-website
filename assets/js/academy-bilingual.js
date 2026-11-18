@@ -367,7 +367,7 @@
     }
   };
 
-  let currentLang = localStorage.getItem("z7-lang") || "ar";
+  let currentLang = (localStorage.getItem("z7-lang") || localStorage.getItem("7z-course-lang")) || "ar";
   let currentTheme = localStorage.getItem("z7-theme") || "dark";
 
   function applyTheme(theme) {
@@ -386,7 +386,7 @@
     currentLang = lang;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-    localStorage.setItem("z7-lang", lang);
+    localStorage.setItem("z7-lang", lang); localStorage.setItem("7z-course-lang", lang);
 
     const dict = I18N[lang] || I18N.ar;
 

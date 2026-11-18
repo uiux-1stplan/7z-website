@@ -28,9 +28,15 @@
   };
 
   const playProject = (project) => {
+    const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
     const view = project.dataset.view || 'duo';
     project.querySelectorAll('video[data-web-src]').forEach((video) => {
-      const isPhone = video.closest('.ws-phone');
+      const isPhone = Boolean(video.closest('.ws-phone'));
+      // Prevent duplicate video downloads on mobile devices
+      if (isMobileViewport && !isPhone) {
+        video.pause();
+        return;
+      }
       const visible = view === 'duo' || (view === 'mobile' ? isPhone : !isPhone);
       if (!visible) {
         video.pause();

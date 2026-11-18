@@ -418,15 +418,14 @@ function start() {
 }
 
 function scheduleStart() {
-  if (window.requestIdleCallback) {
-    window.requestIdleCallback(() => start(), { timeout: 1200 });
-  } else {
-    setTimeout(start, 250);
-  }
+  start();
 }
 
-if (document.readyState === "complete") scheduleStart();
-else addEventListener("load", scheduleStart, { once: true });
-addEventListener("pageshow", (e) => {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", scheduleStart, { once: true });
+} else {
+  scheduleStart();
+}
+window.addEventListener("pageshow", (e) => {
   if (e.persisted) scheduleStart();
 });

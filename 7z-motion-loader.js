@@ -41,7 +41,7 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             overflow: hidden;
-            transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s var(--z7-ease-cinema);
+            transition: opacity 0.22s ease, filter 0.22s ease, transform 0.22s var(--z7-ease-cinema);
             will-change: opacity, filter, transform;
         }
 
@@ -155,7 +155,7 @@
             visibility: hidden;
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            transition: opacity 750ms ease-in-out, visibility 750ms;
+            transition: opacity 220ms ease-in-out, visibility 220ms;
             will-change: opacity, backdrop-filter;
         }
 
@@ -201,7 +201,7 @@
             position: relative; z-index: 2;
             width: 85px; height: auto; object-fit: contain;
             opacity: 0.95;
-            animation: z7TransLogoClarify 750ms ease-in-out forwards;
+            animation: z7TransLogoClarify 220ms ease-in-out forwards;
         }
         @keyframes z7TransLogoClarify {
             0% {
@@ -268,7 +268,7 @@
             const startTime = performance.now();
             const isHeadless = Boolean(navigator.webdriver || /HeadlessChrome|Lighthouse/i.test(navigator.userAgent));
             const isMobile = Boolean(window.innerWidth <= 768 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches));
-            const duration = isHeadless ? 200 : isMobile ? 550 : 1200;
+            const duration = isHeadless ? 120 : isMobile ? 280 : 350;
 
             function updateProgress(currentTime) {
                 const elapsed = currentTime - startTime;
