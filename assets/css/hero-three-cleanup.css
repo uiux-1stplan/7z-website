@@ -1,4 +1,12 @@
 /* Keep legacy 2D logo effects out of the Three.js hero. */
+#intro,
+.logo-hero,
+.logo-hero__stage,
+.logo-hero__copy,
+.logo-hero__logo3d {
+  background-image: none !important;
+}
+
 #intro .logo-hero__copy::before,
 #intro .logo-hero__copy::after,
 #intro .logo-hero__copy > img,
@@ -26,8 +34,15 @@ html[data-z7-core] .about-hero__logo-rotor .hero-three-poster {
   object-fit:contain; transition:opacity 0.45s ease; pointer-events:none;
 }
 html[data-z7-core] .logo-hero__logo3d.is-webgl-active .hero-three-poster,
-html[data-z7-core] .about-hero__logo-rotor.is-webgl-active .hero-three-poster {
-  opacity:0;
+html[data-z7-core] .about-hero__logo-rotor.is-webgl-active .hero-three-poster,
+html[data-z7-core] .logo-hero__logo3d.is-webgl-active img,
+html[data-z7-core] .about-hero__logo-rotor.is-webgl-active img,
+html[data-z7-core] .logo-hero__logo3d.is-webgl-active svg,
+html[data-z7-core] .about-hero__logo-rotor.is-webgl-active svg {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 html[data-z7-core] .logo-hero__halo { display:none!important; }
 @media(max-width:700px){

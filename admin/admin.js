@@ -292,124 +292,105 @@
       signInFallbackRedirectUrl: "/admin/",
 
       appearance: {
-
         variables: {
-          colorPrimary: "var(--accent)",
-          colorBackground: "var(--panel)",
-          colorForeground: "var(--text)",
-          colorMutedForeground: "var(--muted)",
-
-          colorInputBackground: "var(--bg-raised)",
-          colorInputForeground: "var(--text)",
-
-          colorNeutral: "var(--text)",
-
-          borderRadius: "10px",
-
+          colorPrimary: "#c8a96e",
+          colorBackground: "transparent",
+          colorForeground: "#f1f5f9",
+          colorMutedForeground: "#94a3b8",
+          colorInputBackground: "#12151c",
+          colorInputForeground: "#f8fafc",
+          colorNeutral: "#f1f5f9",
+          borderRadius: "12px",
           fontFamily: "inherit",
-          fontSize: "12px"
+          fontSize: "13px"
         },
-
         elements: {
-
           rootBox: {
             width: "100%",
-            maxWidth: "330px",
-            margin: "0 auto"
+            maxWidth: "100%",
+            margin: "0"
           },
-
           cardBox: {
             width: "100%",
-            maxWidth: "330px",
+            maxWidth: "100%",
             boxShadow: "none"
           },
-
           card: {
             width: "100%",
-            maxWidth: "330px",
-            padding: "22px",
-            background: "var(--panel)",
-            border:
-              "1px solid rgba(214,178,94,.16)",
-            boxShadow:
-              "0 22px 60px rgba(0,0,0,.32)"
-          },
-
-          header: {
-            gap: "5px"
-          },
-
-          headerTitle: {
-            color: "var(--text)",
-            fontSize: "18px",
-            fontWeight: "650"
-          },
-
-          headerSubtitle: {
-            color: "var(--muted)",
-            fontSize: "10px"
-          },
-
-          socialButtonsBlockButton: {
-            minHeight: "38px",
-            background: "var(--bg-raised)",
-            border:
-              "1px solid rgba(255,255,255,.10)",
-            color: "var(--text)",
+            maxWidth: "100%",
+            padding: "0",
+            background: "transparent",
+            border: "none",
             boxShadow: "none"
           },
-
+          header: {
+            display: "none"
+          },
+          headerTitle: {
+            display: "none"
+          },
+          headerSubtitle: {
+            display: "none"
+          },
+          socialButtonsBlockButton: {
+            minHeight: "44px",
+            background: "#12151c",
+            border: "1px solid rgba(255,255,255,.12)",
+            color: "#f8fafc",
+            borderRadius: "12px",
+            boxShadow: "none"
+          },
           socialButtonsBlockButtonText: {
-            fontSize: "10px",
+            fontSize: "12px",
             fontWeight: "550"
           },
-
           dividerLine: {
-            background:
-              "rgba(255,255,255,.08)"
+            background: "rgba(255,255,255,.08)"
           },
-
           dividerText: {
-            color: "#666666",
-            fontSize: "9px"
+            color: "#64748b",
+            fontSize: "10px"
           },
-
           formFieldLabel: {
-            color: "var(--text)",
-            fontSize: "9px"
+            color: "#94a3b8",
+            fontSize: "11px",
+            fontWeight: "550",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase"
           },
-
           formFieldInput: {
-            minHeight: "40px",
-            background: "var(--bg-raised)",
-            color: "var(--text)",
-            border:
-              "1px solid rgba(255,255,255,.11)",
+            minHeight: "44px",
+            background: "#12151c",
+            color: "#f8fafc",
+            border: "1px solid rgba(255,255,255,.12)",
+            borderRadius: "12px",
+            fontSize: "13.5px",
+            padding: "0 14px",
             boxShadow: "none"
           },
-
           formButtonPrimary: {
-            minHeight: "40px",
-            background: "#d6b25e",
-            color: "#090909",
-            fontSize: "10px",
-            fontWeight: "700",
-            boxShadow: "none"
+            minHeight: "44px",
+            background: "linear-gradient(135deg, #d4af37 0%, #c8a96e 100%)",
+            color: "#07080a",
+            fontSize: "13px",
+            fontWeight: "650",
+            letterSpacing: "0.04em",
+            borderRadius: "12px",
+            border: "none",
+            boxShadow: "0 4px 16px rgba(212,175,55,.25)"
           },
-
           footer: {
-            background: "var(--panel)"
+            background: "transparent",
+            padding: "12px 0 0"
           },
-
           footerActionText: {
-            color: "#747474",
-            fontSize: "9px"
+            color: "#64748b",
+            fontSize: "11px"
           },
-
           footerActionLink: {
-            color: "#d6b25e",
-            fontSize: "9px",
-            fontWeight: "650"
+            color: "#c8a96e",
+            fontSize: "11px",
+            fontWeight: "550"
           },
 
           footerPages: {

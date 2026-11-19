@@ -163,8 +163,10 @@
       targetFrame = requestAnimationFrame(tick);
     };
     const moveByFilm = direction => {
-      const nearest = nearestRotation();
-      goTo(nearest - direction * stepAngle());
+      stopMotion();
+      const current = activeIndex();
+      const next = Math.max(0, Math.min(cards.length - 1, current + direction));
+      goTo(-next * stepAngle());
     };
     const resizeRing = () => {
       if (!ring || !cards.length) return;
@@ -223,17 +225,77 @@
       setupRing();
     } else setupRing();
 
-    // 100% Native Smooth Vertical Scroll: Scroll-locking & wheel-hijacking removed completely.
-    // Horizontal trackpad gesture gracefully spins the reel without blocking vertical page scroll.
-    campaignStage?.addEventListener("wheel", event => {
+    // Exact Desktop-Only Directional Scroll Lock for Campaign Film Showcase
+    let wheelDeltaAccumulator = 0;
+    let lastStepTimestamp = 0;
+    const WHEEL_THRESHOLD = 45;
+    const STEP_COOLDOWN = 260;
+
+    window.addEventListener("wheel", event => {
       if (!ring || !cards.length) return;
+
+      // Desktop only (>= 1024px) AND fine pointer (mouse / precision trackpad)
+      const isDesktop = window.innerWidth >= 1024 && window.matchMedia("(pointer: fine)").matches;
+      if (!isDesktop) return;
+
+      // Trackpad horizontal swipe support
       if (Math.abs(event.deltaX) > Math.abs(event.deltaY) * 1.5) {
-        // Horizontal scroll only
         stopMotion();
         rotation -= event.deltaX * 0.22;
         paint();
+        return;
       }
-    }, { passive: true });
+
+      if (!campaignStage) return;
+      const rect = campaignStage.getBoundingClientRect();
+      const stageCenter = (rect.top + rect.bottom) / 2;
+      const viewCenter = window.innerHeight / 2;
+      const centerDiff = stageCenter - viewCenter;
+
+      // Scope & Boundaries: Activate ONLY when the stage is centered in the viewport
+      const inStageZone = rect.top < viewCenter && rect.bottom > viewCenter && Math.abs(centerDiff) < 140;
+      if (!inStageZone) {
+        wheelDeltaAccumulator = 0;
+        return;
+      }
+
+      const currentIdx = activeIndex();
+
+      // Scrolling DOWN (deltaY > 0): advance LEFT toward next videos (Film 01 -> ... -> Last Film)
+      if (event.deltaY > 0) {
+        if (currentIdx < cards.length - 1) {
+          event.preventDefault();
+          wheelDeltaAccumulator += event.deltaY;
+          const now = performance.now();
+          if (wheelDeltaAccumulator >= WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
+            lastStepTimestamp = now;
+            wheelDeltaAccumulator = 0;
+            const nextIdx = Math.min(cards.length - 1, currentIdx + 1);
+            goTo(-nextIdx * stepAngle());
+          }
+        } else {
+          // Reached the last film -> Release scroll lock immediately so downward scroll flows naturally
+          wheelDeltaAccumulator = 0;
+        }
+      }
+      // Scrolling UP (deltaY < 0): advance RIGHT back toward previous videos (Last Film -> ... -> First Film)
+      else if (event.deltaY < 0) {
+        if (currentIdx > 0) {
+          event.preventDefault();
+          wheelDeltaAccumulator += event.deltaY;
+          const now = performance.now();
+          if (wheelDeltaAccumulator <= -WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
+            lastStepTimestamp = now;
+            wheelDeltaAccumulator = 0;
+            const prevIdx = Math.max(0, currentIdx - 1);
+            goTo(-prevIdx * stepAngle());
+          }
+        } else {
+          // Reached the first film -> Release scroll lock immediately so upward scroll flows naturally
+          wheelDeltaAccumulator = 0;
+        }
+      }
+    }, { passive: false });
     campaignRail.addEventListener("pointerdown", event => {
       if (!ring || !event.isPrimary || event.button > 0 || event.target.closest("button")) return;
       stopMotion();

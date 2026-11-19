@@ -421,6 +421,13 @@ async function mount(host, mode) {
       }
 
       host.classList.add("is-webgl-active");
+      // Remove fallback poster & static images completely from DOM to eliminate any duplicate background layer
+      const posters = host.querySelectorAll(".hero-three-poster, img, svg");
+      posters.forEach((node) => {
+        if (!node.classList.contains("hero-three-canvas")) {
+          node.remove();
+        }
+      });
       if (visible && !document.hidden) startLoop();
     })
     .catch(fallback);

@@ -163,10 +163,25 @@ html[data-z7-core][data-theme="light"] .svc-mirror-card { border-color:rgba(72,1
 }
 
 
-/* Keep campaign footage clean and let vertical wheel input advance cards to the final item. */
-html[data-z7-core] .svc-film-lane--campaign { background:transparent; }
-html[data-z7-core] .svc-film-lane--campaign::before { display:none!important; content:none!important; }
-html[data-z7-core] .svc-film-lane--campaign::after { display:block; }
+/* Keep campaign footage clean: 100% eradication of vintage overlays, scanlines & filters */
+html[data-z7-core] .svc-film-lane--campaign { background: transparent !important; }
+html[data-z7-core] .svc-film-lane--campaign::before,
+html[data-z7-core] .svc-film-lane--campaign::after,
+html[data-z7-core] .svc-mirror-stage::before,
+html[data-z7-core] .svc-mirror-stage::after,
+html[data-z7-core] .svc-mirror-card::before,
+html[data-z7-core] .svc-mirror-card::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  filter: none !important;
+}
+html[data-z7-core] .svc-mirror-card video {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
 html[data-z7-core] .svc-mirror-stage { overflow:visible; }
 html[data-z7-core] .svc-mirror-card { box-shadow:0 0 14px rgba(111,164,226,.18),0 16px 38px rgba(0,0,0,.22); }
 html[data-z7-core] .svc-mirror-card.is-active, html[data-z7-core] .svc-mirror-card[aria-current="true"] { box-shadow:0 0 18px rgba(138,190,243,.38),0 18px 40px rgba(0,0,0,.25); }
