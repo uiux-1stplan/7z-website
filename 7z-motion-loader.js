@@ -272,11 +272,11 @@
                 right: 0;
                 height: 50%;
                 will-change: transform;
-                transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+                transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1);
                 z-index: 1;
             }
             #z7-aperture-curtain.is-closed .z7-aperture-shutter {
-                transition: transform 0.12s cubic-bezier(0.7, 0, 0.2, 1);
+                transition: transform 0.10s cubic-bezier(0.7, 0, 0.2, 1);
             }
             .z7-aperture-shutter--top {
                 top: 0;
@@ -410,13 +410,13 @@
             sessionStorage.removeItem('7z_nav_transitioning');
             curtain.classList.add('active', 'is-closed');
 
-            // Immediate single-frame paint, unblock pointer events, 150ms fluid shutter slide (Target: 130-170ms)
+            // Immediate single-frame paint, unblock pointer events, 135ms fluid shutter slide (Target: 100-150ms)
             requestAnimationFrame(() => {
                 if (curtain) {
                     curtain.classList.remove('is-closed');
                     curtain.style.pointerEvents = 'none';
 
-                    const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 150;
+                    const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 135;
                     setTimeout(() => {
                         if (curtain) {
                             curtain.classList.remove('active');
@@ -506,8 +506,37 @@
         }
 
         // -------------------------------------------------------------
-        // D. TASK TWO: OUT-PHASE EXECUTION (Internal link clicks)
+        // D. TASK TWO: OUT-PHASE EXECUTION & PREFETCH INTENT
         // -------------------------------------------------------------
+        const prefetchedRoutes = new Set();
+        function prefetchTarget(targetHref) {
+            if (!targetHref || prefetchedRoutes.has(targetHref)) return;
+            try {
+                const targetUrl = new URL(targetHref, window.location.href);
+                if (targetUrl.origin !== window.location.origin) return;
+                if (targetUrl.pathname === window.location.pathname) return;
+                if (targetUrl.pathname.startsWith('/admin') || targetUrl.pathname.startsWith('/private-access') || targetUrl.pathname.startsWith('/api') || targetUrl.pathname.startsWith('/_vercel')) return;
+                if (/\.(pdf|pptx|ppt|zip|rar|tar|gz|docx|doc|xlsx|xls|png|jpg|jpeg|webp|mp4|mov|webm)$/i.test(targetUrl.pathname)) return;
+
+                prefetchedRoutes.add(targetHref);
+                const prefetchTag = document.createElement('link');
+                prefetchTag.rel = 'prefetch';
+                prefetchTag.as = 'document';
+                prefetchTag.href = targetHref;
+                document.head.appendChild(prefetchTag);
+            } catch (_) {}
+        }
+
+        document.addEventListener('pointerenter', (e) => {
+            const link = e.target && e.target.closest ? e.target.closest('a') : null;
+            if (link && link.href) prefetchTarget(link.href);
+        }, { passive: true, capture: true });
+
+        document.addEventListener('touchstart', (e) => {
+            const link = e.target && e.target.closest ? e.target.closest('a') : null;
+            if (link && link.href) prefetchTarget(link.href);
+        }, { passive: true, capture: true });
+
         window.addEventListener('click', (e) => {
             if (e.defaultPrevented || e.button !== 0) return;
             if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -546,8 +575,8 @@
                 }
             }, 1800);
 
-            // Navigate when shutters have sealed screen (Target: 100-130ms -> 120ms)
-            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 120;
+            // Navigate when shutters have sealed screen (Target: 100ms)
+            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 100;
             setTimeout(() => {
                 clearTimeout(failSafe);
                 window.location.href = link.href;
