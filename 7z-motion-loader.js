@@ -51,6 +51,8 @@
                 --z7-ease-cinema: cubic-bezier(0.85, 0, 0.15, 1);
                 --z7-ease-open: cubic-bezier(0.16, 1, 0.3, 1);
                 --z7-ease-close: cubic-bezier(0.77, 0, 0.175, 1);
+                --z7-ease-aperture-in: cubic-bezier(0.72, 0, 0.22, 1);
+                --z7-ease-aperture-out: cubic-bezier(0.16, 1, 0.28, 1);
             }
 
             /* ============================================================
@@ -247,7 +249,7 @@
             }
 
             /* ============================================================
-               SYSTEM 2: ARCHITECTURAL APERTURE ROUTE TRANSITIONS
+               SYSTEM 2: ARCHITECTURAL APERTURE ROUTE TRANSITIONS (CINE-VEIL)
                ============================================================ */
             #z7-aperture-curtain {
                 position: fixed;
@@ -256,6 +258,7 @@
                 pointer-events: none;
                 visibility: hidden;
                 overflow: hidden;
+                transition: backdrop-filter 0.36s ease, -webkit-backdrop-filter 0.36s ease;
             }
 
             #z7-aperture-curtain.active {
@@ -264,6 +267,8 @@
             }
             #z7-aperture-curtain.active.is-closed {
                 pointer-events: auto;
+                backdrop-filter: blur(8px) saturate(1.2);
+                -webkit-backdrop-filter: blur(8px) saturate(1.2);
             }
 
             .z7-aperture-shutter {
@@ -272,21 +277,21 @@
                 right: 0;
                 height: 50%;
                 will-change: transform;
-                transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+                transition: transform 0.54s var(--z7-ease-aperture-out);
                 z-index: 1;
             }
             #z7-aperture-curtain.is-closed .z7-aperture-shutter {
-                transition: transform 0.28s cubic-bezier(0.77, 0, 0.175, 1);
+                transition: transform 0.36s var(--z7-ease-aperture-in);
             }
             .z7-aperture-shutter--top {
                 top: 0;
                 transform: translate3d(0, -100%, 0);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.16);
             }
             .z7-aperture-shutter--bottom {
                 bottom: 0;
                 transform: translate3d(0, 100%, 0);
-                border-top: 1px solid rgba(255, 255, 255, 0.12);
+                border-top: 1px solid rgba(255, 255, 255, 0.16);
             }
 
             /* Shutters closed / covering during transition */
@@ -300,16 +305,30 @@
             }
 
             /* Theme styles for aperture curtain */
-            #z7-aperture-curtain.theme-dark .z7-aperture-shutter {
-                background-color: #050608;
+            #z7-aperture-curtain.theme-dark .z7-aperture-shutter--top {
+                background: radial-gradient(ellipse at 50% 100%, #0d121c 0%, #050608 75%);
+                border-bottom-color: rgba(96, 165, 250, 0.28);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
             }
-            #z7-aperture-curtain.theme-light .z7-aperture-shutter {
-                background-color: #f8fafc;
-                border-color: rgba(15, 23, 42, 0.12);
+            #z7-aperture-curtain.theme-dark .z7-aperture-shutter--bottom {
+                background: radial-gradient(ellipse at 50% 0%, #0d121c 0%, #050608 75%);
+                border-top-color: rgba(96, 165, 250, 0.28);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.7);
             }
 
-            /* Central Transition Seam & Emblem */
-            .z7-aperture-center {
+            #z7-aperture-curtain.theme-light .z7-aperture-shutter--top {
+                background: radial-gradient(ellipse at 50% 100%, #e2e8f0 0%, #f8fafc 75%);
+                border-bottom-color: rgba(30, 58, 138, 0.2);
+                box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+            }
+            #z7-aperture-curtain.theme-light .z7-aperture-shutter--bottom {
+                background: radial-gradient(ellipse at 50% 0%, #e2e8f0 0%, #f8fafc 75%);
+                border-top-color: rgba(30, 58, 138, 0.2);
+                box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.08);
+            }
+
+            /* Central Anamorphic Core */
+            .z7-aperture-core {
                 position: absolute;
                 top: 50%;
                 left: 50%;
@@ -320,39 +339,85 @@
                 align-items: center;
                 justify-content: center;
                 pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.22s ease 0.06s;
+                width: 100%;
             }
 
-            #z7-aperture-curtain.is-closed .z7-aperture-center {
-                opacity: 1;
-            }
-
-            .z7-aperture-seam {
+            /* Anamorphic Horizon Flare Beam */
+            .z7-aperture-beam {
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 width: 100vw;
-                height: 1px;
-                transform: translate(-50%, -50%);
+                height: 1.5px;
+                transform: translate(-50%, -50%) scaleX(0);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.42s ease-out, opacity 0.3s ease-out;
             }
-            #z7-aperture-curtain.theme-dark .z7-aperture-seam {
-                background: linear-gradient(90deg, transparent 0%, rgba(37, 99, 235, 0.7) 30%, #60a5fa 50%, rgba(37, 99, 235, 0.7) 70%, transparent 100%);
-                box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+
+            #z7-aperture-curtain.is-closed .z7-aperture-beam {
+                transform: translate(-50%, -50%) scaleX(1);
+                opacity: 1;
+                transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1) 0.06s, opacity 0.25s ease;
             }
-            #z7-aperture-curtain.theme-light .z7-aperture-seam {
-                background: linear-gradient(90deg, transparent 0%, rgba(30, 58, 138, 0.5) 30%, #2563eb 50%, rgba(30, 58, 138, 0.5) 70%, transparent 100%);
-                box-shadow: 0 0 10px rgba(30, 58, 138, 0.3);
+
+            #z7-aperture-curtain.theme-dark .z7-aperture-beam {
+                background: linear-gradient(90deg, transparent 0%, rgba(37, 99, 235, 0.8) 20%, #60a5fa 46%, #ffffff 50%, #60a5fa 54%, rgba(37, 99, 235, 0.8) 80%, transparent 100%);
+                box-shadow: 0 0 16px rgba(96, 165, 250, 0.85), 0 0 32px rgba(37, 99, 235, 0.65), 0 0 64px rgba(37, 99, 235, 0.35);
+            }
+            #z7-aperture-curtain.theme-light .z7-aperture-beam {
+                background: linear-gradient(90deg, transparent 0%, rgba(30, 58, 138, 0.6) 20%, #2563eb 46%, #1d4ed8 50%, #2563eb 54%, rgba(30, 58, 138, 0.6) 80%, transparent 100%);
+                box-shadow: 0 0 12px rgba(37, 99, 235, 0.4), 0 0 24px rgba(30, 58, 138, 0.25);
+            }
+
+            /* Central Emblem & Architectural Typography */
+            .z7-aperture-emblem {
+                position: relative;
+                z-index: 3;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transform: scale(0.92);
+                opacity: 0;
+                transition: transform 0.38s ease-out, opacity 0.3s ease-out;
+            }
+
+            #z7-aperture-curtain.is-closed .z7-aperture-emblem {
+                transform: scale(1);
+                opacity: 1;
+                transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1) 0.05s, opacity 0.28s ease 0.04s;
             }
 
             .z7-aperture-logo {
-                width: 78px;
+                width: 76px;
                 height: auto;
                 object-fit: contain;
                 display: block;
-                position: relative;
-                z-index: 3;
-                filter: drop-shadow(0 0 18px rgba(37, 99, 235, 0.4));
+            }
+            #z7-aperture-curtain.theme-dark .z7-aperture-logo {
+                filter: drop-shadow(0 0 22px rgba(37, 99, 235, 0.55)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.85));
+            }
+            #z7-aperture-curtain.theme-light .z7-aperture-logo {
+                filter: drop-shadow(0 0 18px rgba(30, 58, 138, 0.25)) drop-shadow(0 2px 10px rgba(15, 23, 42, 0.15));
+            }
+
+            .z7-aperture-label {
+                font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Text', system-ui, sans-serif;
+                font-size: 8px;
+                font-weight: 600;
+                letter-spacing: 0.44em;
+                text-transform: uppercase;
+                margin-top: 8px;
+                transform: translateY(2px);
+            }
+            #z7-aperture-curtain.theme-dark .z7-aperture-label {
+                color: rgba(255, 255, 255, 0.75);
+                text-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+            }
+            #z7-aperture-curtain.theme-light .z7-aperture-label {
+                color: rgba(15, 23, 42, 0.75);
+                text-shadow: 0 0 8px rgba(15, 23, 42, 0.12);
             }
 
             /* Legacy cleanup suppression */
@@ -390,9 +455,12 @@
             curtain.className = 'theme-' + currentTheme;
             curtain.innerHTML = `
                 <div class="z7-aperture-shutter z7-aperture-shutter--top"></div>
-                <div class="z7-aperture-center">
-                    <div class="z7-aperture-seam"></div>
-                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-aperture-logo" width="78" height="60">
+                <div class="z7-aperture-core">
+                    <div class="z7-aperture-beam"></div>
+                    <div class="z7-aperture-emblem">
+                        <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-aperture-logo" width="76" height="59">
+                        <span class="z7-aperture-label">7Z MAGIC</span>
+                    </div>
                 </div>
                 <div class="z7-aperture-shutter z7-aperture-shutter--bottom"></div>
             `;
@@ -417,7 +485,7 @@
                     if (curtain) {
                         curtain.classList.remove('is-closed');
 
-                        const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 480;
+                        const inDuration = reducedMotion ? 0 : 540;
                         setTimeout(() => {
                             if (curtain) {
                                 curtain.classList.remove('active');
@@ -575,11 +643,11 @@
                     curtain.classList.remove('is-closed', 'active');
                     sessionStorage.removeItem('7z_nav_transitioning');
                 }
-            }, 1400);
+            }, 2000);
 
-            // Outgoing shutter closing duration: ~280ms
-            // Trigger navigation at 240ms so the network handover begins as the shutters converge
-            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 240;
+            // Outgoing shutter closing duration: 360ms
+            // Trigger navigation at 320ms so network request begins right as shutters meet & beam ignites
+            const outDuration = reducedMotion ? 0 : 320;
             setTimeout(() => {
                 clearTimeout(failSafe);
                 window.location.href = link.href;
