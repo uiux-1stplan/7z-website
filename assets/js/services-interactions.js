@@ -20,7 +20,7 @@
   }, { passive: true });
   updateProgress();
 
-  const revealItems = root.querySelectorAll(".svc-index,.svc-chapter__head,.svc-service-list,.svc-gallery-head,.svc-film-lane,.svc-brand-grid,.svc-method__intro,.svc-method ol,.svc-cta");
+  const revealItems = root.querySelectorAll(".svc-index,.svc-chapter__head,.svc-service-list,.svc-gallery-head,.svc-film-lane:not(.svc-film-lane--campaign),.svc-brand-grid,.svc-method__intro,.svc-method ol,.svc-cta");
   if (reduced || !("IntersectionObserver" in window)) revealItems.forEach(item => item.classList.add("is-visible"));
   else {
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -258,10 +258,20 @@
       const centerDiff = stageCenter - viewCenter;
 
       // Scope & Boundaries: Activate ONLY when the stage is centered in the viewport
-      const inStageZone = rect.top < viewCenter && rect.bottom > viewCenter && Math.abs(centerDiff) < 140;
+      const inStageZone = rect.top < viewCenter && rect.bottom > viewCenter && Math.abs(centerDiff) < 180;
       if (!inStageZone) {
         wheelDeltaAccumulator = 0;
+        if (window.__lenis?.isStopped) window.__lenis.start();
         return;
+      }
+
+      // Smoothly snap/frame stage into dead-center if slightly off
+      if (Math.abs(centerDiff) > 8 && Math.abs(centerDiff) < 160) {
+        if (window.__lenis) {
+          window.__lenis.scrollTo(window.scrollY + centerDiff, { immediate: true });
+        } else {
+          window.scrollTo({ top: window.scrollY + centerDiff, behavior: 'instant' });
+        }
       }
 
       const currentIdx = activeIndex();
@@ -271,6 +281,7 @@
         if (currentIdx < cards.length - 1) {
           event.preventDefault();
           event.stopImmediatePropagation();
+          if (window.__lenis) window.__lenis.stop();
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
           if (wheelDeltaAccumulator >= WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
@@ -282,6 +293,7 @@
         } else {
           // Reached the last film -> Release scroll lock immediately so downward scroll flows naturally
           wheelDeltaAccumulator = 0;
+          if (window.__lenis?.isStopped) window.__lenis.start();
         }
       }
       // Scrolling UP (deltaY < 0): advance RIGHT back toward previous videos (Last Film -> ... -> First Film)
@@ -289,6 +301,7 @@
         if (currentIdx > 0) {
           event.preventDefault();
           event.stopImmediatePropagation();
+          if (window.__lenis) window.__lenis.stop();
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
           if (wheelDeltaAccumulator <= -WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
@@ -300,6 +313,7 @@
         } else {
           // Reached the first film -> Release scroll lock immediately so upward scroll flows naturally
           wheelDeltaAccumulator = 0;
+          if (window.__lenis?.isStopped) window.__lenis.start();
         }
       }
     };

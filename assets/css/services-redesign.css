@@ -167,11 +167,22 @@ html[data-z7-core][data-theme="light"] .svc-mirror-card { border-color:rgba(72,1
    CAMPAIGN FILM SHOWCASE — TRUE OBSIDIAN STAGE & ZERO HAZE/VINTAGE OVERLAYS
    ========================================================================== */
 html[data-z7-core] .svc-chapter--campaigns,
-html[data-z7-core][data-theme="light"] .svc-chapter--campaigns {
+html[data-z7-core][data-theme="light"] .svc-chapter--campaigns,
+html body .svc-chapter--campaigns,
+html body[data-theme="light"] .svc-chapter--campaigns {
   background: #050608 !important;
+  background-color: #050608 !important;
+  background-image: none !important;
   color: #f1f5f9 !important;
-  position: relative;
-  isolation: isolate;
+  position: relative !important;
+  isolation: isolate !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding-inline: max(var(--z7-gutter, 32px), calc((100vw - 1320px) / 2)) !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
 }
 html[data-z7-core] .svc-chapter--campaigns .svc-chapter__head h2,
 html[data-z7-core][data-theme="light"] .svc-chapter--campaigns .svc-chapter__head h2 {
@@ -203,7 +214,12 @@ html[data-z7-core][data-theme="light"] .svc-mirror-stage,
 html[data-z7-core] .svc-film-lane--campaign,
 html[data-z7-core][data-theme="light"] .svc-film-lane--campaign {
   background: #050608 !important;
-  overflow: visible;
+  background-color: #050608 !important;
+  background-image: none !important;
+  overflow: visible !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
 }
 html[data-z7-core] .svc-film-lane--campaign::before,
 html[data-z7-core] .svc-film-lane--campaign::after,

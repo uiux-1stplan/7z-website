@@ -397,6 +397,23 @@
         }
       }
     });
+
+    // Active DOM Sanitizer: guarantee 100% zero Clerk noise / dev badge leakage
+    const sanitizeClerk = () => {
+      const noisy = slot.querySelectorAll(
+        '.cl-footer, .cl-header, .cl-headerTitle, .cl-headerSubtitle, [class*="development"], [class*="securedBy"], a[href*="clerk.com"], .cl-internal-b3fm6y, .cl-internal-1dauvpw'
+      );
+      noisy.forEach(el => {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('visibility', 'hidden', 'important');
+      });
+    };
+
+    if ('MutationObserver' in window) {
+      const clerkObs = new MutationObserver(sanitizeClerk);
+      clerkObs.observe(slot, { childList: true, subtree: true });
+    }
+    sanitizeClerk();
   }
 
   async function loadMe() {
