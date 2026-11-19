@@ -1,7 +1,7 @@
-// 7Z Motion Loader — Architectural Aperture System (v10.0)
-// 7Z Magic Studios — High-Craft Architectural Cinema
-// Dual precision obsidian shutters, 1px luminous metallic hairline seams, centered geometric monogram,
-// <= 400ms initial page reveal, <= 260ms inter-page transitions, <= 650ms hard fail-safe cap, full bfcache & reduced-motion support.
+// 7Z Motion Loader — Unified Preloader & Bidirectional Cinematic Route Transitions (v10.1)
+// 7Z Magic Studios — Zero-Regression Architecture
+// System 1: Original Atmospheric Ambient Blur Glow Preloader (Initial Entry / Reload)
+// System 2: Bidirectional Coordinated Route Transitions (OUT Phase on click -> IN Phase on arrival)
 (function() {
     'use strict';
 
@@ -13,292 +13,430 @@
         return;
     }
 
-    const prefersReduced = Boolean(
+    const reducedMotion = Boolean(
         window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
     );
 
-    // 1. Inject Pure GPU Hardware-Accelerated Aperture Styles
-    const styleId = 'z7-aperture-system-styles';
+    // 1. Detect Adaptive Theme (Dark / Light)
+    function detectTheme() {
+        try {
+            const stored = localStorage.getItem('z7-theme') || 
+                           localStorage.getItem('7z-course-theme') || 
+                           localStorage.getItem('theme');
+            if (stored === 'light') return 'light';
+            if (stored === 'dark') return 'dark';
+        } catch (_) {}
+
+        const docEl = document.documentElement;
+        const body = document.body;
+        const attr = docEl.getAttribute('data-theme') || (body && body.getAttribute('data-theme'));
+        if (attr === 'light') return 'light';
+        if (attr === 'dark') return 'dark';
+
+        if (docEl.classList.contains('light') || (body && body.classList.contains('light'))) return 'light';
+        if (docEl.classList.contains('dark') || (body && body.classList.contains('dark'))) return 'dark';
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+        return 'dark';
+    }
+
+    // 2. Inject CSS Styles for Preloader & Bidirectional Transition Curtain
+    const styleId = 'z7-motion-loader-styles';
     let style = document.getElementById(styleId);
     if (!style) {
         style = document.createElement('style');
         style.id = styleId;
         style.textContent = `
             :root {
-                --z7-aperture-ease: cubic-bezier(0.16, 1, 0.3, 1);
+                --z7-ease-cinema: cubic-bezier(0.22, 1, 0.36, 1);
             }
 
-            /* Dual Precision Obsidian Shutters (Preloader) */
-            #z7-aperture-preloader {
+            /* ============================================================
+               1. ATMOSPHERIC AMBIENT BLUR GLOW PRELOADER (Original 7Z Component)
+               ============================================================ */
+            #z7-preloader {
                 position: fixed;
                 inset: 0;
                 z-index: 999999;
-                pointer-events: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
                 overflow: hidden;
+                pointer-events: auto;
+                transition: opacity 0.35s ease, filter 0.35s ease, transform 0.35s var(--z7-ease-cinema);
+                will-change: opacity, filter, transform;
             }
 
-            .z7-shutter {
-                position: absolute;
-                left: 0;
-                right: 0;
-                height: 50%;
-                background: #050608;
-                will-change: transform;
-                transition: transform 200ms var(--z7-aperture-ease);
-            }
-            .z7-shutter--top {
-                top: 0;
-                transform: translate3d(0, 0, 0);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            }
-            .z7-shutter--bottom {
-                bottom: 0;
-                transform: translate3d(0, 0, 0);
-                border-top: 1px solid rgba(255, 255, 255, 0.08);
+            #z7-preloader.is-dismissed {
+                opacity: 0 !important;
+                pointer-events: none !important;
+                filter: blur(12px) !important;
+                transform: scale(1.03) !important;
             }
 
-            /* Aperture Parting Motion: Dual Precision Shutters Parting Cleanly */
-            #z7-aperture-preloader.is-parting .z7-shutter--top {
-                transform: translate3d(0, -100%, 0);
+            #z7-preloader.theme-dark {
+                background-color: #06070d;
             }
-            #z7-aperture-preloader.is-parting .z7-shutter--bottom {
-                transform: translate3d(0, 100%, 0);
+            #z7-preloader.theme-dark .z7-ambient-glow {
+                background: radial-gradient(circle, rgba(37, 99, 235, 0.28) 0%, rgba(30, 58, 138, 0.24) 45%, transparent 72%);
             }
-            #z7-aperture-preloader.is-parting .z7-aperture-core {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(1.04);
-                transition: opacity 160ms ease, transform 160ms var(--z7-aperture-ease);
+            #z7-preloader.theme-dark .z7-logo-img {
+                filter: drop-shadow(0 0 28px rgba(37, 99, 235, 0.40)) drop-shadow(0 6px 20px rgba(0, 0, 0, 0.85));
+            }
+            #z7-preloader.theme-dark .z7-track {
+                background: rgba(255, 255, 255, 0.08);
+            }
+            #z7-preloader.theme-dark .z7-bar {
+                background: linear-gradient(90deg, #1e3a8a, #2563eb, #60a5fa);
+                box-shadow: 0 0 12px rgba(37, 99, 235, 0.65), 0 0 24px rgba(96, 165, 250, 0.4);
+            }
+            #z7-preloader.theme-dark .z7-counter {
+                color: rgba(255, 255, 255, 0.75);
             }
 
-            .z7-aperture-core {
+            #z7-preloader.theme-light {
+                background-color: #f8fafc;
+            }
+            #z7-preloader.theme-light .z7-ambient-glow {
+                background: radial-gradient(circle, rgba(37, 99, 235, 0.14) 0%, rgba(30, 58, 138, 0.10) 45%, transparent 72%);
+            }
+            #z7-preloader.theme-light .z7-logo-img {
+                filter: drop-shadow(0 0 22px rgba(30, 58, 138, 0.20)) drop-shadow(0 4px 14px rgba(15, 23, 42, 0.15));
+            }
+            #z7-preloader.theme-light .z7-track {
+                background: rgba(15, 23, 42, 0.08);
+            }
+            #z7-preloader.theme-light .z7-bar {
+                background: linear-gradient(90deg, #0f172a, #1e3a8a, #2563eb);
+                box-shadow: 0 0 10px rgba(30, 58, 138, 0.45);
+            }
+            #z7-preloader.theme-light .z7-counter {
+                color: #1e3a8a;
+                font-weight: 600;
+            }
+
+            .z7-preloader-center {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .z7-ambient-glow {
                 position: absolute;
                 top: 50%;
                 left: 50%;
+                width: 380px;
+                height: 280px;
                 transform: translate(-50%, -50%);
+                border-radius: 50%;
+                filter: blur(55px);
+                pointer-events: none;
+                animation: z7AtmosphericBreathe 5.8s ease-in-out infinite alternate;
+            }
+            @keyframes z7AtmosphericBreathe {
+                0% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.75; }
+                50% { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
+                100% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.75; }
+            }
+
+            .z7-logo-img {
+                position: relative;
                 z-index: 2;
+                width: 110px;
+                height: auto;
+                object-fit: contain;
+                margin-bottom: 24px;
+                animation: z7CinemaLogoReveal 1.6s var(--z7-ease-cinema) forwards;
+            }
+            @keyframes z7CinemaLogoReveal {
+                0% {
+                    opacity: 0;
+                    filter: blur(20px);
+                    transform: scale(0.92);
+                }
+                100% {
+                    opacity: 1;
+                    filter: blur(0px);
+                    transform: scale(1);
+                }
+            }
+
+            .z7-track {
+                position: relative;
+                z-index: 2;
+                width: 150px;
+                height: 2px;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+            .z7-bar {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 0%;
+                border-radius: 4px;
+                transition: width 0.05s linear;
+            }
+            .z7-counter {
+                position: relative;
+                z-index: 2;
+                margin-top: 10px;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+                font-size: 11px;
+                letter-spacing: 0.22em;
+            }
+
+            /* ============================================================
+               2. BIDIRECTIONAL ROUTE TRANSITION CURTAIN (OUT & IN PHASES)
+               ============================================================ */
+            #z7-transition-curtain {
+                position: fixed;
+                inset: 0;
+                z-index: 999998;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 pointer-events: none;
-                will-change: opacity, transform;
+                opacity: 0;
+                visibility: hidden;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                transition: opacity 260ms var(--z7-ease-cinema), visibility 260ms;
+                will-change: opacity, backdrop-filter;
             }
 
-            .z7-aperture-glow {
+            /* OUT PHASE: Curtain active & covering screen */
+            #z7-transition-curtain.active {
+                opacity: 1 !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
+            }
+
+            #z7-transition-curtain.theme-dark {
+                background-color: rgba(6, 7, 13, 0.92);
+            }
+            #z7-transition-curtain.theme-dark .z7-trans-glow {
+                background: radial-gradient(circle, rgba(37, 99, 235, 0.28) 0%, rgba(30, 58, 138, 0.20) 50%, transparent 72%);
+            }
+            #z7-transition-curtain.theme-dark .z7-trans-logo {
+                filter: drop-shadow(0 0 24px rgba(37, 99, 235, 0.45));
+            }
+
+            #z7-transition-curtain.theme-light {
+                background-color: rgba(248, 250, 252, 0.92);
+            }
+            #z7-transition-curtain.theme-light .z7-trans-glow {
+                background: radial-gradient(circle, rgba(37, 99, 235, 0.14) 0%, rgba(30, 58, 138, 0.10) 50%, transparent 72%);
+            }
+            #z7-transition-curtain.theme-light .z7-trans-logo {
+                filter: drop-shadow(0 0 18px rgba(30, 58, 138, 0.25));
+            }
+
+            .z7-trans-center {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .z7-trans-glow {
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                width: 260px;
-                height: 150px;
+                width: 220px;
+                height: 160px;
                 transform: translate(-50%, -50%);
                 border-radius: 50%;
-                background: radial-gradient(ellipse, rgba(200, 169, 110, 0.16) 0%, rgba(13, 17, 26, 0.35) 55%, transparent 75%);
                 filter: blur(35px);
                 pointer-events: none;
             }
-
-            .z7-aperture-monogram {
+            .z7-trans-logo {
                 position: relative;
-                z-index: 3;
-                width: 96px;
-                height: auto;
-                object-fit: contain;
-                filter: drop-shadow(0 0 16px rgba(200, 169, 110, 0.35));
-                animation: z7MonogramBloom 200ms var(--z7-aperture-ease) forwards;
-            }
-
-            @keyframes z7MonogramBloom {
-                0% { opacity: 0; transform: scale(0.92); filter: drop-shadow(0 0 2px rgba(200,169,110,0)); }
-                100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 16px rgba(200,169,110,0.35)); }
-            }
-
-            .z7-aperture-seam {
-                position: relative;
-                width: 140px;
-                height: 1px;
-                margin-top: 16px;
-                background: rgba(255, 255, 255, 0.08);
-                overflow: hidden;
-            }
-
-            .z7-aperture-beam {
-                position: absolute;
-                inset: 0;
-                width: 0%;
-                background: linear-gradient(90deg, transparent, #c8a96e 50%, #ffffff 100%);
-                box-shadow: 0 0 10px rgba(200, 169, 110, 0.75);
-                transition: width 120ms linear;
-            }
-
-            /* Inter-Page Transition Curtain: Dual Precision Obsidian Shutters */
-            #z7-aperture-curtain {
-                position: fixed;
-                inset: 0;
-                z-index: 999998;
-                pointer-events: none;
-                visibility: hidden;
-            }
-            #z7-aperture-curtain.active {
-                pointer-events: auto;
-                visibility: visible;
-            }
-
-            .z7-curtain-shutter {
-                position: absolute;
-                left: 0;
-                right: 0;
-                height: 50%;
-                background: #050608;
-                will-change: transform;
-                transition: transform 140ms var(--z7-aperture-ease);
-            }
-            .z7-curtain-shutter--top {
-                top: 0;
-                transform: translate3d(0, -100%, 0);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            }
-            .z7-curtain-shutter--bottom {
-                bottom: 0;
-                transform: translate3d(0, 100%, 0);
-                border-top: 1px solid rgba(255, 255, 255, 0.08);
-            }
-
-            #z7-aperture-curtain.active .z7-curtain-shutter--top,
-            #z7-aperture-curtain.active .z7-curtain-shutter--bottom {
-                transform: translate3d(0, 0, 0);
-            }
-
-            .z7-curtain-core {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
                 z-index: 2;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 120ms ease;
-            }
-            #z7-aperture-curtain.active .z7-curtain-core {
-                opacity: 1;
-            }
-            .z7-curtain-monogram {
-                width: 76px;
+                width: 85px;
                 height: auto;
                 object-fit: contain;
-                filter: drop-shadow(0 0 14px rgba(200, 169, 110, 0.4));
+                opacity: 0.95;
+                animation: z7TransLogoClarify 240ms ease-in-out forwards;
+            }
+            @keyframes z7TransLogoClarify {
+                0% {
+                    opacity: 0.3;
+                    filter: blur(8px);
+                    transform: scale(0.95);
+                }
+                100% {
+                    opacity: 1;
+                    filter: blur(0px);
+                    transform: scale(1);
+                }
             }
 
-            /* Legacy Suppressions */
-            .z7-loader, #z7Loader, .z7-transition, #z7Transition, 
-            .z7-route-transition, #z7RouteTransition, [data-z7-arriving],
-            #z7-preloader, #z7-transition-curtain {
+            /* Legacy cleanup suppression */
+            #z7-aperture-preloader, #z7-aperture-curtain {
                 display: none !important;
-                opacity: 0 !important;
-                visibility: hidden !important;
-                pointer-events: none !important;
             }
         `;
         (document.head || document.documentElement).appendChild(style);
     }
 
-    function initAperture() {
+    function initMotionLoader() {
         if (!document.body) return;
 
-        // Clean out legacy artifacts if lingering
-        ['z7Loader', 'z7Transition', 'golden-preloader', 'golden-curtain', 'z7-preloader', 'z7-transition-curtain'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.remove();
-        });
-
-        // 2. Initial Page Entrance Preloader (Architectural Aperture)
-        if (!prefersReduced && !sessionStorage.getItem('7z_aperture_visited')) {
-            const preloader = document.createElement('div');
-            preloader.id = 'z7-aperture-preloader';
-            preloader.innerHTML = `
-                <div class="z7-shutter z7-shutter--top"></div>
-                <div class="z7-shutter z7-shutter--bottom"></div>
-                <div class="z7-aperture-core">
-                    <div class="z7-aperture-glow"></div>
-                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-aperture-monogram" width="96" height="28">
-                    <div class="z7-aperture-seam">
-                        <div class="z7-aperture-beam" id="z7-aperture-beam"></div>
-                    </div>
-                </div>
-            `;
-            const logo = preloader.querySelector('.z7-aperture-monogram');
-            if (logo) logo.addEventListener('error', function() { this.src = '/7Z-LogoT(3).png'; }, { once: true });
-            document.body.appendChild(preloader);
-
-            const isHeadless = Boolean(navigator.webdriver || /HeadlessChrome|Lighthouse/i.test(navigator.userAgent));
-            const beamDuration = isHeadless ? 20 : 130;
-            const exitDuration = isHeadless ? 40 : 200;
-            const startTime = performance.now();
-
-            // Strict Hard Cap Fail-Safe: guaranteed dismissal <= 550ms under any circumstance
-            const hardCapTimer = setTimeout(() => {
-                if (preloader && preloader.parentNode) {
-                    preloader.classList.add('is-parting');
-                    setTimeout(() => preloader.remove(), 180);
-                    sessionStorage.setItem('7z_aperture_visited', 'true');
-                }
-            }, 550);
-
-            function stepBeam(now) {
-                const elapsed = now - startTime;
-                const ratio = Math.min(1, elapsed / beamDuration);
-                const beam = document.getElementById('z7-aperture-beam');
-                if (beam) beam.style.width = `${Math.floor(ratio * 100)}%`;
-
-                if (ratio < 1) {
-                    requestAnimationFrame(stepBeam);
-                } else {
-                    clearTimeout(hardCapTimer);
-                    if (beam) beam.style.width = '100%';
-                    // Part shutters cleanly like an architectural lens
-                    preloader.classList.add('is-parting');
-                    setTimeout(() => {
-                        preloader.remove();
-                        sessionStorage.setItem('7z_aperture_visited', 'true');
-                    }, exitDuration);
-                }
+        const currentTheme = detectTheme();
+        const isHeadless = Boolean(navigator.webdriver || /HeadlessChrome|Lighthouse/i.test(navigator.userAgent));
+        const isMobile = Boolean(window.innerWidth <= 768 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches));
+        
+        // Detect navigation type (reload vs direct entry vs internal transition)
+        let isReload = false;
+        try {
+            const navEntries = performance.getEntriesByType('navigation');
+            if (navEntries && navEntries[0]) {
+                isReload = (navEntries[0].type === 'reload');
             }
+        } catch (_) {}
 
-            requestAnimationFrame(stepBeam);
-        } else {
-            sessionStorage.setItem('7z_aperture_visited', 'true');
-        }
+        const isNavTransitioning = (sessionStorage.getItem('7z_nav_transitioning') === 'true');
+        const hasVisitedBefore = Boolean(sessionStorage.getItem('7z_motion_visited'));
 
-        // 3. Inter-Page Transition Curtain (Dual Precision Shutters)
-        let curtain = document.getElementById('z7-aperture-curtain');
-        if (!curtain) {
-            curtain = document.createElement('div');
-            curtain.id = 'z7-aperture-curtain';
-            curtain.innerHTML = `
-                <div class="z7-curtain-shutter z7-curtain-shutter--top"></div>
-                <div class="z7-curtain-shutter z7-curtain-shutter--bottom"></div>
-                <div class="z7-curtain-core">
-                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-curtain-monogram" width="76" height="22">
+        // -------------------------------------------------------------
+        // A. MOUNT TRANSITION CURTAIN (Pre-allocated for OUT & IN)
+        // -------------------------------------------------------------
+        let overlay = document.getElementById('z7-transition-curtain');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'z7-transition-curtain';
+            overlay.className = 'theme-' + currentTheme;
+            overlay.innerHTML = `
+                <div class="z7-trans-center">
+                    <div class="z7-trans-glow"></div>
+                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-trans-logo" width="85" height="94">
                 </div>
             `;
-            const curtainLogo = curtain.querySelector('.z7-curtain-monogram');
-            if (curtainLogo) curtainLogo.addEventListener('error', function() { this.src = '/7Z-LogoT(3).png'; }, { once: true });
-            document.body.appendChild(curtain);
+            const overlayLogo = overlay.querySelector('.z7-trans-logo');
+            if (overlayLogo) {
+                overlayLogo.addEventListener('error', function() { this.src = '/7Z-LogoT(3).png'; }, { once: true });
+            }
+            document.body.appendChild(overlay);
         }
 
-        // On arrival from previous page navigation: part shutters open immediately
-        if (sessionStorage.getItem('7z_nav_transitioning') === 'true') {
+        // -------------------------------------------------------------
+        // B. IN-PHASE EXECUTION (If arriving from internal page transition)
+        // -------------------------------------------------------------
+        if (isNavTransitioning) {
             sessionStorage.removeItem('7z_nav_transitioning');
-            curtain.classList.add('active');
+            // Curtain starts in active/covering state
+            overlay.className = 'theme-' + currentTheme + ' active';
+
+            // Reveal the incoming destination page smoothly after render
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    curtain.classList.remove('active');
+                    setTimeout(() => {
+                        if (overlay) {
+                            overlay.classList.remove('active');
+                        }
+                    }, isHeadless ? 20 : 60);
                 });
             });
         }
 
-        // 4. Intercept Internal Link Clicks for <= 260ms Cinematic Transitions
-        window.addEventListener('click', e => {
-            if (prefersReduced) return;
+        // -------------------------------------------------------------
+        // C. INITIAL PRELOADER EXECUTION (On first visit or page reload)
+        // -------------------------------------------------------------
+        const shouldShowPreloader = (!hasVisitedBefore || isReload) && !isNavTransitioning;
+
+        if (shouldShowPreloader) {
+            const preloader = document.createElement('div');
+            preloader.id = 'z7-preloader';
+            preloader.className = 'theme-' + currentTheme;
+            preloader.innerHTML = `
+                <div class="z7-preloader-center">
+                    <div class="z7-ambient-glow"></div>
+                    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="z7-logo-img" width="110" height="85">
+                    <div class="z7-track">
+                        <div class="z7-bar" id="z7-progress-bar"></div>
+                    </div>
+                    <div class="z7-counter" id="z7-counter-text">0%</div>
+                </div>
+            `;
+            const preloaderLogo = preloader.querySelector('.z7-logo-img');
+            if (preloaderLogo) {
+                preloaderLogo.addEventListener('error', function() { this.src = '/7Z-LogoT(3).png'; }, { once: true });
+            }
+            document.body.appendChild(preloader);
+
+            const startTime = performance.now();
+            const duration = isHeadless ? 100 : isMobile ? 320 : 420;
+            const bar = preloader.querySelector('#z7-progress-bar');
+            const counter = preloader.querySelector('#z7-counter-text');
+
+            // Hard fail-safe timer (never stick beyond 1200ms)
+            const failSafeId = setTimeout(() => {
+                dismissPreloader(preloader);
+            }, isHeadless ? 300 : 1200);
+
+            function dismissPreloader(node) {
+                if (!node || !node.parentNode) return;
+                clearTimeout(failSafeId);
+                node.classList.add('is-dismissed');
+                node.style.setProperty('pointer-events', 'none', 'important');
+                node.style.setProperty('opacity', '0', 'important');
+                node.style.setProperty('filter', 'blur(12px)', 'important');
+                node.style.setProperty('transform', 'scale(1.03)', 'important');
+                setTimeout(() => {
+                    if (node && node.parentNode) node.remove();
+                }, 350);
+                sessionStorage.setItem('7z_motion_visited', 'true');
+            }
+
+            function updateProgress(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(1, elapsed / duration);
+                const percent = Math.floor(progress * 100);
+
+                if (bar) bar.style.width = percent + '%';
+                if (counter) counter.textContent = percent + '%';
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateProgress);
+                } else {
+                    dismissPreloader(preloader);
+                }
+            }
+
+            requestAnimationFrame(updateProgress);
+        }
+
+        // -------------------------------------------------------------
+        // D. DYNAMIC THEME OBSERVER
+        // -------------------------------------------------------------
+        const updateThemesOnFly = () => {
+            const nextTheme = detectTheme();
+            if (overlay) {
+                overlay.classList.remove('theme-dark', 'theme-light');
+                overlay.classList.add('theme-' + nextTheme);
+            }
+            const p = document.getElementById('z7-preloader');
+            if (p) {
+                p.classList.remove('theme-dark', 'theme-light');
+                p.classList.add('theme-' + nextTheme);
+            }
+        };
+
+        const themeObserver = new MutationObserver(updateThemesOnFly);
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+        if (document.body) {
+            themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+        }
+
+        // -------------------------------------------------------------
+        // E. OUT-PHASE EXECUTION (Intercept internal link clicks)
+        // -------------------------------------------------------------
+        window.addEventListener('click', (e) => {
             if (e.defaultPrevented || e.button !== 0) return;
             if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
@@ -310,49 +448,55 @@
             if (link.protocol === 'mailto:' || link.protocol === 'tel:' || link.protocol === 'javascript:') return;
 
             const url = new URL(link.href, window.location.href);
-            // Ignore hash-only or same-page anchor jumps
+            // Ignore same-page hash jumps
             if (url.pathname === window.location.pathname && url.search === window.location.search && (url.hash || link.getAttribute('href')?.startsWith('#'))) return;
-            // Ignore admin, private portals, and internal API routes
+            // Never intercept admin, private access, or API routes
             if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/private-access') || url.pathname.startsWith('/api') || url.pathname.startsWith('/_vercel')) return;
-            // Ignore static file downloads
+            // Never intercept direct file downloads
             if (/\.(pdf|pptx|ppt|zip|rar|tar|gz|docx|doc|xlsx|xls|png|jpg|jpeg|webp|mp4|mov|webm)$/i.test(url.pathname)) return;
 
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
 
+            updateThemesOnFly();
             sessionStorage.setItem('7z_nav_transitioning', 'true');
-            curtain.classList.add('active');
 
-            // Fail-safe release: never trap the user
+            // Trigger OUT phase animation
+            overlay.classList.add('active');
+
+            // Fail-safe release if navigation fails
             setTimeout(() => {
-                if (curtain && curtain.classList.contains('active')) {
-                    curtain.classList.remove('active');
+                if (overlay && overlay.classList.contains('active')) {
+                    overlay.classList.remove('active');
                     sessionStorage.removeItem('7z_nav_transitioning');
                 }
-            }, 600);
+            }, 1800);
 
-            const isHeadless = Boolean(navigator.webdriver || /HeadlessChrome|Lighthouse/i.test(navigator.userAgent));
+            // Navigate when OUT animation has covered screen
+            const outDuration = reducedMotion ? 0 : isHeadless ? 30 : 250;
             setTimeout(() => {
                 window.location.href = link.href;
-            }, isHeadless ? 20 : 130);
+            }, outDuration);
         }, true);
 
-        // 5. Full bfcache support: instant release on back/forward
-        const dismissAll = () => {
+        // -------------------------------------------------------------
+        // F. BFCACHE & BACK/FORWARD RESTORATION
+        // -------------------------------------------------------------
+        const dismissAllOverlays = () => {
             sessionStorage.removeItem('7z_nav_transitioning');
-            const pre = document.getElementById('z7-aperture-preloader');
-            if (pre) pre.remove();
-            if (curtain) curtain.classList.remove('active');
+            const p = document.getElementById('z7-preloader');
+            if (p) p.remove();
+            if (overlay) overlay.classList.remove('active');
         };
 
-        window.addEventListener('pageshow', dismissAll);
-        window.addEventListener('popstate', dismissAll);
+        window.addEventListener('pageshow', dismissAllOverlays);
+        window.addEventListener('popstate', dismissAllOverlays);
     }
 
     if (document.body) {
-        initAperture();
+        initMotionLoader();
     } else {
-        document.addEventListener('DOMContentLoaded', initAperture, { once: true });
+        document.addEventListener('DOMContentLoaded', initMotionLoader, { once: true });
     }
 })();

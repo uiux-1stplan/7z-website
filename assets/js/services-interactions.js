@@ -233,8 +233,33 @@
     // Exact Desktop-Only Directional Scroll Lock for Campaign Film Showcase
     let wheelDeltaAccumulator = 0;
     let lastStepTimestamp = 0;
-    const WHEEL_THRESHOLD = 40;
-    const STEP_COOLDOWN = 240;
+    const WHEEL_THRESHOLD = 36;
+    const STEP_COOLDOWN = 200;
+
+    // Authoritative Bidirectional Scroll-Lock State Machine
+    let stageEngaged = false;
+    let completedDownwards = false;
+    let completedUpwards = false;
+
+    // Track scroll position to reset completion flags when exiting stage boundaries
+    window.addEventListener("scroll", () => {
+      if (!campaignStage) return;
+      const rect = campaignStage.getBoundingClientRect();
+      const viewCenter = window.innerHeight / 2;
+      if (rect.top > viewCenter + 100) {
+        // Completely above stage
+        completedDownwards = false;
+        completedUpwards = false;
+        stageEngaged = false;
+        if (window.__lenis?.isStopped) window.__lenis.start();
+      } else if (rect.bottom < viewCenter - 100) {
+        // Completely below stage
+        completedDownwards = true;
+        completedUpwards = false;
+        stageEngaged = false;
+        if (window.__lenis?.isStopped) window.__lenis.start();
+      }
+    }, { passive: true });
 
     const onShowcaseWheel = event => {
       if (!ring || !cards.length) return;
@@ -257,31 +282,44 @@
       const viewCenter = window.innerHeight / 2;
       const centerDiff = stageCenter - viewCenter;
 
-      // Scope & Boundaries: Activate ONLY when the stage is centered in the viewport
+      // Scope & Boundaries: Activate ONLY when the stage is in the framing zone
       const inStageZone = rect.top < viewCenter && rect.bottom > viewCenter && Math.abs(centerDiff) < 180;
       if (!inStageZone) {
         wheelDeltaAccumulator = 0;
+        stageEngaged = false;
         if (window.__lenis?.isStopped) window.__lenis.start();
         return;
       }
 
-      // Smoothly snap/frame stage into dead-center if slightly off
-      if (Math.abs(centerDiff) > 8 && Math.abs(centerDiff) < 160) {
-        if (window.__lenis) {
-          window.__lenis.scrollTo(window.scrollY + centerDiff, { immediate: true });
-        } else {
-          window.scrollTo({ top: window.scrollY + centerDiff, behavior: 'instant' });
-        }
-      }
-
-      const currentIdx = activeIndex();
-
-      // Scrolling DOWN (deltaY > 0): advance LEFT toward next videos (Film 01 -> ... -> Last Film)
+      // 1. SCROLLING DOWN (deltaY > 0): advance LEFT (Film 01 -> ... -> Film 12)
       if (event.deltaY > 0) {
+        if (completedDownwards) {
+          // Already finished all cards downwards; let scroll pass naturally to content below
+          stageEngaged = false;
+          wheelDeltaAccumulator = 0;
+          if (window.__lenis?.isStopped) window.__lenis.start();
+          return;
+        }
+
+        const currentIdx = activeIndex();
+
+        // Snap into dead-center once when first engaging
+        if (!stageEngaged) {
+          stageEngaged = true;
+          if (Math.abs(centerDiff) > 6) {
+            if (window.__lenis) {
+              window.__lenis.scrollTo(window.scrollY + centerDiff, { immediate: true });
+            } else {
+              window.scrollTo({ top: window.scrollY + centerDiff, behavior: 'instant' });
+            }
+          }
+        }
+
         if (currentIdx < cards.length - 1) {
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
+
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
           if (wheelDeltaAccumulator >= WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
@@ -291,17 +329,47 @@
             goTo(-nextIdx * stepAngle());
           }
         } else {
-          // Reached the last film -> Release scroll lock immediately so downward scroll flows naturally
+          // Reached final card 12: release lock immediately so downward scroll flows naturally
+          completedDownwards = true;
+          stageEngaged = false;
           wheelDeltaAccumulator = 0;
           if (window.__lenis?.isStopped) window.__lenis.start();
         }
       }
-      // Scrolling UP (deltaY < 0): advance RIGHT back toward previous videos (Last Film -> ... -> First Film)
+      // 2. SCROLLING UP (deltaY < 0): reverse RIGHT (Film 12 -> ... -> Film 01)
       else if (event.deltaY < 0) {
+        if (completedUpwards) {
+          // Already reversed to card 01; let scroll pass naturally to content above
+          stageEngaged = false;
+          wheelDeltaAccumulator = 0;
+          if (window.__lenis?.isStopped) window.__lenis.start();
+          return;
+        }
+
+        // When entering in reverse from below, initialize active card to last card (12)
+        if (!stageEngaged) {
+          stageEngaged = true;
+          completedDownwards = false;
+          const cur = activeIndex();
+          if (cur === 0) {
+            goTo(-(cards.length - 1) * stepAngle());
+          }
+          if (Math.abs(centerDiff) > 6) {
+            if (window.__lenis) {
+              window.__lenis.scrollTo(window.scrollY + centerDiff, { immediate: true });
+            } else {
+              window.scrollTo({ top: window.scrollY + centerDiff, behavior: 'instant' });
+            }
+          }
+        }
+
+        const currentIdx = activeIndex();
+
         if (currentIdx > 0) {
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
+
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
           if (wheelDeltaAccumulator <= -WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
@@ -311,7 +379,9 @@
             goTo(-prevIdx * stepAngle());
           }
         } else {
-          // Reached the first film -> Release scroll lock immediately so upward scroll flows naturally
+          // Reached first card 01: release lock immediately so upward scroll flows naturally
+          completedUpwards = true;
+          stageEngaged = false;
           wheelDeltaAccumulator = 0;
           if (window.__lenis?.isStopped) window.__lenis.start();
         }
