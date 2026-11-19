@@ -84,6 +84,63 @@
   function renderTiles(selector, items) {
     const container = $(selector);
     if (!container) return;
+
+    if (selector === "#homeVideoRail") {
+      let forward = container.querySelector(':scope > [data-film-lane="forward"]');
+      let reverse = container.querySelector(':scope > [data-film-lane="reverse"]');
+      if (!forward || !reverse) {
+        forward = document.createElement("div");
+        reverse = document.createElement("div");
+        forward.className = "home-showcase__lane";
+        reverse.className = "home-showcase__lane";
+        forward.dataset.filmLane = "forward";
+        reverse.dataset.filmLane = "reverse";
+        container.replaceChildren(forward, reverse);
+      } else {
+        forward.replaceChildren();
+        reverse.replaceChildren();
+      }
+
+      items.forEach((item, index) => {
+        const tile = document.createElement("article");
+        tile.className = `media-tile ${item.layout || ""} z7-spatial`.trim();
+        const video = document.createElement("video");
+        video.dataset.src = item.src;
+        video.muted = true;
+        video.playsInline = true;
+        video.autoplay = true;
+        video.loop = true;
+        video.preload = "none";
+        video.poster = item.poster;
+        video.setAttribute("autoplay", "");
+        video.setAttribute("loop", "");
+        video.setAttribute("muted", "");
+        video.setAttribute("playsinline", "");
+        video.removeAttribute("controls");
+        const mute = document.createElement("button");
+        mute.type = "button";
+        mute.className = "z7-video-mute";
+        mute.dataset.videoMute = "";
+        mute.setAttribute("aria-label", `Unmute ${item.title}`);
+        mute.setAttribute("aria-pressed", "false");
+        mute.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg><span>Sound off</span>';
+        const title = document.createElement("span");
+        title.textContent = item.title;
+        tile.dataset.railIndex = String(index + 1).padStart(2, "0");
+        tile.append(video, mute, title);
+        (index % 2 ? reverse : forward).append(tile);
+      });
+
+      container.dataset.lanesReady = "true";
+
+      if (typeof window.__7zAnimateFilmLanes === "function") {
+        window.__7zAnimateFilmLanes();
+      } else if (window.ScrollTrigger) {
+        window.ScrollTrigger.refresh();
+      }
+      return;
+    }
+
     const fragment = document.createDocumentFragment();
     items.forEach((item, index) => {
       const tile = document.createElement("article");
@@ -352,6 +409,9 @@
     if (document.querySelector(".z7-home")) initHero();
     if (document.querySelector(".z7-home,.z7-services-page")) initServicePreview();
 
+    // Render Selected Moving Image lanes & tiles synchronously at frame 0
+    renderTiles("#homeVideoRail", selectedWork);
+
     const schedule = (fn) => {
       if ("requestIdleCallback" in window) {
         requestIdleCallback(fn, { timeout: 150 });
@@ -362,7 +422,6 @@
 
     schedule(() => {
       renderTiles("#architectureVideos", architecture);
-      renderTiles("#homeVideoRail", selectedWork);
       renderTiles("#mediaRail", campaigns);
       renderTiles("#presentationStack", presentations);
       initComparisons();
@@ -378,6 +437,10 @@
       $$(".z7-home video,.z7-services-page video").forEach(video => video.pause());
     }, { once: true });
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
-  else boot();
+  if (document.readyState === "loading" && !document.getElementById("homeVideoRail")) {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    boot();
+  }
+  window.__7zHomeContentLoaded = true;
 })();

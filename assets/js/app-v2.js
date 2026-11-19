@@ -320,7 +320,12 @@
 
   function buildFilmLanes() {
     const rail = document.getElementById("homeVideoRail");
-    if (!rail || rail.dataset.lanesReady === "true") return;
+    if (!rail) return;
+    const existingLanes = rail.querySelectorAll(".home-showcase__lane");
+    if (existingLanes.length >= 2) {
+      rail.dataset.lanesReady = "true";
+      return;
+    }
     const tiles = [...rail.querySelectorAll(":scope > .media-tile")];
     if (!tiles.length) return;
     const forward = document.createElement("div");
@@ -334,18 +339,22 @@
     rail.dataset.lanesReady = "true";
   }
 
+  let filmLaneTriggers = [];
   function animateFilmLanes() {
     const gsap = window.gsap;
     const ScrollTrigger = window.ScrollTrigger;
     const viewport = document.querySelector(".home-showcase__viewport");
     const lanes = [...document.querySelectorAll("[data-film-lane]")];
     if (!gsap || !ScrollTrigger || !viewport || lanes.length < 2 || reducedMotion.matches || !desktopPointer.matches) return;
+    filmLaneTriggers.forEach(trigger => trigger?.kill?.());
+    filmLaneTriggers = [];
     lanes.forEach((lane, index) => {
       const direction = index === 0 ? -18 : 18;
       const tween = gsap.to(lane, { xPercent: direction, ease: "none", scrollTrigger: { trigger: viewport, start: "top bottom", end: "bottom top", scrub: .5, invalidateOnRefresh: true } });
-      filmTriggers.push(tween.scrollTrigger);
+      filmLaneTriggers.push(tween.scrollTrigger);
     });
   }
+  window.__7zAnimateFilmLanes = animateFilmLanes;
 
   function bindDeviceShowcases() {
     document.querySelectorAll("[data-device-showcase]").forEach(showcase => {
@@ -514,6 +523,7 @@
     if (heroFrame) cancelAnimationFrame(heroFrame);
     if (canvasFrame) cancelAnimationFrame(canvasFrame);
     filmTriggers.forEach(trigger => trigger?.kill());
+    filmLaneTriggers.forEach(trigger => trigger?.kill());
     mediaObservers.forEach(observer => observer.disconnect());
     mediaObservers.clear();
     abort.abort();
