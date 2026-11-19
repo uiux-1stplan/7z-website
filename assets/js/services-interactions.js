@@ -233,11 +233,12 @@
     // Exact Desktop-Only Directional Scroll Lock for Campaign Film Showcase
     let wheelDeltaAccumulator = 0;
     let lastStepTimestamp = 0;
-    const WHEEL_THRESHOLD = 36;
-    const STEP_COOLDOWN = 200;
+    const WHEEL_THRESHOLD = 30;
+    const STEP_COOLDOWN = 180;
 
     // Authoritative Bidirectional Scroll-Lock State Machine
     let stageEngaged = false;
+    let lockedScrollY = null;
     let completedDownwards = false;
     let completedUpwards = false;
 
@@ -246,17 +247,19 @@
       if (!campaignStage) return;
       const rect = campaignStage.getBoundingClientRect();
       const viewCenter = window.innerHeight / 2;
-      if (rect.top > viewCenter + 100) {
+      if (rect.top > viewCenter + 120) {
         // Completely above stage
         completedDownwards = false;
         completedUpwards = false;
         stageEngaged = false;
+        lockedScrollY = null;
         if (window.__lenis?.isStopped) window.__lenis.start();
-      } else if (rect.bottom < viewCenter - 100) {
+      } else if (rect.bottom < viewCenter - 120) {
         // Completely below stage
         completedDownwards = true;
         completedUpwards = false;
         stageEngaged = false;
+        lockedScrollY = null;
         if (window.__lenis?.isStopped) window.__lenis.start();
       }
     }, { passive: true });
@@ -282,11 +285,12 @@
       const viewCenter = window.innerHeight / 2;
       const centerDiff = stageCenter - viewCenter;
 
-      // Scope & Boundaries: Activate ONLY when the stage is in the framing zone
-      const inStageZone = rect.top < viewCenter && rect.bottom > viewCenter && Math.abs(centerDiff) < 180;
+      // Scope & Boundaries: Activate when the stage is in the framing zone
+      const inStageZone = rect.top < viewCenter + 120 && rect.bottom > viewCenter - 120 && Math.abs(centerDiff) < 280;
       if (!inStageZone) {
         wheelDeltaAccumulator = 0;
         stageEngaged = false;
+        lockedScrollY = null;
         if (window.__lenis?.isStopped) window.__lenis.start();
         return;
       }
@@ -306,11 +310,12 @@
         // Snap into dead-center once when first engaging
         if (!stageEngaged) {
           stageEngaged = true;
-          if (Math.abs(centerDiff) > 6) {
+          lockedScrollY = Math.round(window.scrollY + centerDiff);
+          if (Math.abs(centerDiff) > 4) {
             if (window.__lenis) {
-              window.__lenis.scrollTo(window.scrollY + centerDiff, { immediate: true });
+              window.__lenis.scrollTo(lockedScrollY, { immediate: true });
             } else {
-              window.scrollTo({ top: window.scrollY + centerDiff, behavior: 'instant' });
+              window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
             }
           }
         }
@@ -319,6 +324,9 @@
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
+          if (lockedScrollY !== null && Math.abs(window.scrollY - lockedScrollY) > 2) {
+            window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
+          }
 
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
@@ -332,6 +340,7 @@
           // Reached final card 12: release lock immediately so downward scroll flows naturally
           completedDownwards = true;
           stageEngaged = false;
+          lockedScrollY = null;
           wheelDeltaAccumulator = 0;
           if (window.__lenis?.isStopped) window.__lenis.start();
         }
@@ -350,15 +359,16 @@
         if (!stageEngaged) {
           stageEngaged = true;
           completedDownwards = false;
+          lockedScrollY = Math.round(window.scrollY + centerDiff);
           const cur = activeIndex();
           if (cur === 0) {
             goTo(-(cards.length - 1) * stepAngle());
           }
-          if (Math.abs(centerDiff) > 6) {
+          if (Math.abs(centerDiff) > 4) {
             if (window.__lenis) {
-              window.__lenis.scrollTo(window.scrollY + centerDiff, { immediate: true });
+              window.__lenis.scrollTo(lockedScrollY, { immediate: true });
             } else {
-              window.scrollTo({ top: window.scrollY + centerDiff, behavior: 'instant' });
+              window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
             }
           }
         }
@@ -369,6 +379,9 @@
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
+          if (lockedScrollY !== null && Math.abs(window.scrollY - lockedScrollY) > 2) {
+            window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
+          }
 
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
@@ -382,6 +395,7 @@
           // Reached first card 01: release lock immediately so upward scroll flows naturally
           completedUpwards = true;
           stageEngaged = false;
+          lockedScrollY = null;
           wheelDeltaAccumulator = 0;
           if (window.__lenis?.isStopped) window.__lenis.start();
         }
