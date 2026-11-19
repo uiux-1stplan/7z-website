@@ -272,11 +272,11 @@
                 right: 0;
                 height: 50%;
                 will-change: transform;
-                transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+                transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
                 z-index: 1;
             }
             #z7-aperture-curtain.is-closed .z7-aperture-shutter {
-                transition: transform 0.19s cubic-bezier(0.7, 0, 0.2, 1);
+                transition: transform 0.12s cubic-bezier(0.7, 0, 0.2, 1);
             }
             .z7-aperture-shutter--top {
                 top: 0;
@@ -321,7 +321,7 @@
                 justify-content: center;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.16s ease;
+                transition: opacity 0.10s ease;
             }
 
             #z7-aperture-curtain.is-closed .z7-aperture-center {
@@ -410,13 +410,13 @@
             sessionStorage.removeItem('7z_nav_transitioning');
             curtain.classList.add('active', 'is-closed');
 
-            // Immediate single-frame paint, unblock pointer events, 240ms fluid shutter slide
+            // Immediate single-frame paint, unblock pointer events, 150ms fluid shutter slide (Target: 130-170ms)
             requestAnimationFrame(() => {
                 if (curtain) {
                     curtain.classList.remove('is-closed');
                     curtain.style.pointerEvents = 'none';
 
-                    const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 240;
+                    const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 150;
                     setTimeout(() => {
                         if (curtain) {
                             curtain.classList.remove('active');
@@ -546,8 +546,8 @@
                 }
             }, 1800);
 
-            // Navigate when shutters have sealed screen (Target: 180-220ms -> 190ms)
-            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 190;
+            // Navigate when shutters have sealed screen (Target: 100-130ms -> 120ms)
+            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 120;
             setTimeout(() => {
                 clearTimeout(failSafe);
                 window.location.href = link.href;
