@@ -272,11 +272,11 @@
                 right: 0;
                 height: 50%;
                 will-change: transform;
-                transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1);
+                transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
                 z-index: 1;
             }
             #z7-aperture-curtain.is-closed .z7-aperture-shutter {
-                transition: transform 0.10s cubic-bezier(0.7, 0, 0.2, 1);
+                transition: transform 0.28s cubic-bezier(0.77, 0, 0.175, 1);
             }
             .z7-aperture-shutter--top {
                 top: 0;
@@ -321,7 +321,7 @@
                 justify-content: center;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.10s ease;
+                transition: opacity 0.22s ease 0.06s;
             }
 
             #z7-aperture-curtain.is-closed .z7-aperture-center {
@@ -409,21 +409,23 @@
         if (isNavTransitioning) {
             sessionStorage.removeItem('7z_nav_transitioning');
             curtain.classList.add('active', 'is-closed');
+            curtain.style.pointerEvents = 'none';
 
-            // Immediate single-frame paint, unblock pointer events, 135ms fluid shutter slide (Target: 100-150ms)
+            // Wait two animation frames to ensure destination DOM and styles are fully rendered before opening
             requestAnimationFrame(() => {
-                if (curtain) {
-                    curtain.classList.remove('is-closed');
-                    curtain.style.pointerEvents = 'none';
+                requestAnimationFrame(() => {
+                    if (curtain) {
+                        curtain.classList.remove('is-closed');
 
-                    const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 135;
-                    setTimeout(() => {
-                        if (curtain) {
-                            curtain.classList.remove('active');
-                            curtain.style.pointerEvents = '';
-                        }
-                    }, inDuration);
-                }
+                        const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 480;
+                        setTimeout(() => {
+                            if (curtain) {
+                                curtain.classList.remove('active');
+                                curtain.style.pointerEvents = '';
+                            }
+                        }, inDuration);
+                    }
+                });
             });
         }
 
@@ -567,16 +569,17 @@
 
             sessionStorage.setItem('7z_nav_transitioning', 'true');
 
-            // Hard fail-safe release if navigation fails
+            // Hard fail-safe release if navigation fails or is aborted
             const failSafe = setTimeout(() => {
                 if (curtain) {
                     curtain.classList.remove('is-closed', 'active');
                     sessionStorage.removeItem('7z_nav_transitioning');
                 }
-            }, 1800);
+            }, 1400);
 
-            // Navigate when shutters have sealed screen (Target: 100ms)
-            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 100;
+            // Outgoing shutter closing duration: ~280ms
+            // Trigger navigation at 240ms so the network handover begins as the shutters converge
+            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 240;
             setTimeout(() => {
                 clearTimeout(failSafe);
                 window.location.href = link.href;
@@ -590,7 +593,10 @@
             sessionStorage.removeItem('7z_nav_transitioning');
             const pre = document.getElementById('z7-cinema-preloader');
             if (pre) pre.remove();
-            if (curtain) curtain.classList.remove('active', 'is-closed');
+            if (curtain) {
+                curtain.classList.remove('active', 'is-closed');
+                curtain.style.pointerEvents = '';
+            }
         };
 
         window.addEventListener('pageshow', dismissAll);
