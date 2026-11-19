@@ -3917,29 +3917,37 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
   width: 100vw !important;
   height: 100dvh !important;
   z-index: 9999 !important;
-  background: radial-gradient(ellipse at 50% 30%, #0d111a 0%, #050608 65%, #020305 100%) !important;
+  background-color: #040507 !important;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 35%, rgba(200, 169, 110, 0.08) 0%, rgba(13, 17, 26, 0.65) 50%, rgba(4, 5, 7, 0.98) 100%),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 40px 40px, 40px 40px !important;
+  background-position: center center, 0 0, 0 0 !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 20px !important;
   box-sizing: border-box !important;
+  overflow-y: auto !important;
 }
 
 .auth-vault {
   position: relative !important;
   width: min(440px, 94vw) !important;
-  padding: clamp(28px, 4.5vw, 40px) clamp(24px, 4vw, 36px) !important;
+  margin: auto !important;
+  padding: clamp(32px, 5vw, 44px) clamp(26px, 4.5vw, 40px) !important;
   border-radius: 28px !important;
-  background: rgba(10, 12, 16, 0.90) !important;
-  backdrop-filter: blur(28px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(140%) !important;
+  background: linear-gradient(180deg, rgba(16, 18, 24, 0.92) 0%, rgba(8, 9, 13, 0.96) 100%) !important;
+  backdrop-filter: blur(32px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(160%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 32px 72px -16px rgba(0, 0, 0, 0.95),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 0 40px rgba(200, 169, 110, 0.04) !important;
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 32px 80px -16px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 50px rgba(200, 169, 110, 0.06) !important;
   box-sizing: border-box !important;
   display: flex !important;
   flex-direction: column !important;
@@ -3950,10 +3958,10 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
 .vault-glow-rim {
   position: absolute;
   top: 0;
-  left: 20%;
-  right: 20%;
+  left: 15%;
+  right: 15%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.65), transparent);
   pointer-events: none;
 }
 
@@ -3961,7 +3969,7 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
 .auth-vault__mark {
@@ -3970,16 +3978,16 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
   justify-content: center;
   width: 58px;
   height: 58px;
-  margin-bottom: 14px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.4);
+  margin-bottom: 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 .auth-vault__mark img {
-  width: 38px !important;
-  height: 38px !important;
+  width: 36px !important;
+  height: 36px !important;
   object-fit: contain !important;
 }
 
@@ -3993,7 +4001,7 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
   font-family: var(--7z-mono, monospace);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.22em;
   color: #c8a96e;
   text-transform: uppercase;
 }
@@ -4001,18 +4009,18 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
 .vault-title {
   margin: 2px 0 0;
   font-family: var(--7z-font, sans-serif);
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 650;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;
   color: #ffffff;
   text-transform: uppercase;
 }
 
 .vault-desc {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   font-size: 12px;
   color: #94a3b8;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 
 .auth-vault__footer {
@@ -4065,44 +4073,52 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
 #clerk-signin input[type="text"],
 #clerk-signin input[type="password"],
 #clerk-signin input[type="email"] {
-  min-height: 44px !important;
-  background: #12151c !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 12px !important;
+  min-height: 46px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
   color: #f8fafc !important;
   font-size: 13.5px !important;
-  padding: 0 14px !important;
-  box-shadow: none !important;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  padding: 0 16px !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
 }
 
 #clerk-signin .cl-formFieldInput:focus,
 #clerk-signin input:focus {
+  background: rgba(255, 255, 255, 0.06) !important;
   border-color: #c8a96e !important;
-  box-shadow: 0 0 0 2px rgba(200, 169, 110, 0.25) !important;
+  box-shadow: 0 0 0 2px rgba(200, 169, 110, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
   outline: none !important;
 }
 
 #clerk-signin .cl-formButtonPrimary,
 #clerk-signin button[type="submit"] {
-  min-height: 44px !important;
-  background: linear-gradient(135deg, #d4af37 0%, #c8a96e 100%) !important;
+  min-height: 46px !important;
+  background: linear-gradient(135deg, #e8d098 0%, #c8a96e 50%, #b38f4d 100%) !important;
   color: #07080a !important;
   font-size: 13px !important;
-  font-weight: 650 !important;
-  letter-spacing: 0.05em !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
   border: none !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.26) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(200, 169, 110, 0.3) !important;
   cursor: pointer !important;
-  transition: all 0.22s ease !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
 }
 
 #clerk-signin .cl-formButtonPrimary:hover,
 #clerk-signin button[type="submit"]:hover {
-  background: linear-gradient(135deg, #e5c158 0%, #d4af37 100%) !important;
+  background: linear-gradient(135deg, #f0dcab 0%, #d4af37 50%, #c8a96e 100%) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.38) !important;
+  box-shadow: 0 8px 24px rgba(200, 169, 110, 0.45) !important;
+  filter: brightness(1.05) !important;
+}
+
+#clerk-signin .cl-formButtonPrimary:active,
+#clerk-signin button[type="submit"]:active {
+  transform: translateY(0) !important;
 }
 
 #clerk-signin .cl-footerActionLink {
@@ -4114,6 +4130,25 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
   color: #64748b !important;
 }
 
-#clerk-signin .cl-internal-b3fm6y {
-  opacity: 0.55 !important;
+/* Suppress noisy Development mode, Secured by clerk, and internal Clerk footer artifacts */
+#clerk-signin .cl-footer,
+#clerk-signin .cl-footerAction,
+#clerk-signin .cl-footerActionText,
+#clerk-signin .cl-footerActionLink,
+#clerk-signin .cl-internal-b3fm6y,
+#clerk-signin .cl-internal-1dauvpw,
+#clerk-signin [class*="footer"],
+#clerk-signin [class*="development"],
+#clerk-signin [class*="securedBy"],
+#clerk-signin [class*="badge"],
+#clerk-signin a[href*="clerk.com"],
+#clerk-signin p:has(a[href*="clerk.com"]),
+#clerk-signin div[class*="cl-internal"] a {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }

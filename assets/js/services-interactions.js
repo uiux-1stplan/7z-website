@@ -194,6 +194,11 @@
         card.dataset.svcMirrorCard = "true";
         card.setAttribute("role", "listitem");
         card.style.setProperty("--card-angle", `${index * angle}deg`);
+        card.addEventListener("click", e => {
+          if (e.target.closest("button, .z7-video-mute")) return;
+          if (moved) return;
+          goTo(-index * stepAngle());
+        });
         const video = card.querySelector("video");
         if (video) {
           video.muted = true;
@@ -228,10 +233,10 @@
     // Exact Desktop-Only Directional Scroll Lock for Campaign Film Showcase
     let wheelDeltaAccumulator = 0;
     let lastStepTimestamp = 0;
-    const WHEEL_THRESHOLD = 45;
-    const STEP_COOLDOWN = 260;
+    const WHEEL_THRESHOLD = 40;
+    const STEP_COOLDOWN = 240;
 
-    window.addEventListener("wheel", event => {
+    const onShowcaseWheel = event => {
       if (!ring || !cards.length) return;
 
       // Desktop only (>= 1024px) AND fine pointer (mouse / precision trackpad)
@@ -265,6 +270,7 @@
       if (event.deltaY > 0) {
         if (currentIdx < cards.length - 1) {
           event.preventDefault();
+          event.stopImmediatePropagation();
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
           if (wheelDeltaAccumulator >= WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
@@ -282,6 +288,7 @@
       else if (event.deltaY < 0) {
         if (currentIdx > 0) {
           event.preventDefault();
+          event.stopImmediatePropagation();
           wheelDeltaAccumulator += event.deltaY;
           const now = performance.now();
           if (wheelDeltaAccumulator <= -WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
@@ -295,7 +302,10 @@
           wheelDeltaAccumulator = 0;
         }
       }
-    }, { passive: false });
+    };
+
+    window.addEventListener("wheel", onShowcaseWheel, { passive: false, capture: true });
+    document.addEventListener("wheel", onShowcaseWheel, { passive: false, capture: true });
     campaignRail.addEventListener("pointerdown", event => {
       if (!ring || !event.isPrimary || event.button > 0 || event.target.closest("button")) return;
       stopMotion();

@@ -42,6 +42,7 @@
     if (!Lenis || reduced.matches || lowData || !smoothDesktop.matches) return;
     const lenis = new Lenis({ autoRaf: false, lerp: .1, smoothWheel: true, syncTouch: false });
     state.lenis = lenis;
+    window.__lenis = lenis;
     if (gsap) {
       state.tick = time => lenis.raf(time * 1000);
       gsap.ticker.add(state.tick);

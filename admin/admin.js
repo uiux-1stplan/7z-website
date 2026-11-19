@@ -380,21 +380,19 @@
             boxShadow: "0 4px 16px rgba(212,175,55,.25)"
           },
           footer: {
-            background: "transparent",
-            padding: "12px 0 0"
+            display: "none"
+          },
+          footerAction: {
+            display: "none"
           },
           footerActionText: {
-            color: "#64748b",
-            fontSize: "11px"
+            display: "none"
           },
           footerActionLink: {
-            color: "#c8a96e",
-            fontSize: "11px",
-            fontWeight: "550"
+            display: "none"
           },
-
           footerPages: {
-            background: "var(--panel)"
+            display: "none"
           }
         }
       }
