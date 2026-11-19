@@ -259,8 +259,11 @@
             }
 
             #z7-aperture-curtain.active {
-                pointer-events: auto !important;
+                pointer-events: none;
                 visibility: visible !important;
+            }
+            #z7-aperture-curtain.active.is-closed {
+                pointer-events: auto;
             }
 
             .z7-aperture-shutter {
@@ -269,8 +272,11 @@
                 right: 0;
                 height: 50%;
                 will-change: transform;
-                transition: transform 0.28s var(--z7-ease-close);
+                transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
                 z-index: 1;
+            }
+            #z7-aperture-curtain.is-closed .z7-aperture-shutter {
+                transition: transform 0.19s cubic-bezier(0.7, 0, 0.2, 1);
             }
             .z7-aperture-shutter--top {
                 top: 0;
@@ -315,7 +321,7 @@
                 justify-content: center;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.22s ease;
+                transition: opacity 0.16s ease;
             }
 
             #z7-aperture-curtain.is-closed .z7-aperture-center {
@@ -404,21 +410,31 @@
             sessionStorage.removeItem('7z_nav_transitioning');
             curtain.classList.add('active', 'is-closed');
 
-            // Wait for paint, then smoothly open shutters with luxury easing
+            // Immediate single-frame paint, unblock pointer events, 240ms fluid shutter slide
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
+                if (curtain) {
+                    curtain.classList.remove('is-closed');
+                    curtain.style.pointerEvents = 'none';
+
+                    const inDuration = reducedMotion ? 0 : isHeadless ? 20 : 240;
                     setTimeout(() => {
                         if (curtain) {
-                            curtain.classList.remove('is-closed');
-                            // After shutters slide open, unmount active state
-                            setTimeout(() => {
-                                if (curtain) curtain.classList.remove('active');
-                            }, reducedMotion ? 20 : 320);
+                            curtain.classList.remove('active');
+                            curtain.style.pointerEvents = '';
                         }
-                    }, isHeadless ? 20 : 60);
-                });
+                    }, inDuration);
+                }
             });
         }
+
+        const themeObserver = new MutationObserver(() => {
+            const nextTheme = detectTheme();
+            if (curtain) {
+                curtain.classList.remove('theme-dark', 'theme-light');
+                curtain.classList.add('theme-' + nextTheme);
+            }
+        });
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
 
         // -------------------------------------------------------------
         // C. TASK ONE: CINEMATIC ARCHITECTURAL PRELOADER
@@ -530,8 +546,8 @@
                 }
             }, 1800);
 
-            // Navigate when shutters have sealed screen
-            const outDuration = reducedMotion ? 0 : isHeadless ? 30 : 280;
+            // Navigate when shutters have sealed screen (Target: 180-220ms -> 190ms)
+            const outDuration = reducedMotion ? 0 : isHeadless ? 20 : 190;
             setTimeout(() => {
                 clearTimeout(failSafe);
                 window.location.href = link.href;
