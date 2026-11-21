@@ -77,12 +77,13 @@
   if (campaignRail) {
     let ring = null;
     let cards = [];
-    let originalCount = 12;
     let rotation = 0;
     let velocity = 0;
     let motionEnergy = 0.08;
     let frame = 0;
     let targetFrame = 0;
+    let loopFrame = 0;
+    let lastLoopTime = performance.now();
     let lastCoastTime = 0;
     let activePointer = null;
     let startX = 0;
@@ -90,11 +91,13 @@
     let lastX = 0;
     let lastTime = 0;
     let moved = false;
+    let isVideoInteracting = false;
+    let activeInteractingCard = null;
+    const AUTO_SPEED = 4.2; // degrees per second: slow, elegant, cinematic
 
     const modulo = (value, length) => ((value % length) + length) % length;
     const stepAngle = () => 360 / Math.max(cards.length, 1);
     const activeIndex = () => modulo(-Math.round(rotation / stepAngle()), cards.length || 1);
-    const filmIndex = () => modulo(activeIndex(), originalCount || 1);
     const paint = () => {
       if (!ring) return;
       ring.style.setProperty("--mirror-rotation", `${rotation}deg`);
@@ -113,7 +116,7 @@
           card.removeAttribute("aria-current");
         }
       });
-      if (current) current.textContent = String(filmIndex() + 1).padStart(2, "0");
+      if (current) current.textContent = String(selected + 1).padStart(2, "0");
     };
     const stopMotion = () => {
       if (frame) cancelAnimationFrame(frame);
@@ -134,7 +137,13 @@
         rotation = start + (end - start) * eased;
         paint();
         if (t < 1) targetFrame = requestAnimationFrame(tick);
-        else targetFrame = 0;
+        else {
+          targetFrame = 0;
+          while (rotation <= -360) rotation += 360;
+          while (rotation > 0) rotation -= 360;
+          lastLoopTime = performance.now();
+          paint();
+        }
       };
       targetFrame = requestAnimationFrame(tick);
     };
@@ -162,21 +171,69 @@
         motionEnergy = .58 * (1 - t) + .08;
         paint();
         if (t < 1) targetFrame = requestAnimationFrame(tick);
-        else { targetFrame = 0; motionEnergy = .08; paint(); }
+        else {
+          targetFrame = 0;
+          motionEnergy = .08;
+          while (rotation <= -360) rotation += 360;
+          while (rotation > 0) rotation -= 360;
+          lastLoopTime = performance.now();
+          paint();
+        }
       };
       targetFrame = requestAnimationFrame(tick);
     };
+    const pauseAutoLoopForVideo = card => {
+      isVideoInteracting = true;
+      activeInteractingCard = card;
+      card.classList.add("is-interacting");
+      const video = card.querySelector("video");
+      if (video) {
+        if (!video.src && video.dataset.src) {
+          video.src = video.dataset.src;
+          video.load();
+        }
+        if (video.paused) {
+          video.play().catch(() => {});
+        }
+      }
+    };
+    const resumeAutoLoopFromVideo = () => {
+      if (!isVideoInteracting) return;
+      if (activeInteractingCard) {
+        activeInteractingCard.classList.remove("is-interacting");
+      }
+      isVideoInteracting = false;
+      activeInteractingCard = null;
+      lastLoopTime = performance.now();
+    };
     const moveByFilm = direction => {
       stopMotion();
+      resumeAutoLoopFromVideo();
       const nearest = nearestRotation();
       goTo(nearest - direction * stepAngle());
     };
     const resizeRing = () => {
       if (!ring || !cards.length) return;
       const cardWidth = parseFloat(getComputedStyle(cards[0]).width) || cards[0].getBoundingClientRect().width;
-      const radius = Math.max(cardWidth * 2.2, cardWidth / (2 * Math.tan(Math.PI / cards.length)) * 1.08);
+      const radius = Math.max(cardWidth * 1.65, cardWidth / (2 * Math.tan(Math.PI / cards.length)) * 1.15);
       ring.style.setProperty("--mirror-radius", `${radius}px`);
       paint();
+    };
+
+    const autoLoop = now => {
+      const delta = Math.min(64, Math.max(8, now - lastLoopTime)) / 1000;
+      lastLoopTime = now;
+
+      const isBusy = activePointer !== null || targetFrame !== 0 || frame !== 0 || isVideoInteracting || stageEngaged || reduced;
+
+      if (!isBusy) {
+        rotation -= AUTO_SPEED * delta;
+        if (rotation <= -360) rotation += 360;
+        if (rotation > 0) rotation -= 360;
+        paint();
+      }
+
+      loopFrame = requestAnimationFrame(autoLoop);
     };
 
     const setupRing = () => {
@@ -185,17 +242,13 @@
       if (!pending.length) return;
 
       campaignRail.dataset.mirrorReady = "true";
-      originalCount = pending.length;
       ring = document.createElement("div");
       ring.className = "svc-mirror-ring";
       ring.setAttribute("role", "list");
       ring.setAttribute("aria-label", "Campaign film carousel");
 
-      // Duplicate cards to form a continuous 360-degree cylindrical panorama with no visible terminal edge
-      const clones = pending.map(card => card.cloneNode(true));
-      cards = [...pending, ...clones];
-      const totalCards = cards.length;
-      const angle = 360 / totalCards;
+      cards = pending;
+      const angle = 360 / cards.length;
 
       cards.forEach((card, index) => {
         card.classList.remove("media-tile", "z7-spatial");
@@ -204,13 +257,25 @@
         card.setAttribute("role", "listitem");
         card.style.setProperty("--card-angle", `${index * angle}deg`);
         card.addEventListener("click", e => {
-          if (e.target.closest("button, .z7-video-mute")) return;
           if (moved) return;
-          const currentRotIdx = -Math.round(rotation / stepAngle());
-          let diff = index - ((currentRotIdx % totalCards + totalCards) % totalCards);
-          if (diff > totalCards / 2) diff -= totalCards;
-          if (diff < -totalCards / 2) diff += totalCards;
+          if (e.target.closest("button, .z7-video-mute")) {
+            pauseAutoLoopForVideo(card);
+            return;
+          }
+          if (isVideoInteracting && activeInteractingCard === card) {
+            const video = card.querySelector("video");
+            if (video && !video.paused) {
+              video.pause();
+            }
+            resumeAutoLoopFromVideo();
+            return;
+          }
+          const currentRotIdx = modulo(-Math.round(rotation / stepAngle()), cards.length);
+          let diff = index - currentRotIdx;
+          if (diff > cards.length / 2) diff -= cards.length;
+          if (diff < -cards.length / 2) diff += cards.length;
           goTo(nearestRotation() - diff * stepAngle());
+          pauseAutoLoopForVideo(card);
         });
         const video = card.querySelector("video");
         if (video) {
@@ -218,6 +283,11 @@
           video.loop = true;
           video.playsInline = true;
           video.preload = "none";
+          video.addEventListener("ended", () => {
+            if (activeInteractingCard === card) {
+              resumeAutoLoopFromVideo();
+            }
+          });
         }
       });
       if (window.gsap?.killTweensOf) {
@@ -229,12 +299,17 @@
       });
       campaignRail.replaceChildren(ring);
       ring.append(...cards);
-      if (reelTotal) reelTotal.textContent = String(originalCount).padStart(2, "0");
+      if (reelTotal) reelTotal.textContent = String(cards.length).padStart(2, "0");
       resizeRing();
       if ("ResizeObserver" in window) {
         const resizeObserver = new ResizeObserver(resizeRing);
         resizeObserver.observe(campaignRail);
       } else addEventListener("resize", resizeRing, { passive: true });
+
+      if (!loopFrame) {
+        lastLoopTime = performance.now();
+        loopFrame = requestAnimationFrame(autoLoop);
+      }
     };
 
     if ("MutationObserver" in window) {
@@ -254,8 +329,6 @@
     let lockedScrollY = null;
     let completedDownwards = false;
     let completedUpwards = false;
-    let scrollLockStepCount = 0;
-    const SCROLL_LOCK_MAX_STEPS = 11;
 
     // Track scroll position to reset completion flags when exiting stage boundaries
     window.addEventListener("scroll", () => {
@@ -267,7 +340,6 @@
         completedDownwards = false;
         completedUpwards = false;
         stageEngaged = false;
-        scrollLockStepCount = 0;
         lockedScrollY = null;
         if (window.__lenis?.isStopped) window.__lenis.start();
       } else if (rect.bottom < viewCenter - 120) {
@@ -275,7 +347,6 @@
         completedDownwards = true;
         completedUpwards = false;
         stageEngaged = false;
-        scrollLockStepCount = 0;
         lockedScrollY = null;
         if (window.__lenis?.isStopped) window.__lenis.start();
       }
@@ -291,6 +362,7 @@
       // Trackpad horizontal swipe support
       if (Math.abs(event.deltaX) > Math.abs(event.deltaY) * 1.5) {
         stopMotion();
+        resumeAutoLoopFromVideo();
         rotation -= event.deltaX * 0.22;
         paint();
         return;
@@ -322,10 +394,12 @@
           return;
         }
 
+        const currentIdx = activeIndex();
+
         // Snap into dead-center once when first engaging
         if (!stageEngaged) {
           stageEngaged = true;
-          scrollLockStepCount = 0;
+          resumeAutoLoopFromVideo();
           lockedScrollY = Math.round(window.scrollY + centerDiff);
           if (Math.abs(centerDiff) > 4) {
             if (window.__lenis) {
@@ -336,7 +410,7 @@
           }
         }
 
-        if (scrollLockStepCount < SCROLL_LOCK_MAX_STEPS) {
+        if (currentIdx < cards.length - 1) {
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
@@ -349,8 +423,8 @@
           if (wheelDeltaAccumulator >= WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
             lastStepTimestamp = now;
             wheelDeltaAccumulator = 0;
-            scrollLockStepCount++;
-            goTo(nearestRotation() - stepAngle());
+            const nextIdx = Math.min(cards.length - 1, currentIdx + 1);
+            goTo(-nextIdx * stepAngle());
           }
         } else {
           // Reached final card 12: release lock immediately so downward scroll flows naturally
@@ -374,9 +448,13 @@
         // When entering in reverse from below, initialize active card to last card (12)
         if (!stageEngaged) {
           stageEngaged = true;
+          resumeAutoLoopFromVideo();
           completedDownwards = false;
-          scrollLockStepCount = 0;
           lockedScrollY = Math.round(window.scrollY + centerDiff);
+          const cur = activeIndex();
+          if (cur === 0) {
+            goTo(-(cards.length - 1) * stepAngle());
+          }
           if (Math.abs(centerDiff) > 4) {
             if (window.__lenis) {
               window.__lenis.scrollTo(lockedScrollY, { immediate: true });
@@ -386,7 +464,9 @@
           }
         }
 
-        if (scrollLockStepCount < SCROLL_LOCK_MAX_STEPS) {
+        const currentIdx = activeIndex();
+
+        if (currentIdx > 0) {
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
@@ -399,8 +479,8 @@
           if (wheelDeltaAccumulator <= -WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
             lastStepTimestamp = now;
             wheelDeltaAccumulator = 0;
-            scrollLockStepCount++;
-            goTo(nearestRotation() + stepAngle());
+            const prevIdx = Math.max(0, currentIdx - 1);
+            goTo(-prevIdx * stepAngle());
           }
         } else {
           // Reached first card 01: release lock immediately so upward scroll flows naturally
@@ -418,6 +498,7 @@
     campaignRail.addEventListener("pointerdown", event => {
       if (!ring || !event.isPrimary || event.button > 0 || event.target.closest("button")) return;
       stopMotion();
+      resumeAutoLoopFromVideo();
       activePointer = event.pointerId;
       startX = event.clientX;
       startY = event.clientY;
@@ -433,7 +514,7 @@
       const totalX = event.clientX - startX;
       const totalY = event.clientY - startY;
       const now = performance.now();
-      if (!moved && Math.hypot(totalX, totalY) > 6) {
+      if (!moved && Math.hypot(totalX, totalY) > 10) {
         if (Math.abs(totalY) > Math.abs(totalX) * 1.12) { activePointer = null; return; }
         moved = true;
       }
@@ -465,8 +546,21 @@
       else if (event.key === "ArrowRight") { event.preventDefault(); moveByFilm(-1); }
     });
 
+    document.addEventListener("click", e => {
+      if (!isVideoInteracting) return;
+      if (!e.target.closest("#mediaRail, .svc-mirror-stage")) {
+        resumeAutoLoopFromVideo();
+      }
+    });
+
     root.querySelectorAll("[data-reel-prev],[data-reel-next]").forEach(button => button.addEventListener("click", () => {
       moveByFilm(button.hasAttribute("data-reel-next") ? 1 : -1);
     }));
+
+    window.addEventListener("pagehide", () => {
+      if (loopFrame) cancelAnimationFrame(loopFrame);
+      if (frame) cancelAnimationFrame(frame);
+      if (targetFrame) cancelAnimationFrame(targetFrame);
+    }, { once: true });
   }
 })();
