@@ -131,6 +131,21 @@
         (index % 2 ? reverse : forward).append(tile);
       });
 
+      // Duplicate second lane tiles to maintain uninterrupted viewport coverage and mathematical continuity
+      const reverseInitialTiles = [...reverse.children];
+      for (let set = 1; set < 4; set++) {
+        reverseInitialTiles.forEach(tileNode => {
+          const clone = tileNode.cloneNode(true);
+          const clonedVideo = clone.querySelector("video");
+          const origVideo = tileNode.querySelector("video");
+          if (clonedVideo && origVideo) {
+            clonedVideo.dataset.src = origVideo.dataset.src || origVideo.src;
+            clonedVideo.poster = origVideo.poster;
+          }
+          reverse.append(clone);
+        });
+      }
+
       container.dataset.lanesReady = "true";
 
       const triggerAnimation = () => {

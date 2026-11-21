@@ -509,7 +509,8 @@ html[data-z7-core] .service-loop .service-preview { display: none !important; }
 html[data-z7-core] .home-showcase__viewport { overflow: hidden; }
 html[data-z7-core] .home-showcase__track { width: 100%; }
 html[data-z7-core] .home-showcase__lane { display: flex; gap: 12px; width: max-content; padding: 9px 0; }
-html[data-z7-core] .home-showcase__lane:nth-child(2) { margin-inline-start: -10%; }
+html[data-z7-core] .home-showcase__lane:nth-child(2),
+html[data-z7-core] .home-showcase__lane[data-film-lane="reverse"] { margin-inline-start: 0; }
 html[data-z7-core] .home-showcase__lane .media-tile { flex: none; width: clamp(200px,24vw,310px); min-height: 0; overflow: hidden; border-radius: 20px; }
 html[data-z7-core] .home-showcase__lane .media-tile video { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; filter: none !important; opacity: 1 !important; }
 html[data-z7-core] .home-partners__track { gap: 32px; align-items: center; }

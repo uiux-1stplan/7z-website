@@ -335,24 +335,118 @@
     forward.dataset.filmLane = "forward";
     reverse.dataset.filmLane = "reverse";
     tiles.forEach((tile, index) => (index % 2 ? reverse : forward).append(tile));
+    const revTiles = [...reverse.children];
+    for (let set = 1; set < 4; set++) {
+      revTiles.forEach(tile => reverse.append(tile.cloneNode(true)));
+    }
     rail.replaceChildren(forward, reverse);
     rail.dataset.lanesReady = "true";
   }
 
   let filmLaneTriggers = [];
+  let lane2Loop = null;
+  let lane2Observer = null;
+  let lane2ResizeObserver = null;
+
   function animateFilmLanes() {
     const gsap = window.gsap;
     const ScrollTrigger = window.ScrollTrigger;
     const viewport = document.querySelector(".home-showcase__viewport");
     const lanes = [...document.querySelectorAll("[data-film-lane]")];
-    if (!gsap || !ScrollTrigger || !viewport || lanes.length < 2 || reducedMotion.matches || !desktopPointer.matches) return;
+    if (!gsap || !viewport || lanes.length < 2) return;
+
     filmLaneTriggers.forEach(trigger => trigger?.kill?.());
     filmLaneTriggers = [];
-    lanes.forEach((lane, index) => {
-      const direction = index === 0 ? -18 : 18;
-      const tween = gsap.to(lane, { xPercent: direction, ease: "none", scrollTrigger: { trigger: viewport, start: "top bottom", end: "bottom top", scrub: .5, invalidateOnRefresh: true } });
+
+    // Lane 1 (forward): preserve exactly as it currently looks and behaves
+    const lane1 = lanes[0];
+    if (lane1 && ScrollTrigger && !reducedMotion.matches && desktopPointer.matches) {
+      const tween = gsap.to(lane1, {
+        xPercent: -18,
+        ease: "none",
+        scrollTrigger: {
+          trigger: viewport,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: .5,
+          invalidateOnRefresh: true
+        }
+      });
       filmLaneTriggers.push(tween.scrollTrigger);
-    });
+    }
+
+    // Lane 2 (reverse): genuinely seamless, continuous, endless horizontal loop in its existing direction
+    const lane2 = lanes[1];
+    if (!lane2) return;
+
+    if (lane2Loop) { lane2Loop.kill(); lane2Loop = null; }
+    if (lane2Observer) { lane2Observer.disconnect(); lane2Observer = null; }
+    if (lane2ResizeObserver) { lane2ResizeObserver.disconnect(); lane2ResizeObserver = null; }
+
+    const originalCount = 11;
+    const cards = [...lane2.children];
+    if (cards.length < originalCount * 2) return;
+
+    const setupLane2Loop = () => {
+      const setWidth = cards[originalCount].offsetLeft - cards[0].offsetLeft;
+      if (!setWidth) return;
+
+      const currentProgress = lane2Loop ? lane2Loop.progress() : 0;
+      if (lane2Loop) lane2Loop.kill();
+
+      lane2.style.marginInlineStart = "0px";
+      const startX = -2 * setWidth;
+      const endX = -1 * setWidth;
+
+      gsap.set(lane2, { x: startX, force3D: true });
+
+      // Duration: 36s for one complete set provides a luxurious cinematic pace (~98px/s)
+      const duration = 36;
+      lane2Loop = gsap.fromTo(lane2,
+        { x: startX },
+        {
+          x: endX,
+          duration: duration,
+          ease: "none",
+          repeat: -1,
+          paused: true
+        }
+      );
+      lane2Loop.progress(currentProgress);
+
+      if (ScrollTrigger && !reducedMotion.matches) {
+        const velocityTrigger = ScrollTrigger.create({
+          onUpdate: self => {
+            const speed = Math.abs(self.getVelocity());
+            const boost = Math.min(2.5, 1 + speed / 2000);
+            gsap.to(lane2Loop, { timeScale: boost, duration: 0.25, overwrite: true });
+          }
+        });
+        filmLaneTriggers.push(velocityTrigger);
+      }
+
+      if (!lane2Observer && "IntersectionObserver" in window) {
+        lane2Observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting && !document.hidden && !reducedMotion.matches) {
+            lane2Loop?.play();
+          } else {
+            lane2Loop?.pause();
+          }
+        }, { rootMargin: "150px" });
+        lane2Observer.observe(lane2);
+      } else if (!reducedMotion.matches) {
+        lane2Loop.play();
+      }
+    };
+
+    setupLane2Loop();
+
+    if ("ResizeObserver" in window) {
+      lane2ResizeObserver = new ResizeObserver(() => {
+        setupLane2Loop();
+      });
+      lane2ResizeObserver.observe(lane2);
+    }
   }
   window.__7zAnimateFilmLanes = animateFilmLanes;
 
@@ -524,6 +618,9 @@
     if (canvasFrame) cancelAnimationFrame(canvasFrame);
     filmTriggers.forEach(trigger => trigger?.kill());
     filmLaneTriggers.forEach(trigger => trigger?.kill());
+    if (lane2Loop) { lane2Loop.kill(); lane2Loop = null; }
+    if (lane2Observer) { lane2Observer.disconnect(); lane2Observer = null; }
+    if (lane2ResizeObserver) { lane2ResizeObserver.disconnect(); lane2ResizeObserver = null; }
     mediaObservers.forEach(observer => observer.disconnect());
     mediaObservers.clear();
     abort.abort();
