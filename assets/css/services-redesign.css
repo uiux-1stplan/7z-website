@@ -175,6 +175,7 @@ html body .svc-chapter--campaigns {
   padding-inline: max(var(--z7-gutter, 32px), calc((100vw - 1320px) / 2)) !important;
   box-sizing: border-box !important;
   box-shadow: none !important;
+  overflow-x: clip !important;
   transition: background-color .3s ease, color .3s ease;
 }
 html[data-z7-core] .svc-mirror-stage,

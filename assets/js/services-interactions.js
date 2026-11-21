@@ -77,6 +77,7 @@
   if (campaignRail) {
     let ring = null;
     let cards = [];
+    let originalCount = 12;
     let rotation = 0;
     let velocity = 0;
     let motionEnergy = 0.08;
@@ -93,6 +94,7 @@
     const modulo = (value, length) => ((value % length) + length) % length;
     const stepAngle = () => 360 / Math.max(cards.length, 1);
     const activeIndex = () => modulo(-Math.round(rotation / stepAngle()), cards.length || 1);
+    const filmIndex = () => modulo(activeIndex(), originalCount || 1);
     const paint = () => {
       if (!ring) return;
       ring.style.setProperty("--mirror-rotation", `${rotation}deg`);
@@ -105,11 +107,13 @@
       cards.forEach((card, index) => {
         if (index === selected) {
           card.classList.add("is-active");
+          card.setAttribute("aria-current", "true");
         } else {
           card.classList.remove("is-active");
+          card.removeAttribute("aria-current");
         }
       });
-      if (current) current.textContent = String(selected + 1).padStart(2, "0");
+      if (current) current.textContent = String(filmIndex() + 1).padStart(2, "0");
     };
     const stopMotion = () => {
       if (frame) cancelAnimationFrame(frame);
@@ -164,14 +168,13 @@
     };
     const moveByFilm = direction => {
       stopMotion();
-      const current = activeIndex();
-      const next = Math.max(0, Math.min(cards.length - 1, current + direction));
-      goTo(-next * stepAngle());
+      const nearest = nearestRotation();
+      goTo(nearest - direction * stepAngle());
     };
     const resizeRing = () => {
       if (!ring || !cards.length) return;
       const cardWidth = parseFloat(getComputedStyle(cards[0]).width) || cards[0].getBoundingClientRect().width;
-      const radius = Math.max(cardWidth * 1.65, cardWidth / (2 * Math.tan(Math.PI / cards.length)) * 1.15);
+      const radius = Math.max(cardWidth * 2.2, cardWidth / (2 * Math.tan(Math.PI / cards.length)) * 1.08);
       ring.style.setProperty("--mirror-radius", `${radius}px`);
       paint();
     };
@@ -182,12 +185,18 @@
       if (!pending.length) return;
 
       campaignRail.dataset.mirrorReady = "true";
+      originalCount = pending.length;
       ring = document.createElement("div");
       ring.className = "svc-mirror-ring";
       ring.setAttribute("role", "list");
       ring.setAttribute("aria-label", "Campaign film carousel");
-      cards = pending;
-      const angle = 360 / cards.length;
+
+      // Duplicate cards to form a continuous 360-degree cylindrical panorama with no visible terminal edge
+      const clones = pending.map(card => card.cloneNode(true));
+      cards = [...pending, ...clones];
+      const totalCards = cards.length;
+      const angle = 360 / totalCards;
+
       cards.forEach((card, index) => {
         card.classList.remove("media-tile", "z7-spatial");
         card.classList.add("svc-mirror-card");
@@ -197,7 +206,11 @@
         card.addEventListener("click", e => {
           if (e.target.closest("button, .z7-video-mute")) return;
           if (moved) return;
-          goTo(-index * stepAngle());
+          const currentRotIdx = -Math.round(rotation / stepAngle());
+          let diff = index - ((currentRotIdx % totalCards + totalCards) % totalCards);
+          if (diff > totalCards / 2) diff -= totalCards;
+          if (diff < -totalCards / 2) diff += totalCards;
+          goTo(nearestRotation() - diff * stepAngle());
         });
         const video = card.querySelector("video");
         if (video) {
@@ -216,7 +229,7 @@
       });
       campaignRail.replaceChildren(ring);
       ring.append(...cards);
-      if (reelTotal) reelTotal.textContent = String(cards.length).padStart(2, "0");
+      if (reelTotal) reelTotal.textContent = String(originalCount).padStart(2, "0");
       resizeRing();
       if ("ResizeObserver" in window) {
         const resizeObserver = new ResizeObserver(resizeRing);
@@ -241,6 +254,8 @@
     let lockedScrollY = null;
     let completedDownwards = false;
     let completedUpwards = false;
+    let scrollLockStepCount = 0;
+    const SCROLL_LOCK_MAX_STEPS = 11;
 
     // Track scroll position to reset completion flags when exiting stage boundaries
     window.addEventListener("scroll", () => {
@@ -252,6 +267,7 @@
         completedDownwards = false;
         completedUpwards = false;
         stageEngaged = false;
+        scrollLockStepCount = 0;
         lockedScrollY = null;
         if (window.__lenis?.isStopped) window.__lenis.start();
       } else if (rect.bottom < viewCenter - 120) {
@@ -259,6 +275,7 @@
         completedDownwards = true;
         completedUpwards = false;
         stageEngaged = false;
+        scrollLockStepCount = 0;
         lockedScrollY = null;
         if (window.__lenis?.isStopped) window.__lenis.start();
       }
@@ -305,11 +322,10 @@
           return;
         }
 
-        const currentIdx = activeIndex();
-
         // Snap into dead-center once when first engaging
         if (!stageEngaged) {
           stageEngaged = true;
+          scrollLockStepCount = 0;
           lockedScrollY = Math.round(window.scrollY + centerDiff);
           if (Math.abs(centerDiff) > 4) {
             if (window.__lenis) {
@@ -320,7 +336,7 @@
           }
         }
 
-        if (currentIdx < cards.length - 1) {
+        if (scrollLockStepCount < SCROLL_LOCK_MAX_STEPS) {
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
@@ -333,8 +349,8 @@
           if (wheelDeltaAccumulator >= WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
             lastStepTimestamp = now;
             wheelDeltaAccumulator = 0;
-            const nextIdx = Math.min(cards.length - 1, currentIdx + 1);
-            goTo(-nextIdx * stepAngle());
+            scrollLockStepCount++;
+            goTo(nearestRotation() - stepAngle());
           }
         } else {
           // Reached final card 12: release lock immediately so downward scroll flows naturally
@@ -359,11 +375,8 @@
         if (!stageEngaged) {
           stageEngaged = true;
           completedDownwards = false;
+          scrollLockStepCount = 0;
           lockedScrollY = Math.round(window.scrollY + centerDiff);
-          const cur = activeIndex();
-          if (cur === 0) {
-            goTo(-(cards.length - 1) * stepAngle());
-          }
           if (Math.abs(centerDiff) > 4) {
             if (window.__lenis) {
               window.__lenis.scrollTo(lockedScrollY, { immediate: true });
@@ -373,9 +386,7 @@
           }
         }
 
-        const currentIdx = activeIndex();
-
-        if (currentIdx > 0) {
+        if (scrollLockStepCount < SCROLL_LOCK_MAX_STEPS) {
           event.preventDefault();
           event.stopImmediatePropagation();
           if (window.__lenis) window.__lenis.stop();
@@ -388,8 +399,8 @@
           if (wheelDeltaAccumulator <= -WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
             lastStepTimestamp = now;
             wheelDeltaAccumulator = 0;
-            const prevIdx = Math.max(0, currentIdx - 1);
-            goTo(-prevIdx * stepAngle());
+            scrollLockStepCount++;
+            goTo(nearestRotation() + stepAngle());
           }
         } else {
           // Reached first card 01: release lock immediately so upward scroll flows naturally
