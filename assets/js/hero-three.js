@@ -159,7 +159,7 @@ function renderImgFallback(host) {
   img.alt = "7Z Magic";
   img.style.cssText = "width: 100%; height: 100%; object-fit: contain; display: block;";
   host.appendChild(img);
-  host.classList.add("is-webgl-active");
+  host.classList.add("is-fallback");
 }
 
 async function mount(host, mode) {

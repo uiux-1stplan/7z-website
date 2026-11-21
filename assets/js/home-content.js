@@ -133,11 +133,15 @@
 
       container.dataset.lanesReady = "true";
 
-      if (typeof window.__7zAnimateFilmLanes === "function") {
-        window.__7zAnimateFilmLanes();
-      } else if (window.ScrollTrigger) {
-        window.ScrollTrigger.refresh();
-      }
+      const triggerAnimation = () => {
+        if (typeof window.__7zAnimateFilmLanes === "function") {
+          window.__7zAnimateFilmLanes();
+        } else if (window.ScrollTrigger) {
+          window.ScrollTrigger.refresh();
+        }
+      };
+      triggerAnimation();
+      requestAnimationFrame(triggerAnimation);
       return;
     }
 
@@ -436,8 +440,29 @@
       frames.forEach(cancelAnimationFrame);
       $$(".z7-home video,.z7-services-page video").forEach(video => video.pause());
     }, { once: true });
+
+    window.addEventListener("pageshow", () => {
+      const rail = document.getElementById("homeVideoRail");
+      if (rail) {
+        const lanes = rail.querySelectorAll(".home-showcase__lane");
+        if (lanes.length < 2 || !lanes[0].children.length) {
+          renderTiles("#homeVideoRail", selectedWork);
+        } else {
+          if (typeof window.__7zAnimateFilmLanes === "function") {
+            window.__7zAnimateFilmLanes();
+          }
+          if (window.ScrollTrigger) {
+            window.ScrollTrigger.refresh();
+          }
+        }
+      }
+    });
   }
-  if (document.readyState === "loading" && !document.getElementById("homeVideoRail")) {
+
+  if (document.getElementById("homeVideoRail")) {
+    renderTiles("#homeVideoRail", selectedWork);
+  }
+  if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot, { once: true });
   } else {
     boot();
