@@ -163,6 +163,27 @@
       ]
     },
     {
+      "source": "/media/uploads/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://7z-magic.com"
+        }
+      ]
+    },
+    {
       "source": "/media/(.*)",
       "headers": [
         {

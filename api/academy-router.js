@@ -9,6 +9,8 @@ import {
   getAdminData,
   handleAdminAction
 } from "./academy-service.mjs";
+import { requireAdmin } from "../lib/portal-runtime.mjs";
+import { toWebRequest, sendWebResponse } from "../lib/vercel-api.mjs";
 
 export const config = {
   api: {
@@ -65,11 +67,25 @@ export default async function handler(req, res) {
     }
 
     if (searchPath.includes("admin-data") && req.method === "GET") {
+      let gate;
+      try {
+        gate = await requireAdmin(toWebRequest(req));
+        if (!gate.ok) return sendWebResponse(res, gate.response);
+      } catch (authErr) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
       const result = await getAdminData();
       return res.status(200).json(result);
     }
 
     if ((searchPath.includes("admin-action") || Boolean(req.body?.action)) && req.method === "POST") {
+      let gate;
+      try {
+        gate = await requireAdmin(toWebRequest(req));
+        if (!gate.ok) return sendWebResponse(res, gate.response);
+      } catch (authErr) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
       const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
       const result = await handleAdminAction(body.action, body);
       return res.status(200).json(result);
