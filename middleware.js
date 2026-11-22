@@ -5,9 +5,11 @@
 
 import {
   ADMIN_COOKIE_NAME,
+  PRIVATE_RESOURCES,
   readCookie,
   scopeForPath,
-  verifyAdminSession
+  verifyAdminSession,
+  verifySession
 } from "./lib/private-access.js";
 
 
@@ -115,6 +117,18 @@ async function databaseAuthorized(
       );
     }
 
+    const bypass =
+      request.headers.get(
+        "x-vercel-protection-bypass"
+      );
+
+    if (bypass) {
+      headers.set(
+        "x-vercel-protection-bypass",
+        bypass
+      );
+    }
+
 
     const response =
       await fetch(
@@ -199,10 +213,49 @@ export default async function middleware(
 
 
   /*
-   * Otherwise permission comes from:
-   * Clerk Admin OR unified Neon client access.
+   * 1. Check direct scoped HMAC session cookie.
    */
-  if (!legacyAdmin) {
+  const resource =
+    PRIVATE_RESOURCES[scope];
+
+  const sessionSecret =
+    process.env
+      .PRIVATE_ACCESS_SESSION_SECRET;
+
+  const sessionToken =
+    resource?.cookieName
+      ? readCookie(
+          cookieHeader,
+          resource.cookieName
+        )
+      : null;
+
+  let directSessionValid =
+    false;
+
+  if (
+    resource?.cookieName &&
+    sessionSecret &&
+    sessionToken
+  ) {
+
+    directSessionValid =
+      await verifySession(
+        sessionToken,
+        scope,
+        sessionSecret
+      );
+  }
+
+
+  /*
+   * 2. Otherwise permission comes from:
+   * Legacy Admin, Clerk Admin, OR unified Neon client access.
+   */
+  if (
+    !legacyAdmin &&
+    !directSessionValid
+  ) {
 
     const authorized =
       await databaseAuthorized(
@@ -248,6 +301,33 @@ export default async function middleware(
   }
 
 
+  if (
+    scope === "fcs" &&
+    (
+      url.pathname ===
+        "/FCS" ||
+      url.pathname ===
+        "/FCS/" ||
+      url.pathname ===
+        "/fcs" ||
+      url.pathname ===
+        "/fcs/" ||
+      url.pathname ===
+        "/fcs/index" ||
+      url.pathname ===
+        "/fcs/index.html"
+    )
+  ) {
+
+    return rewrite(
+      new URL(
+        "/FCS/index",
+        request.url
+      )
+    );
+  }
+
+
   return next();
 }
 
@@ -270,6 +350,11 @@ export const config = {
 
     "/oman-market-partnership",
     "/oman-market-partnership/:path*",
+
+    "/FCS",
+    "/FCS/:path*",
+    "/fcs",
+    "/fcs/:path*",
 
     "/api/private-documents/blueprint"
   ]

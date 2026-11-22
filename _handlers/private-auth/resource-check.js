@@ -121,6 +121,19 @@ export default async function handler(
     }
 
 
+    if (
+      Array.isArray(access.legacyScopes) &&
+      access.legacyScopes.includes(scope)
+    ) {
+
+      return res
+        .status(200)
+        .json({
+          authorized: true
+        });
+    }
+
+
     const allowed =
       await getAllowedLegacyResourceScopes(
         access.clientKeys
