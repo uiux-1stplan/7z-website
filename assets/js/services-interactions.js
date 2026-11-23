@@ -224,7 +224,7 @@
       const delta = Math.min(64, Math.max(8, now - lastLoopTime)) / 1000;
       lastLoopTime = now;
 
-      const isBusy = activePointer !== null || targetFrame !== 0 || frame !== 0 || isVideoInteracting || stageEngaged || reduced;
+      const isBusy = activePointer !== null || targetFrame !== 0 || frame !== 0 || isVideoInteracting || reduced;
 
       if (!isBusy) {
         rotation -= AUTO_SPEED * delta;
@@ -318,183 +318,7 @@
       setupRing();
     } else setupRing();
 
-    // Exact Desktop-Only Directional Scroll Lock for Campaign Film Showcase
-    let wheelDeltaAccumulator = 0;
-    let lastStepTimestamp = 0;
-    const WHEEL_THRESHOLD = 30;
-    const STEP_COOLDOWN = 180;
-
-    // Authoritative Bidirectional Scroll-Lock State Machine
-    let stageEngaged = false;
-    let lockedScrollY = null;
-    let completedDownwards = false;
-    let completedUpwards = false;
-
-    // Track scroll position to reset completion flags when exiting stage boundaries
-    window.addEventListener("scroll", () => {
-      if (!campaignStage) return;
-      const rect = campaignStage.getBoundingClientRect();
-      const viewCenter = window.innerHeight / 2;
-      if (rect.top > viewCenter + 120) {
-        // Completely above stage
-        completedDownwards = false;
-        completedUpwards = false;
-        stageEngaged = false;
-        lockedScrollY = null;
-        if (window.__lenis?.isStopped) window.__lenis.start();
-      } else if (rect.bottom < viewCenter - 120) {
-        // Completely below stage
-        completedDownwards = true;
-        completedUpwards = false;
-        stageEngaged = false;
-        lockedScrollY = null;
-        if (window.__lenis?.isStopped) window.__lenis.start();
-      }
-    }, { passive: true });
-
-    const onShowcaseWheel = event => {
-      if (!ring || !cards.length) return;
-
-      // Desktop only (>= 1024px) AND fine pointer (mouse / precision trackpad)
-      const isDesktop = window.innerWidth >= 1024 && window.matchMedia("(pointer: fine)").matches;
-      if (!isDesktop) return;
-
-      // Trackpad horizontal swipe support
-      if (Math.abs(event.deltaX) > Math.abs(event.deltaY) * 1.5) {
-        stopMotion();
-        resumeAutoLoopFromVideo();
-        rotation -= event.deltaX * 0.22;
-        paint();
-        return;
-      }
-
-      if (!campaignStage) return;
-      const rect = campaignStage.getBoundingClientRect();
-      const stageCenter = (rect.top + rect.bottom) / 2;
-      const viewCenter = window.innerHeight / 2;
-      const centerDiff = stageCenter - viewCenter;
-
-      // Scope & Boundaries: Activate when the stage is in the framing zone
-      const inStageZone = rect.top < viewCenter + 120 && rect.bottom > viewCenter - 120 && Math.abs(centerDiff) < 280;
-      if (!inStageZone) {
-        wheelDeltaAccumulator = 0;
-        stageEngaged = false;
-        lockedScrollY = null;
-        if (window.__lenis?.isStopped) window.__lenis.start();
-        return;
-      }
-
-      // 1. SCROLLING DOWN (deltaY > 0): advance LEFT (Film 01 -> ... -> Film 12)
-      if (event.deltaY > 0) {
-        if (completedDownwards) {
-          // Already finished all cards downwards; let scroll pass naturally to content below
-          stageEngaged = false;
-          wheelDeltaAccumulator = 0;
-          if (window.__lenis?.isStopped) window.__lenis.start();
-          return;
-        }
-
-        const currentIdx = activeIndex();
-
-        // Snap into dead-center once when first engaging
-        if (!stageEngaged) {
-          stageEngaged = true;
-          resumeAutoLoopFromVideo();
-          lockedScrollY = Math.round(window.scrollY + centerDiff);
-          if (Math.abs(centerDiff) > 4) {
-            if (window.__lenis) {
-              window.__lenis.scrollTo(lockedScrollY, { immediate: true });
-            } else {
-              window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
-            }
-          }
-        }
-
-        if (currentIdx < cards.length - 1) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          if (window.__lenis) window.__lenis.stop();
-          if (lockedScrollY !== null && Math.abs(window.scrollY - lockedScrollY) > 2) {
-            window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
-          }
-
-          wheelDeltaAccumulator += event.deltaY;
-          const now = performance.now();
-          if (wheelDeltaAccumulator >= WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
-            lastStepTimestamp = now;
-            wheelDeltaAccumulator = 0;
-            const nextIdx = Math.min(cards.length - 1, currentIdx + 1);
-            goTo(-nextIdx * stepAngle());
-          }
-        } else {
-          // Reached final card 12: release lock immediately so downward scroll flows naturally
-          completedDownwards = true;
-          stageEngaged = false;
-          lockedScrollY = null;
-          wheelDeltaAccumulator = 0;
-          if (window.__lenis?.isStopped) window.__lenis.start();
-        }
-      }
-      // 2. SCROLLING UP (deltaY < 0): reverse RIGHT (Film 12 -> ... -> Film 01)
-      else if (event.deltaY < 0) {
-        if (completedUpwards) {
-          // Already reversed to card 01; let scroll pass naturally to content above
-          stageEngaged = false;
-          wheelDeltaAccumulator = 0;
-          if (window.__lenis?.isStopped) window.__lenis.start();
-          return;
-        }
-
-        // When entering in reverse from below, initialize active card to last card (12)
-        if (!stageEngaged) {
-          stageEngaged = true;
-          resumeAutoLoopFromVideo();
-          completedDownwards = false;
-          lockedScrollY = Math.round(window.scrollY + centerDiff);
-          const cur = activeIndex();
-          if (cur === 0) {
-            goTo(-(cards.length - 1) * stepAngle());
-          }
-          if (Math.abs(centerDiff) > 4) {
-            if (window.__lenis) {
-              window.__lenis.scrollTo(lockedScrollY, { immediate: true });
-            } else {
-              window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
-            }
-          }
-        }
-
-        const currentIdx = activeIndex();
-
-        if (currentIdx > 0) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          if (window.__lenis) window.__lenis.stop();
-          if (lockedScrollY !== null && Math.abs(window.scrollY - lockedScrollY) > 2) {
-            window.scrollTo({ top: lockedScrollY, behavior: 'instant' });
-          }
-
-          wheelDeltaAccumulator += event.deltaY;
-          const now = performance.now();
-          if (wheelDeltaAccumulator <= -WHEEL_THRESHOLD && (now - lastStepTimestamp) > STEP_COOLDOWN) {
-            lastStepTimestamp = now;
-            wheelDeltaAccumulator = 0;
-            const prevIdx = Math.max(0, currentIdx - 1);
-            goTo(-prevIdx * stepAngle());
-          }
-        } else {
-          // Reached first card 01: release lock immediately so upward scroll flows naturally
-          completedUpwards = true;
-          stageEngaged = false;
-          lockedScrollY = null;
-          wheelDeltaAccumulator = 0;
-          if (window.__lenis?.isStopped) window.__lenis.start();
-        }
-      }
-    };
-
-    window.addEventListener("wheel", onShowcaseWheel, { passive: false, capture: true });
-    document.addEventListener("wheel", onShowcaseWheel, { passive: false, capture: true });
+    // Unconstrained Smooth Page Scrolling — Zero Scroll-Lock / Zero Wheel Interception
     campaignRail.addEventListener("pointerdown", event => {
       if (!ring || !event.isPrimary || event.button > 0 || event.target.closest("button")) return;
       stopMotion();
@@ -506,7 +330,6 @@
       lastTime = performance.now();
       velocity = 0;
       moved = false;
-      campaignRail.setPointerCapture?.(event.pointerId);
     });
     campaignRail.addEventListener("pointermove", event => {
       if (activePointer !== event.pointerId) return;
@@ -515,8 +338,15 @@
       const totalY = event.clientY - startY;
       const now = performance.now();
       if (!moved && Math.hypot(totalX, totalY) > 10) {
-        if (Math.abs(totalY) > Math.abs(totalX) * 1.12) { activePointer = null; return; }
+        if (Math.abs(totalY) > Math.abs(totalX) * 1.12) {
+          if (campaignRail.hasPointerCapture?.(event.pointerId)) {
+            campaignRail.releasePointerCapture?.(event.pointerId);
+          }
+          activePointer = null;
+          return;
+        }
         moved = true;
+        campaignRail.setPointerCapture?.(event.pointerId);
       }
       if (moved) {
         campaignRail.classList.add("is-dragging");
@@ -530,6 +360,9 @@
     });
     const endDrag = event => {
       if (activePointer !== event.pointerId) return;
+      if (campaignRail.hasPointerCapture?.(event.pointerId)) {
+        campaignRail.releasePointerCapture?.(event.pointerId);
+      }
       activePointer = null;
       campaignRail.classList.remove("is-dragging");
       if (moved && Math.abs(velocity) > .55 && !reduced) {
