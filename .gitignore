@@ -35,3 +35,6 @@ _video_work/
 /_CLEAN_BASELINES/
 /_SAFE_BACKUPS/
 /scratch/
+*.xlsx
+7Z_MAGIC_LEGACY_URL_MAPPING_AND_CPANEL_GUIDE.xlsx
+
