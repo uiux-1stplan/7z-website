@@ -198,8 +198,8 @@
       price_per_channel: "Price Per Channel",
       price_custom_project: "Custom Project Pricing",
       price_contact_us: "Contact / Request Inventory",
-      btn_inquire: "Inquire & Reserve ->",
-      btn_start_campaign: "Start Campaign ->",
+      btn_inquire: "Inquire & Reserve",
+      btn_start_campaign: "Start Campaign",
       p15_title: "Smart Camera Surveillance AI Agent",
       p15_desc:
         "Predictive theft detection for homes, villas, and gated compounds. AI analyzes camera feeds in real-time, detects suspicious behavior patterns, alerts security, and auto-logs incidents with evidence clips.",
@@ -242,24 +242,24 @@
       badge_fullstack: "Full-Stack AI Speed",
       early_access_sub: "Expected Launch Pricing",
       lifetime_perk: "(Lifetime 50% for VIPs)",
-      btn_join_waitlist: "Join VIP Waitlist & Claim 50% ->",
+      btn_join_waitlist: "Join VIP Waitlist & Claim 50%",
       plan_monthly: "Monthly Subscription",
-      btn_demo: "Order / Details ->",
-      btn_start_now: "Start Converting ->",
+      btn_demo: "Order / Details",
+      btn_start_now: "Start Converting",
       price_public: "Public Price",
       btn_instant_download: "Instant Free Download",
       license_onetime: "One-Time License",
-      btn_get_tool: "Get License ->",
+      btn_get_tool: "Get License",
       vip_seats: "Limited Seats",
-      btn_waitlist_action: "Join Waitlist ->",
+      btn_waitlist_action: "Join Waitlist",
       course_fee: "Enrollment Tuition",
-      btn_details_enroll: "Register & Enroll ->",
+      btn_details_enroll: "Register & Enroll",
       btn_full_syllabus: "Full Syllabus",
       bundle_all: "Full Suite",
-      btn_whop_buy: "Instant Access on Whop ->",
+      btn_whop_buy: "Instant Access on Whop",
       btn_toggle_guides: "View 5 Practical Guides on Whop",
       license_dev: "Developer License",
-      btn_download_pack: "Get Pack & Enroll ->",
+      btn_download_pack: "Get Pack & Enroll",
       no_results_title: "No Matching Products Found",
       no_results_sub: "Try searching with other terms or clear your category filter.",
       btn_reset_filters: "Reset Filters",
@@ -776,7 +776,7 @@
       }
     });
 
-    if (window.innerWidth < 640) updateMobile3DCarousel();
+    updateMobile3DCarousel();
     updateModalPricingUI();
     updateSubmitButtonLabel();
   }
@@ -971,9 +971,15 @@
   }
 
   function updateMobile3DCarousel() {
-    if (window.innerWidth >= 640) return;
     const grid = document.getElementById("productsGrid");
     if (!grid) return;
+    // 3D Coverflow is completely disabled on screens < 1024px
+    if (window.innerWidth < 1024) {
+      grid.querySelectorAll(".product-item").forEach((card) => {
+        card.classList.remove("card-active", "card-prev", "card-next");
+      });
+      return;
+    }
     const visibleCards = getVisibleCards();
     if (!visibleCards.length) return;
 
@@ -1009,7 +1015,7 @@
   }
 
   function prevMobileCard() {
-    if (window.innerWidth >= 640) return;
+    if (window.innerWidth < 1024) return;
     const cards = getVisibleCards();
     if (cards.length && currentMobileCardIndex > 0) {
       currentMobileCardIndex--;
@@ -1018,7 +1024,7 @@
   }
 
   function nextMobileCard() {
-    if (window.innerWidth >= 640) return;
+    if (window.innerWidth < 1024) return;
     const cards = getVisibleCards();
     if (cards.length && currentMobileCardIndex < cards.length - 1) {
       currentMobileCardIndex++;
@@ -1799,7 +1805,7 @@
       pGrid.addEventListener(
         "scroll",
         () => {
-          if (window.innerWidth >= 640 || mobile3DTicking) return;
+          if (window.innerWidth < 1024 || mobile3DTicking) return;
           mobile3DTicking = true;
           window.requestAnimationFrame(() => {
             updateMobile3DCarousel();

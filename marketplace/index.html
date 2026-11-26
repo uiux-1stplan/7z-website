@@ -479,7 +479,7 @@
       </div>
 
       <!-- 7Z Mobile 3D Carousel Navigation HUD (sm:hidden = desktop invisible) -->
-      <div class="sm:hidden flex items-center justify-between mb-4 px-1" id="mobileCarouselHud">
+      <div class="hidden items-center justify-between mb-4 px-1" id="mobileCarouselHud">
         <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/90 dark:bg-white/[0.06] border border-black/5 dark:border-white/10 shadow-sm backdrop-blur-md">
           <span class="w-2 h-2 rounded-full bg-azure animate-pulse"></span>
           <span id="mobileCardCounter" class="text-[11px] font-bold font-mono text-slate-800 dark:text-slate-200">بطاقة 1 من 20</span>
@@ -1566,7 +1566,7 @@
   </button>
 
   <!-- MOBILE FLOATING ACTION DOCK (Quick Access) -->
-  <div class="fixed safe-dock inset-x-3 z-30 sm:hidden bg-white/95 dark:bg-black/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-2xl p-2 shadow-2xl flex items-center justify-around text-center">
+  <div id="mobileBottomDock" class="fixed safe-dock inset-x-3 z-30 sm:hidden bg-white/95 dark:bg-black/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-2xl p-2 shadow-2xl flex items-center justify-around text-center">
     <a href="#store-section" class="flex-1 py-1.5 flex flex-col items-center gap-1 text-[10px] font-bold text-slate-800 dark:text-slate-200">
       <svg class="w-4 h-4 glossy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4zm10 0h7v7h-7V4zm-10 10h7v7H4v-7zm10 0h7v7h-7v-7z"/></svg>
       <span data-i18n="mob_catalog">Catalog</span>
