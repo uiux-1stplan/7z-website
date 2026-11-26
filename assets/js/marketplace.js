@@ -159,14 +159,14 @@
       bento_cta: "Request Preview",
       badge_new_release: "New 2026 Release",
       announcement_text: "Claim the Free 5000+ AI Prompt Vault for Architects, Creators & Builders today!",
-      announcement_cta: "Download Free ->",
-      brand_sub: "Autonomous AI & Creative Studio",
-      nav_store: "Digital Catalog",
+      announcement_cta: "Download Free",
+      brand_sub: "DIGITAL MARKETPLACE",
+      nav_store: "Catalog (28)",
       nav_agents: "AI Agents",
-      nav_academy: "Academy & Masterclasses",
-      nav_books: "Handbooks ($25)",
+      nav_academy: "Academy",
+      nav_books: "Handbooks",
       nav_enterprise: "Custom Enterprise",
-      nav_main_home: "Main Site",
+      nav_main_home: "Main Site ↗",
       btn_consult: "Book Advisory",
       hero_pill: "Autonomous AI Agents · Production Studio · Masterclasses",
       hero_subtitle:
@@ -376,15 +376,15 @@
       bento_cta: "طلب معاينة حية",
       badge_new_release: "إصدار 2026 الرسمي المعتمد",
       announcement_text: "هدية مجانية: حمّل الآن بنك الأوامر الشامل (أكثر من 5,000 برومبت هندسي وسينمائي) فوراً!",
-      announcement_cta: "تحميل مجاناً ←",
-      brand_sub: "أنظمة الأتمتة واستوديو الإنتاج الرقمي",
-      nav_store: "المتجر والحلول",
+      announcement_cta: "تحميل مجاناً",
+      brand_sub: "المتجر الرقمي",
+      nav_store: "الكتالوج (28)",
       nav_agents: "وكلاء الأتمتة",
-      nav_academy: "دورات الأكاديمية",
-      nav_books: "الحقيبة الرقمية ($25)",
+      nav_academy: "الأكاديمية",
+      nav_books: "الأدلة الرقمية",
       nav_enterprise: "خدمات الشركات",
-      nav_main_home: "الموقع الرئيسي",
-      btn_consult: "استشارة سريعة",
+      nav_main_home: "الموقع الرئيسي ↗",
+      btn_consult: "احجز استشارة",
       hero_pill: "وكلاء الأتمتة الذاتية · استوديو الإنتاج · أكاديمية المحتوى",
       hero_subtitle:
         "منصتك العربية المتكاملة: امتلك أنظمة ذكاء اصطناعي ترسم مخططات AutoCAD و 3D MAX في دقائق، وتمنتج فيديوهاتك تلقائياً، أو احترف أدوات العصر عبر أكاديميتنا لتضاعف أرباحك وإنتاجيتك.",
@@ -1744,6 +1744,33 @@
     document.getElementById("themeToggleBtn")?.addEventListener("click", toggleTheme);
     document.getElementById("soundToggleBtn")?.addEventListener("click", toggleVideoSound);
     document.getElementById("btnTourReplay")?.addEventListener("click", startTour);
+    document.getElementById("mobileTourBtn")?.addEventListener("click", () => {
+      const drawer = document.getElementById("mobileNavDrawer");
+      const toggle = document.getElementById("mobileMenuToggle");
+      if (drawer) {
+        drawer.classList.add("hidden");
+        drawer.setAttribute("aria-hidden", "true");
+      }
+      if (toggle) toggle.setAttribute("aria-expanded", "false");
+      startTour();
+    });
+    const mobileToggle = document.getElementById("mobileMenuToggle");
+    const mobileDrawer = document.getElementById("mobileNavDrawer");
+    if (mobileToggle && mobileDrawer) {
+      mobileToggle.addEventListener("click", () => {
+        const isOpen = !mobileDrawer.classList.contains("hidden");
+        mobileDrawer.classList.toggle("hidden", isOpen);
+        mobileDrawer.setAttribute("aria-hidden", String(isOpen));
+        mobileToggle.setAttribute("aria-expanded", String(!isOpen));
+      });
+      mobileDrawer.querySelectorAll("a, button").forEach((el) => {
+        el.addEventListener("click", () => {
+          mobileDrawer.classList.add("hidden");
+          mobileDrawer.setAttribute("aria-hidden", "true");
+          mobileToggle.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
     document.querySelectorAll("[data-skip-tour]").forEach((el) => el.addEventListener("click", finishTour));
     document.getElementById("searchInput")?.addEventListener("input", applyProductFilters);
     document.getElementById("resetFiltersBtn")?.addEventListener("click", () => {
@@ -1754,15 +1781,6 @@
     document.getElementById("currencySelector")?.addEventListener("change", (e) => changeCurrency(e.currentTarget.value));
     document.getElementById("prevMobileCardBtn")?.addEventListener("click", prevMobileCard);
     document.getElementById("nextMobileCardBtn")?.addEventListener("click", nextMobileCard);
-
-    document.getElementById("companyProfileDownloadBtn")?.addEventListener("click", () => {
-      showToast(
-        currentLang === "ar" ? "جاري تحميل البروفايل التعريفي!" : "Downloading Company Profile!",
-        currentLang === "ar"
-          ? "يتم الآن حفظ ملف 7Z Company Profile (PDF) على جهازك."
-          : "Saving 7Z_Company_Profile_2026_Landscape_Edition.pdf to your device."
-      );
-    });
 
     document.getElementById("pmTabCliq")?.addEventListener("click", () => setPayMethod("cliq"));
     document.getElementById("pmTabWhop")?.addEventListener("click", () => setPayMethod("whop"));

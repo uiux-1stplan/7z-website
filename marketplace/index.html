@@ -51,103 +51,125 @@
   <!-- Ambient Light Mesh Background -->
   <div id="ambientMesh" class="fixed inset-0 pointer-events-none -z-10 bg-mesh-light transition-all duration-500"></div>
 
-  <!-- Top Announcement Bar (Human, Clear, Free Value Hook) -->
-  <aside aria-label="Announcement" class="relative z-50 bg-slate-100 dark:bg-black/60 border-b border-black/5 dark:border-white/10 text-xs py-2 px-4 transition-colors">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold text-[11px]">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+  <!-- Top Announcement Bar (Compact 36px Editorial) -->
+  <aside aria-label="Announcement" class="luxury-announcement">
+    <div class="luxury-announcement__inner">
+      <div class="luxury-announcement__left">
+        <span class="luxury-announcement__badge">
+          <span class="luxury-announcement__dot" aria-hidden="true"></span>
           <span data-i18n="badge_new_release">New 2026 Release</span>
         </span>
-        <span class="font-medium text-slate-600 dark:text-slate-300 text-xs hidden sm:inline" data-i18n="announcement_text">
-          Claim the Free 5000+ AI Prompt Vault for Architects, Creators & Builders today!
+        <span class="luxury-announcement__text" data-i18n="announcement_text">
+          Claim the Free 5000+ AI Prompt Vault for Architects, Creators &amp; Builders today!
         </span>
       </div>
-      <button type="button" data-open-lead-magnet="prompt-vault" class="inline-flex items-center gap-1 font-bold text-azure hover:underline transition text-xs">
-        <span data-i18n="announcement_cta">Download Free</span> <span class="inline-block transform rtl:rotate-180">&rarr;</span>
+      <button type="button" data-open-lead-magnet="prompt-vault" class="luxury-announcement__cta">
+        <span data-i18n="announcement_cta">Download Free</span>
+        <span class="inline-block transform rtl:rotate-180" aria-hidden="true">&rarr;</span>
       </button>
     </div>
   </aside>
 
-  <!-- Sticky Navbar (Clean Apple Glass with Official 7Z Logo) -->
-  <header class="sticky top-0 z-40 transition-colors duration-300 glass-nav-light" id="mainHeader">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
-      
-      <!-- Brand Identity with Official 7Z Logo -->
-      <a href="#" class="flex items-center gap-3.5 group">
-        <!-- Official 7Z Geometric Vector Logo -->
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-950 dark:bg-white text-white dark:text-slate-950 p-2 flex items-center justify-center shadow-md transition group-hover:scale-105">
-          <svg viewBox="0 0 525.5 582.0" class="w-full h-full" role="img" aria-label="7Z Logo" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" fill-rule="evenodd" d="M524.50 119.50 L408.25 119.50 L407.25 120.25 L384.50 160.75 L384.50 162.25 L480.00 162.25 L480.50 162.75 L480.25 163.75 L335.00 346.25 L333.50 347.00 L313.25 351.25 L312.75 350.75 L313.25 349.75 L319.00 343.25 L345.75 310.00 L349.75 304.25 L381.75 265.00 L388.25 256.00 L450.75 177.50 L376.00 177.50 L375.00 178.25 L371.25 186.00 L371.75 186.50 L379.75 186.50 L392.25 205.50 L391.00 206.25 L360.00 206.50 L359.00 207.00 L348.25 226.50 L348.25 227.50 L348.75 227.75 L356.50 227.50 L357.25 228.25 L356.00 230.25 L332.00 259.75 L331.00 261.75 L296.00 304.50 L289.25 313.75 L258.25 352.00 L256.50 355.00 L220.50 399.50 L218.25 403.00 L190.50 437.00 L172.25 460.75 L115.00 532.25 L115.00 581.25 L115.50 581.75 L445.25 581.75 L446.00 581.00 L462.00 551.50 L474.00 528.00 L490.75 497.50 L495.00 488.50 L509.75 461.75 L523.75 435.00 L524.75 432.25 L523.25 432.50 L475.50 461.00 L442.00 480.00 L437.50 482.00 L283.00 482.00 L282.00 481.00 L524.75 175.75 L525.25 162.00 L525.25 120.75 Z M282.75 390.00 L283.25 390.50 L282.00 411.75 L281.00 414.50 L222.00 488.25 L217.25 495.00 L198.25 518.25 L193.75 524.50 L196.75 525.00 L284.50 524.75 L339.75 537.25 L342.25 538.50 L340.75 539.00 L165.00 539.00 L164.25 538.25 L164.50 537.50 L177.50 522.00 L198.75 495.25 L204.25 487.50 L217.75 471.25 L236.00 448.25 L237.00 446.25 L271.50 403.75 L276.00 397.50 Z M324.75 358.00 L325.25 359.00 L297.75 393.00 L293.75 397.75 L291.75 399.25 L291.50 396.00 L293.00 376.50 L296.25 372.00 L303.25 364.00 L306.25 362.25 Z M430.25 186.50 L430.75 187.50 L404.25 222.00 L376.00 257.00 L375.75 255.75 L385.75 231.50 L395.50 205.50 L395.00 203.25 L389.00 193.75 L386.50 187.25 L387.25 186.50 Z M438.25 0.25 L0.75 0.00 L0.00 0.50 L0.00 161.50 L0.50 162.00 L107.50 162.00 L108.25 161.50 L108.25 131.50 L109.50 130.25 L250.00 130.25 L250.50 130.75 L250.50 131.75 L205.00 213.00 L204.25 215.25 L183.00 252.75 L178.00 262.75 L156.50 300.75 L152.00 310.00 L138.25 334.00 L125.50 358.25 L60.75 474.75 L61.00 475.75 L119.50 475.50 L150.75 435.50 L215.25 355.25 L219.75 348.75 L289.75 262.00 L291.25 259.25 L308.00 238.25 L320.50 215.75 L324.25 208.00 L345.75 170.25 L348.50 164.25 L397.75 75.50 L400.25 70.00 L420.25 34.75 L425.25 24.75 L438.50 1.00 Z M312.25 70.00 L311.25 71.50 L306.50 75.50 L289.75 87.25 L205.75 87.25 L205.00 86.50 L209.75 82.00 L218.75 75.00 L220.75 72.75 L225.50 69.50 L311.25 69.25 Z M364.25 47.00 L364.50 47.75 L352.25 69.25 L349.00 76.00 L302.50 159.75 L297.50 169.75 L271.25 217.50 L239.00 256.75 L229.00 270.00 L211.00 291.50 L210.75 290.75 L221.00 273.00 L234.00 248.25 L252.75 215.00 L254.75 210.50 L274.75 175.50 L283.50 158.50 L322.50 88.75 L322.50 87.75 L321.75 87.25 L306.00 87.25 L305.25 86.25 L320.50 75.50 L325.00 71.75 L363.00 47.25 Z M43.00 118.00 L43.00 44.00 L44.00 42.75 L350.50 42.75 L351.25 43.25 L350.75 44.25 L344.50 47.75 L325.75 60.00 L223.00 60.00 L215.75 65.25 L206.25 73.00 L203.75 75.75 L188.75 87.25 L66.50 87.25 L66.00 88.00 L66.00 118.25 L64.50 119.25 L44.00 119.50 Z"/>
-          </svg>
-        </div>
-        <div>
-          <div class="font-bold text-sm sm:text-base tracking-wide text-slate-900 dark:text-white flex items-center gap-1.5">
-            <span>SEVEN Z STUDIO</span>
-          </div>
-          <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium -mt-0.5" data-i18n="brand_sub">
-            Autonomous AI & Creative Studio
-          </div>
-        </div>
-      </a>
+  <!-- Sticky Navbar (72px Dark-Luxury Editorial) -->
+  <header class="luxury-navbar glass-nav-light" id="mainHeader">
+    <div class="luxury-navbar__inner">
 
-      <!-- Desktop Nav Links -->
-      <nav class="hidden lg:flex items-center gap-8 text-xs font-semibold text-slate-600 dark:text-slate-300">
-        <a href="#store-section" class="hover:text-azure transition flex items-center gap-1.5">
-          <span data-i18n="nav_store">Digital Catalog</span>
-          <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-azure/10 text-azure font-mono">20</span>
+      <!-- Brand Identity + Subtle Main Site Back Icon -->
+      <div class="luxury-brand-cluster">
+        <a href="#" class="luxury-brand group">
+          <div class="luxury-brand__logo">
+            <svg viewBox="0 0 525.5 582.0" class="w-full h-full" role="img" aria-label="7Z Logo" xmlns="http://www.w3.org/2000/svg">
+              <path fill="currentColor" fill-rule="evenodd" d="M524.50 119.50 L408.25 119.50 L407.25 120.25 L384.50 160.75 L384.50 162.25 L480.00 162.25 L480.50 162.75 L480.25 163.75 L335.00 346.25 L333.50 347.00 L313.25 351.25 L312.75 350.75 L313.25 349.75 L319.00 343.25 L345.75 310.00 L349.75 304.25 L381.75 265.00 L388.25 256.00 L450.75 177.50 L376.00 177.50 L375.00 178.25 L371.25 186.00 L371.75 186.50 L379.75 186.50 L392.25 205.50 L391.00 206.25 L360.00 206.50 L359.00 207.00 L348.25 226.50 L348.25 227.50 L348.75 227.75 L356.50 227.50 L357.25 228.25 L356.00 230.25 L332.00 259.75 L331.00 261.75 L296.00 304.50 L289.25 313.75 L258.25 352.00 L256.50 355.00 L220.50 399.50 L218.25 403.00 L190.50 437.00 L172.25 460.75 L115.00 532.25 L115.00 581.25 L115.50 581.75 L445.25 581.75 L446.00 581.00 L462.00 551.50 L474.00 528.00 L490.75 497.50 L495.00 488.50 L509.75 461.75 L523.75 435.00 L524.75 432.25 L523.25 432.50 L475.50 461.00 L442.00 480.00 L437.50 482.00 L283.00 482.00 L282.00 481.00 L524.75 175.75 L525.25 162.00 L525.25 120.75 Z M282.75 390.00 L283.25 390.50 L282.00 411.75 L281.00 414.50 L222.00 488.25 L217.25 495.00 L198.25 518.25 L193.75 524.50 L196.75 525.00 L284.50 524.75 L339.75 537.25 L342.25 538.50 L340.75 539.00 L165.00 539.00 L164.25 538.25 L164.50 537.50 L177.50 522.00 L198.75 495.25 L204.25 487.50 L217.75 471.25 L236.00 448.25 L237.00 446.25 L271.50 403.75 L276.00 397.50 Z M324.75 358.00 L325.25 359.00 L297.75 393.00 L293.75 397.75 L291.75 399.25 L291.50 396.00 L293.00 376.50 L296.25 372.00 L303.25 364.00 L306.25 362.25 Z M430.25 186.50 L430.75 187.50 L404.25 222.00 L376.00 257.00 L375.75 255.75 L385.75 231.50 L395.50 205.50 L395.00 203.25 L389.00 193.75 L386.50 187.25 L387.25 186.50 Z M438.25 0.25 L0.75 0.00 L0.00 0.50 L0.00 161.50 L0.50 162.00 L107.50 162.00 L108.25 161.50 L108.25 131.50 L109.50 130.25 L250.00 130.25 L250.50 130.75 L250.50 131.75 L205.00 213.00 L204.25 215.25 L183.00 252.75 L178.00 262.75 L156.50 300.75 L152.00 310.00 L138.25 334.00 L125.50 358.25 L60.75 474.75 L61.00 475.75 L119.50 475.50 L150.75 435.50 L215.25 355.25 L219.75 348.75 L289.75 262.00 L291.25 259.25 L308.00 238.25 L320.50 215.75 L324.25 208.00 L345.75 170.25 L348.50 164.25 L397.75 75.50 L400.25 70.00 L420.25 34.75 L425.25 24.75 L438.50 1.00 Z M312.25 70.00 L311.25 71.50 L306.50 75.50 L289.75 87.25 L205.75 87.25 L205.00 86.50 L209.75 82.00 L218.75 75.00 L220.75 72.75 L225.50 69.50 L311.25 69.25 Z M364.25 47.00 L364.50 47.75 L352.25 69.25 L349.00 76.00 L302.50 159.75 L297.50 169.75 L271.25 217.50 L239.00 256.75 L229.00 270.00 L211.00 291.50 L210.75 290.75 L221.00 273.00 L234.00 248.25 L252.75 215.00 L254.75 210.50 L274.75 175.50 L283.50 158.50 L322.50 88.75 L322.50 87.75 L321.75 87.25 L306.00 87.25 L305.25 86.25 L320.50 75.50 L325.00 71.75 L363.00 47.25 Z M43.00 118.00 L43.00 44.00 L44.00 42.75 L350.50 42.75 L351.25 43.25 L350.75 44.25 L344.50 47.75 L325.75 60.00 L223.00 60.00 L215.75 65.25 L206.25 73.00 L203.75 75.75 L188.75 87.25 L66.50 87.25 L66.00 88.00 L66.00 118.25 L64.50 119.25 L44.00 119.50 Z"/>
+            </svg>
+          </div>
+          <div class="luxury-brand__text">
+            <span class="luxury-brand__name">SEVEN Z STUDIO</span>
+            <span class="luxury-brand__sub" data-i18n="brand_sub">DIGITAL MARKETPLACE</span>
+          </div>
         </a>
-        <a href="#store-section" data-cat-trigger="agents" class="hover:text-azure transition" data-i18n="nav_agents">AI Agents</a>
-        <a href="#store-section" data-cat-trigger="academy" class="hover:text-azure transition" data-i18n="nav_academy">Academy & Masterclasses</a>
-        <a href="#store-section" data-cat-trigger="skills" class="hover:text-azure transition" data-i18n="nav_books">Handbooks ($25)</a>
-        <a href="#enterprise-section" class="hover:text-azure transition" data-i18n="nav_enterprise">Custom Enterprise</a>
-        <a href="/" class="hover:text-azure transition font-bold" data-i18n="nav_main_home">Main Site</a>
+        <a href="/" class="luxury-main-site-icon" title="Main Site · 7Z-MAGIC.COM" aria-label="Main Site">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Desktop Nav Links (4 Clean Editorial Items) -->
+      <nav class="luxury-nav-links" aria-label="Marketplace Navigation">
+        <a href="#store-section" class="luxury-nav-link" data-i18n="nav_store">Catalog (28)</a>
+        <a href="#store-section" data-cat-trigger="agents" class="luxury-nav-link" data-i18n="nav_agents">AI Agents</a>
+        <a href="#store-section" data-cat-trigger="academy" class="luxury-nav-link" data-i18n="nav_academy">Academy</a>
+        <a href="#store-section" data-cat-trigger="skills" class="luxury-nav-link" data-i18n="nav_books">Handbooks</a>
       </nav>
 
-      <!-- Right Controls: Language Switcher + Theme Switcher + Top CTA -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        
-        <!-- Desktop Language Segmented Toggle -->
-        <div class="hidden sm:flex bg-black/5 dark:bg-white/10 p-0.5 sm:p-1 rounded-full items-center text-xs font-semibold border border-black/5 dark:border-white/10">
-          <button data-lang-trigger="en" id="btnLangEn" class="px-2.5 py-1 rounded-full transition text-[11px] bg-white dark:bg-azure text-slate-900 dark:text-white shadow-sm font-bold whitespace-nowrap">
+      <!-- Right Action Cluster -->
+      <div class="luxury-actions">
+        <!-- Unified Language + Theme Glass Pill -->
+        <div class="luxury-control-cluster">
+          <button type="button" data-lang-trigger="en" id="btnLangEn" class="luxury-lang-btn bg-white dark:bg-azure text-slate-900 dark:text-white shadow-sm">
             EN
           </button>
-          <button data-lang-trigger="ar" id="btnLangAr" class="px-2.5 py-1 rounded-full transition text-[11px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold">
+          <button type="button" data-lang-trigger="ar" id="btnLangAr" class="luxury-lang-btn text-slate-600 dark:text-slate-300">
             عربي
+          </button>
+          <span class="luxury-control-divider" aria-hidden="true"></span>
+          <button type="button" id="themeToggleBtn" aria-label="Toggle Theme" class="luxury-theme-btn">
+            <svg id="sunIcon" class="w-4 h-4 glossy-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg id="moonIcon" class="w-4 h-4 glossy-icon block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
           </button>
         </div>
 
-        <!-- Interactive Tour Replay Pill Button -->
-        <button id="btnTourReplay" title="استعراض الأوضاع تفاعلياً" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-azure/10 hover:bg-azure/20 dark:bg-azure/20 dark:hover:bg-azure/30 border border-azure/30 text-azure dark:text-cyan-300 text-[11px] font-bold transition hover:scale-105 active:scale-95 shadow-sm">
-          <span>🎬</span>
-          <span class="hidden md:inline" data-i18n="tour_replay_btn">استعراض الأوضاع</span>
+        <!-- Secondary Frosted Action: Interactive Tour -->
+        <button type="button" id="btnTourReplay" title="Interactive Tour" class="luxury-btn-tour">
+          <span aria-hidden="true">🎬</span>
+          <span data-i18n="tour_replay_btn">Interactive Tour</span>
         </button>
 
-        <!-- Apple-Style Glossy Theme Toggle (Monochrome SVG) -->
-        <button  id="themeToggleBtn" aria-label="Toggle Theme" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:scale-105 transition">
-          <svg id="sunIcon" class="w-4 h-4 glossy-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg id="moonIcon" class="w-4 h-4 glossy-icon block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
-
-        <!-- Direct WhatsApp Consultation CTA -->
-        <a href="https://wa.me/962797020089" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 hover:bg-black dark:bg-azure dark:hover:bg-azure-dark text-white text-xs font-bold shadow-sm transition">
+        <!-- Primary Ivory/Contrast Action: Book Advisory -->
+        <a href="https://wa.me/962797020089" target="_blank" rel="noopener noreferrer" class="luxury-btn-advisory">
           <span data-i18n="btn_consult">Book Advisory</span>
-          <span class="inline-block transform rtl:rotate-180">&rarr;</span>
+          <span class="inline-block transform rtl:rotate-180" aria-hidden="true">&rarr;</span>
         </a>
 
+        <!-- Mobile / Tablet (<1100px) Hamburger Trigger -->
+        <button type="button" id="mobileMenuToggle" aria-expanded="false" aria-controls="mobileNavDrawer" aria-label="Toggle Menu" class="luxury-hamburger-btn">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
       </div>
+    </div>
+
+    <!-- Clean Hamburger Drawer (<1100px) -->
+    <div id="mobileNavDrawer" class="luxury-mobile-drawer hidden" aria-hidden="true">
+      <nav class="luxury-mobile-drawer__nav" aria-label="Mobile Navigation">
+        <a href="#store-section" class="luxury-mobile-link" data-i18n="nav_store">Catalog (28)</a>
+        <a href="#store-section" data-cat-trigger="agents" class="luxury-mobile-link" data-i18n="nav_agents">AI Agents</a>
+        <a href="#store-section" data-cat-trigger="academy" class="luxury-mobile-link" data-i18n="nav_academy">Academy</a>
+        <a href="#store-section" data-cat-trigger="skills" class="luxury-mobile-link" data-i18n="nav_books">Handbooks</a>
+        <a href="#enterprise-section" class="luxury-mobile-link" data-i18n="nav_enterprise">Custom Enterprise</a>
+        <a href="/" class="luxury-mobile-link" data-i18n="nav_main_home">Main Site ↗</a>
+        <div class="luxury-mobile-drawer__actions">
+          <button type="button" id="mobileTourBtn" class="luxury-mobile-pill" data-i18n="tour_replay_btn">Interactive Tour</button>
+          <a href="https://wa.me/962797020089" target="_blank" rel="noopener noreferrer" class="luxury-mobile-cta" data-i18n="btn_consult">Book Advisory</a>
+        </div>
+      </nav>
     </div>
   </header>
 
