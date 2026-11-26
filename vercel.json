@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "buildCommand": null,
@@ -350,10 +350,6 @@
     {
       "source": "/api/private-auth/portal-files",
       "destination": "/api/private-auth-router?__z7route=portal-files"
-    },
-    {
-      "source": "/api/private-documents/blueprint",
-      "destination": "/api/private-documents-router?__z7route=blueprint"
     },
     {
       "source": "/api/private-auth/resource-check",

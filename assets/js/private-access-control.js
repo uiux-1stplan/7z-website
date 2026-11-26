@@ -1,19 +1,11 @@
-(() => {
+﻿(() => {
   "use strict";
 
   if (window.__z7GlobalAccessControlLoaded) return;
   window.__z7GlobalAccessControlLoaded = true;
 
   const CONTROL_ID = "z7HeaderAuthChip";
-  const PROTECTED_PATHS = [
-    "/silla-hall-presentation/",
-    "/elcon-arabia-presentation/",
-    "/strategic-blueprint/",
-    "/api/private-documents/blueprint",
-    "/tawjihi-english-quotation/",
-    "/oman-market-partnership/",
-    "/private-access/scmc-7z-proposal/"
-  ];
+  const PROTECTED_PATHS = [];
 
   let authenticated = false;
   let busy = false;

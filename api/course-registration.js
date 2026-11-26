@@ -2,7 +2,7 @@ import tls from "node:tls";
 import { createHash, randomBytes } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
 
-const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 250, capacity: 60 }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 250, capacity: 40 } });
+const COURSES = Object.freeze({ "cinematic-film": { name: "7Z AI Cinematic Filmmaking", priceJod: 199, capacity: 60 }, "ai-engineering": { name: "دورة الذكاء الاصطناعي للمهندسين", priceJod: 149, capacity: 40 } });
 const DEFAULT_COURSE = "cinematic-film";
 const ACADEMY_CAPACITY = 100;
 const RECIPIENT = "creative@7z-magic.com";
@@ -31,7 +31,7 @@ export async function prepare(sql) {
     phone TEXT NOT NULL,
     location TEXT NOT NULL,
     experience TEXT NOT NULL,
-    preferred_language TEXT NOT NULL,
+    preferred_language TEXT NOT NULL DEFAULT 'ar',
     goal TEXT NOT NULL DEFAULT '',
     previous_course_email TEXT NOT NULL DEFAULT '',
     consent BOOLEAN NOT NULL DEFAULT TRUE,
@@ -67,6 +67,8 @@ export async function prepare(sql) {
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS course_id TEXT NOT NULL DEFAULT 'cinematic-film'`;
   await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS price_jod NUMERIC(10,3) NOT NULL DEFAULT 250`;
+  await sql`ALTER TABLE course_registrations ALTER COLUMN preferred_language SET DEFAULT 'ar'`;
+  await sql`UPDATE course_registrations SET preferred_language = 'ar' WHERE preferred_language IS NULL`;
   await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_email_key ON course_registrations (course_id,lower(email))`;
   await sql`CREATE UNIQUE INDEX IF NOT EXISTS course_registrations_course_seat_key ON course_registrations (course_id,seat_number)`;
   await sql`ALTER TABLE course_registrations DROP CONSTRAINT IF EXISTS course_registrations_email_key`;
@@ -79,7 +81,7 @@ export async function prepare(sql) {
     phone TEXT NOT NULL,
     location TEXT NOT NULL,
     experience TEXT NOT NULL,
-    preferred_language TEXT NOT NULL,
+    preferred_language TEXT NOT NULL DEFAULT 'ar',
     goal TEXT NOT NULL DEFAULT '',
     previous_course_email TEXT NOT NULL DEFAULT '',
     status TEXT NOT NULL DEFAULT 'PENDING',
@@ -126,7 +128,7 @@ export async function prepare(sql) {
       IF active_count >= 100 OR course_count >= course_capacity THEN RETURN QUERY SELECT 'full'::text,NULL::timestamptz; RETURN; END IF;
       expires := NOW() + INTERVAL '30 minutes';
       INSERT INTO course_checkout_intents(token_hash,full_name,email,phone,location,experience,preferred_language,goal,course_id,price_jod,expires_at)
-      VALUES(p_token_hash,p_name,lower(p_email),p_phone,p_location,p_experience,p_language,p_goal,p_course_id,p_price_jod,expires);
+      VALUES(p_token_hash,p_name,lower(p_email),p_phone,p_location,p_experience,COALESCE(NULLIF(p_language, ''), 'ar'),p_goal,p_course_id,p_price_jod,expires);
       RETURN QUERY SELECT 'created'::text,expires;
     END $$`;
   await sql`CREATE OR REPLACE FUNCTION complete_course_payment(p_token_hash text,p_provider text,p_reference text)
@@ -150,7 +152,7 @@ export async function prepare(sql) {
       IF next_seat > course_capacity THEN RETURN QUERY SELECT 'full'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
       IF intent.payment_proof_pathname = '' OR intent.payment_proof_provider <> p_provider THEN RETURN QUERY SELECT 'proof_missing'::text,NULL::integer,NULL::bigint,NULL::timestamptz; RETURN; END IF;
       INSERT INTO course_registrations(seat_number,full_name,email,phone,location,experience,preferred_language,goal,previous_course_email,consent,payment_status,payment_provider,payment_reference,payment_proof_pathname,payment_proof_content_type,coupon_code,discount_percent,discount_jod,affiliate_name,commission_percent,commission_jod,commission_status,payment_submitted_at,course_id,price_jod)
-      VALUES(next_seat,intent.full_name,intent.email,intent.phone,intent.location,intent.experience,intent.preferred_language,intent.goal,intent.previous_course_email,TRUE,'PENDING_REVIEW',p_provider,p_reference,intent.payment_proof_pathname,intent.payment_proof_content_type,intent.coupon_code,intent.discount_percent,intent.discount_jod,intent.affiliate_name,intent.commission_percent,intent.commission_jod,CASE WHEN intent.commission_percent > 0 THEN 'PENDING_PAYMENT_REVIEW' ELSE 'NOT_APPLICABLE' END,NOW(),intent.course_id,intent.price_jod)
+      VALUES(next_seat,intent.full_name,intent.email,intent.phone,intent.location,intent.experience,COALESCE(NULLIF(intent.preferred_language, ''), 'ar'),intent.goal,intent.previous_course_email,TRUE,'PENDING_REVIEW',p_provider,p_reference,intent.payment_proof_pathname,intent.payment_proof_content_type,intent.coupon_code,intent.discount_percent,intent.discount_jod,intent.affiliate_name,intent.commission_percent,intent.commission_jod,CASE WHEN intent.commission_percent > 0 THEN 'PENDING_PAYMENT_REVIEW' ELSE 'NOT_APPLICABLE' END,NOW(),intent.course_id,intent.price_jod)
       RETURNING id,created_at INTO new_id,new_time;
       UPDATE course_checkout_intents SET status='PAYMENT_SUBMITTED',payment_provider=p_provider,payment_reference=p_reference,registration_seat=next_seat,submitted_at=NOW() WHERE id=intent.id;
       RETURN QUERY SELECT 'created'::text,next_seat,new_id,new_time;

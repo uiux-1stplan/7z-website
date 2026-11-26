@@ -13,9 +13,14 @@ import crypto from "node:crypto";
 import {
   handleValidateCode,
   handleRegistration,
+  handleReceiptUpload,
+  handleWaitlist,
+  handleLeadMagnet,
+  getPublicCatalog,
   getAdminData,
   handleAdminAction
 } from "./api/academy-service.mjs";
+import { resolveProductPriceUsd } from "./lib/marketplace-catalog.mjs";
 
 const root = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const port = Number(process.env.PORT || 4173);
@@ -149,6 +154,7 @@ const types = {
   ".woff": "font/woff",
   ".woff2": "font/woff2",
   ".ttf": "font/ttf",
+  ".pdf": "application/pdf",
   ".txt": "text/plain; charset=utf-8",
   ".xml": "application/xml; charset=utf-8"
 };
@@ -776,6 +782,33 @@ async function handleApi(req, res, url) {
     return true;
   }
 
+  if (url.pathname === "/api/academy/catalog" && req.method === "GET") {
+    const result = getPublicCatalog();
+    sendJson(res, 200, result);
+    return true;
+  }
+
+  if (url.pathname === "/api/academy/receipt-upload" && req.method === "POST") {
+    const body = await readJsonBody(req, 15 * 1024 * 1024);
+    const result = await handleReceiptUpload(body);
+    sendJson(res, result.ok ? 200 : 400, result);
+    return true;
+  }
+
+  if (url.pathname === "/api/academy/waitlist" && req.method === "POST") {
+    const body = await readJsonBody(req, 2 * 1024 * 1024);
+    const result = await handleWaitlist(body);
+    sendJson(res, result.ok ? 201 : 400, result);
+    return true;
+  }
+
+  if (url.pathname === "/api/academy/lead-magnet" && req.method === "POST") {
+    const body = await readJsonBody(req, 2 * 1024 * 1024);
+    const result = await handleLeadMagnet(body);
+    sendJson(res, result.ok ? 201 : 400, result);
+    return true;
+  }
+
   // --- 7Z Admin & Client Delivery Vault APIs ---
   if (url.pathname === "/api/admin/all-clients" || url.pathname === "/api/admin/clients") {
     if (!requireAdmin(req, res)) return true;
@@ -966,73 +999,86 @@ async function handleApi(req, res, url) {
     if (!requireAdmin(req, res)) return true;
     if (req.method === "GET") {
       const adminData = await getAdminData();
+      if (url.searchParams.get("action") === "receipt" || url.searchParams.get("view") === "receipt") {
+        const id = String(url.searchParams.get("id") || "").trim();
+        const found = (adminData.registrations || []).find(
+          (r) => String(r.id) === id || r.reference === id || String(r.seatNumber) === id
+        );
+        const receiptSrc = String(found?.receiptBase64 || found?.receiptUrl || "").trim();
+        if (receiptSrc.startsWith("data:")) {
+          const m = receiptSrc.match(/^data:([^;]+);base64,(.+)$/i);
+          if (m) {
+            const buf = Buffer.from(m[2], "base64");
+            res.writeHead(200, { "Content-Type": m[1], "Cache-Control": "private, max-age=300" });
+            res.end(buf);
+            return true;
+          }
+        }
+        if (receiptSrc.startsWith("/data/uploads/")) {
+          const safePath = resolve(root, "." + receiptSrc);
+          if (existsSync(safePath)) {
+            res.writeHead(200, { "Content-Type": receiptSrc.endsWith(".pdf") ? "application/pdf" : "image/jpeg" });
+            res.end(readFileSync(safePath));
+            return true;
+          }
+        }
+        sendJson(res, 404, { error: "Receipt not found locally." });
+        return true;
+      }
+
       if (url.searchParams.get("view") === "accounting") {
-        const rawRegs = (adminData.registrations && adminData.registrations.length > 0)
-          ? adminData.registrations
-          : [
-              {
-                id: "reg-101",
-                fullName: "Tariq Al-Hashemi",
-                email: "tariq@example.com",
-                phone: "+962 79 123 4567",
-                location: "Amman, Jordan",
-                courseId: "cinematic-film",
-                submittedAt: new Date().toISOString(),
-                promoCode: "PARTNER10",
-                finalPrice: 225,
-                discountJod: 25,
-                paymentStatus: "PAID",
-                reference: "TXN-984210",
-                receiptUrl: "/assets/brand/7Z-LogoT(3).png"
-              },
-              {
-                id: "reg-102",
-                fullName: "Maya Mansoor",
-                email: "maya.m@creative.jo",
-                phone: "+962 78 888 9999",
-                location: "Dubai, UAE",
-                courseId: "ai-engineering",
-                submittedAt: new Date().toISOString(),
-                promoCode: "VIP20",
-                finalPrice: 200,
-                discountJod: 50,
-                paymentStatus: "PENDING_REVIEW",
-                reference: "CLIQ-554129",
-                receiptUrl: "/assets/brand/7Z-LogoT(3).png"
-              }
-            ];
-        sendJson(res, 200, {
-          registrations: rawRegs.map((r) => ({
+        const rawRegs = adminData.registrations || [];
+        const mappedRegs = rawRegs.map((r) => {
+          const courseId = r.courseId || r.course_id || "cinematic-film";
+          const priceUsd = Number(r.priceUsd ?? r.priceJod ?? resolveProductPriceUsd(courseId) ?? 0);
+          const discountUsd = Number(r.discountUsd ?? r.discountJod ?? 0);
+          const finalPrice = Number(r.finalPrice ?? Math.max(0, priceUsd - discountUsd));
+          return {
             id: r.id || r.reference,
             full_name: r.fullName,
             email: r.email,
             phone: r.phone || "",
             location: r.city || r.location || "",
-            course_id: r.courseId,
+            course_id: courseId,
             created_at: r.createdAt || r.submittedAt,
             coupon_code: r.promoCode || r.coupon_code || "",
-            price_jod: Number(r.finalPrice || r.priceJod || 250),
-            discount_jod: Number(r.discountJod || 0),
+            price_jod: priceUsd,
+            price_usd: priceUsd,
+            discount_jod: discountUsd,
+            discount_usd: discountUsd,
+            currency: r.currency || "USD",
             commission_percent: 20,
-            commission_jod: r.discountJod > 0 ? (250 - r.discountJod) * 0.2 : 50,
+            commission_jod: finalPrice * 0.2,
             commission_status: (r.paymentStatus === "APPROVED" || r.paymentStatus === "PAID") ? "PAYABLE" : "PENDING_PAYMENT_REVIEW",
             payment_status: r.paymentStatus,
             payment_reference: r.reference || r.payment_reference || r.receiptUrl || r.receiptName,
             receipt_url: r.receiptUrl || r.receiptBase64
-          })),
+          };
+        });
+        const paidRegs = mappedRegs.filter((r) => ["APPROVED", "PAID", "VERIFIED"].includes(String(r.payment_status || "").toUpperCase()));
+        const pendingRegs = mappedRegs.filter((r) => !["APPROVED", "PAID", "VERIFIED", "REJECTED"].includes(String(r.payment_status || "").toUpperCase()));
+        const gross = paidRegs.reduce((s, r) => s + r.price_usd, 0);
+        const discounts = paidRegs.reduce((s, r) => s + r.discount_usd, 0);
+        const revenue = paidRegs.reduce((s, r) => s + Math.max(0, r.price_usd - r.discount_usd), 0);
+        const pending = pendingRegs.reduce((s, r) => s + Math.max(0, r.price_usd - r.discount_usd), 0);
+        sendJson(res, 200, {
+          currency: "USD",
+          registrations: mappedRegs,
+          waitlist: adminData.waitlist || [],
+          leads: adminData.leads || [],
           adjustments: [],
           totals: {
-            gross: adminData.stats.totalRegistrations * 250,
-            revenue: adminData.stats.totalRevenue,
-            pending: adminData.stats.pendingCount * 250,
-            discounts: adminData.registrations.reduce((s, x) => s + (x.discountJod || 0), 0),
-            commissionsDue: adminData.affiliates.reduce((s, x) => s + (x.commissionOwed || 0), 0),
-            studioNet: adminData.stats.totalRevenue
+            gross,
+            revenue,
+            pending,
+            discounts,
+            commissionsDue: (adminData.affiliates || []).reduce((s, x) => s + (x.commissionOwed || 0), 0),
+            studioNet: revenue
           }
         });
       } else {
         sendJson(res, 200, {
-          affiliates: adminData.affiliates.map((a) => ({
+          affiliates: (adminData.affiliates || []).map((a) => ({
             id: a.id,
             name: a.name,
             email: a.email,
@@ -1045,7 +1091,7 @@ async function handleApi(req, res, url) {
             outstanding_commission_jod: a.commissionOwed || 0,
             earned_commission_jod: a.commissionOwed || 0
           })),
-          codes: adminData.coupons.map((c) => ({
+          codes: (adminData.coupons || []).map((c) => ({
             id: c.id,
             code: c.code,
             affiliate_name: "Studio",

@@ -44,7 +44,9 @@
       // Global CTAs & Pricing
       enroll_now: "سجّل الآن",
       view_details: "تفاصيل الدورة",
-      price_jod: "250 د.أ",
+      price_jod: "$199 USD",
+      price_usd_eng: "$149 USD",
+      price_usd_film: "$199 USD",
       price_label: "السعر الإجمالي شامل التدريب والمشروع",
 
       // Course 1: Cinematic Filmmaking
@@ -72,7 +74,7 @@
       c1_m5_desc: "تجميع المشاهد في جدول زمني سينمائي، هندسة الصوت والمؤثرات الصوتية والموسيقى التصويرية، توليد الدوبلاج والأصوات، وتصحيح الألوان لإخراج فيلم نهائي متكامل.",
       c1_final_box_title: "ابدأ صناعة فيلمك السينمائي الآن",
       c1_final_box_desc: "دورة أونلاين مسجلة بالكامل مع وصول ومتابعة مستمرة في أي وقت حتى إنجاز مشروعك بالكامل.",
-      c1_final_box_btn: "سجّل الآن في الدورة — 250 د.أ",
+      c1_final_box_btn: "سجّل الآن في الدورة — $199 USD",
 
       // Course 2: AI for Engineers
       c2_tag: "الهندسة المعمارية والتصميم / ذكاء اصطناعي",
@@ -99,7 +101,7 @@
       c2_s5_desc: "تحريك كاميرات العرض الهندسي بدقة ميزانية، توليد جولة فيديو سينمائية داخل المشروع، وإخراج ملفات العرض التقديمي النهائي الجاهز للعملاء والجهات الاستثمارية.",
       c2_final_box_title: "ابدأ مشروعك الهندسي بالذكاء الاصطناعي",
       c2_final_box_desc: "دورة أونلاين مسجلة بالكامل مع وصول مستمر في أي وقت وهدية دورة صناعة المحتوى مجاناً.",
-      c2_final_box_btn: "سجّل الآن في الدورة — 250 د.أ",
+      c2_final_box_btn: "سجّل الآن في الدورة — $149 USD",
 
       // Step 1: Registration
       step1_badge: "الخطوة 1 من 2: البيانات الشخصية",
@@ -223,7 +225,9 @@
       // Global CTAs & Pricing
       enroll_now: "Enroll Now",
       view_details: "Course Details",
-      price_jod: "250 JOD",
+      price_jod: "$199 USD",
+      price_usd_eng: "$149 USD",
+      price_usd_film: "$199 USD",
       price_label: "Total tuition including hands-on project",
 
       // Course 1: Cinematic Filmmaking
@@ -251,7 +255,7 @@
       c1_m5_desc: "Timeline assembly, cinematic foley and sound design, musical scoring, AI voice generation, color grading, and final delivery mastering for broadcast standards.",
       c1_final_box_title: "Start Producing Your Cinematic Film",
       c1_final_box_desc: "Fully recorded online masterclass with anytime access and continuous guidance until your project is fully realized.",
-      c1_final_box_btn: "Enroll in Masterclass — 250 JOD",
+      c1_final_box_btn: "Enroll in Masterclass — $199 USD",
 
       // Course 2: AI for Engineers
       c2_tag: "ARCHITECTURE & ENGINEERING / AI",
@@ -278,7 +282,7 @@
       c2_s5_desc: "Keyframing architectural camera paths, generating cinematic walkthrough animations, and delivering client-ready presentations for investors and stakeholders.",
       c2_final_box_title: "Build Your Architectural Project with AI",
       c2_final_box_desc: "Fully recorded online masterclass with anytime access, including the Content Creation masterclass as a free gift.",
-      c2_final_box_btn: "Enroll in Masterclass — 250 JOD",
+      c2_final_box_btn: "Enroll in Masterclass — $149 USD",
 
       // Step 1: Registration
       step1_badge: "Step 1 of 2: Personal Details",
@@ -597,8 +601,9 @@
     const discountVal = document.getElementById("summaryDiscountVal");
     const totalVal = document.getElementById("summaryTotalVal");
 
-    const basePrice = 250;
-    let appliedDiscountJod = 0;
+    const courseIdAttr = form.getAttribute("data-course-id") || leadData?.courseId || "cinematic-film";
+    const basePrice = (courseIdAttr === "ai-engineering" || courseIdAttr === "ai-engineers" || courseIdAttr === "course-eng") ? 149 : 199;
+    let appliedDiscountUsd = 0;
     let finalNetPrice = basePrice;
     let appliedCode = "";
     let appliedPercent = 0;
@@ -612,46 +617,45 @@
         applyBtn.textContent = "...";
 
         try {
-          const res = await fetch(`/api/academy/validate-code?code=${encodeURIComponent(code)}`);
+          const res = await fetch(`/api/academy/validate-code?code=${encodeURIComponent(code)}&course=${encodeURIComponent(courseIdAttr)}`);
           const data = await res.json();
 
           if (data.valid) {
             appliedPercent = Number(data.discountPercent) || 15;
-            appliedDiscountJod = (basePrice * appliedPercent) / 100;
-            finalNetPrice = basePrice - appliedDiscountJod;
+            appliedDiscountUsd = Math.round(((basePrice * appliedPercent) / 100) * 100) / 100;
+            finalNetPrice = Math.round((basePrice - appliedDiscountUsd) * 100) / 100;
             appliedCode = code;
 
             feedback.className = "acad-promo-feedback is-success";
-            feedback.textContent = `${I18N[currentLang].code_applied} ${appliedPercent}% (-${appliedDiscountJod} JOD)`;
+            feedback.textContent = `${I18N[currentLang].code_applied} ${appliedPercent}% (-$${appliedDiscountUsd.toFixed(2)} USD)`;
 
             if (discountLine) discountLine.style.display = "flex";
-            if (discountVal) discountVal.textContent = `-${appliedDiscountJod} JOD (${appliedPercent}%)`;
-            if (totalVal) totalVal.textContent = `${finalNetPrice} JOD`;
+            if (discountVal) discountVal.textContent = `-$${appliedDiscountUsd.toFixed(2)} USD (${appliedPercent}%)`;
+            if (totalVal) totalVal.textContent = `$${finalNetPrice.toFixed(2)} USD`;
           } else {
             throw new Error(data.message || "Invalid code");
           }
         } catch (err) {
-          // Fallback codes
-          if (["7ZVIP", "MAGIC15", "DIRECT15", "HASSAN25", "SHAAS25"].includes(code)) {
-            appliedPercent = code === "HASSAN25" || code === "SHAAS25" ? 25 : 15;
-            appliedDiscountJod = (basePrice * appliedPercent) / 100;
-            finalNetPrice = basePrice - appliedDiscountJod;
+          if (["7ZVIP", "MAGIC15", "DIRECT15", "HASSAN25", "SHAAS25", "ENG7SANZ"].includes(code)) {
+            appliedPercent = (code === "HASSAN25" || code === "SHAAS25") ? 25 : (code === "ENG7SANZ" ? 10 : (code === "7ZVIP" ? 20 : 15));
+            appliedDiscountUsd = Math.round(((basePrice * appliedPercent) / 100) * 100) / 100;
+            finalNetPrice = Math.round((basePrice - appliedDiscountUsd) * 100) / 100;
             appliedCode = code;
 
             feedback.className = "acad-promo-feedback is-success";
-            feedback.textContent = `${I18N[currentLang].code_applied} ${appliedPercent}% (-${appliedDiscountJod} JOD)`;
+            feedback.textContent = `${I18N[currentLang].code_applied} ${appliedPercent}% (-$${appliedDiscountUsd.toFixed(2)} USD)`;
 
             if (discountLine) discountLine.style.display = "flex";
-            if (discountVal) discountVal.textContent = `-${appliedDiscountJod} JOD (${appliedPercent}%)`;
-            if (totalVal) totalVal.textContent = `${finalNetPrice} JOD`;
+            if (discountVal) discountVal.textContent = `-$${appliedDiscountUsd.toFixed(2)} USD (${appliedPercent}%)`;
+            if (totalVal) totalVal.textContent = `$${finalNetPrice.toFixed(2)} USD`;
           } else {
             feedback.className = "acad-promo-feedback is-error";
             feedback.textContent = I18N[currentLang].code_invalid;
             if (discountLine) discountLine.style.display = "none";
-            if (totalVal) totalVal.textContent = `${basePrice} JOD`;
+            if (totalVal) totalVal.textContent = `$${basePrice.toFixed(2)} USD`;
             appliedCode = "";
             appliedPercent = 0;
-            appliedDiscountJod = 0;
+            appliedDiscountUsd = 0;
             finalNetPrice = basePrice;
           }
         } finally {
@@ -752,33 +756,55 @@
       const courseId = form.getAttribute("data-course-id") || leadData?.courseId || "cinematic-film";
       const courseName = form.getAttribute("data-course-name") || leadData?.courseName || "7Z AI Masterclass";
 
-      const payload = {
-        fullName: leadData?.fullName || "Student",
-        email: leadData?.email || "",
-        phone: leadData?.phone || "",
-        city: leadData?.city || "",
-        experience: leadData?.experience || "beginner",
-        notes: leadData?.notes || "",
-        courseId,
-        courseName,
-        promoCode: appliedCode,
-        discountPercent: appliedPercent,
-        discountJod: appliedDiscountJod,
-        finalPrice: finalNetPrice,
-        receiptBase64: uploadedBase64,
-        receiptName: uploadedName || "receipt.jpg",
-        receiptType: uploadedType || "image/jpeg",
-        submittedAt: new Date().toISOString()
-      };
-
       try {
+        let receiptUrl = "";
+        try {
+          const uploadRes = await fetch("/api/academy/receipt-upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              fileName: uploadedName || "receipt.jpg",
+              contentType: uploadedType || "image/jpeg",
+              fileBase64: uploadedBase64
+            })
+          });
+          const uploadData = await uploadRes.json().catch(() => ({}));
+          if (uploadRes.ok && uploadData.receiptUrl) {
+            receiptUrl = uploadData.receiptUrl;
+          }
+        } catch (_) {}
+
+        const payload = {
+          fullName: leadData?.fullName || "Student",
+          email: leadData?.email || "",
+          phone: leadData?.phone || "",
+          city: leadData?.city || "",
+          experience: leadData?.experience || "beginner",
+          notes: leadData?.notes || "",
+          language: currentLang,
+          courseId,
+          courseName,
+          promoCode: appliedCode,
+          discountPercent: appliedPercent,
+          discountJod: appliedDiscountUsd,
+          finalPrice: finalNetPrice,
+          receiptUrl,
+          receiptBase64: receiptUrl ? "" : uploadedBase64,
+          receiptName: uploadedName || "receipt.jpg",
+          receiptType: uploadedType || "image/jpeg",
+          submittedAt: new Date().toISOString()
+        };
+
         const res = await fetch("/api/academy/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        const refId = data.reference || `7Z-REG-${Math.floor(100000 + Math.random() * 900000)}`;
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || "Registration submission failed");
+        }
+        const refId = data.reference;
 
         if (paymentCard) paymentCard.style.display = "none";
         if (successView) {
@@ -789,16 +815,9 @@
         }
         sessionStorage.removeItem("z7_academy_lead");
       } catch (err) {
-        console.warn("Submitting via offline fallback:", err);
-        const refId = `7Z-REG-${Math.floor(100000 + Math.random() * 900000)}`;
-        if (paymentCard) paymentCard.style.display = "none";
-        if (successView) {
-          successView.style.display = "block";
-          const refElem = document.getElementById("successRefNum");
-          if (refElem) refElem.textContent = refId;
-          successView.scrollIntoView({ behavior: "smooth" });
-        }
-        sessionStorage.removeItem("z7_academy_lead");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<span>${I18N[currentLang].submit_pay_btn}</span>`;
+        alert(err.message || (currentLang === "ar" ? "تعذر إرسال الطلب حالياً. يرجى المحاولة مرة أخرى." : "Unable to submit registration right now. Please try again."));
       }
     });
   }

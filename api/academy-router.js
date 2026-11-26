@@ -1,16 +1,20 @@
 /**
- * Vercel Serverless API Router for 7Z Academy
+ * Vercel Serverless API Router for 7Z Academy & Digital Marketplace
  * Maps /api/academy/* endpoints
  */
 
 import {
+  getPublicCatalog,
   handleValidateCode,
+  handleReceiptUpload,
   handleRegistration,
+  handleWaitlist,
+  handleLeadMagnet,
   getAdminData,
   handleAdminAction
 } from "./academy-service.mjs";
 import { requireAdmin } from "../lib/portal-runtime.mjs";
-import { toWebRequest, sendWebResponse } from "../lib/vercel-api.mjs";
+import { sendWebResponse, toWebRequest } from "../lib/vercel-api.mjs";
 
 export const config = {
   api: {
@@ -19,6 +23,16 @@ export const config = {
     }
   }
 };
+
+function parseBody(req) {
+  if (!req.body) return {};
+  if (typeof req.body === "object") return req.body;
+  try {
+    return JSON.parse(req.body);
+  } catch {
+    return {};
+  }
+}
 
 export default async function handler(req, res) {
   const origin = req.headers.origin || "";
@@ -33,7 +47,7 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method === "OPTIONS") {
@@ -47,13 +61,30 @@ export default async function handler(req, res) {
   const searchPath = `${rawPath} ${matchedPath}`;
 
   try {
-    if (searchPath.includes("validate-code") || url.searchParams.has("code") || Boolean(req.query?.code) || Boolean(req.body?.code)) {
-      let body = {};
-      if (req.body) {
-        try {
-          body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-        } catch (_) {}
-      }
+    if (searchPath.includes("catalog") && req.method === "GET") {
+      return res.status(200).json(getPublicCatalog());
+    }
+
+    if (searchPath.includes("receipt-upload") && req.method === "POST") {
+      const body = parseBody(req);
+      const result = await handleReceiptUpload(body);
+      return res.status(result.ok ? 200 : result.status || 400).json(result);
+    }
+
+    if (searchPath.includes("waitlist") && req.method === "POST") {
+      const body = parseBody(req);
+      const result = await handleWaitlist(body);
+      return res.status(result.ok ? 201 : result.status || 400).json(result);
+    }
+
+    if (searchPath.includes("lead-magnet") && req.method === "POST") {
+      const body = parseBody(req);
+      const result = await handleLeadMagnet(body);
+      return res.status(result.ok ? 201 : result.status || 400).json(result);
+    }
+
+    if (searchPath.includes("validate-code") || url.searchParams.has("code") || Boolean(req.query?.code) || (Boolean(req.body?.code) && !searchPath.includes("admin"))) {
+      const body = parseBody(req);
       const code = body?.code || url.searchParams.get("code") || req.query?.code || "";
       const course = body?.courseId || body?.course || url.searchParams.get("course") || req.query?.course || "all";
       const result = await handleValidateCode(code, course);
@@ -61,32 +92,22 @@ export default async function handler(req, res) {
     }
 
     if ((searchPath.includes("register") || Boolean(req.body?.fullName || req.body?.email)) && req.method === "POST" && !searchPath.includes("admin-action")) {
-      const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+      const body = parseBody(req);
       const result = await handleRegistration(body);
-      return res.status(201).json(result);
+      return res.status(result.ok ? 201 : result.status || 400).json(result);
     }
 
     if (searchPath.includes("admin-data") && req.method === "GET") {
-      let gate;
-      try {
-        gate = await requireAdmin(toWebRequest(req));
-        if (!gate.ok) return sendWebResponse(res, gate.response);
-      } catch (authErr) {
-        return res.status(401).json({ error: "Unauthorized" });
-      }
+      const gate = await requireAdmin(toWebRequest(req));
+      if (!gate.ok) return sendWebResponse(res, gate.response);
       const result = await getAdminData();
       return res.status(200).json(result);
     }
 
     if ((searchPath.includes("admin-action") || Boolean(req.body?.action)) && req.method === "POST") {
-      let gate;
-      try {
-        gate = await requireAdmin(toWebRequest(req));
-        if (!gate.ok) return sendWebResponse(res, gate.response);
-      } catch (authErr) {
-        return res.status(401).json({ error: "Unauthorized" });
-      }
-      const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+      const gate = await requireAdmin(toWebRequest(req));
+      if (!gate.ok) return sendWebResponse(res, gate.response);
+      const body = parseBody(req);
       const result = await handleAdminAction(body.action, body);
       return res.status(200).json(result);
     }
@@ -94,6 +115,6 @@ export default async function handler(req, res) {
     return res.status(404).json({ error: "Endpoint not found" });
   } catch (error) {
     console.error("Academy API Error:", error);
-    return res.status(200).json({ error: error.message || "Request handled with fallback", ok: false });
+    return res.status(500).json({ error: error.message || "Academy API error", ok: false });
   }
 }

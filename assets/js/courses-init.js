@@ -7,8 +7,10 @@
   try {
     const theme = localStorage.getItem("z7-theme") || localStorage.getItem("7z-course-theme") || "dark";
     document.documentElement.dataset.theme = theme;
+    document.documentElement.classList.toggle("dark", theme === "dark");
   } catch (e) {
     document.documentElement.dataset.theme = "dark";
+    document.documentElement.classList.add("dark");
   }
   try {
     const a = JSON.parse(sessionStorage.getItem("z7:core-arrival:v1") || "null");

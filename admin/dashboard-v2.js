@@ -146,7 +146,7 @@
 
   function money(value, withCurrency = false) {
     const amount = Number(value || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return withCurrency ? `${amount} JOD` : amount;
+    return withCurrency ? `$${amount} USD` : amount;
   }
 
   function drawChart(prefix, rows) {
@@ -290,10 +290,10 @@
     $("#overview-revenue").textContent = money(revenue);
     $("#overview-active-users").textContent = activeUsers;
     $("#overview-client-total").textContent = totalClients;
-    $("#overview-gross").innerHTML = `${money(gross)} <small>JOD</small>`;
-    $("#overview-studio-net").innerHTML = `${money(studioNet)} <small>JOD</small>`;
-    $("#overview-discounts").innerHTML = `${money(discounts)} <small>JOD</small>`;
-    $("#overview-commissions").innerHTML = `${money(commissionsDue)} <small>JOD</small>`;
+    $("#overview-gross").innerHTML = `${money(gross)} <small>USD</small>`;
+    $("#overview-studio-net").innerHTML = `${money(studioNet)} <small>USD</small>`;
+    $("#overview-discounts").innerHTML = `${money(discounts)} <small>USD</small>`;
+    $("#overview-commissions").innerHTML = `${money(commissionsDue)} <small>USD</small>`;
     const portalCount = $("#stat-users")?.textContent.trim() || "0";
     const portalCountNode = $("#portal-account-count");
     if (portalCountNode) portalCountNode.textContent = `${portalCount} ${portalCount === "1" ? "account" : "accounts"}`;
@@ -301,7 +301,7 @@
     $("#overview-pending").textContent = `${pendingRows.length} awaiting review`;
     $("#overview-conversion").textContent = `${conversion}%`;
     $("#overview-conversion-bar").style.width = `${conversion}%`;
-    $("#overview-chart-total").innerHTML = `${money(revenue)} <small>JOD</small>`;
+    $("#overview-chart-total").innerHTML = `${money(revenue)} <small>USD</small>`;
     $("#pulse-pending-count").textContent = `${pendingRows.length} ${pendingRows.length === 1 ? "order" : "orders"}`;
     $("#pulse-pending-copy").textContent = pendingRows.length ? "Payment submissions need a review." : "No payment reviews are waiting.";
     $("#analytics-revenue").innerHTML = $("#finance-revenue").innerHTML;
@@ -343,10 +343,10 @@
       const uses = document.createElement("small");
       uses.textContent = `${item.uses} registrations`;
       const sales = document.createElement("b");
-      sales.textContent = `${money(item.sales)} JOD`;
+      sales.textContent = `${money(item.sales)} USD`;
       const commission = document.createElement("small");
       commission.className = "overview-affiliate-commission";
-      commission.textContent = `${money(item.commission)} JOD commission`;
+      commission.textContent = `${money(item.commission)} USD commission`;
       const detail = document.createElement("span");
       detail.className = "overview-affiliate-detail";
       detail.append(name, uses);

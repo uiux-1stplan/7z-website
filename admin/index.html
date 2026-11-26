@@ -255,27 +255,27 @@
       <div class="analytics-kpis kpi-grid" style="display:grid!important;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;gap:16px!important;">
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">GROSS SALES</span>
-          <strong class="analytics-kpi-value" id="analytics-gross">0.00 <small>JOD</small></strong>
-          <p class="analytics-kpi-sub">Base price (250 JOD / registration)</p>
+          <strong class="analytics-kpi-value" id="analytics-gross">0.00 <small>USD</small></strong>
+          <p class="analytics-kpi-sub">List price in USD per order</p>
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">DISCOUNTS GRANTED</span>
-          <strong class="analytics-kpi-value" id="analytics-discounts" style="color:#f59e0b;">0.00 <small>JOD</small></strong>
+          <strong class="analytics-kpi-value" id="analytics-discounts" style="color:#f59e0b;">0.00 <small>USD</small></strong>
           <p class="analytics-kpi-sub">Promo code deductions</p>
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">NET SALES (AFTER DISCOUNT)</span>
-          <strong class="analytics-kpi-value" id="analytics-revenue" style="color:#38bdf8;">0.00 <small>JOD</small></strong>
-          <p class="analytics-kpi-sub">Student billed net tuition</p>
+          <strong class="analytics-kpi-value" id="analytics-revenue" style="color:#38bdf8;">0.00 <small>USD</small></strong>
+          <p class="analytics-kpi-sub">Customer billed net total</p>
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">MARKETER COMMISSIONS</span>
-          <strong class="analytics-kpi-value" id="analytics-commission" style="color:#38bdf8;">0.00 <small>JOD</small></strong>
+          <strong class="analytics-kpi-value" id="analytics-commission" style="color:#38bdf8;">0.00 <small>USD</small></strong>
           <p class="analytics-kpi-sub">Calculated after discount</p>
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">ACADEMY NET PROFIT</span>
-          <strong class="analytics-kpi-value" id="analytics-studio-net" style="color:#10b981;">0.00 <small>JOD</small></strong>
+          <strong class="analytics-kpi-value" id="analytics-studio-net" style="color:#10b981;">0.00 <small>USD</small></strong>
           <p class="analytics-kpi-sub">Net sales less marketer payouts</p>
         </article>
       </div>
@@ -287,7 +287,7 @@
             <span class="eyebrow">ACADEMY / MARKETERS LEDGER</span>
             <h3>Marketers &amp; Affiliates Commission Breakdown</h3>
             <p style="margin:4px 0 0;font-size:12.5px;color:rgba(255,255,255,0.65);">
-              Strict Formula: Net Price = 250 - Discount | Commission = Net Price × Rate% | Company Net = Net Price - Commission
+              Strict Formula (USD Base): Net Price = Product Price - Discount | Commission = Net Price × Rate% | Company Net = Net Price - Commission
             </p>
           </div>
           <span class="engine-live"><i></i> 100% FORMULA ACCURATE</span>
@@ -298,11 +298,11 @@
               <tr>
                 <th>Marketer / Partner</th>
                 <th>Discount Code</th>
-                <th>Enrolled Students</th>
+                <th>Orders</th>
                 <th>Net Sales (After Discount)</th>
                 <th>Commission Rate</th>
-                <th>Commission Due (JOD)</th>
-                <th>Company Net Profit (JOD)</th>
+                <th>Commission Due (USD)</th>
+                <th>Company Net Profit (USD)</th>
                 <th>Payout Status</th>
                 <th>Action</th>
               </tr>
@@ -325,7 +325,7 @@
           <span class="secure-badge"><i></i> ADMIN ONLY</span>
         </div>
         <form id="revenue-adjustment-form" class="revenue-adjustment-form">
-          <label>Adjustment amount (JOD)<input name="amount" type="number" step="0.001" min="-1000000000" max="1000000000" required placeholder="e.g. 125.000"></label>
+          <label>Adjustment amount (USD)<input name="amount" type="number" step="0.01" min="-1000000000" max="1000000000" required placeholder="e.g. 125.00"></label>
           <label>Reason<input name="reason" type="text" maxlength="240" required placeholder="Explain the correction"></label>
           <button class="button button-primary" type="submit">Save adjustment</button>
           <button class="button button-secondary" id="revenue-reset" type="button">Reset reported total</button>
@@ -359,12 +359,12 @@
 
       <section class="admin-engine-section" id="accounting-section" aria-labelledby="accounting-title">
         <div class="finance-stats">
-          <article class="finance-stat"><span>GROSS COURSE SALES</span><strong id="finance-gross">0.00 <small>JOD</small></strong><p>Base price (250 JOD / registration)</p></article>
-          <article class="finance-stat"><span>DISCOUNTS GRANTED</span><strong id="finance-discounts" style="color:#f59e0b;">0.00 <small>JOD</small></strong><p>Across course registrations</p></article>
-          <article class="finance-stat"><span>NET SALES (AFTER DISCOUNT)</span><strong id="finance-revenue" style="color:#38bdf8;">0.00 <small>JOD</small></strong><p>Received after discounts</p></article>
-          <article class="finance-stat"><span>COMMISSIONS DUE</span><strong id="finance-commissions" style="color:#d4af37;">0.00 <small>JOD</small></strong><p>Earned on verified revenue</p></article>
-          <article class="finance-stat"><span>ACADEMY NET PROFIT</span><strong id="finance-studio-net" style="color:#10b981;">0.00 <small>JOD</small></strong><p>After marketer shares</p></article>
-          <article class="finance-stat"><span>AWAITING REVIEW</span><strong id="finance-pending">0.00 <small>JOD</small></strong><p>Submitted transfers pending</p></article>
+          <article class="finance-stat"><span>GROSS ORDERS SALES</span><strong id="finance-gross">0.00 <small>USD</small></strong><p>Catalog list price (USD)</p></article>
+          <article class="finance-stat"><span>DISCOUNTS GRANTED</span><strong id="finance-discounts" style="color:#f59e0b;">0.00 <small>USD</small></strong><p>Across orders &amp; registrations</p></article>
+          <article class="finance-stat"><span>NET SALES (AFTER DISCOUNT)</span><strong id="finance-revenue" style="color:#38bdf8;">0.00 <small>USD</small></strong><p>Received after discounts</p></article>
+          <article class="finance-stat"><span>COMMISSIONS DUE</span><strong id="finance-commissions" style="color:#d4af37;">0.00 <small>USD</small></strong><p>Earned on verified revenue</p></article>
+          <article class="finance-stat"><span>ACADEMY NET PROFIT</span><strong id="finance-studio-net" style="color:#10b981;">0.00 <small>USD</small></strong><p>After marketer shares</p></article>
+          <article class="finance-stat"><span>AWAITING REVIEW</span><strong id="finance-pending">0.00 <small>USD</small></strong><p>Pending transfers &amp; Whop</p></article>
         </div>
 
         <div class="engine-panel engine-table-panel">
@@ -373,18 +373,29 @@
               <span class="eyebrow">PAYMENT LEDGER</span>
               <h3 id="accounting-title">Registration Activity &amp; Official Receipts</h3>
             </div>
-            <select id="finance-course-filter" aria-label="Filter by course">
-              <option value="all">All courses</option>
-              <option value="cinematic-film">AI Cinematic Filmmaking</option>
-              <option value="ai-engineering">AI for Engineers</option>
+            <select id="finance-course-filter" aria-label="Filter by product">
+              <option value="all">All products &amp; courses</option>
+              <option value="ai-engineering">AI for Engineers ($149)</option>
+              <option value="cinematic-film">AI Cinematic Filmmaking ($199)</option>
+              <option value="course-content">Content Creation &amp; Monetization ($129)</option>
+              <option value="course-web">AI Web Platforms &amp; SaaS ($159)</option>
+              <option value="course-foundations">AI Foundations Bundle 1.4GB ($35)</option>
+              <option value="agent-editor">Smart Video Editor AI ($49)</option>
+              <option value="agent-shorts">YouTube to Shorts AI ($29)</option>
+              <option value="agent-prop">Proposal &amp; Pitch Closer ($69)</option>
+              <option value="digital-vault">7Z Digital Vault ($25)</option>
+              <option value="skill-pack">Developer Skill Packs ($39)</option>
+              <option value="acc-fb-monetized">Facebook Monetized Inquiry</option>
+              <option value="acc-yt-monetized">YouTube Monetized Inquiry</option>
+              <option value="acc-tt-monetized">TikTok Monetized Inquiry</option>
             </select>
           </div>
           <div class="engine-table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Student</th>
-                  <th>Course</th>
+                  <th>Student / Customer</th>
+                  <th>Course / Product</th>
                   <th>Submitted</th>
                   <th>Code</th>
                   <th>Net Due</th>
@@ -397,7 +408,58 @@
               <tbody id="accounting-body"></tbody>
             </table>
           </div>
-          <p class="engine-empty" id="accounting-empty" hidden>No course registrations have been recorded.</p>
+          <p class="engine-empty" id="accounting-empty" hidden>No course or marketplace registrations have been recorded.</p>
+        </div>
+
+        <!-- VIP Waitlist Submissions Panel -->
+        <div class="engine-panel engine-table-panel" style="margin-top:22px;">
+          <div class="engine-panel-head">
+            <div>
+              <span class="eyebrow">MARKETPLACE LEADS / VIP WAITLIST</span>
+              <h3>Waitlist Early Access Requests</h3>
+            </div>
+          </div>
+          <div class="engine-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Product</th>
+                  <th>Discipline</th>
+                  <th>Submitted</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="waitlist-body"></tbody>
+            </table>
+          </div>
+          <p class="engine-empty" id="waitlist-empty" hidden>No VIP waitlist requests recorded yet.</p>
+        </div>
+
+        <!-- Lead Magnet (Prompt Vault 5000+) Panel -->
+        <div class="engine-panel engine-table-panel" style="margin-top:22px;">
+          <div class="engine-panel-head">
+            <div>
+              <span class="eyebrow">LEAD MAGNETS / 5000+ VAULT</span>
+              <h3>Prompt Vault Free Access Leads</h3>
+            </div>
+          </div>
+          <div class="engine-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Subscriber</th>
+                  <th>Campaign</th>
+                  <th>Reference</th>
+                  <th>Submitted</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leads-body"></tbody>
+            </table>
+          </div>
+          <p class="engine-empty" id="leads-empty" hidden>No Prompt Vault leads recorded yet.</p>
         </div>
       </section>
     </section>
@@ -461,8 +523,20 @@
                 <select name="affiliateId" id="coupon-affiliate"><option value="">Studio code / no affiliate</option></select>
               </label>
               <label>
-                <span>Course</span>
-                <select name="courseId"><option value="all">All courses</option><option value="cinematic-film">AI Cinematic Filmmaking</option><option value="ai-engineering">AI for Engineers</option></select>
+                <span>Course / Product Scope</span>
+                <select name="courseId">
+                  <option value="all">All products &amp; courses</option>
+                  <option value="ai-engineering">AI for Engineers ($149)</option>
+                  <option value="cinematic-film">AI Cinematic Filmmaking ($199)</option>
+                  <option value="course-content">Content Creation ($129)</option>
+                  <option value="course-web">AI Web &amp; SaaS ($159)</option>
+                  <option value="course-foundations">AI Foundations Bundle ($35)</option>
+                  <option value="agent-editor">Smart Video Editor AI ($49)</option>
+                  <option value="agent-shorts">YouTube to Shorts AI ($29)</option>
+                  <option value="agent-prop">Proposal &amp; Pitch Closer ($69)</option>
+                  <option value="digital-vault">7Z Digital Vault ($25)</option>
+                  <option value="skill-pack">Developer Skill Packs ($39)</option>
+                </select>
               </label>
               <div class="engine-form-pair">
                 <label>

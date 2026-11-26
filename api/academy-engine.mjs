@@ -16,8 +16,14 @@ import {
   buildStudentConfirmationHtml,
   buildPaymentApprovedHtml,
   buildPaymentRejectedHtml,
-  buildMilestoneReportHtml
+  buildMilestoneReportHtml,
+  buildLeadMagnetEmailHtml,
+  buildWaitlistEmailHtml
 } from "./_email-templates.mjs";
+import {
+  OFFICIAL_WHOP_URLS,
+  resolveProductPriceUsd
+} from "../lib/marketplace-catalog.mjs";
 
 const isVercel = Boolean(process.env.VERCEL); const rootDir = isVercel ? "/tmp/7z-academy" : (process.env.VERCEL ? "/tmp/7z-academy" : resolve(fileURLToPath(new URL("..", import.meta.url))));
 const dataDir = join(rootDir, "data");
@@ -64,13 +70,16 @@ function defaultData() {
       { id: "c7", code: "SHAS10", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
       { id: "c8", code: "ABDULRAHMAN10", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
       { id: "c9", code: "7Z10", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
-      { id: "c10", code: "ALUMNI15", discountPercent: 15, courseScope: "all", status: "active", createdAt: new Date().toISOString() }
+      { id: "c10", code: "ALUMNI15", discountPercent: 15, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c11", code: "ENG7SANZ", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() }
     ],
     affiliates: [
       { id: "a1", name: "Hasan Rayan", email: "hasan@7z-magic.com", code: "HASSAN25", discountPercent: 25, commissionPercent: 20, status: "active", createdAt: new Date().toISOString() },
       { id: "a2", name: "Shaas Matar", email: "shaas@7z-magic.com", code: "SHAAS25", discountPercent: 25, commissionPercent: 20, status: "active", createdAt: new Date().toISOString() },
       { id: "a3", name: "Abdulrahman Mohammed", email: "abdulrahman@7z-magic.com", code: "ABDULRAHMAN10", discountPercent: 10, commissionPercent: 25, status: "active", createdAt: new Date().toISOString() }
     ],
+    waitlist: [],
+    leads: [],
     counter: 0
   };
 }
@@ -153,6 +162,7 @@ export async function ensureDbSchema() {
         phone TEXT NOT NULL,
         city TEXT NOT NULL,
         experience TEXT NOT NULL,
+        preferred_language TEXT DEFAULT 'ar',
         notes TEXT DEFAULT '',
         course_id TEXT NOT NULL,
         course_name TEXT NOT NULL,
@@ -174,6 +184,8 @@ export async function ensureDbSchema() {
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS location TEXT DEFAULT '';`;
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS experience TEXT DEFAULT '';`;
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS preferred_language TEXT DEFAULT 'ar';`;
+      await sql`ALTER TABLE course_registrations ALTER COLUMN preferred_language SET DEFAULT 'ar';`;
+      await sql`UPDATE course_registrations SET preferred_language = 'ar' WHERE preferred_language IS NULL;`;
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS goal TEXT DEFAULT '';`;
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS previous_course_email TEXT DEFAULT '';`;
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS payment_submitted_at TIMESTAMPTZ DEFAULT NOW();`;
@@ -185,22 +197,72 @@ export async function ensureDbSchema() {
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_url TEXT DEFAULT '';`;
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_name TEXT DEFAULT '';`;
       await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS receipt_base64 TEXT DEFAULT '';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS currency TEXT NOT NULL DEFAULT 'USD';`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS price_usd NUMERIC(10,2);`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS discount_usd NUMERIC(10,2);`;
+      await sql`ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS product_type TEXT DEFAULT 'course';`;
+      await sql`ALTER TABLE academy_registrations ADD COLUMN IF NOT EXISTS currency TEXT NOT NULL DEFAULT 'USD';`;
+      await sql`ALTER TABLE academy_registrations ADD COLUMN IF NOT EXISTS payment_provider TEXT DEFAULT 'CliQ / Western Union';`;
+      await sql`ALTER TABLE academy_registrations ADD COLUMN IF NOT EXISTS product_type TEXT DEFAULT 'course';`;
+      await sql`ALTER TABLE academy_registrations ADD COLUMN IF NOT EXISTS preferred_language TEXT DEFAULT 'ar';`;
     } catch (e) {
       console.warn("Column migration notice:", e.message);
     }
+
+    // 3b. Marketplace Waitlist & Lead Magnet Tables
+    await sql`
+      CREATE TABLE IF NOT EXISTS marketplace_waitlist (
+        id BIGSERIAL PRIMARY KEY,
+        reference TEXT NOT NULL UNIQUE,
+        product_id TEXT NOT NULL,
+        product_title TEXT NOT NULL,
+        full_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        whatsapp TEXT NOT NULL,
+        discipline TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'WAITLISTED',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS marketplace_leads (
+        id BIGSERIAL PRIMARY KEY,
+        reference TEXT NOT NULL UNIQUE,
+        campaign TEXT NOT NULL DEFAULT 'prompt_vault_5000',
+        asset_id TEXT DEFAULT 'prompt-vault',
+        asset_title TEXT DEFAULT '',
+        full_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        whatsapp TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'DELIVERED',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
+    try {
+      await sql`ALTER TABLE marketplace_leads ADD COLUMN IF NOT EXISTS asset_id TEXT DEFAULT 'prompt-vault';`;
+      await sql`ALTER TABLE marketplace_leads ADD COLUMN IF NOT EXISTS asset_title TEXT DEFAULT '';`;
+      await sql`ALTER TABLE marketplace_leads ADD COLUMN IF NOT EXISTS whatsapp TEXT DEFAULT '';`;
+    } catch {}
 
     // 4. Bidirectional Sync from academy_registrations to course_registrations
     try {
       await sql`
         INSERT INTO course_registrations (
-          seat_number, full_name, email, phone, location, experience, course_id,
-          price_jod, discount_jod, coupon_code, payment_status, payment_reference,
+          seat_number, full_name, email, phone, location, experience, preferred_language, course_id,
+          price_jod, discount_jod, price_usd, discount_usd, currency, coupon_code,
+          payment_status, payment_provider, payment_reference,
           receipt_url, receipt_name, receipt_base64, created_at
         )
         SELECT
           ar.seat_number, ar.full_name, ar.email, ar.phone, ar.city, ar.experience,
-          CASE WHEN ar.course_id LIKE '%engineer%' THEN 'ai-engineering' ELSE 'cinematic-film' END,
-          ar.final_price, ar.discount_jod, ar.promo_code, ar.payment_status, ar.reference,
+          COALESCE(NULLIF(ar.preferred_language, ''), 'ar'),
+          CASE
+            WHEN ar.course_id IN ('ai-engineers', 'course-eng', 'ai-for-engineers') THEN 'ai-engineering'
+            WHEN ar.course_id IN ('course-film', 'cinematic-filmmaking-with-ai') THEN 'cinematic-film'
+            ELSE ar.course_id
+          END,
+          ar.final_price, ar.discount_jod, ar.final_price, ar.discount_jod, COALESCE(ar.currency, 'USD'),
+          ar.promo_code, ar.payment_status, COALESCE(ar.payment_provider, 'CliQ / Western Union'), ar.reference,
           ar.receipt_url, ar.receipt_name, ar.receipt_base64, ar.created_at
         FROM academy_registrations ar
         WHERE NOT EXISTS (
@@ -289,6 +351,31 @@ export async function ensureDbSchema() {
       }
     } catch (e) {
       console.warn("Coupon seed notice:", e.message);
+    }
+
+    try {
+      const [engCouponMig] = await sql`
+        INSERT INTO academy_system_migrations (migration_key)
+        VALUES ('marketplace_eng7sanz_coupon_v1')
+        ON CONFLICT (migration_key) DO NOTHING
+        RETURNING migration_key;
+      `;
+      if (engCouponMig) {
+        await sql`
+          INSERT INTO academy_coupons (code, discount_percent, course_scope, status)
+          SELECT 'ENG7SANZ', 10, 'all', 'active'
+          WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = 'ENG7SANZ')
+          ON CONFLICT (code) DO NOTHING;
+        `;
+        await sql`
+          INSERT INTO course_discount_codes (code, discount_percent, course_id, status)
+          SELECT 'ENG7SANZ', 10, 'all', 'active'
+          WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = 'ENG7SANZ')
+          ON CONFLICT (code) DO NOTHING;
+        `;
+      }
+    } catch (e) {
+      console.warn("ENG7SANZ coupon seed notice:", e.message);
     }
   } catch (err) {
     console.warn("Neon DB schema initialization warning (will use local fallback):", err.message);
@@ -463,7 +550,8 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
     "DIRECT15": { discountPercent: 15, affiliateName: "", commissionPercent: 0 },
     "HASSAN25": { discountPercent: 25, affiliateName: "حسن ريان", commissionPercent: 20 },
     "SHAAS25": { discountPercent: 25, affiliateName: "شأس مطر", commissionPercent: 20 },
-    "ALUMNI15": { discountPercent: 15, affiliateName: "", commissionPercent: 0 }
+    "ALUMNI15": { discountPercent: 15, affiliateName: "", commissionPercent: 0 },
+    "ENG7SANZ": { discountPercent: 10, affiliateName: "", commissionPercent: 0 }
   };
 
   if (HARDCODED_CODES[code]) {
@@ -711,7 +799,71 @@ export async function sendPaymentRejectedEmail(reg, reason = "") {
   });
 }
 
-// 5. Generate Styled Excel Report using ExcelJS
+// 5. Send Lead Magnet Download Email (Video Guide / Company Profile / Prompt Vault)
+export async function sendLeadMagnetEmail(lead) {
+  const assetLinks = {
+    "video-guide": "https://7z-magic.com/courses/assets/7ZOS_AI_Video_Guide.pdf",
+    "company-profile": "https://7z-magic.com/courses/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf",
+    "prompt-vault": "https://whop.com/7z-magic/7z-magic-b0/"
+  };
+  const assetId = assetLinks[lead.assetId] ? lead.assetId : "prompt-vault";
+  const downloadUrl = assetLinks[assetId];
+  const html = buildLeadMagnetEmailHtml({ ...lead, assetId }, downloadUrl);
+
+  const subjectMap = {
+    "video-guide": lead.language === "en"
+      ? "Your 7Z AI Video Creation Handbook (PDF) + 10% Discount | SEVEN Z STUDIO"
+      : "دليلك المجاني لصناعة الفيديو بالذكاء الاصطناعي + كود خصم 10% | SEVEN Z STUDIO",
+    "company-profile": lead.language === "en"
+      ? "SEVEN Z STUDIO — 2026 Company Profile (PDF)"
+      : "البروفايل التعريفي الرسمي لشركة SEVEN Z STUDIO 2026 (PDF)",
+    "prompt-vault": lead.language === "en"
+      ? "Your 5000+ AI Prompts Golden Vault Access | SEVEN Z STUDIO"
+      : "رابط وصولك إلى بنك البرومبتات الذهبي 5000+ | SEVEN Z STUDIO"
+  };
+
+  const adminHtml = `<div style="font-family:Arial,sans-serif;padding:16px;"><h3>New Lead Magnet Download Request</h3><p><b>File:</b> ${lead.assetTitle || assetId} (<code>${assetId}</code>)</p><p><b>Name:</b> ${lead.fullName}</p><p><b>Email:</b> ${lead.email}</p><p><b>WhatsApp:</b> ${lead.whatsapp || "—"}</p><p><b>Ref:</b> ${lead.reference}</p></div>`;
+  const [userRes, adminRes] = await Promise.allSettled([
+    sendEmail({
+      to: lead.email,
+      subject: subjectMap[assetId] || subjectMap["prompt-vault"],
+      html
+    }),
+    sendEmail({
+      to: ADMIN_EMAIL,
+      subject: `[7Z LEAD] ${lead.assetTitle || assetId}: ${lead.fullName} (${lead.reference})`,
+      html: adminHtml
+    })
+  ]);
+  return {
+    user: userRes.status === "fulfilled" ? userRes.value : { error: userRes.reason?.message },
+    admin: adminRes.status === "fulfilled" ? adminRes.value : { error: adminRes.reason?.message }
+  };
+}
+
+// 6. Send VIP Waitlist Confirmation & Admin Alert
+export async function sendWaitlistEmails(entry) {
+  const html = buildWaitlistEmailHtml(entry);
+  const adminHtml = `<div style="font-family:Arial,sans-serif;padding:16px;"><h3>New VIP Waitlist Registration</h3><p><b>Product:</b> ${entry.productTitle} (${entry.productId})</p><p><b>Name:</b> ${entry.fullName}</p><p><b>Email:</b> ${entry.email}</p><p><b>WhatsApp:</b> ${entry.whatsapp}</p><p><b>Discipline:</b> ${entry.discipline || "—"}</p><p><b>Ref:</b> ${entry.reference}</p></div>`;
+  const [userRes, adminRes] = await Promise.allSettled([
+    sendEmail({
+      to: entry.email,
+      subject: `تأكيد تسجيل VIP | ${entry.productTitle} — ${entry.reference}`,
+      html
+    }),
+    sendEmail({
+      to: ADMIN_EMAIL,
+      subject: `[7Z WAITLIST] ${entry.productTitle}: ${entry.fullName}`,
+      html: adminHtml
+    })
+  ]);
+  return {
+    user: userRes.status === "fulfilled" ? userRes.value : { error: userRes.reason?.message },
+    admin: adminRes.status === "fulfilled" ? adminRes.value : { error: adminRes.reason?.message }
+  };
+}
+
+// 7. Generate Styled Excel Report using ExcelJS (USD)
 export async function generateStyledExcelReportBuffer(registrations, totalCount) {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = "7Z Magic Studios";
@@ -753,8 +905,8 @@ export async function generateStyledExcelReportBuffer(registrations, totalCount)
     "Student Full Name",
     "Email Address",
     "Phone / WhatsApp",
-    "Enrolled Course",
-    "Amount (JOD)",
+    "Enrolled Course / Product",
+    "Amount (USD)",
     "Promo Code",
     "Payment Status",
     "Submitted Date"
@@ -769,14 +921,16 @@ export async function generateStyledExcelReportBuffer(registrations, totalCount)
 
   // Data Rows
   registrations.forEach((r, idx) => {
+    const resolvedFallback = resolveProductPriceUsd(r.courseId || r.course_id, 0);
+    const amountUsd = Number(r.finalPrice ?? r.price_usd ?? r.price_jod ?? resolvedFallback);
     const row = worksheet.addRow([
       r.seatNumber || r.seat_number || idx + 1,
       r.reference || `7Z-REG-${r.id}`,
       r.fullName || r.full_name || "—",
       r.email || "—",
       r.phone || "—",
-      r.courseName || r.course_id || "7Z Course",
-      Number(r.finalPrice || r.price_jod || 250),
+      r.courseName || r.course_id || "7Z Product",
+      amountUsd,
       r.promoCode || r.coupon_code || "NONE",
       r.paymentStatus || r.payment_status || "PENDING_REVIEW",
       (r.submittedAt || r.created_at) ? new Date(r.submittedAt || r.created_at).toISOString().split("T")[0] : "—"
@@ -800,14 +954,14 @@ export async function generateStyledExcelReportBuffer(registrations, totalCount)
     row.getCell(10).alignment = { horizontal: "center", vertical: "middle" };
 
     // Format currency
-    row.getCell(7).numFmt = "#,##0.00 JOD";
+    row.getCell(7).numFmt = "$#,##0.00";
   });
 
   const buffer = await workbook.xlsx.writeBuffer();
   return buffer;
 }
 
-// 6. Trigger 20-Registrations Excel Report (To: magic7z.ai@gmail.com)
+// 8. Trigger 20-Registrations Excel Report (To: magic7z.ai@gmail.com)
 export async function trigger20RegistrationExcelReport(allRegistrations, totalCount) {
   try {
     const latest20 = allRegistrations.slice(-20);
@@ -816,10 +970,10 @@ export async function trigger20RegistrationExcelReport(allRegistrations, totalCo
 
     const totalRevenue = latest20
       .filter((r) => ["PAID", "APPROVED", "VERIFIED"].includes(r.paymentStatus || r.payment_status))
-      .reduce((sum, r) => sum + Number(r.finalPrice || r.price_jod || 0), 0);
+      .reduce((sum, r) => sum + Number(r.finalPrice ?? r.price_usd ?? r.price_jod ?? 0), 0);
 
     const html = buildMilestoneReportHtml(totalCount, latest20.length, {
-      revenueJod: totalRevenue.toFixed(2)
+      revenueUsd: totalRevenue.toFixed(2)
     });
 
     await sendEmail({

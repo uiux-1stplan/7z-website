@@ -3,16 +3,51 @@
 
   const endpoint = "/api/admin/course-engine";
   const $ = (selector) => document.querySelector(selector);
-  const state = { affiliates: [], codes: [], registrations: [], adjustments: [], totals: {} };
+  const state = { affiliates: [], codes: [], registrations: [], waitlist: [], leads: [], adjustments: [], totals: {} };
   let initialized = false;
+  let activeReceiptObjectUrl = null;
+
+  const PRODUCT_LABELS = {
+    all: "All products & courses",
+    "ai-engineering": "AI for Engineers ($149)",
+    "course-eng": "AI for Engineers ($149)",
+    "cinematic-film": "AI Cinematic Filmmaking ($199)",
+    "course-film": "AI Cinematic Filmmaking ($199)",
+    "course-content": "Content Creation ($129)",
+    "course-web": "AI Web & SaaS ($159)",
+    "course-foundations": "AI Foundations Bundle ($35)",
+    "agent-editor": "Smart Video Editor AI ($49)",
+    "agent-shorts": "YouTube to Shorts AI ($29)",
+    "agent-prop": "Proposal & Pitch Closer ($69)",
+    "digital-vault": "7Z Digital Vault ($25)",
+    "acc-chatgpt": "ChatGPT Plus + Sora ($25)",
+    "acc-gemini": "Gemini Ultra / Advanced ($25)",
+    "acc-veo": "Google Veo Video AI ($35)",
+    "acc-envato": "Envato Elements Unlimited ($25)",
+    "skill-pack": "Developer Skill Packs ($39)",
+    "tool-prompt": "Prompt Studio PRO ($35)",
+    "tool-brand": "Brand Kit Generator ($35)",
+    "guide-arch": "Architecture in Motion ($19)",
+    "guide-brand": "Better Brand Content ($19)",
+    "guide-reels": "Product Reels That Sell ($19)",
+    "guide-id": "Small Brand Identity Workbook ($19)",
+    "guide-ai": "AI Visuals for Small Brands ($19)",
+    "guides-bundle": "Visual Storytelling Library (5 Guides)"
+  };
+
+  function productLabel(id) {
+    return PRODUCT_LABELS[String(id || "").trim()] || String(id || "—");
+  }
 
   function escape(value) {
     return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   }
 
-  function jod(value) {
-    return `${Number(value || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>JOD</small>`;
+  function usd(value) {
+    return `${Number(value || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>USD</small>`;
   }
+
+  const jod = usd;
 
   function notify(message, type = "success") {
     const toast = document.createElement("div");
@@ -85,7 +120,7 @@
       const active = affiliate.status === "active";
       affiliateOptions.push(`<option value="${escape(affiliate.id)}" ${active ? "" : "disabled"}>${escape(affiliate.name)}${active ? "" : " · inactive"}</option>`);
       const row = document.createElement("tr");
-      row.innerHTML = `<td><div class="engine-user"><strong>${escape(affiliate.name)}</strong><span>${escape(affiliate.email || affiliate.company || "Affiliate partner")}</span></div></td><td>${Number(affiliate.code_count || 0)}</td><td>${Number(affiliate.registration_count || 0)}</td><td>${jod(affiliate.net_sales_jod)}</td><td>${jod(affiliate.outstanding_commission_jod)}<small class="engine-subvalue">earned ${Number(affiliate.earned_commission_jod || 0).toFixed(2)} JOD</small></td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}" data-email="${escape(affiliate.email || "")}" data-company="${escape(affiliate.company || "")}" data-commission="${Number(affiliate.commission_percent || 0)}">Edit</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-affiliate" data-id="${escape(affiliate.id)}" data-status="${active ? "inactive" : "active"}">${active ? "Archive" : "Restore"}</button><button class="small-button danger" type="button" data-engine-action="delete-affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}">Delete</button></div></td>`;
+      row.innerHTML = `<td><div class="engine-user"><strong>${escape(affiliate.name)}</strong><span>${escape(affiliate.email || affiliate.company || "Affiliate partner")}</span></div></td><td>${Number(affiliate.code_count || 0)}</td><td>${Number(affiliate.registration_count || 0)}</td><td>${jod(affiliate.net_sales_jod)}</td><td>${jod(affiliate.outstanding_commission_jod)}<small class="engine-subvalue">earned ${Number(affiliate.earned_commission_jod || 0).toFixed(2)} USD</small></td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}" data-email="${escape(affiliate.email || "")}" data-company="${escape(affiliate.company || "")}" data-commission="${Number(affiliate.commission_percent || 0)}">Edit</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-affiliate" data-id="${escape(affiliate.id)}" data-status="${active ? "inactive" : "active"}">${active ? "Archive" : "Restore"}</button><button class="small-button danger" type="button" data-engine-action="delete-affiliate" data-id="${escape(affiliate.id)}" data-name="${escape(affiliate.name)}">Delete</button></div></td>`;
       bindDeleteButton(row.querySelector('[data-engine-action="delete-affiliate"]'), "Delete affiliate?", `Delete ${affiliate.name} and its discount codes? Historical registrations, commission values and revenue records will be retained.`, "Delete affiliate", { action: "delete-affiliate", id: affiliate.id }, "Affiliate and its codes deleted. Historical registrations were retained.");
       body.append(row);
     }
@@ -98,7 +133,7 @@
     $("#coupons-empty").hidden = state.codes.length > 0;
     for (const code of state.codes) {
       const active = code.status === "active";
-      const course = { all: "All courses", "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" }[code.course_id] || code.course_id;
+      const course = productLabel(code.course_id);
       const row = document.createElement("tr");
       row.innerHTML = `<td><code class="engine-code">${escape(code.code)}</code></td><td>${escape(code.affiliate_name || "Studio")}</td><td>${escape(course)}</td><td>${Number(code.discount_percent)}%</td><td>${Number(code.commission_percent)}%</td><td>${Number(code.redemption_count || 0)}${code.max_redemptions ? ` / ${Number(code.max_redemptions)}` : ""}</td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="code" data-id="${escape(code.id)}" data-code="${escape(code.code)}" data-affiliate="${escape(code.affiliate_id || "")}" data-course="${escape(code.course_id || "all")}" data-discount="${Number(code.discount_percent)}" data-commission="${Number(code.commission_percent)}" data-max-uses="${escape(code.max_redemptions || "")}">Edit</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-code" data-id="${escape(code.id)}" data-status="${active ? "inactive" : "active"}">${active ? "Archive" : "Restore"}</button><button class="small-button danger" type="button" data-engine-action="delete-code" data-id="${escape(code.id)}" data-name="${escape(code.code)}">Delete</button></div></td>`;
       bindDeleteButton(row.querySelector('[data-engine-action="delete-code"]'), "Delete discount code?", `Delete ${code.code}? Past registrations keep their recorded code, discount and commission values.`, "Delete code", { action: "delete-code", id: code.id }, "Discount code deleted. Historical registrations were retained.");
@@ -204,7 +239,7 @@
 
     renderMarketersLedger(state.marketersLedger);
     const history = $("#revenue-adjustment-history");
-    if (history) history.innerHTML = state.adjustments.length ? state.adjustments.map(item => `<div class="adjustment-row"><span>${new Date(item.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", month: "short", day: "numeric", year: "numeric" })}</span><strong class="${Number(item.amount_jod) < 0 ? "is-negative" : "is-positive"}">${Number(item.amount_jod) > 0 ? "+" : ""}${Number(item.amount_jod).toFixed(3)} JOD</strong><small>${escape(item.reason)}</small><div class="adjustment-actions"><button type="button" class="small-button" data-adjustment-edit="${escape(item.id)}" data-amount="${Number(item.amount_jod)}" data-reason="${escape(item.reason)}">Edit</button><button type="button" class="small-button danger" data-adjustment-delete="${escape(item.id)}" data-amount="${Number(item.amount_jod)}">Delete</button></div></div>`).join("") : '<p class="adjustment-empty">No manual adjustments yet. Every change will be recorded here.</p>';
+    if (history) history.innerHTML = state.adjustments.length ? state.adjustments.map(item => `<div class="adjustment-row"><span>${new Date(item.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", month: "short", day: "numeric", year: "numeric" })}</span><strong class="${Number(item.amount_jod) < 0 ? "is-negative" : "is-positive"}">${Number(item.amount_jod) > 0 ? "+" : ""}${Number(item.amount_jod).toFixed(2)} USD</strong><small>${escape(item.reason)}</small><div class="adjustment-actions"><button type="button" class="small-button" data-adjustment-edit="${escape(item.id)}" data-amount="${Number(item.amount_jod)}" data-reason="${escape(item.reason)}">Edit</button><button type="button" class="small-button danger" data-adjustment-delete="${escape(item.id)}" data-amount="${Number(item.amount_jod)}">Delete</button></div></div>`).join("") : '<p class="adjustment-empty">No manual adjustments yet. Every change will be recorded here.</p>';
     const selectedCourse = $("#finance-course-filter").value;
     const rows = state.registrations.filter((registration) => selectedCourse === "all" || registration.course_id === selectedCourse);
     $("#accounting-empty").hidden = rows.length > 0;
@@ -215,8 +250,10 @@
       const isPaid = ["PAID", "APPROVED", "VERIFIED"].includes(paymentStatus);
       const isRejected = paymentStatus === "REJECTED";
       const isPending = !isPaid && !isRejected;
-      const course = { "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" }[registration.course_id] || registration.course_id;
-      const due = Math.max(0, Number(registration.price_jod || 250) - Number(registration.discount_jod || 0));
+      const course = productLabel(registration.course_id);
+      const priceVal = Number(registration.price_usd ?? registration.price_jod ?? 0);
+      const discountVal = Number(registration.discount_usd ?? registration.discount_jod ?? 0);
+      const due = Math.max(0, priceVal - discountVal);
       const date = registration.created_at ? new Date(registration.created_at).toLocaleDateString("en-US", { timeZone: "Asia/Amman", year: "numeric", month: "short", day: "numeric" }) : "—";
       const row = document.createElement("tr");
       const recordId = escape(registration.id || registration.payment_reference || registration.seat_number);
@@ -244,7 +281,77 @@
         ? `<small style="display:block;color:rgba(255,255,255,0.55);font-size:0.76em;margin-top:2px;">📍 ${escape(registration.location)}</small>`
         : "";
 
-      row.innerHTML = `<td><div class="engine-user"><strong>${escape(registration.full_name)}</strong><span>${escape(registration.email)}</span>${phoneHtml}${locationHtml}</div></td><td>${escape(course)}</td><td>${date}</td><td><code class="engine-code">${escape(registration.coupon_code || "—")}</code></td><td>${jod(due)}</td><td>${Number(registration.commission_percent || 0)}% · ${Number(registration.commission_jod || 0).toFixed(2)} JOD<br><small class="engine-subvalue">${escape(registration.commission_status || "NOT_APPLICABLE")}</small></td><td>${receiptCell}</td><td><span class="engine-status ${isPaid ? "is-active" : isPending ? "is-pending" : "is-inactive"}">${escape(paymentStatus.replaceAll("_", " "))}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="registration" data-id="${recordId}" data-name="${escape(registration.full_name)}" data-email="${escape(registration.email)}" data-course="${escape(registration.course_id)}" data-price="${Number(registration.price_jod || 250)}" data-discount="${Number(registration.discount_jod || 0)}" data-commission="${Number(registration.commission_percent || 0)}" data-status="${escape(paymentStatus)}">Edit</button>${paymentAction}${commissionAction}<button class="small-button danger" type="button" data-engine-action="delete-registration" data-id="${recordId}" data-name="${escape(registration.full_name)}">Delete</button></div></td>`;
+      row.innerHTML = `<td><div class="engine-user"><strong>${escape(registration.full_name)}</strong><span>${escape(registration.email)}</span>${phoneHtml}${locationHtml}</div></td><td>${escape(course)}</td><td>${date}</td><td><code class="engine-code">${escape(registration.coupon_code || "—")}</code></td><td>${jod(due)}</td><td>${Number(registration.commission_percent || 0)}% · ${Number(registration.commission_jod || 0).toFixed(2)} USD<br><small class="engine-subvalue">${escape(registration.commission_status || "NOT_APPLICABLE")}</small></td><td>${receiptCell}</td><td><span class="engine-status ${isPaid ? "is-active" : isPending ? "is-pending" : "is-inactive"}">${escape(paymentStatus.replaceAll("_", " "))}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="registration" data-id="${recordId}" data-name="${escape(registration.full_name)}" data-email="${escape(registration.email)}" data-course="${escape(registration.course_id)}" data-price="${priceVal}" data-discount="${discountVal}" data-commission="${Number(registration.commission_percent || 0)}" data-status="${escape(paymentStatus)}">Edit</button>${paymentAction}${commissionAction}<button class="small-button danger" type="button" data-engine-action="delete-registration" data-id="${recordId}" data-name="${escape(registration.full_name)}">Delete</button></div></td>`;
+      body.append(row);
+    }
+  }
+
+  function renderWaitlist() {
+    const body = $("#waitlist-body");
+    const empty = $("#waitlist-empty");
+    if (!body) return;
+    body.replaceChildren();
+    const items = Array.isArray(state.waitlist) ? state.waitlist : [];
+    if (empty) empty.hidden = items.length > 0;
+    for (const item of items) {
+      const id = String(item.id || item.reference || "");
+      const phone = String(item.whatsapp || "").trim();
+      const waDigits = phone.replace(/[^0-9]/g, "");
+      const phoneHtml = phone
+        ? `<small class="engine-phone" style="display:block;margin-top:3px;"><a href="https://wa.me/${escape(waDigits)}" target="_blank" rel="noopener noreferrer" style="color:#38bdf8;text-decoration:none;font-size:0.82em;">💬 ${escape(phone)}</a></small>`
+        : "";
+      const date = (item.created_at || item.createdAt)
+        ? new Date(item.created_at || item.createdAt).toLocaleDateString("en-US", { timeZone: "Asia/Amman", year: "numeric", month: "short", day: "numeric" })
+        : "—";
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><div class="engine-user"><strong>${escape(item.full_name || item.fullName)}</strong><span>${escape(item.email)}</span>${phoneHtml}</div></td>
+        <td>${escape(item.product_title || item.productTitle || productLabel(item.product_id || item.productId))}</td>
+        <td>${escape(item.discipline || "—")}</td>
+        <td>${date}</td>
+        <td><span class="engine-status is-pending">${escape(item.status || "WAITLIST")}</span></td>
+        <td><div class="engine-actions"><button class="small-button danger" type="button" data-delete-waitlist="${escape(id)}">Delete</button></div></td>
+      `;
+      bindDeleteButton(
+        row.querySelector("[data-delete-waitlist]"),
+        "Delete waitlist entry?",
+        `Remove ${item.full_name || item.fullName || "this applicant"} from the waitlist?`,
+        "Delete entry",
+        { action: "delete-waitlist", id },
+        "Waitlist entry deleted."
+      );
+      body.append(row);
+    }
+  }
+
+  function renderLeads() {
+    const body = $("#leads-body");
+    const empty = $("#leads-empty");
+    if (!body) return;
+    body.replaceChildren();
+    const items = Array.isArray(state.leads) ? state.leads : [];
+    if (empty) empty.hidden = items.length > 0;
+    for (const item of items) {
+      const id = String(item.id || item.reference || "");
+      const date = (item.created_at || item.createdAt)
+        ? new Date(item.created_at || item.createdAt).toLocaleDateString("en-US", { timeZone: "Asia/Amman", year: "numeric", month: "short", day: "numeric" })
+        : "—";
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><div class="engine-user"><strong>${escape(item.full_name || item.fullName)}</strong><span>${escape(item.email)}</span></div></td>
+        <td>${escape(item.campaign || "prompt-vault-5000")}</td>
+        <td><code class="engine-code">${escape(item.reference || "—")}</code></td>
+        <td>${date}</td>
+        <td><div class="engine-actions"><button class="small-button danger" type="button" data-delete-lead="${escape(id)}">Delete</button></div></td>
+      `;
+      bindDeleteButton(
+        row.querySelector("[data-delete-lead]"),
+        "Delete lead record?",
+        `Remove ${item.email || "this lead"} from Prompt Vault leads?`,
+        "Delete lead",
+        { action: "delete-lead", id },
+        "Lead record deleted."
+      );
       body.append(row);
     }
   }
@@ -255,12 +362,16 @@
       state.affiliates = programs.affiliates || [];
       state.codes = programs.codes || [];
       state.registrations = accounting.registrations || [];
+      state.waitlist = accounting.waitlist || [];
+      state.leads = accounting.leads || [];
       state.adjustments = accounting.adjustments || [];
       state.totals = accounting.totals || {};
       state.marketersLedger = accounting.marketersLedger || [];
       renderAffiliates();
       renderCodes();
       renderAccounting(state.totals);
+      renderWaitlist();
+      renderLeads();
     } catch (error) {
       if (!silent) notify(error.message || "Course data could not be loaded.", "error");
     }
@@ -286,6 +397,12 @@
     } else if (body.action === "delete-registration") {
       state.registrations = state.registrations.filter(item => String(item.id) !== id);
       renderAccounting(state.totals);
+    } else if (body.action === "delete-waitlist") {
+      state.waitlist = state.waitlist.filter(item => String(item.id || item.reference) !== id);
+      renderWaitlist();
+    } else if (body.action === "delete-lead") {
+      state.leads = state.leads.filter(item => String(item.id || item.reference) !== id);
+      renderLeads();
     } else if (body.action === "delete-revenue-adjustment") {
       state.adjustments = state.adjustments.filter(item => String(item.id) !== id);
       renderAccounting(state.totals);
@@ -326,17 +443,19 @@
       fields.innerHTML = `<label>Partner name<input name="name" required maxlength="120" value="${escape(button.dataset.name)}"></label><label>Email<input name="email" type="email" maxlength="180" value="${escape(button.dataset.email)}"></label><label>Company<input name="company" maxlength="160" value="${escape(button.dataset.company)}"></label><label>Default commission %<input name="commissionPercent" type="number" min="0" max="100" step="1" required value="${Number(button.dataset.commission)}"></label>`;
     } else if (kind === "code") {
       const options = state.affiliates.filter(item => item.status === "active").map(item => `<option value="${escape(item.id)}" ${item.id === button.dataset.affiliate ? "selected" : ""}>${escape(item.name)}</option>`).join("");
+      const productOptions = Object.entries(PRODUCT_LABELS).map(([k, label]) => `<option value="${escape(k)}" ${button.dataset.course === k ? "selected" : ""}>${escape(label)}</option>`).join("");
       $("#course-edit-title").textContent = "Edit discount code";
       $("#course-edit-copy").textContent = "Discounts and commissions change for future checkouts; past registrations remain unchanged.";
-      fields.innerHTML = `<label>Code<input name="code" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" value="${escape(button.dataset.code)}"></label><label>Affiliate<select name="affiliateId"><option value="">Studio code / no affiliate</option>${options}</select></label><label>Course<select name="courseId"><option value="all">All courses</option><option value="cinematic-film" ${button.dataset.course === "cinematic-film" ? "selected" : ""}>AI Cinematic Filmmaking</option><option value="ai-engineering" ${button.dataset.course === "ai-engineering" ? "selected" : ""}>AI for Engineers</option></select></label><div class="engine-form-pair"><label>Discount %<input name="discountPercent" type="number" min="0" max="100" required value="${Number(button.dataset.discount)}"></label><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" required value="${Number(button.dataset.commission)}"></label></div><label>Maximum uses<input name="maxRedemptions" type="number" min="1" max="1000000" value="${escape(button.dataset.maxUses)}" placeholder="Unlimited"></label>`;
+      fields.innerHTML = `<label>Code<input name="code" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" value="${escape(button.dataset.code)}"></label><label>Affiliate<select name="affiliateId"><option value="">Studio code / no affiliate</option>${options}</select></label><label>Product / Course<select name="courseId">${productOptions}</select></label><div class="engine-form-pair"><label>Discount %<input name="discountPercent" type="number" min="0" max="100" required value="${Number(button.dataset.discount)}"></label><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" required value="${Number(button.dataset.commission)}"></label></div><label>Maximum uses<input name="maxRedemptions" type="number" min="1" max="1000000" value="${escape(button.dataset.maxUses)}" placeholder="Unlimited"></label>`;
     } else if (kind === "registration") {
+      const regProductOptions = Object.entries(PRODUCT_LABELS).filter(([k]) => k !== "all").map(([k, label]) => `<option value="${escape(k)}" ${button.dataset.course === k ? "selected" : ""}>${escape(label)}</option>`).join("");
       $("#course-edit-title").textContent = "Edit registration & revenue";
       $("#course-edit-copy").textContent = "Changes update the course ledger, verified revenue, commissions and Latest Activity. Revenue includes paid registrations only.";
-      fields.innerHTML = `<label>Student name<input name="fullName" required maxlength="160" value="${escape(button.dataset.name)}"></label><label>Email address<input name="email" type="email" required maxlength="180" value="${escape(button.dataset.email)}"></label><label>Course<select name="courseId"><option value="cinematic-film" ${button.dataset.course === "cinematic-film" ? "selected" : ""}>AI Cinematic Filmmaking</option><option value="ai-engineering" ${button.dataset.course === "ai-engineering" ? "selected" : ""}>AI for Engineers</option></select></label><div class="engine-form-pair"><label>Price (JOD)<input name="priceJod" type="number" min="0" max="1000000000" step="0.001" required value="${Number(button.dataset.price)}"></label><label>Discount (JOD)<input name="discountJod" type="number" min="0" max="1000000000" step="0.001" required value="${Number(button.dataset.discount)}"></label></div><div class="engine-form-pair"><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" step="1" required value="${Number(button.dataset.commission)}"></label><label>Payment status<select name="paymentStatus"><option value="PENDING_REVIEW" ${button.dataset.status === "PENDING_REVIEW" ? "selected" : ""}>Pending review</option><option value="PAID" ${["PAID","APPROVED","VERIFIED"].includes(button.dataset.status) ? "selected" : ""}>Paid / verified</option><option value="REJECTED" ${button.dataset.status === "REJECTED" ? "selected" : ""}>Rejected</option></select></label></div>`;
+      fields.innerHTML = `<label>Student / Customer name<input name="fullName" required maxlength="160" value="${escape(button.dataset.name)}"></label><label>Email address<input name="email" type="email" required maxlength="180" value="${escape(button.dataset.email)}"></label><label>Product / Course<select name="courseId">${regProductOptions}</select></label><div class="engine-form-pair"><label>Price (USD)<input name="priceJod" type="number" min="0" max="1000000000" step="0.01" required value="${Number(button.dataset.price)}"></label><label>Discount (USD)<input name="discountJod" type="number" min="0" max="1000000000" step="0.01" required value="${Number(button.dataset.discount)}"></label></div><div class="engine-form-pair"><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" step="1" required value="${Number(button.dataset.commission)}"></label><label>Payment status<select name="paymentStatus"><option value="PENDING_REVIEW" ${button.dataset.status === "PENDING_REVIEW" ? "selected" : ""}>Pending review</option><option value="WHOP_PENDING" ${button.dataset.status === "WHOP_PENDING" ? "selected" : ""}>Whop Checkout</option><option value="PAID" ${["PAID","APPROVED","VERIFIED"].includes(button.dataset.status) ? "selected" : ""}>Paid / verified</option><option value="REJECTED" ${button.dataset.status === "REJECTED" ? "selected" : ""}>Rejected</option></select></label></div>`;
     } else {
       $("#course-edit-title").textContent = "Edit revenue adjustment";
       $("#course-edit-copy").textContent = "This audited entry changes reported revenue. Original student payment records remain intact.";
-      fields.innerHTML = `<label>Adjustment amount (JOD)<input name="amount" type="number" min="-1000000000" max="1000000000" step="0.001" required value="${Number(button.dataset.amount)}"></label><label>Reason<input name="reason" maxlength="240" required value="${escape(button.dataset.reason)}"></label>`;
+      fields.innerHTML = `<label>Adjustment amount (USD)<input name="amount" type="number" min="-1000000000" max="1000000000" step="0.01" required value="${Number(button.dataset.amount)}"></label><label>Reason<input name="reason" maxlength="240" required value="${escape(button.dataset.reason)}"></label>`;
     }
     dialog.showModal();
   }
@@ -429,13 +548,13 @@
         form.dataset.id = adjustmentEdit.dataset.adjustmentEdit;
         $("#course-edit-title").textContent = "Edit revenue adjustment";
         $("#course-edit-copy").textContent = "This audited entry changes reported revenue. Original student payment records remain intact.";
-        $("#course-edit-fields").innerHTML = `<label>Adjustment amount (JOD)<input name="amount" type="number" min="-1000000000" max="1000000000" step="0.001" required value="${Number(adjustmentEdit.dataset.amount)}"></label><label>Reason<input name="reason" maxlength="240" required value="${escape(adjustmentEdit.dataset.reason)}"></label>`;
+        $("#course-edit-fields").innerHTML = `<label>Adjustment amount (USD)<input name="amount" type="number" min="-1000000000" max="1000000000" step="0.01" required value="${Number(adjustmentEdit.dataset.amount)}"></label><label>Reason<input name="reason" maxlength="240" required value="${escape(adjustmentEdit.dataset.reason)}"></label>`;
         dialog.showModal();
         return;
       }
       const adjustmentDelete = event.target.closest("[data-adjustment-delete]");
       if (adjustmentDelete) {
-        if (window.confirm(`Delete this audited revenue adjustment (${Number(adjustmentDelete.dataset.amount).toFixed(3)} JOD)? This will recalculate reported revenue.`)) post({ action: "delete-revenue-adjustment", id: adjustmentDelete.dataset.adjustmentDelete }, "Revenue adjustment deleted and totals recalculated.");
+        if (window.confirm(`Delete this audited revenue adjustment (${Number(adjustmentDelete.dataset.amount).toFixed(2)} USD)? This will recalculate reported revenue.`)) post({ action: "delete-revenue-adjustment", id: adjustmentDelete.dataset.adjustmentDelete }, "Revenue adjustment deleted and totals recalculated.");
         return;
       }
       const togglePayout = event.target.closest("[data-toggle-payout]");
@@ -459,29 +578,65 @@
         const downloadLink = $("#receipt-modal-download");
         const openTabLink = $("#receipt-modal-open-tab");
 
-        let receiptUrl = src;
-        if (!receiptUrl || receiptUrl === "undefined" || receiptUrl === "null" || (!receiptUrl.startsWith("data:") && !receiptUrl.startsWith("http://") && !receiptUrl.startsWith("https://") && !receiptUrl.startsWith("/api/"))) {
-          if (regId) {
-            receiptUrl = `/api/admin/course-engine?action=receipt&id=${encodeURIComponent(regId)}`;
-          }
-        }
-
         if (dialog && modalBody) {
+          if (activeReceiptObjectUrl) {
+            URL.revokeObjectURL(activeReceiptObjectUrl);
+            activeReceiptObjectUrl = null;
+          }
           if (studentLabel) studentLabel.textContent = `Official transfer receipt for ${student}`;
-          const isPdf = receiptUrl && (receiptUrl.endsWith(".pdf") || receiptUrl.includes("application/pdf"));
-          if (isPdf) {
-            modalBody.innerHTML = `<iframe src="${receiptUrl}" style="width:100%;height:520px;border:none;border-radius:8px;background:#fff;"></iframe>`;
-          } else {
-            modalBody.innerHTML = `<img src="${receiptUrl}" alt="Payment Receipt" style="max-width:100%;max-height:520px;object-fit:contain;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,0.6);" onerror="if(!this.dataset.retried && '${regId}'){ this.dataset.retried=true; this.src='/api/admin/course-engine?action=receipt&id=${encodeURIComponent(regId)}'; } else { this.parentElement.innerHTML='<div style=\\'padding:30px;color:#ef4444;font-weight:600;\\'>⚠️ Receipt image could not be loaded directly. Click below to download or view.</div>'; }">`;
-          }
-          if (downloadLink) {
-            downloadLink.href = receiptUrl;
-            downloadLink.setAttribute("download", `receipt-${student.toLowerCase().replace(/[^a-z0-9]/g, "_")}.jpg`);
-          }
-          if (openTabLink) {
-            openTabLink.href = receiptUrl;
-          }
+          modalBody.innerHTML = `<div style="padding:36px;color:#94a3b8;font-weight:600;">Loading encrypted receipt…</div>`;
           dialog.showModal();
+
+          try {
+            let finalUrl = src || "";
+            let isPdf = finalUrl.startsWith("data:application/pdf") || finalUrl.endsWith(".pdf");
+
+            if (!finalUrl.startsWith("data:")) {
+              const apiReceiptUrl = regId
+                ? `/api/admin/course-engine?action=receipt&id=${encodeURIComponent(regId)}`
+                : finalUrl;
+              let token = null;
+              try { token = await window.Clerk?.session?.getToken?.(); } catch (_) {}
+              if (!token && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+                token = "mock-dev-token";
+              }
+              const resp = await fetch(apiReceiptUrl, {
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                credentials: "same-origin"
+              });
+              if (!resp.ok) throw new Error(`Receipt load failed (${resp.status})`);
+              const blob = await resp.blob();
+              isPdf = blob.type.includes("pdf");
+              activeReceiptObjectUrl = URL.createObjectURL(blob);
+              finalUrl = activeReceiptObjectUrl;
+            }
+
+            if (isPdf) {
+              const iframe = document.createElement("iframe");
+              iframe.src = finalUrl;
+              iframe.style.cssText = "width:100%;height:520px;border:none;border-radius:8px;background:#fff;";
+              modalBody.replaceChildren(iframe);
+            } else {
+              const img = document.createElement("img");
+              img.src = finalUrl;
+              img.alt = "Payment Receipt";
+              img.style.cssText = "max-width:100%;max-height:520px;object-fit:contain;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,0.6);";
+              img.addEventListener("error", () => {
+                modalBody.innerHTML = `<div style="padding:30px;color:#ef4444;font-weight:600;">⚠️ Receipt image could not be decoded. Use download/open tab below.</div>`;
+              });
+              modalBody.replaceChildren(img);
+            }
+
+            if (downloadLink) {
+              downloadLink.href = finalUrl;
+              downloadLink.setAttribute("download", `receipt-${student.toLowerCase().replace(/[^a-z0-9]/g, "_")}.${isPdf ? "pdf" : "jpg"}`);
+            }
+            if (openTabLink) {
+              openTabLink.href = finalUrl;
+            }
+          } catch (err) {
+            modalBody.innerHTML = `<div style="padding:30px;color:#ef4444;font-weight:600;">⚠️ ${escape(err.message || "Receipt could not be loaded.")}</div>`;
+          }
         }
         return;
       }
@@ -499,6 +654,12 @@
     }));
     $("#receipt-modal-close")?.addEventListener("click", () => $("#receipt-modal-dialog")?.close());
     $("#receipt-modal-cancel")?.addEventListener("click", () => $("#receipt-modal-dialog")?.close());
+    $("#receipt-modal-dialog")?.addEventListener("close", () => {
+      if (activeReceiptObjectUrl) {
+        URL.revokeObjectURL(activeReceiptObjectUrl);
+        activeReceiptObjectUrl = null;
+      }
+    });
   }
 
   function initialize() {

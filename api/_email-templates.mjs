@@ -10,7 +10,7 @@ export const BRAND = {
   studio: "7Z MAGIC STUDIOS",
   logoUrl: "https://7z-magic.com/assets/brand/7Z-LogoT(3).png",
   logoFallback: "https://7z-magic.com/assets/images/logo-white.png",
-  siteUrl: "https://7z-magic.com/academy/",
+  siteUrl: "https://7z-magic.com/courses/",
   adminEmail: "creative@7z-magic.com",
   reportEmail: "magic7z.ai@gmail.com",
   phone: "+962 79 702 0089",
@@ -164,7 +164,7 @@ export function buildAdminRegistrationAlertHtml(record) {
         <div class="info-val">${record.city || record.location || "—"}</div>
       </div>
       <div class="info-row">
-        <div class="info-label">الدورة المختارة:</div>
+        <div class="info-label">المنتج / الدورة المختارة:</div>
         <div class="info-val" style="color: #fbbf24;">${record.courseName || record.courseId}</div>
       </div>
       <div class="info-row">
@@ -172,8 +172,12 @@ export function buildAdminRegistrationAlertHtml(record) {
         <div class="info-val"><code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: #38bdf8;">${record.reference || `7Z-REG-${record.id}`}</code></div>
       </div>
       <div class="info-row">
+        <div class="info-label">وسيلة الدفع المختارة:</div>
+        <div class="info-val">${record.paymentProvider || "CliQ / Western Union"}</div>
+      </div>
+      <div class="info-row">
         <div class="info-label">المبلغ المطلوب / المدفوع:</div>
-        <div class="info-val" style="color: #10b981; font-size: 15px;">${record.finalPrice || record.price_jod || 250} JOD</div>
+        <div class="info-val" style="color: #10b981; font-size: 15px;">$${Number(record.finalPrice ?? record.price_usd ?? record.price_jod ?? 0).toFixed(2)} USD</div>
       </div>
       <div class="info-row">
         <div class="info-label">كود الخصم المستخدم:</div>
@@ -249,7 +253,7 @@ export function buildStudentConfirmationHtml(record) {
         </div>
         <div class="info-row" style="border-bottom: none;">
           <div class="info-label">Total Amount:</div>
-          <div class="info-val" style="color: #10b981; font-size: 15px;">${record.finalPrice || record.price_jod || 250} JOD</div>
+          <div class="info-val" style="color: #10b981; font-size: 15px;">$${Number(record.finalPrice ?? record.price_usd ?? record.price_jod ?? 0).toFixed(2)} USD</div>
         </div>
       </div>
 
@@ -308,7 +312,7 @@ export function buildStudentConfirmationHtml(record) {
       </div>
       <div class="info-row" style="border-bottom: none;">
         <div class="info-label">المبلغ المطلوب:</div>
-        <div class="info-val" style="color: #10b981; font-size: 15px;">${record.finalPrice || record.price_jod || 250} JOD</div>
+        <div class="info-val" style="color: #10b981; font-size: 15px;">$${Number(record.finalPrice ?? record.price_usd ?? record.price_jod ?? 0).toFixed(2)} USD</div>
       </div>
     </div>
 
@@ -463,7 +467,7 @@ export function buildMilestoneReportHtml(totalCount, latestCount, summary = {}) 
       </div>
       <div class="info-row">
         <div class="info-label">إجمالي الإيرادات المحققة:</div>
-        <div class="info-val" style="color: #10b981;">${summary.revenueJod || "—"} JOD</div>
+        <div class="info-val" style="color: #10b981;">$${summary.revenueUsd || summary.revenueJod || "0.00"} USD</div>
       </div>
       <div class="info-row" style="border-bottom: none;">
         <div class="info-label">تاريخ التوليد:</div>
@@ -481,6 +485,119 @@ export function buildMilestoneReportHtml(totalCount, latestCount, summary = {}) 
   return wrapCinematicEmail({
     title: `📊 [تقرير إحصائي آلي] وصول التسجيلات إلى ${totalCount} طالباً — 7Z Magic Academy`,
     preheader: `تقرير Excel التلقائي لآخر ${latestCount} تسجيلاً في أكاديمية 7Z Magic`,
+    bodyHtml,
+    isRtl: true
+  });
+}
+
+export function buildLeadMagnetEmailHtml(lead, downloadUrl) {
+  const isEn = lead.language === "en";
+  const assetId = lead.assetId || "prompt-vault";
+
+  const copyMap = {
+    "video-guide": {
+      badgeEn: "SEVEN Z STUDIO · FREE PDF HANDBOOK",
+      badgeAr: "SEVEN Z STUDIO · الدليل المجاني (PDF)",
+      titleEn: "7Z AI Video Creation Handbook",
+      titleAr: "دليل صناعة الفيديو بالذكاء الاصطناعي",
+      introEn: "Your field guide for modern creators — reference-to-motion prompting, consistent characters, and cinematic audio sync — is ready to download.",
+      introAr: "دليلك العملي لصناعة الفيديو بالذكاء الاصطناعي — من هندسة الحركة والحفاظ على ثبات الشخصيات إلى المونتاج السينمائي — جاهز الآن للتحميل.",
+      ctaEn: "Download AI Video Guide (PDF) →",
+      ctaAr: "تحميل دليل صناعة الفيديو (PDF) ←",
+      promoEn: `Exclusive Bonus: Use promo code <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> for <strong>10% OFF</strong> on our AI for Engineers & Filmmaking Masterclasses.`,
+      promoAr: `هدية حصرية: استخدم كود الخصم <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> للحصول على <strong>خصم 10%</strong> على دورات الهندسة وصناعة الأفلام بالذكاء الاصطناعي.`
+    },
+    "company-profile": {
+      badgeEn: "SEVEN Z STUDIO · CORPORATE PROFILE",
+      badgeAr: "SEVEN Z STUDIO · البروفايل التعريفي",
+      titleEn: "7Z Company Profile 2026 (Landscape Edition)",
+      titleAr: "البروفايل التعريفي الرسمي لشركة 7Z Magic 2026",
+      introEn: "Thank you for your interest in SEVEN Z STUDIO. Access our official 2026 portfolio, AI filmmaking capabilities, and enterprise solutions below.",
+      introAr: "شكراً لاهتمامك بشركة SEVEN Z STUDIO. يمكنك الآن استعراض وتحميل البروفايل التعريفي الرسمي لعام 2026 وملف أعمالنا وحلول الذكاء الاصطناعي عبر الرابط التالي.",
+      ctaEn: "Download Company Profile (PDF) →",
+      ctaAr: "تحميل البروفايل التعريفي (PDF) ←"
+    },
+    "prompt-vault": {
+      badgeEn: "SEVEN Z STUDIO · 5000+ PROMPT VAULT",
+      badgeAr: "SEVEN Z STUDIO · بنك البرومبتات الذهبي",
+      titleEn: "5000+ AI Prompts Golden Vault",
+      titleAr: "بنك البرومبتات الشامل (+5000 أمر احترافي)",
+      introEn: "You now have instant access to the 5000+ AI Prompts Vault & Creative Frameworks Library curated by SEVEN Z STUDIO.",
+      introAr: "تم تفعيل وصولك بنجاح إلى المكتبة الذهبية لأكثر من 5000 برومبت احترافي وهيكليات العمل الإبداعية من SEVEN Z STUDIO.",
+      ctaEn: "Open Your Golden Vault Now →",
+      ctaAr: "فتح والوصول لبنك البرومبتات الآن ←"
+    }
+  };
+
+  const copy = copyMap[assetId] || copyMap["prompt-vault"];
+  const displayTitle = lead.assetTitle || (isEn ? copy.titleEn : copy.titleAr);
+  const safeName = String(lead.fullName || "").replace(/[<>&"']/g, "");
+
+  const promoBlock = copy.promoEn
+    ? `<div style="margin:20px 0 0;padding:14px 18px;border-radius:10px;background:linear-gradient(135deg,rgba(0,113,227,0.14),rgba(56,189,248,0.08));border:1px solid rgba(56,189,248,0.35);color:#e2e8f0;font-size:13px;line-height:1.7;">${isEn ? copy.promoEn : copy.promoAr}</div>`
+    : "";
+
+  const bodyHtml = isEn
+    ? `
+      <div style="text-align:center;margin-bottom:24px;">
+        <span class="email-badge badge-cyan">${copy.badgeEn}</span>
+        <h1 style="color:#ffffff;font-size:23px;margin:14px 0 8px;font-weight:800;letter-spacing:-0.01em;">${displayTitle}</h1>
+        <p style="color:#94a3b8;font-size:14px;margin:0;">Welcome <strong style="color:#ffffff;">${safeName}</strong> to <strong style="color:#38bdf8;">SEVEN Z STUDIO</strong>.</p>
+      </div>
+      <div class="email-card" style="background:linear-gradient(180deg,#131926 0%,#0e131d 100%);border:1px solid rgba(56,189,248,0.28);">
+        <p style="color:#cbd5e1;font-size:14.5px;margin:0 0 20px;line-height:1.75;">
+          ${copy.introEn}
+        </p>
+        <div style="text-align:center;margin:24px 0 12px;">
+          <a href="${downloadUrl}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaEn}</a>
+        </div>
+        ${promoBlock}
+        <p style="color:#64748b;font-size:12px;margin:16px 0 0;text-align:center;">Reference ID: <code style="color:#38bdf8;">${lead.reference}</code></p>
+      </div>
+    `
+    : `
+      <div style="text-align:center;margin-bottom:24px;">
+        <span class="email-badge badge-cyan">${copy.badgeAr}</span>
+        <h1 style="color:#ffffff;font-size:23px;margin:14px 0 8px;font-weight:800;">${displayTitle}</h1>
+        <p style="color:#94a3b8;font-size:14px;margin:0;">أهلاً بك <strong style="color:#ffffff;">${safeName}</strong> في استوديو <strong style="color:#38bdf8;">SEVEN Z STUDIO</strong>.</p>
+      </div>
+      <div class="email-card" style="background:linear-gradient(180deg,#131926 0%,#0e131d 100%);border:1px solid rgba(56,189,248,0.28);">
+        <p style="color:#cbd5e1;font-size:14.5px;margin:0 0 20px;line-height:1.8;">
+          ${copy.introAr}
+        </p>
+        <div style="text-align:center;margin:24px 0 12px;">
+          <a href="${downloadUrl}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaAr}</a>
+        </div>
+        ${promoBlock}
+        <p style="color:#64748b;font-size:12px;margin:16px 0 0;text-align:center;">رقم المرجع: <code style="color:#38bdf8;">${lead.reference}</code></p>
+      </div>
+    `;
+
+  return wrapCinematicEmail({
+    title: `${displayTitle} | SEVEN Z STUDIO`,
+    preheader: `Reference ${lead.reference}`,
+    bodyHtml,
+    isRtl: !isEn
+  });
+}
+
+export function buildWaitlistEmailHtml(entry) {
+  const bodyHtml = `
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span class="email-badge badge-amber">VIP WAITLIST CONFIRMED</span>
+      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">تم تثبيت مقعدك في قائمة الـ VIP بنجاح</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0;">مرحباً <strong>${entry.fullName}</strong>، تم تسجيل طلبك الأولوية بنجاح.</p>
+    </div>
+    <div class="email-card">
+      <div class="info-row"><div class="info-label">النظام / المنتج:</div><div class="info-val" style="color: #fbbf24;">${entry.productTitle}</div></div>
+      <div class="info-row"><div class="info-label">التخصص:</div><div class="info-val">${entry.discipline || "—"}</div></div>
+      <div class="info-row"><div class="info-label">رقم الواتساب:</div><div class="info-val" dir="ltr">${entry.whatsapp}</div></div>
+      <div class="info-row" style="border-bottom: none;"><div class="info-label">مرجع الحجز:</div><div class="info-val"><code>${entry.reference}</code></div></div>
+    </div>
+  `;
+  return wrapCinematicEmail({
+    title: `تأكيد التسجيل في قائمة الـ VIP | ${entry.productTitle}`,
+    preheader: `تم تسجيلك في قائمة الأولوية - ${entry.reference}`,
     bodyHtml,
     isRtl: true
   });

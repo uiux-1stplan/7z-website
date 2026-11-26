@@ -7,7 +7,12 @@ dist/
 .env.production
 .vercel/
 *.log
+*.zip
 *.pdf
+!courses/assets/7ZOS_AI_Video_Guide.pdf
+!courses/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf
+7Z_Digital_Marketplace/
+7Z_Digital_Marketplace.zip
 private/
 documents/
 _video_backup/

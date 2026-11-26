@@ -17,11 +17,20 @@ import {
   sendPaymentApprovedEmail,
   sendPaymentRejectedEmail
 } from "../academy-engine.mjs";
+import { get } from "@vercel/blob";
+import {
+  BASE_CURRENCY,
+  MARKETPLACE_PRODUCTS,
+  normalizeProductId,
+  resolveProduct,
+  resolveProductPriceUsd,
+  roundMoney
+} from "../../lib/marketplace-catalog.mjs";
 import ExcelJS from "exceljs";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-const courses = new Set(["all", "cinematic-film", "ai-engineering"]);
+const courses = new Set(["all", ...Object.keys(MARKETPLACE_PRODUCTS)]);
 
 function send(res, status, body) {
   res.setHeader("Cache-Control", "no-store");
@@ -148,7 +157,7 @@ async function getAffiliates(sql) {
         COUNT(DISTINCT c.id)::int AS code_count,
         COUNT(r.id)::int AS registration_count,
         COALESCE(SUM(CASE WHEN r.payment_status IN ('PAID','APPROVED','VERIFIED')
-          THEN GREATEST(COALESCE(r.price_jod,250) - COALESCE(r.discount_jod,0),0) ELSE 0 END),0)::numeric(12,3) AS net_sales_jod,
+          THEN GREATEST(COALESCE(r.price_usd, r.price_jod, 0) - COALESCE(r.discount_usd, r.discount_jod, 0),0) ELSE 0 END),0)::numeric(12,3) AS net_sales_jod,
         COALESCE(SUM(CASE WHEN r.payment_status IN ('PAID','APPROVED','VERIFIED')
           THEN COALESCE(r.commission_jod,0) ELSE 0 END),0)::numeric(12,3) AS earned_commission_jod,
         COALESCE(SUM(CASE WHEN r.payment_status IN ('PAID','APPROVED','VERIFIED') AND r.commission_status <> 'PAID'
@@ -339,7 +348,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
 
   ws1.mergeCells("A2:N2");
   const subCell = ws1.getCell("A2");
-  subCell.value = `Generated: ${new Date().toLocaleString("en-US", { timeZone: "Asia/Amman", dateStyle: "long", timeStyle: "short" })} (Asia/Amman)  |  Currency: JOD  |  Accounting: Strict Discount & Commission Formula`;
+  subCell.value = `Generated: ${new Date().toLocaleString("en-US", { timeZone: "Asia/Amman", dateStyle: "long", timeStyle: "short" })} (Asia/Amman)  |  Currency: USD  |  Accounting: Strict Discount & Commission Formula`;
   subCell.font = subtitleFont;
   subCell.fill = titleFill;
   subCell.alignment = { horizontal: "center", vertical: "middle" };
@@ -349,19 +358,19 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
 
   const ws1Headers = [
     "#",
-    "Student Name",
+    "Customer / Student Name",
     "Email",
     "Phone",
-    "Course",
+    "Course / Product",
     "Payment Status",
     "Promo Code",
     "Marketer / Partner",
-    "Base Price (JOD)",
-    "Discount Amount (JOD)",
-    "Net After Discount (JOD)",
+    "Base Price (USD)",
+    "Discount Amount (USD)",
+    "Net After Discount (USD)",
     "Commission %",
-    "Marketer Commission (JOD)",
-    "Academy Net Revenue (JOD)"
+    "Marketer Commission (USD)",
+    "Academy Net Revenue (USD)"
   ];
   const hRow1 = ws1.addRow(ws1Headers);
   hRow1.height = 28;
@@ -372,7 +381,9 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
     cell.border = thinBorder;
   });
 
-  const courseNames = { "cinematic-film": "AI Cinematic Filmmaking", "ai-engineering": "AI for Engineers" };
+  const courseNames = Object.fromEntries(
+    Object.values(MARKETPLACE_PRODUCTS).map((p) => [p.id, p.nameEn])
+  );
 
   let rowIdx = 5;
   let sumBase = 0;
@@ -383,7 +394,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
 
   for (const reg of registrations) {
     const isPaid = ["PAID", "APPROVED", "VERIFIED"].includes(String(reg.payment_status || "").toUpperCase());
-    const base = Number(reg.base_price || 250);
+    const base = Number(reg.base_price ?? resolveProductPriceUsd(reg.course_id, 0));
     const disc = Number(reg.discount_jod || 0);
     const net = Math.max(0, base - disc);
     const commPct = Number(reg.commission_percent || 0);
@@ -403,7 +414,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
       reg.full_name || "—",
       reg.email || "—",
       reg.phone || "—",
-      courseNames[reg.course_id] || reg.course_id || "7Z Course",
+      courseNames[normalizeProductId(reg.course_id)] || reg.course_id || "7Z Product",
       reg.payment_status || "PENDING",
       reg.coupon_code || "—",
       reg.affiliate_name || "Direct / Studio",
@@ -424,7 +435,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
       cell.alignment = { vertical: "middle" };
 
       if ([9, 10, 11, 13, 14].includes(colNum)) {
-        cell.numFmt = '#,##0.00 "JOD"';
+        cell.numFmt = '$#,##0.00';
         cell.alignment = { horizontal: "right", vertical: "middle" };
       } else if (colNum === 12) {
         cell.numFmt = "0.0%";
@@ -455,7 +466,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
     cell.font = goldFont;
     cell.border = doubleBottomBorder;
     if ([9, 10, 11, 13, 14].includes(colNum)) {
-      cell.numFmt = '#,##0.00 "JOD"';
+      cell.numFmt = '$#,##0.00';
       cell.alignment = { horizontal: "right", vertical: "middle" };
     } else {
       cell.alignment = { horizontal: "center", vertical: "middle" };
@@ -505,11 +516,11 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
   const ws2Headers = [
     "Marketer / Partner Name",
     "Promo Code",
-    "Students Count",
-    "Total Sales After Discount (JOD)",
+    "Customers Count",
+    "Total Sales After Discount (USD)",
     "Commission Rate %",
-    "Commission Due (JOD)",
-    "Company Net Profit (JOD)",
+    "Commission Due (USD)",
+    "Company Net Profit (USD)",
     "Payout Status"
   ];
   const hRow2 = ws2.addRow(ws2Headers);
@@ -550,7 +561,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
       cell.alignment = { vertical: "middle" };
 
       if ([4, 6, 7].includes(colNum)) {
-        cell.numFmt = '#,##0.00 "JOD"';
+        cell.numFmt = '$#,##0.00';
         cell.alignment = { horizontal: "right", vertical: "middle" };
       } else if (colNum === 5) {
         cell.numFmt = "0.0%";
@@ -582,7 +593,7 @@ export async function generateExcelReportBuffer({ registrations, marketersLedger
     cell.font = goldFont;
     cell.border = doubleBottomBorder;
     if ([4, 6, 7].includes(colNum)) {
-      cell.numFmt = '#,##0.00 "JOD"';
+      cell.numFmt = '$#,##0.00';
       cell.alignment = { horizontal: "right", vertical: "middle" };
     } else {
       cell.alignment = { horizontal: "center", vertical: "middle" };
@@ -772,8 +783,8 @@ async function getAccounting(sql) {
     }
   }
 
-  // Apply strict accounting formula:
-  // 1. Base price (basePrice): 250 JOD
+  // Apply dynamic USD accounting formula per product:
+  // 1. Base price (basePriceUsd): resolved from canonical catalog or stored price_usd/price_jod
   // 2. Discount amount (discountAmount): deducted first -> netPriceAfterDiscount = basePrice - discountAmount
   // 3. Marketer commission (commissionAmount): calculated EXCLUSIVELY from netPriceAfterDiscount:
   //    commissionAmount = netPriceAfterDiscount * (commissionPercent / 100)
@@ -781,11 +792,18 @@ async function getAccounting(sql) {
   for (const r of rows) {
     const status = String(r.payment_status || "").toUpperCase();
     const isPaid = ["PAID", "APPROVED", "VERIFIED"].includes(status);
-    const isPending = status === "PENDING_REVIEW" || status === "PENDING";
+    const isPending = ["PENDING_REVIEW", "PENDING", "WHOP_PENDING", "INQUIRY"].includes(status);
 
-    const basePrice = 250;
-    const discountAmount = Math.max(0, Number(r.discount_jod || 0));
-    const netPriceAfterDiscount = Math.max(0, basePrice - discountAmount);
+    const normalizedId = normalizeProductId(r.course_id);
+    const catalogPrice = resolveProductPriceUsd(normalizedId, 0);
+    const rawDiscount = Math.max(0, Number(r.discount_usd ?? r.discount_jod ?? 0));
+    const storedPrice = Number(r.price_usd ?? r.price_jod ?? 0);
+    const inferredBase = storedPrice > 0 && rawDiscount > 0 && storedPrice < catalogPrice
+      ? roundMoney(storedPrice + rawDiscount)
+      : (storedPrice > 0 ? storedPrice : catalogPrice);
+    const basePrice = catalogPrice > 0 ? catalogPrice : inferredBase;
+    const discountAmount = rawDiscount;
+    const netPriceAfterDiscount = roundMoney(Math.max(0, basePrice - discountAmount));
 
     const cCode = String(r.coupon_code || "").trim().toUpperCase();
     let commPct = Number(r.commission_percent || 0);
@@ -799,12 +817,16 @@ async function getAccounting(sql) {
       }
     }
 
-    const commissionAmount = Math.round(netPriceAfterDiscount * (commPct / 100) * 1000) / 1000;
-    const finalNetRevenue = Math.round((netPriceAfterDiscount - commissionAmount) * 1000) / 1000;
+    const commissionAmount = roundMoney(netPriceAfterDiscount * (commPct / 100));
+    const finalNetRevenue = roundMoney(netPriceAfterDiscount - commissionAmount);
 
+    r.course_id = normalizedId;
+    r.currency = BASE_CURRENCY;
     r.base_price = basePrice;
     r.discount_jod = discountAmount;
+    r.discount_usd = discountAmount;
     r.price_jod = netPriceAfterDiscount;
+    r.price_usd = netPriceAfterDiscount;
     r.net_price_jod = netPriceAfterDiscount;
     r.commission_percent = commPct;
     r.commission_jod = commissionAmount;
@@ -834,9 +856,9 @@ async function getAccounting(sql) {
         }
         const m = marketersMap.get(cCode);
         m.students_count += 1;
-        m.net_sales_jod = Math.round((m.net_sales_jod + netPriceAfterDiscount) * 1000) / 1000;
-        m.commission_due_jod = Math.round((m.commission_due_jod + commissionAmount) * 1000) / 1000;
-        m.company_net_jod = Math.round((m.company_net_jod + finalNetRevenue) * 1000) / 1000;
+        m.net_sales_jod = roundMoney(m.net_sales_jod + netPriceAfterDiscount);
+        m.commission_due_jod = roundMoney(m.commission_due_jod + commissionAmount);
+        m.company_net_jod = roundMoney(m.company_net_jod + finalNetRevenue);
       }
     } else if (isPending) {
       totals.pending += netPriceAfterDiscount;
@@ -902,9 +924,29 @@ async function getAccounting(sql) {
     };
   });
 
+  let waitlist = [];
+  let leads = [];
+  if (sql) {
+    try {
+      waitlist = await sql`SELECT id, reference, product_id, product_title, full_name, email, whatsapp, discipline, status, created_at FROM marketplace_waitlist ORDER BY created_at DESC LIMIT 2000`;
+    } catch {}
+    try {
+      leads = await sql`SELECT id, reference, campaign, full_name, email, status, created_at FROM marketplace_leads ORDER BY created_at DESC LIMIT 2000`;
+    } catch {}
+  }
+  if (waitlist.length === 0 && Array.isArray(local.waitlist)) {
+    waitlist = local.waitlist;
+  }
+  if (leads.length === 0 && Array.isArray(local.leads)) {
+    leads = local.leads;
+  }
+
   return {
+    currency: BASE_CURRENCY,
     totals: Object.fromEntries(Object.entries(totals).map(([key, value]) => [key, Math.round(value * 1000) / 1000])),
     registrations: rows,
+    waitlist,
+    leads,
     marketersLedger: finalMarketersLedger,
     adjustments,
   };
@@ -940,41 +982,72 @@ export default async function handler(req, res) {
       if (req.query?.action === "receipt" || req.query?.view === "receipt") {
         const id = text(req.query.id, 64);
         let receiptBase64 = "";
+        let receiptUrl = "";
         let receiptName = "payment-receipt.jpg";
         if (sql && id) {
           try {
-            const [r] = await sql`SELECT receipt_base64, receipt_name FROM course_registrations WHERE id::text=${id} OR payment_reference=${id} LIMIT 1`;
+            const [r] = await sql`SELECT receipt_base64, receipt_url, payment_proof_pathname, receipt_name FROM course_registrations WHERE id::text=${id} OR payment_reference=${id} LIMIT 1`;
             if (r) {
               receiptBase64 = r.receipt_base64 || "";
+              receiptUrl = r.receipt_url || r.payment_proof_pathname || "";
               receiptName = r.receipt_name || "payment-receipt.jpg";
             }
-            if (!receiptBase64) {
-              const [ar] = await sql`SELECT receipt_base64, receipt_name FROM academy_registrations WHERE id::text=${id} OR reference=${id} LIMIT 1`;
+            if (!receiptBase64 && !receiptUrl) {
+              const [ar] = await sql`SELECT receipt_base64, receipt_url, receipt_name FROM academy_registrations WHERE id::text=${id} OR reference=${id} LIMIT 1`;
               if (ar) {
                 receiptBase64 = ar.receipt_base64 || "";
+                receiptUrl = ar.receipt_url || "";
                 receiptName = ar.receipt_name || "payment-receipt.jpg";
               }
             }
           } catch {}
         }
-        if (!receiptBase64) {
+        if (!receiptBase64 && !receiptUrl) {
           const local = readLocalData();
           const found = (local.registrations || []).find(r => String(r.id) === id || r.reference === id);
           if (found) {
             receiptBase64 = found.receiptBase64 || "";
+            receiptUrl = found.receiptUrl || "";
             receiptName = found.receiptName || "payment-receipt.jpg";
           }
         }
-        if (!receiptBase64) {
-          return send(res, 404, { error: "Receipt image not found" });
+        if (receiptBase64) {
+          const match = receiptBase64.match(/^data:([^;]+);base64,(.+)$/);
+          const mimeType = match ? match[1] : (receiptName.endsWith(".pdf") ? "application/pdf" : "image/jpeg");
+          const buffer = Buffer.from(match ? match[2] : receiptBase64, "base64");
+          res.setHeader("Content-Type", mimeType);
+          res.setHeader("Content-Disposition", `inline; filename="${receiptName}"`);
+          res.setHeader("Cache-Control", "private, max-age=3600");
+          return res.status(200).send(buffer);
         }
-        const match = receiptBase64.match(/^data:([^;]+);base64,(.+)$/);
-        const mimeType = match ? match[1] : (receiptName.endsWith(".pdf") ? "application/pdf" : "image/jpeg");
-        const buffer = Buffer.from(match ? match[2] : receiptBase64, "base64");
-        res.setHeader("Content-Type", mimeType);
-        res.setHeader("Content-Disposition", `inline; filename="${receiptName}"`);
-        res.setHeader("Cache-Control", "private, max-age=3600");
-        return res.status(200).send(buffer);
+        if (receiptUrl && receiptUrl.startsWith("/media/uploads/receipts/")) {
+          const localPath = join(process.cwd(), receiptUrl.replace(/^\/+/, ""));
+          if (existsSync(localPath)) {
+            const buffer = readFileSync(localPath);
+            const mimeType = localPath.endsWith(".pdf") ? "application/pdf" : localPath.endsWith(".png") ? "image/png" : localPath.endsWith(".webp") ? "image/webp" : "image/jpeg";
+            res.setHeader("Content-Type", mimeType);
+            res.setHeader("Content-Disposition", `inline; filename="${receiptName}"`);
+            res.setHeader("Cache-Control", "private, max-age=3600");
+            return res.status(200).send(buffer);
+          }
+        }
+        if (receiptUrl && (receiptUrl.includes(".blob.vercel-storage.com") || receiptUrl.startsWith("academy-receipts/") || receiptUrl.startsWith("course-payment-proofs/"))) {
+          try {
+            const blobObj = await get(receiptUrl, { access: "private", useCache: false });
+            if (blobObj && blobObj.statusCode === 200) {
+              const chunks = [];
+              for await (const ch of blobObj.stream) chunks.push(Buffer.from(ch));
+              const buffer = Buffer.concat(chunks);
+              res.setHeader("Content-Type", blobObj.blob.contentType || "image/jpeg");
+              res.setHeader("Content-Disposition", `inline; filename="${receiptName}"`);
+              res.setHeader("Cache-Control", "private, max-age=3600");
+              return res.status(200).send(buffer);
+            }
+          } catch (blobErr) {
+            console.warn("[admin receipt blob fetch notice]:", blobErr.message);
+          }
+        }
+        return send(res, 404, { error: "Receipt image not found" });
       }
 
       if (req.query?.view === "export-excel" || req.query?.action === "export-excel") {
@@ -1250,21 +1323,21 @@ export default async function handler(req, res) {
       const registrationId = String(body.id);
       const fullName = text(body.fullName, 160);
       const email = text(body.email, 180).toLowerCase();
-      const courseId = text(body.courseId, 32);
+      const courseId = normalizeProductId(text(body.courseId, 64));
       const price = Number(body.priceJod);
       const discount = Number(body.discountJod);
       const commission = percent(body.commissionPercent) ?? 0;
-      const paymentStatus = ["PENDING_REVIEW", "PAID", "REJECTED"].includes(body.paymentStatus) ? body.paymentStatus : "PENDING_REVIEW";
-      const roundedPrice = Math.round(price * 1000) / 1000;
-      const roundedDiscount = Math.round(discount * 1000) / 1000;
+      const paymentStatus = ["PENDING_REVIEW", "PAID", "REJECTED", "WHOP_PENDING", "INQUIRY"].includes(body.paymentStatus) ? body.paymentStatus : "PENDING_REVIEW";
+      const roundedPrice = Math.round(price * 100) / 100;
+      const roundedDiscount = Math.round(discount * 100) / 100;
       const net = Math.max(0, roundedPrice - roundedDiscount);
-      const commissionJod = Math.round(net * commission * 10) / 1000;
+      const commissionJod = Math.round(net * commission) / 100;
       const commissionStatus = commission === 0 ? "NOT_APPLICABLE" : paymentStatus === "PAID" ? "PAYABLE" : "PENDING_PAYMENT_REVIEW";
 
       let registration = null;
       if (sql) {
         try {
-          const [r] = await sql`UPDATE course_registrations SET full_name=${fullName},email=${email},course_id=${courseId},price_jod=${roundedPrice},discount_jod=${roundedDiscount},commission_percent=${commission},commission_jod=${commissionJod},payment_status=${paymentStatus},commission_status=${commissionStatus} WHERE id::text=${registrationId} OR payment_reference=${registrationId} RETURNING id,full_name,email,course_id,payment_status,price_jod,discount_jod,commission_percent,commission_jod,commission_status,created_at`;
+          const [r] = await sql`UPDATE course_registrations SET full_name=${fullName},email=${email},course_id=${courseId},price_jod=${roundedPrice},discount_jod=${roundedDiscount},price_usd=${roundedPrice},discount_usd=${roundedDiscount},currency='USD',commission_percent=${commission},commission_jod=${commissionJod},payment_status=${paymentStatus},commission_status=${commissionStatus} WHERE id::text=${registrationId} OR payment_reference=${registrationId} RETURNING id,full_name,email,course_id,payment_status,price_jod,discount_jod,commission_percent,commission_jod,commission_status,created_at`;
           if (r) registration = r;
         } catch {}
       }
@@ -1285,6 +1358,36 @@ export default async function handler(req, res) {
       } catch {}
 
       return send(res, 200, { registration: registration || { id: registrationId, full_name: fullName, email, course_id: courseId, payment_status: paymentStatus } });
+    }
+
+    if (body.action === "delete-waitlist") {
+      const id = text(body.id, 64);
+      if (sql) {
+        try {
+          await sql`DELETE FROM marketplace_waitlist WHERE id::text=${id} OR reference=${id}`;
+        } catch {}
+      }
+      try {
+        const local = readLocalData();
+        local.waitlist = (local.waitlist || []).filter(w => String(w.id) !== id && w.reference !== id);
+        saveLocalData(local);
+      } catch {}
+      return send(res, 200, { deleted: true, id });
+    }
+
+    if (body.action === "delete-lead") {
+      const id = text(body.id, 64);
+      if (sql) {
+        try {
+          await sql`DELETE FROM marketplace_leads WHERE id::text=${id} OR reference=${id}`;
+        } catch {}
+      }
+      try {
+        const local = readLocalData();
+        local.leads = (local.leads || []).filter(l => String(l.id) !== id && l.reference !== id);
+        saveLocalData(local);
+      } catch {}
+      return send(res, 200, { deleted: true, id });
     }
 
     if (body.action === "delete-registration") {
@@ -1446,9 +1549,8 @@ export default async function handler(req, res) {
         } catch {}
       }
 
-      const courseName = (registration.course_id === "ai-engineering" || String(registration.course_id).includes("engineer"))
-        ? "دورة الذكاء الاصطناعي للمهندسين (AI for Engineers)"
-        : "صناعة الأفلام والمحتوى السينمائي بالذكاء الاصطناعي (AI Filmmaking)";
+      const matchedProd = resolveProduct(registration.course_id);
+      const courseName = matchedProd ? matchedProd.nameAr : "7Z Magic Academy";
 
       if (status === "PAID" && registration.email) {
         await sendPaymentApprovedEmail({
