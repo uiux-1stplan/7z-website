@@ -7,6 +7,21 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/academey/",
+      "destination": "/marketplace/",
+      "statusCode": 301
+    },
+    {
+      "source": "/courses/",
+      "destination": "/marketplace/",
+      "statusCode": 301
+    },
+    {
+      "source": "/Marketplace/",
+      "destination": "/marketplace/",
+      "statusCode": 301
+    },
+    {
       "source": "/Marketplace",
       "destination": "/marketplace/",
       "statusCode": 301
