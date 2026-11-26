@@ -183,12 +183,12 @@
       store_badge: "Digital Marketplace & Solutions",
       store_title: "Explore Autonomous Tools & Courses",
       store_sub: "Filter by autonomous agents, professional certification masterclasses, or ready-to-install toolkits.",
-      cat_all: "All Products",
-      cat_agents: "Autonomous AI Agents",
-      cat_academy: "Academy & Masterclasses",
-      cat_skills: "Skill Packs & Books ($25)",
-      cat_free: "Free Guides & Vault",
-      cat_accounts: "Monetized Accounts",
+      cat_all: "All",
+      cat_agents: "AI Agents",
+      cat_academy: "Academy",
+      cat_skills: "Handbooks",
+      cat_free: "Free Assets",
+      cat_accounts: "Accounts",
       cat_accounts_mob: "Accounts",
       badge_verified_account: "Available · Verified Account",
       badge_mass_dist: "Mass Distribution · Available Now",
@@ -400,12 +400,12 @@
       store_badge: "المتجر والحلول المعتمدة",
       store_title: "استكشف الأنظمة، الحسابات، والدورات التدريبية",
       store_sub: "تصفح وكلاء الأتمتة الذاتية، قنوات الدخل الجاهزة، أو انضم لدورات الأكاديمية لنقل أعمالك لمستوى جديد.",
-      cat_all: "جميع المنتجات والحلول",
-      cat_agents: "وكلاء الأتمتة والذكاء الاصطناعي",
-      cat_academy: "دورات الأكاديمية والماستر كلاس",
-      cat_skills: "حزم المهارات والكتب ($25)",
-      cat_free: "الأدوات والكتيبات المجانية",
-      cat_accounts: "قنوات وحسابات جاهزة للربح",
+      cat_all: "الكل",
+      cat_agents: "وكلاء AI",
+      cat_academy: "الأكاديمية",
+      cat_skills: "الأدلة والحزم",
+      cat_free: "المجانية",
+      cat_accounts: "الحسابات",
       cat_accounts_mob: "الحسابات",
       badge_verified_account: "متوفر للتسليم الفوري · حساب موثّق",
       badge_mass_dist: "نشر واسع · متاح للحجز الفوري",
@@ -871,29 +871,7 @@
 
     document.querySelectorAll(".cat-pill").forEach((pill) => {
       const isTarget = pill.getAttribute("data-cat") === currentCategory;
-      const isFree = pill.getAttribute("data-cat") === "free";
-      const isAccounts = pill.getAttribute("data-cat") === "accounts";
-      if (isTarget) {
-        if (isFree) {
-          pill.className =
-            "cat-pill active flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-emerald-600 text-white shadow-md active:scale-95";
-        } else if (isAccounts) {
-          pill.className =
-            "cat-pill active flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-violet-600 text-white shadow-md active:scale-95";
-        } else {
-          pill.className =
-            "cat-pill active flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-slate-950 text-white dark:bg-azure dark:text-white shadow-md active:scale-95";
-        }
-      } else if (isFree) {
-        pill.className =
-          "cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 active:scale-95";
-      } else if (isAccounts) {
-        pill.className =
-          "cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-400 border border-violet-500/30 active:scale-95";
-      } else {
-        pill.className =
-          "cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border border-black/5 dark:border-white/10 active:scale-95";
-      }
+      pill.classList.toggle("active", isTarget);
     });
 
     document.querySelectorAll(".mob-cat-btn").forEach((btn) => {

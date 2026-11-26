@@ -475,49 +475,49 @@
         </div>
       </div>
 
-      <!-- Desktop Segmented Category Filters Bar (>= sm: / hidden sm:flex) -->
-      <div class="hidden sm:flex items-center gap-2 mb-8 sm:mb-10 overflow-x-auto pb-2 px-1 scroll-smooth no-scrollbar" id="desktopCategoryTabs">
-        
+      <!-- Desktop Segmented Category Filters Bar (Dark-Luxury Editorial, No Scrollbar) -->
+      <div class="luxury-filter-bar" id="desktopCategoryTabs">
+
         <!-- Tab: All -->
-        <button data-cat-trigger="all" data-cat="all" class="cat-pill active flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-slate-950 text-white dark:bg-azure dark:text-white shadow-md active:scale-95">
-          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4zm10 0h7v7h-7V4zm-10 10h7v7H4v-7zm10 0h7v7h-7v-7z"/></svg>
-          <span data-i18n="cat_all">All Products</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-white/20 font-mono text-[10px]">20</span>
+        <button type="button" data-cat-trigger="all" data-cat="all" class="cat-pill luxury-cat-pill active">
+          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h7v7H4V4zm10 0h7v7h-7V4zm-10 10h7v7H4v-7zm10 0h7v7h-7v-7z"/></svg>
+          <span data-i18n="cat_all">All</span>
+          <span class="luxury-cat-count">20</span>
         </button>
 
         <!-- Tab: AI Agents -->
-        <button data-cat-trigger="agents" data-cat="agents" class="cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border border-black/5 dark:border-white/10 active:scale-95">
-          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 3v2h6V3h2v2h2a2 2 0 012 2v2h2v2h-2v4h2v2h-2v2a2 2 0 01-2 2h-2v2h-2v-2H9v2H7v-2H5a2 2 0 01-2-2v-2H1v-2h2v-4H1v-2h2V7a2 2 0 012-2h2V3h2zm8 4H7v10h10V7zm-3 2v6h-4V9h4z"/></svg>
-          <span data-i18n="cat_agents">Autonomous AI Agents</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 font-mono text-[10px]">7</span>
+        <button type="button" data-cat-trigger="agents" data-cat="agents" class="cat-pill luxury-cat-pill">
+          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3v2h6V3h2v2h2a2 2 0 012 2v2h2v2h-2v4h2v2h-2v2a2 2 0 01-2 2h-2v2h-2v-2H9v2H7v-2H5a2 2 0 01-2-2v-2H1v-2h2v-4H1v-2h2V7a2 2 0 012-2h2V3h2zm8 4H7v10h10V7zm-3 2v6h-4V9h4z"/></svg>
+          <span data-i18n="cat_agents">AI Agents</span>
+          <span class="luxury-cat-count">7</span>
         </button>
 
         <!-- Tab: Academy -->
-        <button data-cat-trigger="academy" data-cat="academy" class="cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border border-black/5 dark:border-white/10 active:scale-95">
-          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 8.5L4.5 8 12 4l7.5 4L12 11.5zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
-          <span data-i18n="cat_academy">Academy & Masterclasses</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 font-mono text-[10px]">5</span>
+        <button type="button" data-cat-trigger="academy" data-cat="academy" class="cat-pill luxury-cat-pill">
+          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 8.5L4.5 8 12 4l7.5 4L12 11.5zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+          <span data-i18n="cat_academy">Academy</span>
+          <span class="luxury-cat-count">5</span>
         </button>
 
-        <!-- Tab: Skills & Books -->
-        <button data-cat-trigger="skills" data-cat="skills" class="cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border border-black/5 dark:border-white/10 active:scale-95">
-          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span data-i18n="cat_skills">Skill Packs & Books ($25)</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 font-mono text-[10px]">2</span>
+        <!-- Tab: Handbooks -->
+        <button type="button" data-cat-trigger="skills" data-cat="skills" class="cat-pill luxury-cat-pill">
+          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span data-i18n="cat_skills">Handbooks</span>
+          <span class="luxury-cat-count">2</span>
         </button>
 
-        <!-- Tab: Free Downloads -->
-        <button data-cat-trigger="free" data-cat="free" class="cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 active:scale-95">
-          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7.5 6.5-4 12.5h-7l-4-12.5L12 2zm0 2.5L6.8 9h10.4L12 4.5zM7.2 11l2 6h5.6l2-6H7.2z"/></svg>
-          <span data-i18n="cat_free">Free Guides & Vault</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-emerald-500/20 font-mono text-[10px]">2</span>
+        <!-- Tab: Free Assets -->
+        <button type="button" data-cat-trigger="free" data-cat="free" class="cat-pill luxury-cat-pill">
+          <span class="luxury-free-dot" aria-hidden="true"></span>
+          <span data-i18n="cat_free">Free Assets</span>
+          <span class="luxury-cat-count">2</span>
         </button>
 
-        <!-- Tab: Monetized Accounts & Distribution -->
-        <button data-cat-trigger="accounts" data-cat="accounts" class="cat-pill flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-400 border border-violet-500/30 active:scale-95">
-          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-          <span data-i18n="cat_accounts">Monetized Accounts</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-violet-500/20 font-mono text-[10px]">4</span>
+        <!-- Tab: Monetized Accounts -->
+        <button type="button" data-cat-trigger="accounts" data-cat="accounts" class="cat-pill luxury-cat-pill">
+          <svg class="w-3.5 h-3.5 glossy-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          <span data-i18n="cat_accounts">Accounts</span>
+          <span class="luxury-cat-count">4</span>
         </button>
       </div>
 

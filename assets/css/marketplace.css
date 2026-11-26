@@ -82,3 +82,28 @@
   .luxury-nav-links,.luxury-btn-tour,.luxury-btn-advisory{display:none}
   .luxury-hamburger-btn{display:inline-flex}
 }
+
+/* === DARK-LUXURY CATEGORY FILTER BAR (NO SCROLLBAR) === */
+.luxury-filter-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:2.25rem;scrollbar-width:none;-ms-overflow-style:none}
+.luxury-filter-bar::-webkit-scrollbar{display:none;width:0;height:0}
+@media (max-width:767.98px){
+  .luxury-filter-bar{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding-inline:16px}
+}
+@media (max-width:639.98px){
+  .luxury-filter-bar{display:none}
+}
+
+.luxury-cat-pill{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:9999px;font-size:12.5px;font-weight:500;white-space:nowrap;flex-shrink:0;background:rgba(15,23,42,.03);border:1px solid rgba(15,23,42,.09);color:#475569;transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform .15s ease}
+.dark .luxury-cat-pill{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:#cbd5e1}
+.luxury-cat-pill:hover{background:rgba(15,23,42,.07);color:#0f172a}
+.dark .luxury-cat-pill:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#ffffff}
+.luxury-cat-pill:active{transform:scale(.97)}
+
+.luxury-cat-pill.active{background:#0f172a;border-color:#0f172a;color:#f8fafc;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+.dark .luxury-cat-pill.active{background:#f8fafc;border-color:#f8fafc;color:#090d16;font-weight:600;box-shadow:0 6px 20px rgba(255,255,255,.1)}
+
+.luxury-free-dot{width:6px;height:6px;border-radius:9999px;background:#10b981;opacity:.85;flex-shrink:0}
+.luxury-cat-count{font-family:JetBrains Mono,monospace;font-size:11px;opacity:.75;padding:1px 7px;border-radius:9999px;background:rgba(15,23,42,.07)}
+.dark .luxury-cat-count{background:rgba(255,255,255,.08)}
+.luxury-cat-pill.active .luxury-cat-count{background:rgba(255,255,255,.18);opacity:.9}
+.dark .luxury-cat-pill.active .luxury-cat-count{background:rgba(9,13,22,.1);color:#090d16;opacity:.85}
