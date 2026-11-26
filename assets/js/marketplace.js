@@ -334,7 +334,7 @@
         "Drop-in configuration rules and skill packages for Claude Code and Cursor to automate unit tests, code reviews, and UI scaffolding effortlessly.",
       profile_btn_eyebrow: "2026 Portfolio · 12.3 MB",
       profile_btn_title: "Download 7Z Company Profile",
-      tour_replay_btn: "Tour",
+      tour_replay_btn: "Interactive Tour",
       badge_whop_vault: "Whop Store · 5 Handbooks",
       badge_skillpacks: "Ready-to-Install Skills",
       pm_badge: "Official Registration & Checkout (USD Base)",
@@ -551,7 +551,7 @@
         "ملفات قواعد وأوامر ذكية جاهزة للتثبيت الفوري في Claude Code و Cursor لرفع كفاءة البرمجة، وفحص الأخطاء، وبناء واجهات المستخدم أوتوماتيكياً.",
       profile_btn_eyebrow: "الملف التعريفي الرسمي 2026 · حجم 12.3 MB",
       profile_btn_title: "حمّل البروفايل التعريفي الرسمي لـ 7Z",
-      tour_replay_btn: "استعراض الأوضاع",
+      tour_replay_btn: "جولة تفاعلية",
       badge_whop_vault: "متجر Whop · 5 أدلة عملية",
       badge_skillpacks: "أدوات جاهزة للتثبيت الفوري",
       pm_badge: "بوابة التسجيل والدفع الرسمية (USD)",
@@ -1648,6 +1648,19 @@
   }
 
   function bindAllEvents() {
+    // Close mobile drawer on desktop resize (>= 1100px)
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 1100) {
+        const drawer = document.getElementById("mobileNavDrawer");
+        const toggle = document.getElementById("mobileMenuToggle");
+        if (drawer && !drawer.classList.contains("hidden")) {
+          drawer.classList.add("hidden");
+          drawer.setAttribute("aria-hidden", "true");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+        }
+      }
+    });
+
     document.addEventListener("click", (e) => {
       const catEl = e.target.closest("[data-cat-trigger]");
       if (catEl) {
