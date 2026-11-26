@@ -802,8 +802,8 @@ export async function sendPaymentRejectedEmail(reg, reason = "") {
 // 5. Send Lead Magnet Download Email (Video Guide / Company Profile / Prompt Vault)
 export async function sendLeadMagnetEmail(lead) {
   const assetLinks = {
-    "video-guide": "https://7z-magic.com/courses/assets/7ZOS_AI_Video_Guide.pdf",
-    "company-profile": "https://7z-magic.com/courses/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf",
+    "video-guide": "https://7z-magic.com/marketplace/assets/7ZOS_AI_Video_Guide.pdf",
+    "company-profile": "https://7z-magic.com/marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf",
     "prompt-vault": "https://whop.com/7z-magic/7z-magic-b0/"
   };
   const assetId = assetLinks[lead.assetId] ? lead.assetId : "prompt-vault";

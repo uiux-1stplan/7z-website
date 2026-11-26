@@ -275,59 +275,6 @@ export default async function middleware(
   }
 
 
-  if (
-    (
-      scope === "silla" ||
-      scope === "elcon"
-    ) &&
-    (
-      url.pathname ===
-        "/silla-hall-presentation" ||
-      url.pathname ===
-        "/elcon-arabia-presentation" ||
-      url.pathname ===
-        "/silla-hall-presentation/" ||
-      url.pathname ===
-        "/elcon-arabia-presentation/"
-    )
-  ) {
-
-    return rewrite(
-      new URL(
-        `${url.pathname.replace(/\/$/, "")}/index`,
-        request.url
-      )
-    );
-  }
-
-
-  if (
-    scope === "fcs" &&
-    (
-      url.pathname ===
-        "/FCS" ||
-      url.pathname ===
-        "/FCS/" ||
-      url.pathname ===
-        "/fcs" ||
-      url.pathname ===
-        "/fcs/" ||
-      url.pathname ===
-        "/fcs/index" ||
-      url.pathname ===
-        "/fcs/index.html"
-    )
-  ) {
-
-    return rewrite(
-      new URL(
-        "/FCS/index",
-        request.url
-      )
-    );
-  }
-
-
   return next();
 }
 
@@ -335,27 +282,6 @@ export default async function middleware(
 export const config = {
 
   matcher: [
-
-    "/silla-hall-presentation",
-    "/silla-hall-presentation/:path*",
-
-    "/elcon-arabia-presentation",
-    "/elcon-arabia-presentation/:path*",
-
-    "/strategic-blueprint",
-    "/strategic-blueprint/:path*",
-
-    "/tawjihi-english-quotation",
-    "/tawjihi-english-quotation/:path*",
-
-    "/oman-market-partnership",
-    "/oman-market-partnership/:path*",
-
-    "/FCS",
-    "/FCS/:path*",
-    "/fcs",
-    "/fcs/:path*",
-
     "/api/private-documents/blueprint"
   ]
 };

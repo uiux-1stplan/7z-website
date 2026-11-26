@@ -551,7 +551,7 @@
 
       const courseId = form.getAttribute("data-course-id") || "cinematic-film";
       const courseName = form.getAttribute("data-course-name") || "Cinematic Filmmaking with AI";
-      const paymentPath = form.getAttribute("data-payment-path") || `/courses/${courseId}/payment/`;
+      const paymentPath = form.getAttribute("data-payment-path") || `/marketplace/${courseId}/payment/`;
 
       const leadData = {
         fullName: form.elements["fullName"].value.trim(),

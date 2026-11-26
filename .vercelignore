@@ -50,8 +50,8 @@ scratch/
 node_modules/
 .lighthouseci/
 *.pdf
-!courses/assets/7ZOS_AI_Video_Guide.pdf
-!courses/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf
+!marketplace/assets/7ZOS_AI_Video_Guide.pdf
+!marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf
 audit-evidence-*
 *.xlsx
 7Z_MAGIC_LEGACY_URL_MAPPING_AND_CPANEL_GUIDE.xlsx

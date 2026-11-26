@@ -5,13 +5,7 @@ Disallow: /private-access/
 Disallow: /api/
 Disallow: /course-registration/form/
 Disallow: /course-registration/checkout/
-Disallow: /courses/*/registration/
-Disallow: /courses/*/payment/
-Disallow: /FCS/
-Disallow: /silla-hall-presentation/
-Disallow: /strategic-blueprint/
-Disallow: /elcon-arabia-presentation/
-Disallow: /tawjihi-english-quotation/
-Disallow: /oman-market-partnership/
+Disallow: /marketplace/*/registration/
+Disallow: /marketplace/*/payment/
 
 Sitemap: https://7z-magic.com/sitemap.xml

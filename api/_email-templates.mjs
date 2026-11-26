@@ -10,7 +10,7 @@ export const BRAND = {
   studio: "7Z MAGIC STUDIOS",
   logoUrl: "https://7z-magic.com/assets/brand/7Z-LogoT(3).png",
   logoFallback: "https://7z-magic.com/assets/images/logo-white.png",
-  siteUrl: "https://7z-magic.com/courses/",
+  siteUrl: "https://7z-magic.com/marketplace/",
   adminEmail: "creative@7z-magic.com",
   reportEmail: "magic7z.ai@gmail.com",
   phone: "+962 79 702 0089",
@@ -103,7 +103,7 @@ export function wrapCinematicEmail({
               <p style="margin: 0 0 10px;">
                 <a href="mailto:${BRAND.adminEmail}" style="color: #38bdf8; text-decoration: none;">${BRAND.adminEmail}</a> · 
                 <a href="${BRAND.whatsappUrl}" target="_blank" style="color: #38bdf8; text-decoration: none;">واتساب: ${BRAND.phone}</a> · 
-                <a href="${BRAND.siteUrl}" target="_blank" style="color: #38bdf8; text-decoration: none;">7z-magic.com/academy</a>
+                <a href="${BRAND.siteUrl}" target="_blank" style="color: #38bdf8; text-decoration: none;">7z-magic.com/marketplace</a>
               </p>
               <p style="margin: 0; font-size: 11px; color: #475569;">
                 &copy; 2026 ${BRAND.name}. جميع الحقوق محفوظة.

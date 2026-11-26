@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "buildCommand": null,
@@ -7,33 +7,58 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/Marketplace",
+      "destination": "/marketplace/",
+      "statusCode": 301
+    },
+    {
+      "source": "/Marketplace/:path*",
+      "destination": "/marketplace/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/courses",
+      "destination": "/marketplace/",
+      "statusCode": 301
+    },
+    {
+      "source": "/courses/:path*",
+      "destination": "/marketplace/",
+      "statusCode": 301
+    },
+    {
       "source": "/academy",
-      "destination": "/courses/",
+      "destination": "/marketplace/",
       "statusCode": 301
     },
     {
       "source": "/academy/",
-      "destination": "/courses/",
+      "destination": "/marketplace/",
       "statusCode": 301
     },
     {
       "source": "/academy/:path*",
-      "destination": "/courses/",
+      "destination": "/marketplace/",
       "statusCode": 301
     },
     {
-      "source": "/courses/ai-engineering",
-      "destination": "/courses/ai-for-engineers/",
+      "source": "/academey",
+      "destination": "/marketplace/",
       "statusCode": 301
     },
     {
-      "source": "/courses/ai-engineering/",
-      "destination": "/courses/ai-for-engineers/",
+      "source": "/marketplace/ai-engineering",
+      "destination": "/marketplace/ai-for-engineers/",
       "statusCode": 301
     },
     {
-      "source": "/courses/ai-engineering/(.*)",
-      "destination": "/courses/ai-for-engineers/$1",
+      "source": "/marketplace/ai-engineering/",
+      "destination": "/marketplace/ai-for-engineers/",
+      "statusCode": 301
+    },
+    {
+      "source": "/marketplace/ai-engineering/(.*)",
+      "destination": "/marketplace/ai-for-engineers/$1",
       "statusCode": 301
     }
   ],

@@ -646,8 +646,30 @@ function serveStatic(req, res, url) {
     res.end("/* vercel insights mock */");
     return;
   }
-  if (decodedPath === "/courses/ai-engineering" || decodedPath === "/courses/ai-engineering/") {
-    res.writeHead(301, { "Location": "/courses/ai-for-engineers/" });
+  if (decodedPath === "/Marketplace" || decodedPath === "/Marketplace/") {
+    res.writeHead(301, { "Location": "/marketplace/" });
+    res.end();
+    return;
+  }
+  if (decodedPath.startsWith("/Marketplace/")) {
+    res.writeHead(301, { "Location": `/marketplace/${decodedPath.slice("/Marketplace/".length)}` });
+    res.end();
+    return;
+  }
+  if (
+    decodedPath === "/courses" ||
+    decodedPath.startsWith("/courses/") ||
+    decodedPath === "/academy" ||
+    decodedPath.startsWith("/academy/") ||
+    decodedPath === "/academey" ||
+    decodedPath.startsWith("/academey/")
+  ) {
+    res.writeHead(301, { "Location": "/marketplace/" });
+    res.end();
+    return;
+  }
+  if (decodedPath === "/marketplace/ai-engineering" || decodedPath === "/marketplace/ai-engineering/") {
+    res.writeHead(301, { "Location": "/marketplace/ai-for-engineers/" });
     res.end();
     return;
   }

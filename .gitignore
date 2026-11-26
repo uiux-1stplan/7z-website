@@ -9,8 +9,8 @@ dist/
 *.log
 *.zip
 *.pdf
-!courses/assets/7ZOS_AI_Video_Guide.pdf
-!courses/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf
+!marketplace/assets/7ZOS_AI_Video_Guide.pdf
+!marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf
 7Z_Digital_Marketplace/
 7Z_Digital_Marketplace.zip
 private/

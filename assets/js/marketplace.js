@@ -37,25 +37,25 @@
     "ai-engineering": {
       id: "ai-engineering",
       priceUsd: 149,
-      detailUrl: "/courses/ai-for-engineers/",
+      detailUrl: "/marketplace/ai-for-engineers/",
       whopUrl: WHOP_URLS.storeMain
     },
     "course-eng": {
       id: "ai-engineering",
       priceUsd: 149,
-      detailUrl: "/courses/ai-for-engineers/",
+      detailUrl: "/marketplace/ai-for-engineers/",
       whopUrl: WHOP_URLS.storeMain
     },
     "cinematic-film": {
       id: "cinematic-film",
       priceUsd: 199,
-      detailUrl: "/courses/cinematic-filmmaking-with-ai/",
+      detailUrl: "/marketplace/cinematic-filmmaking-with-ai/",
       whopUrl: WHOP_URLS.storeMain
     },
     "course-film": {
       id: "cinematic-film",
       priceUsd: 199,
-      detailUrl: "/courses/cinematic-filmmaking-with-ai/",
+      detailUrl: "/marketplace/cinematic-filmmaking-with-ai/",
       whopUrl: WHOP_URLS.storeMain
     },
     "course-content": {

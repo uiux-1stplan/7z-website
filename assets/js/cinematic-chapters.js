@@ -9,7 +9,7 @@
     const rail = document.createElement("nav");
     rail.className = "academy-utility-rail";
     rail.setAttribute("aria-label", "Academy controls");
-    rail.innerHTML = `<a href="/courses/" aria-label="Back to 7Z Academy">↖ <span>7Z ACADEMY</span></a><button type="button" data-theme-toggle aria-label="Switch color theme">◐</button>`;
+    rail.innerHTML = `<a href="/marketplace/" aria-label="Back to 7Z Academy">↖ <span>7Z ACADEMY</span></a><button type="button" data-theme-toggle aria-label="Switch color theme">◐</button>`;
     const languageControl = document.getElementById("lang");
     if (languageControl) {
       const language = document.createElement("button");
@@ -24,7 +24,7 @@
       root.dataset.theme = next;
       try { localStorage.setItem("z7-theme", next); localStorage.setItem("7z-course-theme", next); } catch {}
     });
-    if (path !== "/courses") {
+    if (path !== "/marketplace") {
       const registration = main.querySelector('a[href*="/course-registration/form/"]');
       const outcomes = main.querySelector(".outcomes")?.closest("section");
       if (registration && outcomes && !main.querySelector(".course-mid-enroll")) {

@@ -9,7 +9,7 @@
 
   const KEY = "z7:core-arrival:v1";
   const LOADER_KEY = "7z_loaded";
-  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/courses", "/courses/ai-for-engineers", "/courses/cinematic-film-production", "/courses/ai-engineering-for-architecture", "/courses/cinematic-filmmaking-with-ai", "/courses/ai-for-engineers", "/websites"]);
+  const ROUTES = new Set(["/", "/services", "/about", "/founders", "/partners", "/contact", "/private-access", "/marketplace", "/marketplace/ai-for-engineers", "/marketplace/cinematic-film-production", "/marketplace/ai-engineering-for-architecture", "/marketplace/cinematic-filmmaking-with-ai", "/marketplace/ai-for-engineers", "/websites"]);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = matchMedia("(min-width: 768px) and (pointer: fine)");
   const smoothDesktop = matchMedia("(min-width: 768px) and (pointer: fine)");
@@ -24,7 +24,7 @@
   const pathOf = url => url.pathname.replace(/\/+$/, "") || "/";
   const labelFor = url => ({
     "/": "Home", "/about": "About", "/founders": "Founders", "/partners": "Partners",
-    "/contact": "Contact", "/services": "Services", "/private-access": "Private Access", "/courses": "7Z Academy", "/courses/ai-for-engineers": "AI Engineering", "/courses/ai-for-engineers": "AI for Engineers", "/courses/cinematic-filmmaking-with-ai": "Cinematic Filmmaking", "/websites": "Websites"
+    "/contact": "Contact", "/services": "Services", "/private-access": "Private Access", "/marketplace": "7Z Academy", "/marketplace/ai-for-engineers": "AI Engineering", "/marketplace/ai-for-engineers": "AI for Engineers", "/marketplace/cinematic-filmmaking-with-ai": "Cinematic Filmmaking", "/websites": "Websites"
   }[pathOf(url)] || "7Z Magic");
   function timer(state, fn, delay) {
     const id = setTimeout(() => { state.timers.delete(id); fn(); }, delay);
