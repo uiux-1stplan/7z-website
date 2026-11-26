@@ -161,7 +161,7 @@
       announcement_text: "Claim the Free 5000+ AI Prompt Vault for Architects, Creators & Builders today!",
       announcement_cta: "Download Free",
       brand_sub: "DIGITAL MARKETPLACE",
-      nav_store: "Catalog (28)",
+      nav_store: "Catalog",
       nav_agents: "AI Agents",
       nav_academy: "Academy",
       nav_books: "Handbooks",
@@ -334,7 +334,7 @@
         "Drop-in configuration rules and skill packages for Claude Code and Cursor to automate unit tests, code reviews, and UI scaffolding effortlessly.",
       profile_btn_eyebrow: "2026 Portfolio · 12.3 MB",
       profile_btn_title: "Download 7Z Company Profile",
-      tour_replay_btn: "Interactive Tour",
+      tour_replay_btn: "Tour",
       badge_whop_vault: "Whop Store · 5 Handbooks",
       badge_skillpacks: "Ready-to-Install Skills",
       pm_badge: "Official Registration & Checkout (USD Base)",
@@ -378,10 +378,10 @@
       announcement_text: "هدية مجانية: حمّل الآن بنك الأوامر الشامل (أكثر من 5,000 برومبت هندسي وسينمائي) فوراً!",
       announcement_cta: "تحميل مجاناً",
       brand_sub: "المتجر الرقمي",
-      nav_store: "الكتالوج (28)",
-      nav_agents: "وكلاء الأتمتة",
+      nav_store: "الكتالوج",
+      nav_agents: "وكلاء AI",
       nav_academy: "الأكاديمية",
-      nav_books: "الأدلة الرقمية",
+      nav_books: "الأدلة",
       nav_enterprise: "خدمات الشركات",
       nav_main_home: "الموقع الرئيسي ↗",
       btn_consult: "احجز استشارة",
@@ -746,21 +746,13 @@
 
     const searchInput = document.getElementById("searchInput");
     if (currentLang === "en") {
-      if (btnEn)
-        btnEn.className =
-          "px-2.5 py-1 rounded-full transition text-[11px] bg-white dark:bg-azure text-slate-900 dark:text-white shadow-sm font-bold whitespace-nowrap";
-      if (btnAr)
-        btnAr.className =
-          "px-2.5 py-1 rounded-full transition text-[11px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold";
+      if (btnEn) btnEn.className = "luxury-lang-item active";
+      if (btnAr) btnAr.className = "luxury-lang-item";
       if (mobileLabel) mobileLabel.textContent = "العربية";
       if (searchInput) searchInput.placeholder = "Search agents, courses, tools...";
     } else {
-      if (btnAr)
-        btnAr.className =
-          "px-2.5 py-1 rounded-full transition text-[11px] bg-white dark:bg-azure text-slate-900 dark:text-white shadow-sm font-bold whitespace-nowrap";
-      if (btnEn)
-        btnEn.className =
-          "px-2.5 py-1 rounded-full transition text-[11px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold";
+      if (btnAr) btnAr.className = "luxury-lang-item active";
+      if (btnEn) btnEn.className = "luxury-lang-item";
       if (mobileLabel) mobileLabel.textContent = "English";
       if (searchInput) searchInput.placeholder = "ابحث عن أداة، كورس، وكيل...";
     }
