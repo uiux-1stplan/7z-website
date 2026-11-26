@@ -800,7 +800,7 @@
 
     if (currentTheme === "dark") {
       if (mesh) mesh.className = "fixed inset-0 pointer-events-none -z-10 bg-mesh-dark transition-all duration-500";
-      if (header) header.className = "sticky top-0 z-40 transition-colors duration-300 glass-nav-dark";
+      if (header) header.className = "luxury-header glass-nav-dark";
       if (sunIcon) {
         sunIcon.classList.remove("hidden");
         sunIcon.classList.add("block");
@@ -811,7 +811,7 @@
       }
     } else {
       if (mesh) mesh.className = "fixed inset-0 pointer-events-none -z-10 bg-mesh-light transition-all duration-500";
-      if (header) header.className = "sticky top-0 z-40 transition-colors duration-300 glass-nav-light";
+      if (header) header.className = "luxury-header glass-nav-light";
       if (sunIcon) {
         sunIcon.classList.remove("block");
         sunIcon.classList.add("hidden");
