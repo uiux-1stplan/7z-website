@@ -147,7 +147,7 @@
       badge_free_pdf: "100% Free · Direct PDF Guide",
       p14_title: "7Z AI Video Creation Handbook (PDF)",
       p14_desc:
-        "A complete field guide for modern creators: reference-to-motion prompting, consistent character generation, multi-track CapCut assembly, and audio sync. Includes an exclusive 10% discount code (ENG7SANZ) on the AI for Architects & Engineers Masterclass.",
+        "A complete field guide for modern creators: reference-to-motion prompting, consistent character generation, multi-track CapCut assembly, and audio sync. Includes production-grade prompts and end-to-end cinematic workflow architecture.",
       btn_download_pdf: "Download Free PDF (4.7MB)",
       kinetic_prefix: "Architecting the Future with",
       sec2_badge: "Architectural Precision & Turnkey Automation",
@@ -339,7 +339,7 @@
       badge_skillpacks: "Ready-to-Install Skills",
       pm_badge: "Official Registration & Checkout (USD Base)",
       pm_promo_label: "Discount / Affiliate Code",
-      pm_promo_ph: "e.g. ENG7SANZ",
+      pm_promo_ph: "e.g. 7ZPROMO",
       pm_promo_apply: "Apply",
       pm_method_cliq: "Local Transfer (CliQ / Western Union)",
       pm_method_whop: "Card / Instant Access (Whop)",
@@ -364,7 +364,7 @@
       badge_free_pdf: "هدية مجانية 100% · دليل عملي مباشر",
       p14_title: "دليل صناعة الفيديو والمحتوى بالذكاء الاصطناعي (PDF مجاني)",
       p14_desc:
-        "دليل تطبيقي شامل لصناع المحتوى: من صياغة أوامر الفيديو وتحريك الصور الثابتة، إلى مونتاج CapCut وتوحيد الألوان والتصدير، مع كود خصم 10% (ENG7SANZ) لبرامج الأكاديمية.",
+        "دليل تطبيقي شامل لصناع المحتوى: من صياغة أوامر الفيديو وتحريك الصور الثابتة، إلى مونتاج CapCut وتوحيد الألوان والتصدير، مع قوالب أوامر إنتاجية وهيكليات عمل سينمائية متكاملة.",
       btn_download_pdf: "تحميل الدليل مجاناً الآن (4.7MB)",
       kinetic_prefix: "هندسة المستقبل عبر",
       sec2_badge: "دقة هندسية مطلقة وأتمتة شاملة للمشاريع",
@@ -556,7 +556,7 @@
       badge_skillpacks: "أدوات جاهزة للتثبيت الفوري",
       pm_badge: "بوابة التسجيل والدفع الرسمية (USD)",
       pm_promo_label: "كود الخصم أو المسوّق",
-      pm_promo_ph: "مثال: ENG7SANZ",
+      pm_promo_ph: "مثال: 7ZPROMO",
       pm_promo_apply: "تطبيق",
       pm_method_cliq: "تحويل محلي (CliQ / Western Union)",
       pm_method_whop: "دفع بالبطاقة / Whop المباشر",
@@ -1187,8 +1187,8 @@
       badgeAr: "كتيب PDF مجاني · 4.7 ميجابايت",
       titleEn: "7Z AI Video Creation Handbook (PDF)",
       titleAr: "دليل صناعة الفيديو بالذكاء الاصطناعي (PDF)",
-      subEn: "Enter your details to receive the direct PDF download link and your 10% discount code (ENG7SANZ) via email.",
-      subAr: "أدخل بياناتك لإرسال رابط التحميل المباشر للدليل مع كود الخصم الحصري (ENG7SANZ) إلى بريدك الإلكتروني."
+      subEn: "Enter your details to receive the direct PDF download link directly via email.",
+      subAr: "أدخل بياناتك لإرسال رابط التحميل المباشر للدليل فوراً إلى بريدك الإلكتروني."
     },
     "company-profile": {
       badgeEn: "SEVEN Z STUDIO · COMPANY PROFILE",
@@ -1258,10 +1258,15 @@
           discountUsd: Number(data.discountUsd || 0)
         };
         if (feedback) {
+          const isFixed = data.discountType === "fixed";
           feedback.textContent =
             currentLang === "ar"
-              ? `تم تفعيل الكود (${appliedPromo.code}) بخصم ${appliedPromo.discountPercent}%`
-              : `Code (${appliedPromo.code}) applied: ${appliedPromo.discountPercent}% OFF`;
+              ? (isFixed
+                  ? `تم تفعيل الكود (${appliedPromo.code}) بخصم ${data.discountUsd} USD`
+                  : `تم تفعيل الكود (${appliedPromo.code}) بخصم ${appliedPromo.discountPercent}%`)
+              : (isFixed
+                  ? `Code (${appliedPromo.code}) applied: ${data.discountUsd} USD OFF`
+                  : `Code (${appliedPromo.code}) applied: ${appliedPromo.discountPercent}% OFF`);
           feedback.className = "text-[11px] font-semibold mt-1 text-emerald-600 dark:text-emerald-400";
           feedback.classList.remove("hidden");
         }

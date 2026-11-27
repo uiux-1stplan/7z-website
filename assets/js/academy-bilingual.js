@@ -636,28 +636,14 @@
             throw new Error(data.message || "Invalid code");
           }
         } catch (err) {
-          if (["7ZVIP", "MAGIC15", "DIRECT15", "HASSAN25", "SHAAS25", "ENG7SANZ"].includes(code)) {
-            appliedPercent = (code === "HASSAN25" || code === "SHAAS25") ? 25 : (code === "ENG7SANZ" ? 10 : (code === "7ZVIP" ? 20 : 15));
-            appliedDiscountUsd = Math.round(((basePrice * appliedPercent) / 100) * 100) / 100;
-            finalNetPrice = Math.round((basePrice - appliedDiscountUsd) * 100) / 100;
-            appliedCode = code;
-
-            feedback.className = "acad-promo-feedback is-success";
-            feedback.textContent = `${I18N[currentLang].code_applied} ${appliedPercent}% (-$${appliedDiscountUsd.toFixed(2)} USD)`;
-
-            if (discountLine) discountLine.style.display = "flex";
-            if (discountVal) discountVal.textContent = `-$${appliedDiscountUsd.toFixed(2)} USD (${appliedPercent}%)`;
-            if (totalVal) totalVal.textContent = `$${finalNetPrice.toFixed(2)} USD`;
-          } else {
-            feedback.className = "acad-promo-feedback is-error";
-            feedback.textContent = I18N[currentLang].code_invalid;
-            if (discountLine) discountLine.style.display = "none";
-            if (totalVal) totalVal.textContent = `$${basePrice.toFixed(2)} USD`;
-            appliedCode = "";
-            appliedPercent = 0;
-            appliedDiscountUsd = 0;
-            finalNetPrice = basePrice;
-          }
+          feedback.className = "acad-promo-feedback is-error";
+          feedback.textContent = err.message || I18N[currentLang].code_invalid;
+          if (discountLine) discountLine.style.display = "none";
+          if (totalVal) totalVal.textContent = `${basePrice.toFixed(2)} USD`;
+          appliedCode = "";
+          appliedPercent = 0;
+          appliedDiscountUsd = 0;
+          finalNetPrice = basePrice;
         } finally {
           applyBtn.disabled = false;
           applyBtn.textContent = I18N[currentLang].btn_apply_code;

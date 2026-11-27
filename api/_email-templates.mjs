@@ -504,8 +504,8 @@ export function buildLeadMagnetEmailHtml(lead, downloadUrl) {
       introAr: "دليلك العملي لصناعة الفيديو بالذكاء الاصطناعي — من هندسة الحركة والحفاظ على ثبات الشخصيات إلى المونتاج السينمائي — جاهز الآن للتحميل.",
       ctaEn: "Download AI Video Guide (PDF) →",
       ctaAr: "تحميل دليل صناعة الفيديو (PDF) ←",
-      promoEn: `Exclusive Bonus: Use promo code <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> for <strong>10% OFF</strong> on our AI for Engineers & Filmmaking Masterclasses.`,
-      promoAr: `هدية حصرية: استخدم كود الخصم <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> للحصول على <strong>خصم 10%</strong> على دورات الهندسة وصناعة الأفلام بالذكاء الاصطناعي.`
+      promoEn: "",
+      promoAr: ""
     },
     "company-profile": {
       badgeEn: "SEVEN Z STUDIO · CORPORATE PROFILE",
@@ -526,8 +526,8 @@ export function buildLeadMagnetEmailHtml(lead, downloadUrl) {
       introAr: "دليلك الشامل لبنك البرومبتات الذهبي (+5000 أمر احترافي وهيكليات العمل الإنتاجية) من SEVEN Z STUDIO جاهز الآن للتحميل المباشر.",
       ctaEn: "Download 5000+ Prompt Vault (PDF) →",
       ctaAr: "تحميل بنك البرومبتات الشامل (PDF) ←",
-      promoEn: `Exclusive Bonus: Use promo code <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> for <strong>10% OFF</strong> on our AI for Engineers & Filmmaking Masterclasses.`,
-      promoAr: `هدية حصرية: استخدم كود الخصم <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> للحصول على <strong>خصم 10%</strong> على دورات الهندسة وصناعة الأفلام بالذكاء الاصطناعي.`
+      promoEn: "",
+      promoAr: ""
     }
   };
 

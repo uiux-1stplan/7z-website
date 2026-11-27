@@ -111,39 +111,10 @@ async function ensureSchema(sql) {
       migration_key TEXT PRIMARY KEY,
       applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`;
-    const [legacySeed] = await sql`INSERT INTO course_admin_migrations (migration_key)
-      VALUES ('legacy-affiliates-and-codes-v1')
-      ON CONFLICT (migration_key) DO NOTHING
-      RETURNING migration_key`;
-    if (legacySeed) {
-      const legacyAffiliates = [
-        ["legacy-hassan", "Hassan Rayan", 25],
-        ["legacy-shaas", "Shaas Matar", 25],
-        ["legacy-abdulrahman", "Abdulrahman Mohammed", 25],
-      ];
-      for (const [key, name, commission] of legacyAffiliates) {
-        await sql`INSERT INTO course_admin_affiliates (name, commission_percent, legacy_key)
-          VALUES (${name}, ${commission}, ${key}) ON CONFLICT (legacy_key) DO NOTHING`;
-      }
-
-      const legacyCodes = [
-        ["HASSAN10", "legacy-hassan", 10, 25, false],
-        ["SHAS10", "legacy-shaas", 10, 25, false],
-        ["ABDULRAHMAN10", "legacy-abdulrahman", 10, 25, false],
-        ["7Z10", null, 10, 0, false],
-        ["ALUMNI15", null, 15, 0, true],
-      ];
-      for (const [code, legacyKey, discount, commission, previousEmail] of legacyCodes) {
-        await sql`INSERT INTO course_discount_codes
-          (code, affiliate_id, affiliate_name, course_id, discount_percent, commission_percent, requires_previous_email, legacy_key)
-          SELECT ${code},
-            (SELECT id FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}),
-            COALESCE((SELECT name FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}), ''),
-            'all', ${discount}, ${commission}, ${previousEmail}, ${`legacy-code-${code}`}
-          WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = UPPER(${code}))
-          ON CONFLICT (code) DO NOTHING`;
-      }
-    }
+    // Ensure columns for expiry date, discount type, and discount amount
+    await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;`;
+    await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS discount_type TEXT DEFAULT 'percent';`;
+    await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS discount_amount NUMERIC(10,2) DEFAULT 0;`;
   } catch (err) {
     console.warn("[course-engine] ensureSchema database notice:", err.message);
   }
@@ -205,7 +176,7 @@ async function getCodes(sql) {
   if (sql) {
     try {
       return await sql`SELECT c.id, c.code, c.affiliate_id, COALESCE(a.name,c.affiliate_name,'') AS affiliate_name,
-        c.course_id, c.discount_percent, c.commission_percent, c.status, c.max_redemptions,
+        c.course_id, c.discount_type, c.discount_amount, c.discount_percent, c.commission_percent, c.status, c.max_redemptions, c.expires_at,
         c.requires_previous_email, c.created_at, COUNT(r.id)::int AS redemption_count
       FROM course_discount_codes c
       LEFT JOIN course_admin_affiliates a ON a.id = c.affiliate_id
@@ -214,7 +185,7 @@ async function getCodes(sql) {
     } catch (error) {
       try {
         return await sql`SELECT c.id,c.code,c.affiliate_id,COALESCE(a.name,c.affiliate_name,'') AS affiliate_name,
-          c.course_id,c.discount_percent,c.commission_percent,c.status,c.max_redemptions,
+          c.course_id,c.discount_type,c.discount_amount,c.discount_percent,c.commission_percent,c.status,c.max_redemptions,c.expires_at,
           c.requires_previous_email,c.created_at,0::int AS redemption_count
           FROM course_discount_codes c LEFT JOIN course_admin_affiliates a ON a.id=c.affiliate_id ORDER BY c.created_at DESC`;
       } catch (e2) {
@@ -230,12 +201,15 @@ async function getCodes(sql) {
       id: c.id,
       code: c.code,
       affiliate_id: null,
-      affiliate_name: "Studio Code",
+      affiliate_name: c.affiliateName || "Studio Code",
       course_id: c.courseScope || "all",
-      discount_percent: c.discountPercent || 15,
-      commission_percent: 0,
+      discount_type: c.discountType || "percent",
+      discount_amount: Number(c.discountAmount || 0),
+      discount_percent: Number(c.discountPercent || 10),
+      commission_percent: Number(c.commissionPercent || 0),
       status: c.status || "active",
-      max_redemptions: null,
+      max_redemptions: c.maxRedemptions || null,
+      expires_at: c.expiresAt || null,
       requires_previous_email: false,
       created_at: c.createdAt || new Date().toISOString(),
       redemption_count: 0
@@ -1132,16 +1106,21 @@ export default async function handler(req, res) {
       const commission = commissionInput ?? 0;
       const maxUses = body.maxRedemptions ? Number(body.maxRedemptions) : null;
 
+      const expiresAt = body.expiresAt ? new Date(body.expiresAt).toISOString() : null;
+
       const couponObj = {
         id: `code_${Date.now()}`,
         code,
         affiliateId,
         affiliateName,
         courseScope: courseId,
-        discountPercent: discount,
+        discountType,
+        discountAmount,
+        discountPercent: discountType === "percent" ? discount : 0,
         commissionPercent: commission,
         status: "active",
-        maxRedemptions: maxUses
+        maxRedemptions: maxUses,
+        expiresAt
       };
 
       await saveDiscountCodeDual(couponObj);

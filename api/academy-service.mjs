@@ -92,8 +92,12 @@ export async function handleValidateCode(codeStr, courseId = "all") {
   const product = canonicalCourse !== "all" ? resolveProduct(canonicalCourse) : null;
   const basePriceUsd = Number(product?.priceUsd || 0);
   if (res?.valid && basePriceUsd > 0) {
+    const isFixed = String(res.discountType || "").toLowerCase() === "fixed";
     const discountPercent = Number(res.discountPercent || 0);
-    const discountUsd = roundMoney((basePriceUsd * discountPercent) / 100);
+    const discountAmount = Number(res.discountAmount || 0);
+    const discountUsd = isFixed
+      ? roundMoney(Math.min(basePriceUsd, discountAmount))
+      : roundMoney((basePriceUsd * discountPercent) / 100);
     const finalPriceUsd = roundMoney(Math.max(0, basePriceUsd - discountUsd));
     return {
       ...res,
@@ -201,19 +205,26 @@ export async function handleRegistration(body) {
   const basePriceUsd = roundMoney(product.priceUsd || 0);
   const promoCode = String(body.promoCode || "").trim().toUpperCase().slice(0, 32);
   let discountPercent = 0;
+  let discountAmount = 0;
+  let discountType = "percent";
   let affiliateName = "";
   let commissionPercent = 0;
 
   if (promoCode) {
     const codeCheck = await validateAndResolveDiscountCode(promoCode, product.id);
     if (codeCheck && codeCheck.valid) {
+      discountType = codeCheck.discountType || "percent";
       discountPercent = Number(codeCheck.discountPercent || 0);
+      discountAmount = Number(codeCheck.discountAmount || 0);
       affiliateName = codeCheck.affiliateName || "";
       commissionPercent = Number(codeCheck.commissionPercent || 0);
     }
   }
 
-  const discountUsd = basePriceUsd > 0 ? roundMoney((basePriceUsd * discountPercent) / 100) : 0;
+  const isFixed = discountType === "fixed";
+  const discountUsd = basePriceUsd > 0
+    ? (isFixed ? roundMoney(Math.min(basePriceUsd, discountAmount)) : roundMoney((basePriceUsd * discountPercent) / 100))
+    : 0;
   const finalPriceUsd = roundMoney(Math.max(0, basePriceUsd - discountUsd));
   const commissionUsd = finalPriceUsd > 0 ? roundMoney((finalPriceUsd * commissionPercent) / 100) : 0;
 

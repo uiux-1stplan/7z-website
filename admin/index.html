@@ -540,12 +540,25 @@
               </label>
               <div class="engine-form-pair">
                 <label>
-                  <span>Discount %</span>
-                  <input name="discountPercent" type="number" min="0" max="100" value="10" required>
+                  <span>Discount Type</span>
+                  <select name="discountType" id="coupon-discount-type">
+                    <option value="percent">Percentage (%)</option>
+                    <option value="fixed">Fixed Amount ($ USD)</option>
+                  </select>
                 </label>
+                <label>
+                  <span id="coupon-discount-label">Discount Value</span>
+                  <input name="discountPercent" id="coupon-discount-input" type="number" min="1" max="100" value="10" required>
+                </label>
+              </div>
+              <div class="engine-form-pair">
                 <label>
                   <span>Commission %</span>
                   <input name="commissionPercent" type="number" min="0" max="100" value="20" required>
+                </label>
+                <label>
+                  <span>Expiration Date <small class="field-hint">(Optional)</small></span>
+                  <input name="expiresAt" type="date">
                 </label>
               </div>
               <label class="engine-form-full">

@@ -135,7 +135,10 @@
       const active = code.status === "active";
       const course = productLabel(code.course_id);
       const row = document.createElement("tr");
-      row.innerHTML = `<td><code class="engine-code">${escape(code.code)}</code></td><td>${escape(code.affiliate_name || "Studio")}</td><td>${escape(course)}</td><td>${Number(code.discount_percent)}%</td><td>${Number(code.commission_percent)}%</td><td>${Number(code.redemption_count || 0)}${code.max_redemptions ? ` / ${Number(code.max_redemptions)}` : ""}</td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="code" data-id="${escape(code.id)}" data-code="${escape(code.code)}" data-affiliate="${escape(code.affiliate_id || "")}" data-course="${escape(code.course_id || "all")}" data-discount="${Number(code.discount_percent)}" data-commission="${Number(code.commission_percent)}" data-max-uses="${escape(code.max_redemptions || "")}">Edit</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-code" data-id="${escape(code.id)}" data-status="${active ? "inactive" : "active"}">${active ? "Archive" : "Restore"}</button><button class="small-button danger" type="button" data-engine-action="delete-code" data-id="${escape(code.id)}" data-name="${escape(code.code)}">Delete</button></div></td>`;
+      const isFixed = String(code.discount_type || "").toLowerCase() === "fixed";
+      const discountVal = isFixed ? `${Number(code.discount_amount || code.discount_percent)} USD` : `${Number(code.discount_percent)}%`;
+      const expText = code.expires_at ? `<br><small style="color:#94a3b8">Exp: ${new Date(code.expires_at).toLocaleDateString()}</small>` : "";
+      row.innerHTML = `<td><code class="engine-code">${escape(code.code)}</code>${expText}</td><td>${escape(code.affiliate_name || "Studio")}</td><td>${escape(course)}</td><td>${discountVal}</td><td>${Number(code.commission_percent)}%</td><td>${Number(code.redemption_count || 0)}${code.max_redemptions ? ` / ${Number(code.max_redemptions)}` : ""}</td><td><span class="engine-status ${active ? "is-active" : "is-inactive"}">${active ? "ACTIVE" : "PAUSED"}</span></td><td><div class="engine-actions"><button class="small-button" type="button" data-engine-edit="code" data-id="${escape(code.id)}" data-code="${escape(code.code)}" data-affiliate="${escape(code.affiliate_id || "")}" data-course="${escape(code.course_id || "all")}" data-discount-type="${escape(code.discount_type || "percent")}" data-discount="${Number(code.discount_percent)}" data-discount-amount="${Number(code.discount_amount || 0)}" data-commission="${Number(code.commission_percent)}" data-max-uses="${escape(code.max_redemptions || "")}" data-expires="${escape(code.expires_at || "")}">Edit</button><button class="small-button ${active ? "danger" : "is-confirm"}" type="button" data-engine-action="toggle-code" data-id="${escape(code.id)}" data-status="${active ? "inactive" : "active"}">${active ? "Archive" : "Restore"}</button><button class="small-button danger" type="button" data-engine-action="delete-code" data-id="${escape(code.id)}" data-name="${escape(code.code)}">Delete</button></div></td>`;
       bindDeleteButton(row.querySelector('[data-engine-action="delete-code"]'), "Delete discount code?", `Delete ${code.code}? Past registrations keep their recorded code, discount and commission values.`, "Delete code", { action: "delete-code", id: code.id }, "Discount code deleted. Historical registrations were retained.");
       body.append(row);
     }
@@ -446,7 +449,8 @@
       const productOptions = Object.entries(PRODUCT_LABELS).map(([k, label]) => `<option value="${escape(k)}" ${button.dataset.course === k ? "selected" : ""}>${escape(label)}</option>`).join("");
       $("#course-edit-title").textContent = "Edit discount code";
       $("#course-edit-copy").textContent = "Discounts and commissions change for future checkouts; past registrations remain unchanged.";
-      fields.innerHTML = `<label>Code<input name="code" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" value="${escape(button.dataset.code)}"></label><label>Affiliate<select name="affiliateId"><option value="">Studio code / no affiliate</option>${options}</select></label><label>Product / Course<select name="courseId">${productOptions}</select></label><div class="engine-form-pair"><label>Discount %<input name="discountPercent" type="number" min="0" max="100" required value="${Number(button.dataset.discount)}"></label><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" required value="${Number(button.dataset.commission)}"></label></div><label>Maximum uses<input name="maxRedemptions" type="number" min="1" max="1000000" value="${escape(button.dataset.maxUses)}" placeholder="Unlimited"></label>`;
+      const isFixed = button.dataset.discountType === "fixed";
+      fields.innerHTML = `<label>Code<input name="code" required maxlength="32" pattern="[A-Za-z0-9_-]{3,32}" value="${escape(button.dataset.code)}"></label><label>Affiliate<select name="affiliateId"><option value="">Studio code / no affiliate</option>${options}</select></label><label>Product / Course<select name="courseId">${productOptions}</select></label><div class="engine-form-pair"><label>Discount Type<select name="discountType"><option value="percent" ${!isFixed ? "selected" : ""}>Percentage (%)</option><option value="fixed" ${isFixed ? "selected" : ""}>Fixed Amount ($ USD)</option></select></label><label>Discount Value<input name="discountPercent" type="number" min="1" max="10000" required value="${Number(isFixed ? button.dataset.discountAmount || button.dataset.discount : button.dataset.discount)}"></label></div><div class="engine-form-pair"><label>Commission %<input name="commissionPercent" type="number" min="0" max="100" required value="${Number(button.dataset.commission)}"></label><label>Expiration Date<input name="expiresAt" type="date" value="${escape(button.dataset.expires ? button.dataset.expires.slice(0, 10) : "")}"></label></div><label>Maximum uses<input name="maxRedemptions" type="number" min="1" max="1000000" value="${escape(button.dataset.maxUses)}" placeholder="Unlimited"></label>`;
     } else if (kind === "registration") {
       const regProductOptions = Object.entries(PRODUCT_LABELS).filter(([k]) => k !== "all").map(([k, label]) => `<option value="${escape(k)}" ${button.dataset.course === k ? "selected" : ""}>${escape(label)}</option>`).join("");
       $("#course-edit-title").textContent = "Edit registration & revenue";
@@ -526,6 +530,20 @@
         form.elements.commissionPercent.value = "20";
       }
     });
+    
+    const discTypeSelect = $("#coupon-discount-type");
+    if (discTypeSelect) {
+      discTypeSelect.addEventListener("change", () => {
+        const isFixed = discTypeSelect.value === "fixed";
+        const label = $("#coupon-discount-label");
+        const input = $("#coupon-discount-input");
+        if (label) label.textContent = isFixed ? "Discount Amount ($ USD)" : "Discount %";
+        if (input) {
+          input.max = isFixed ? "10000" : "100";
+        }
+      });
+    }
+
     $("#coupon-form").addEventListener("submit", async (event) => {
       event.preventDefault();
       const form = event.currentTarget;
