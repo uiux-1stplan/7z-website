@@ -138,7 +138,9 @@
   --purple-core: var(--color-purple);
 }
 
-:root[data-theme="light"] {
+:root[data-theme="light"],
+:root.light,
+html.light {
   --bg-void: var(--bg, #F4F7FA);
   --border: var(--line, #D2DCE7);
   --border-subtle: var(--line-faint, #E2E9F1);
@@ -635,7 +637,8 @@ body.z7-admin-shell {
   transition: transform var(--dur-motion) var(--ease-7z);
 }
 
-[data-theme="light"] .theme-pill__thumb {
+[data-theme="light"] .theme-pill__thumb,
+html.light .theme-pill__thumb {
   transform: translateX(22px);
 }
 
@@ -2680,6 +2683,12 @@ tbody tr:hover {
   pointer-events: none !important;
 }
 
+.z7nc-drawer-overlay.is-open,
+#z7nc-drawer-overlay.is-open {
+  display: flex !important;
+  pointer-events: auto !important;
+}
+
 .z7nc-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -4151,4 +4160,105 @@ html, body, html[data-7z-core], body[data-7z-core], html[data-z7-core], body[dat
   margin: 0 !important;
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+/* ==========================================================================
+   CSP Compliant Helper Classes for Admin Views (Zero Inline Styles)
+   ========================================================================== */
+.admin-auth-pending-logo {
+  width: 52px;
+  height: 52px;
+  max-width: 52px;
+  max-height: 52px;
+  object-fit: contain;
+}
+
+.engine-actions-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.analytics-kpis.kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.kpi-val-amber { color: #f59e0b !important; }
+.kpi-val-sky { color: #38bdf8 !important; }
+.kpi-val-gold { color: #d4af37 !important; }
+.kpi-val-emerald { color: #10b981 !important; }
+
+.mt-16 { margin-top: 16px !important; }
+.mt-22 { margin-top: 22px !important; }
+.mt-24 { margin-top: 24px !important; }
+
+.panel-subtitle-muted {
+  margin: 4px 0 0 !important;
+  font-size: 12.5px !important;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.65)) !important;
+}
+
+.receipt-dialog {
+  max-width: 760px !important;
+  width: 92vw !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.95) !important;
+  background: var(--bg, #07090e) !important;
+  border-radius: 16px !important;
+}
+
+.receipt-head {
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08)) !important;
+  padding-bottom: 12px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.receipt-eyebrow {
+  color: #d4af37 !important;
+}
+
+.receipt-title {
+  margin: 4px 0 0 !important;
+  font-size: 20px !important;
+  color: var(--color-text-primary, #ffffff) !important;
+}
+
+.receipt-student {
+  color: var(--color-text-muted, #94a3b8) !important;
+  font-size: 13.5px !important;
+  margin: 12px 0 6px !important;
+}
+
+.receipt-modal-stage {
+  margin: 14px 0 !important;
+  text-align: center !important;
+  max-height: 65vh !important;
+  overflow: auto !important;
+  background: var(--bg-void, #020408) !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12)) !important;
+  padding: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 280px !important;
+}
+
+.receipt-actions {
+  display: flex !important;
+  gap: 10px !important;
+  justify-content: flex-end !important;
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08)) !important;
+  padding-top: 14px !important;
+}
+
+.receipt-download-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
 }

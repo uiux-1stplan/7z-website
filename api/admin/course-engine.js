@@ -111,10 +111,39 @@ async function ensureSchema(sql) {
       migration_key TEXT PRIMARY KEY,
       applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`;
-    // Ensure columns for expiry date, discount type, and discount amount
-    await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;`;
-    await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS discount_type TEXT DEFAULT 'percent';`;
-    await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS discount_amount NUMERIC(10,2) DEFAULT 0;`;
+    const [legacySeed] = await sql`INSERT INTO course_admin_migrations (migration_key)
+      VALUES ('legacy-affiliates-and-codes-v1')
+      ON CONFLICT (migration_key) DO NOTHING
+      RETURNING migration_key`;
+    if (legacySeed) {
+      const legacyAffiliates = [
+        ["legacy-hassan", "Hassan Rayan", 25],
+        ["legacy-shaas", "Shaas Matar", 25],
+        ["legacy-abdulrahman", "Abdulrahman Mohammed", 25],
+      ];
+      for (const [key, name, commission] of legacyAffiliates) {
+        await sql`INSERT INTO course_admin_affiliates (name, commission_percent, legacy_key)
+          VALUES (${name}, ${commission}, ${key}) ON CONFLICT (legacy_key) DO NOTHING`;
+      }
+
+      const legacyCodes = [
+        ["HASSAN10", "legacy-hassan", 10, 25, false],
+        ["SHAS10", "legacy-shaas", 10, 25, false],
+        ["ABDULRAHMAN10", "legacy-abdulrahman", 10, 25, false],
+        ["7Z10", null, 10, 0, false],
+        ["ALUMNI15", null, 15, 0, true],
+      ];
+      for (const [code, legacyKey, discount, commission, previousEmail] of legacyCodes) {
+        await sql`INSERT INTO course_discount_codes
+          (code, affiliate_id, affiliate_name, course_id, discount_percent, commission_percent, requires_previous_email, legacy_key)
+          SELECT ${code},
+            (SELECT id FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}),
+            COALESCE((SELECT name FROM course_admin_affiliates WHERE legacy_key = ${legacyKey}), ''),
+            'all', ${discount}, ${commission}, ${previousEmail}, ${`legacy-code-${code}`}
+          WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = UPPER(${code}))
+          ON CONFLICT (code) DO NOTHING`;
+      }
+    }
   } catch (err) {
     console.warn("[course-engine] ensureSchema database notice:", err.message);
   }
@@ -176,7 +205,7 @@ async function getCodes(sql) {
   if (sql) {
     try {
       return await sql`SELECT c.id, c.code, c.affiliate_id, COALESCE(a.name,c.affiliate_name,'') AS affiliate_name,
-        c.course_id, c.discount_type, c.discount_amount, c.discount_percent, c.commission_percent, c.status, c.max_redemptions, c.expires_at,
+        c.course_id, c.discount_percent, c.commission_percent, c.status, c.max_redemptions,
         c.requires_previous_email, c.created_at, COUNT(r.id)::int AS redemption_count
       FROM course_discount_codes c
       LEFT JOIN course_admin_affiliates a ON a.id = c.affiliate_id
@@ -185,7 +214,7 @@ async function getCodes(sql) {
     } catch (error) {
       try {
         return await sql`SELECT c.id,c.code,c.affiliate_id,COALESCE(a.name,c.affiliate_name,'') AS affiliate_name,
-          c.course_id,c.discount_type,c.discount_amount,c.discount_percent,c.commission_percent,c.status,c.max_redemptions,c.expires_at,
+          c.course_id,c.discount_percent,c.commission_percent,c.status,c.max_redemptions,
           c.requires_previous_email,c.created_at,0::int AS redemption_count
           FROM course_discount_codes c LEFT JOIN course_admin_affiliates a ON a.id=c.affiliate_id ORDER BY c.created_at DESC`;
       } catch (e2) {
@@ -201,15 +230,12 @@ async function getCodes(sql) {
       id: c.id,
       code: c.code,
       affiliate_id: null,
-      affiliate_name: c.affiliateName || "Studio Code",
+      affiliate_name: "Studio Code",
       course_id: c.courseScope || "all",
-      discount_type: c.discountType || "percent",
-      discount_amount: Number(c.discountAmount || 0),
-      discount_percent: Number(c.discountPercent || 10),
-      commission_percent: Number(c.commissionPercent || 0),
+      discount_percent: c.discountPercent || 15,
+      commission_percent: 0,
       status: c.status || "active",
-      max_redemptions: c.maxRedemptions || null,
-      expires_at: c.expiresAt || null,
+      max_redemptions: null,
       requires_previous_email: false,
       created_at: c.createdAt || new Date().toISOString(),
       redemption_count: 0
@@ -633,13 +659,36 @@ async function getAccounting(sql) {
   }
 
   if (sql) {
+    const deletedIds = new Set();
+    const deletedRefs = new Set();
+    try {
+      await sql`CREATE TABLE IF NOT EXISTS deleted_registrations (
+        id TEXT,
+        reference TEXT,
+        email TEXT,
+        course_id TEXT,
+        deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );`;
+      const delRows = await sql`SELECT id, reference FROM deleted_registrations`;
+      for (const dr of delRows) {
+        if (dr.id) deletedIds.add(String(dr.id));
+        if (dr.reference) deletedRefs.add(String(dr.reference));
+      }
+    } catch (e) {}
+
+    const localDeleted = local.deleted_registrations || [];
+    for (const ld of localDeleted) {
+      if (ld.id) deletedIds.add(String(ld.id));
+      if (ld.reference) deletedRefs.add(String(ld.reference));
+    }
+
     try {
       const dbRows = await sql`SELECT id, seat_number, full_name, email, phone, location, experience,
         preferred_language, goal, previous_course_email, course_id, created_at, payment_submitted_at, payment_status,
         price_jod, discount_jod, coupon_code, affiliate_name, commission_percent,
         commission_jod, commission_status, payment_provider, payment_reference, receipt_url, receipt_name, receipt_base64
         FROM course_registrations ORDER BY created_at DESC LIMIT 5000`;
-      rows = [...dbRows];
+      rows = dbRows.filter(r => !deletedIds.has(String(r.id)) && (!r.payment_reference || !deletedRefs.has(String(r.payment_reference))));
     } catch (error) {
       console.warn("Notice querying course_registrations:", error.message);
     }
@@ -651,6 +700,9 @@ async function getAccounting(sql) {
         receipt_url, receipt_name, receipt_base64
         FROM academy_registrations ORDER BY created_at DESC LIMIT 5000`;
       for (const ar of academyRows) {
+        if (deletedIds.has(String(ar.id)) || (ar.payment_reference && deletedRefs.has(String(ar.payment_reference)))) {
+          continue;
+        }
         const exists = rows.some(r =>
           (r.payment_reference && r.payment_reference === ar.payment_reference) ||
           (r.email && r.course_id && r.email.toLowerCase() === ar.email.toLowerCase() && r.course_id === ar.course_id)
@@ -1106,21 +1158,16 @@ export default async function handler(req, res) {
       const commission = commissionInput ?? 0;
       const maxUses = body.maxRedemptions ? Number(body.maxRedemptions) : null;
 
-      const expiresAt = body.expiresAt ? new Date(body.expiresAt).toISOString() : null;
-
       const couponObj = {
         id: `code_${Date.now()}`,
         code,
         affiliateId,
         affiliateName,
         courseScope: courseId,
-        discountType,
-        discountAmount,
-        discountPercent: discountType === "percent" ? discount : 0,
+        discountPercent: discount,
         commissionPercent: commission,
         status: "active",
-        maxRedemptions: maxUses,
-        expiresAt
+        maxRedemptions: maxUses
       };
 
       await saveDiscountCodeDual(couponObj);
@@ -1370,19 +1417,97 @@ export default async function handler(req, res) {
     }
 
     if (body.action === "delete-registration") {
-      const registrationId = String(body.id);
+      const registrationId = String(body.id || "");
+      const reference = String(body.reference || "");
+      const email = String(body.email || "").toLowerCase();
+      const courseId = String(body.courseId || "");
+
+      let foundRef = reference;
+      let foundEmail = email;
+      let foundCourse = courseId;
+      let foundId = registrationId;
+
       if (sql) {
         try {
-          await sql`DELETE FROM course_registrations WHERE id::text=${registrationId} OR payment_reference=${registrationId}`;
-          await sql`DELETE FROM academy_registrations WHERE id::text=${registrationId} OR reference=${registrationId}`;
-        } catch {}
+          await sql`CREATE TABLE IF NOT EXISTS deleted_registrations (
+            id TEXT,
+            reference TEXT,
+            email TEXT,
+            course_id TEXT,
+            deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+          );`;
+
+          const existingCourse = await sql`
+            SELECT id, payment_reference, email, course_id FROM course_registrations
+            WHERE id::text = ${registrationId} OR payment_reference = ${registrationId} OR (payment_reference IS NOT NULL AND payment_reference = ${reference})
+            LIMIT 1
+          `;
+          if (existingCourse && existingCourse.length > 0) {
+            foundId = String(existingCourse[0].id || registrationId);
+            foundRef = existingCourse[0].payment_reference || foundRef;
+            foundEmail = (existingCourse[0].email || foundEmail).toLowerCase();
+            foundCourse = existingCourse[0].course_id || foundCourse;
+          } else {
+            const existingAcad = await sql`
+              SELECT id, reference, email, course_id FROM academy_registrations
+              WHERE id::text = ${registrationId} OR reference = ${registrationId} OR (reference IS NOT NULL AND reference = ${reference})
+              LIMIT 1
+            `;
+            if (existingAcad && existingAcad.length > 0) {
+              foundId = String(existingAcad[0].id || registrationId);
+              foundRef = existingAcad[0].reference || foundRef;
+              foundEmail = (existingAcad[0].email || foundEmail).toLowerCase();
+              foundCourse = existingAcad[0].course_id || foundCourse;
+            }
+          }
+
+          await sql`
+            INSERT INTO deleted_registrations (id, reference, email, course_id, deleted_at)
+            VALUES (${foundId}, ${foundRef || null}, ${foundEmail || null}, ${foundCourse || null}, NOW())
+          `;
+
+          await sql`
+            DELETE FROM course_registrations
+            WHERE id::text = ${registrationId}
+               OR id::text = ${foundId}
+               OR payment_reference = ${registrationId}
+               OR (payment_reference IS NOT NULL AND payment_reference = ${foundRef})
+               OR (email = ${foundEmail} AND course_id = ${foundCourse} AND ${foundEmail} != '')
+          `;
+
+          await sql`
+            DELETE FROM academy_registrations
+            WHERE id::text = ${registrationId}
+               OR id::text = ${foundId}
+               OR reference = ${registrationId}
+               OR (reference IS NOT NULL AND reference = ${foundRef})
+               OR (email = ${foundEmail} AND course_id = ${foundCourse} AND ${foundEmail} != '')
+          `;
+        } catch (dbErr) {
+          console.warn("Notice deleting registration from DB:", dbErr.message);
+        }
       }
+
       try {
         const local = readLocalData();
-        local.registrations = (local.registrations || []).filter(r => String(r.id) !== registrationId && r.reference !== registrationId && String(r.seatNumber) !== registrationId);
+        local.registrations = (local.registrations || []).filter(r => {
+          const matchId = String(r.id) === registrationId || String(r.id) === foundId || r.reference === registrationId || String(r.seatNumber) === registrationId;
+          const matchRef = foundRef && (r.reference === foundRef || r.payment_reference === foundRef);
+          const matchEmail = foundEmail && foundCourse && r.email && r.course_id && r.email.toLowerCase() === foundEmail.toLowerCase() && r.course_id === foundCourse;
+          return !matchId && !matchRef && !matchEmail;
+        });
+        local.deleted_registrations = local.deleted_registrations || [];
+        local.deleted_registrations.push({
+          id: foundId,
+          reference: foundRef,
+          email: foundEmail,
+          course_id: foundCourse,
+          deleted_at: new Date().toISOString()
+        });
         saveLocalData(local);
       } catch {}
-      return send(res, 200, { deleted: true, registrationId });
+
+      return send(res, 200, { deleted: true, registrationId: foundId, reference: foundRef });
     }
 
     if (body.action === "adjust-revenue") {

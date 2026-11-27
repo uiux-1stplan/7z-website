@@ -646,30 +646,8 @@ function serveStatic(req, res, url) {
     res.end("/* vercel insights mock */");
     return;
   }
-  if (decodedPath === "/Marketplace" || decodedPath === "/Marketplace/") {
-    res.writeHead(301, { "Location": "/marketplace/" });
-    res.end();
-    return;
-  }
-  if (decodedPath.startsWith("/Marketplace/")) {
-    res.writeHead(301, { "Location": `/marketplace/${decodedPath.slice("/Marketplace/".length)}` });
-    res.end();
-    return;
-  }
-  if (
-    decodedPath === "/courses" ||
-    decodedPath.startsWith("/courses/") ||
-    decodedPath === "/academy" ||
-    decodedPath.startsWith("/academy/") ||
-    decodedPath === "/academey" ||
-    decodedPath.startsWith("/academey/")
-  ) {
-    res.writeHead(301, { "Location": "/marketplace/" });
-    res.end();
-    return;
-  }
-  if (decodedPath === "/marketplace/ai-engineering" || decodedPath === "/marketplace/ai-engineering/") {
-    res.writeHead(301, { "Location": "/marketplace/ai-for-engineers/" });
+  if (decodedPath === "/courses/ai-engineering" || decodedPath === "/courses/ai-engineering/") {
+    res.writeHead(301, { "Location": "/courses/ai-for-engineers/" });
     res.end();
     return;
   }
@@ -841,16 +819,38 @@ async function handleApi(req, res, url) {
     if (req.method === "POST") {
       const body = await readJsonBody(req).catch(() => ({}));
       const newClient = {
-        client_key: body.client_key || String(body.username || body.name || `client-${Date.now()}`).toLowerCase().replace(/[^a-z0-9_-]/g, "-"),
+        client_key: body.client_key || `native:${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         username: String(body.username || body.name || "vip-client"),
-        display_name: String(body.display_name || body.name || "VIP Client"),
-        company: String(body.company || "VIP Enterprise"),
+        display_name: String(body.displayName || body.display_name || body.name || "VIP Client"),
+        company: String(body.company || ""),
         auth_type: "native",
         status: "active",
         created_at: new Date().toISOString()
       };
       mockClients.unshift(newClient);
       sendJson(res, 200, { ok: true, client: newClient });
+      return true;
+    }
+    if (req.method === "DELETE") {
+      const body = await readJsonBody(req).catch(() => ({}));
+      const key = body.clientKey || body.client_key;
+      mockClients = mockClients.filter(c => c.client_key !== key);
+      sendJson(res, 200, { ok: true, deleted: key });
+      return true;
+    }
+    if (req.method === "PATCH") {
+      const body = await readJsonBody(req).catch(() => ({}));
+      const client = mockClients.find(c => c.client_key === body.clientKey);
+      if (client) {
+        if (body.action === "profile") {
+          client.display_name = body.displayName || client.display_name;
+          client.company = body.company || client.company;
+        }
+        if (body.action === "status") {
+          client.status = body.status;
+        }
+      }
+      sendJson(res, 200, { ok: true, client });
       return true;
     }
   }

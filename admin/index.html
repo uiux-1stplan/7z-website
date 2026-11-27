@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" data-z7-core>
 <head>
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem("z7-theme")||"dark"}catch{}</script>
+  <script>try{const t=localStorage.getItem("7z_admin_theme")||localStorage.getItem("z7-theme")||localStorage.getItem("theme")||"dark";document.documentElement.dataset.theme=t;document.documentElement.setAttribute("data-theme",t);if(t==="dark"){document.documentElement.classList.add("dark");document.documentElement.classList.remove("light");}else{document.documentElement.classList.remove("dark");document.documentElement.classList.add("light");}}catch{}</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex, nofollow, noarchive">
@@ -47,7 +47,7 @@
 
 <div id="boot-screen" class="boot-screen hidden" hidden>
   <div class="boot-mark">
-    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" width="52" height="52" style="width:52px;height:52px;max-width:52px;max-height:52px;object-fit:contain;">
+    <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" width="52" height="52" class="admin-auth-pending-logo">
   </div>
   <div class="boot-copy">
     <strong>7Z MAGIC</strong>
@@ -186,14 +186,14 @@
 
   <main class="main admin-main-viewport">
 
-    <div class="sr-only" aria-hidden="true" style="display:none!important;">
+    <div class="sr-only hidden" aria-hidden="true">
       <span id="admin-page-kicker"></span>
       <span id="admin-page-title"></span>
       <span id="admin-page-subtitle"></span>
     </div>
 
     <!-- Hidden Bridge Elements for script compatibility -->
-    <div style="display:none!important;" aria-hidden="true">
+    <div class="hidden" aria-hidden="true">
       <div id="site-header-slot"></div>
       <div id="site-footer-slot"></div>
       <input id="admin-global-search" type="hidden">
@@ -243,7 +243,7 @@
           <h2 id="analytics-heading">Financial &amp; Marketers Ledger</h2>
           <p>Real-time accounting ledger, individual marketer commission tracking, and official excel reporting.</p>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div class="engine-actions-row">
           <button class="button button-primary" type="button" id="financial-center-export-excel">
             Download Official Excel (.xlsx) ⤓
           </button>
@@ -252,7 +252,7 @@
       </div>
 
       <!-- 5 Core Accounting KPIs in Responsive Bento Grid -->
-      <div class="analytics-kpis kpi-grid" style="display:grid!important;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;gap:16px!important;">
+      <div class="analytics-kpis kpi-grid">
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">GROSS SALES</span>
           <strong class="analytics-kpi-value" id="analytics-gross">0.00 <small>USD</small></strong>
@@ -260,33 +260,33 @@
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">DISCOUNTS GRANTED</span>
-          <strong class="analytics-kpi-value" id="analytics-discounts" style="color:#f59e0b;">0.00 <small>USD</small></strong>
+          <strong class="analytics-kpi-value kpi-val-amber" id="analytics-discounts">0.00 <small>USD</small></strong>
           <p class="analytics-kpi-sub">Promo code deductions</p>
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">NET SALES (AFTER DISCOUNT)</span>
-          <strong class="analytics-kpi-value" id="analytics-revenue" style="color:#38bdf8;">0.00 <small>USD</small></strong>
+          <strong class="analytics-kpi-value kpi-val-sky" id="analytics-revenue">0.00 <small>USD</small></strong>
           <p class="analytics-kpi-sub">Customer billed net total</p>
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">MARKETER COMMISSIONS</span>
-          <strong class="analytics-kpi-value" id="analytics-commission" style="color:#38bdf8;">0.00 <small>USD</small></strong>
+          <strong class="analytics-kpi-value kpi-val-sky" id="analytics-commission">0.00 <small>USD</small></strong>
           <p class="analytics-kpi-sub">Calculated after discount</p>
         </article>
         <article class="glass-panel analytics-kpi">
           <span class="analytics-kpi-label">ACADEMY NET PROFIT</span>
-          <strong class="analytics-kpi-value" id="analytics-studio-net" style="color:#10b981;">0.00 <small>USD</small></strong>
+          <strong class="analytics-kpi-value kpi-val-emerald" id="analytics-studio-net">0.00 <small>USD</small></strong>
           <p class="analytics-kpi-sub">Net sales less marketer payouts</p>
         </article>
       </div>
 
       <!-- Marketers / Affiliates Commission Ledger with Paid/Unpaid Tracker -->
-      <div class="engine-panel engine-table-panel" id="marketers-ledger-panel" style="margin-top: 22px;">
+      <div class="engine-panel engine-table-panel mt-22" id="marketers-ledger-panel">
         <div class="engine-panel-head">
           <div>
             <span class="eyebrow">ACADEMY / MARKETERS LEDGER</span>
             <h3>Marketers &amp; Affiliates Commission Breakdown</h3>
-            <p style="margin:4px 0 0;font-size:12.5px;color:rgba(255,255,255,0.65);">
+            <p class="panel-subtitle-muted">
               Strict Formula (USD Base): Net Price = Product Price - Discount | Commission = Net Price × Rate% | Company Net = Net Price - Commission
             </p>
           </div>
@@ -315,7 +315,7 @@
       </div>
 
       <!-- Audited Revenue Adjustments -->
-      <section class="glass-panel revenue-controls-panel" style="margin-top:22px;">
+      <section class="glass-panel revenue-controls-panel mt-22">
         <div class="glass-panel__head">
           <div>
             <span class="eyebrow">LEDGER CONTROLS</span>
@@ -349,7 +349,7 @@
           <h2 id="registrations-heading">Registrations &amp; Payment Receipts</h2>
           <p>Review student submissions, verify real payment receipt images, and maintain the enrollment ledger.</p>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div class="engine-actions-row">
           <button class="button button-primary" type="button" id="registrations-export-excel">
             Download Official Excel (.xlsx) ⤓
           </button>
@@ -360,10 +360,10 @@
       <section class="admin-engine-section" id="accounting-section" aria-labelledby="accounting-title">
         <div class="finance-stats">
           <article class="finance-stat"><span>GROSS ORDERS SALES</span><strong id="finance-gross">0.00 <small>USD</small></strong><p>Catalog list price (USD)</p></article>
-          <article class="finance-stat"><span>DISCOUNTS GRANTED</span><strong id="finance-discounts" style="color:#f59e0b;">0.00 <small>USD</small></strong><p>Across orders &amp; registrations</p></article>
-          <article class="finance-stat"><span>NET SALES (AFTER DISCOUNT)</span><strong id="finance-revenue" style="color:#38bdf8;">0.00 <small>USD</small></strong><p>Received after discounts</p></article>
-          <article class="finance-stat"><span>COMMISSIONS DUE</span><strong id="finance-commissions" style="color:#d4af37;">0.00 <small>USD</small></strong><p>Earned on verified revenue</p></article>
-          <article class="finance-stat"><span>ACADEMY NET PROFIT</span><strong id="finance-studio-net" style="color:#10b981;">0.00 <small>USD</small></strong><p>After marketer shares</p></article>
+          <article class="finance-stat"><span>DISCOUNTS GRANTED</span><strong id="finance-discounts" class="kpi-val-amber">0.00 <small>USD</small></strong><p>Across orders &amp; registrations</p></article>
+          <article class="finance-stat"><span>NET SALES (AFTER DISCOUNT)</span><strong id="finance-revenue" class="kpi-val-sky">0.00 <small>USD</small></strong><p>Received after discounts</p></article>
+          <article class="finance-stat"><span>COMMISSIONS DUE</span><strong id="finance-commissions" class="kpi-val-gold">0.00 <small>USD</small></strong><p>Earned on verified revenue</p></article>
+          <article class="finance-stat"><span>ACADEMY NET PROFIT</span><strong id="finance-studio-net" class="kpi-val-emerald">0.00 <small>USD</small></strong><p>After marketer shares</p></article>
           <article class="finance-stat"><span>AWAITING REVIEW</span><strong id="finance-pending">0.00 <small>USD</small></strong><p>Pending transfers &amp; Whop</p></article>
         </div>
 
@@ -412,7 +412,7 @@
         </div>
 
         <!-- VIP Waitlist Submissions Panel -->
-        <div class="engine-panel engine-table-panel" style="margin-top:22px;">
+        <div class="engine-panel engine-table-panel mt-22">
           <div class="engine-panel-head">
             <div>
               <span class="eyebrow">MARKETPLACE LEADS / VIP WAITLIST</span>
@@ -438,7 +438,7 @@
         </div>
 
         <!-- Lead Magnet (Prompt Vault 5000+) Panel -->
-        <div class="engine-panel engine-table-panel" style="margin-top:22px;">
+        <div class="engine-panel engine-table-panel mt-22">
           <div class="engine-panel-head">
             <div>
               <span class="eyebrow">LEAD MAGNETS / 5000+ VAULT</span>
@@ -540,25 +540,12 @@
               </label>
               <div class="engine-form-pair">
                 <label>
-                  <span>Discount Type</span>
-                  <select name="discountType" id="coupon-discount-type">
-                    <option value="percent">Percentage (%)</option>
-                    <option value="fixed">Fixed Amount ($ USD)</option>
-                  </select>
+                  <span>Discount %</span>
+                  <input name="discountPercent" type="number" min="0" max="100" value="10" required>
                 </label>
-                <label>
-                  <span id="coupon-discount-label">Discount Value</span>
-                  <input name="discountPercent" id="coupon-discount-input" type="number" min="1" max="100" value="10" required>
-                </label>
-              </div>
-              <div class="engine-form-pair">
                 <label>
                   <span>Commission %</span>
                   <input name="commissionPercent" type="number" min="0" max="100" value="20" required>
-                </label>
-                <label>
-                  <span>Expiration Date <small class="field-hint">(Optional)</small></span>
-                  <input name="expiresAt" type="date">
                 </label>
               </div>
               <label class="engine-form-full">
@@ -707,7 +694,7 @@
               <span class="z7-upload-dock__badge">EXECUTIVE PDF</span>
               <span class="z7-upload-dock__badge">HIGH-RES VISUAL (PNG, JPG)</span>
             </div>
-            <input type="file" id="admin-vault-file-input" style="display:none;" multiple>
+            <input type="file" id="admin-vault-file-input" class="hidden" multiple>
           </div>
           <div id="client-files-mount"></div>
         </section>
@@ -821,7 +808,7 @@
       </div>
 
       <!-- Staff Directory & Console Roles Section (§Defect 4 Separation) -->
-      <section class="glass-panel staff-directory-section" id="admin-staff-section" style="margin-top: 24px;" aria-labelledby="staff-directory-title">
+      <section class="glass-panel staff-directory-section mt-24" id="admin-staff-section" aria-labelledby="staff-directory-title">
         <div class="glass-panel__head">
           <div>
             <span class="eyebrow">PORTAL DIRECTORY / TEAM CREDENTIALS</span>
@@ -830,7 +817,7 @@
           </div>
           <button id="refresh-users" type="button" class="button button-secondary">Refresh staff</button>
         </div>
-        <div class="workspace-grid" style="margin-top: 16px;">
+        <div class="workspace-grid mt-16">
           <article class="panel create-panel">
             <div class="panel-head">
               <div>
@@ -1029,19 +1016,19 @@
 </dialog>
 
 <!-- Official Real Payment Receipt Viewer Dialog -->
-<dialog id="receipt-modal-dialog" class="course-edit-dialog" style="max-width: 760px; width: 92vw; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.95); background: #07090e; border-radius: 16px;">
-  <div class="course-edit-head" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
+<dialog id="receipt-modal-dialog" class="course-edit-dialog receipt-dialog">
+  <div class="course-edit-head receipt-head">
     <div>
-      <span class="eyebrow" style="color: #d4af37;">PAYMENT VERIFICATION / REAL RECEIPT VIEWER</span>
-      <h2 id="receipt-modal-title" style="margin: 4px 0 0; font-size: 20px; color: #fff;">Student Payment Receipt</h2>
+      <span class="eyebrow receipt-eyebrow">PAYMENT VERIFICATION / REAL RECEIPT VIEWER</span>
+      <h2 id="receipt-modal-title" class="receipt-title">Student Payment Receipt</h2>
     </div>
     <button type="button" class="course-edit-close" id="receipt-modal-close" aria-label="Close">×</button>
   </div>
-  <p id="receipt-modal-student" style="color: #94a3b8; font-size: 13.5px; margin: 12px 0 6px;">Review transfer proof submitted by student.</p>
-  <div id="receipt-modal-body" style="margin: 14px 0; text-align: center; max-height: 65vh; overflow: auto; background: #020408; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); padding: 16px; display: flex; align-items: center; justify-content: center; min-height: 280px;"></div>
-  <div class="course-edit-actions" style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+  <p id="receipt-modal-student" class="receipt-student">Review transfer proof submitted by student.</p>
+  <div id="receipt-modal-body" class="receipt-modal-stage"></div>
+  <div class="course-edit-actions receipt-actions">
     <button type="button" class="button button-secondary" id="receipt-modal-cancel">Close</button>
-    <a id="receipt-modal-download" class="button button-primary" href="" target="_blank" rel="noopener noreferrer" download style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+    <a id="receipt-modal-download" class="button button-primary receipt-download-btn" href="" target="_blank" rel="noopener noreferrer" download>
       Download Receipt ⤓
     </a>
     <a id="receipt-modal-open-tab" class="button button-secondary" href="" target="_blank" rel="noopener noreferrer">

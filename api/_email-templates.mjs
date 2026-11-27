@@ -10,7 +10,7 @@ export const BRAND = {
   studio: "7Z MAGIC STUDIOS",
   logoUrl: "https://7z-magic.com/assets/brand/7Z-LogoT(3).png",
   logoFallback: "https://7z-magic.com/assets/images/logo-white.png",
-  siteUrl: "https://7z-magic.com/marketplace/",
+  siteUrl: "https://7z-magic.com/courses/",
   adminEmail: "creative@7z-magic.com",
   reportEmail: "magic7z.ai@gmail.com",
   phone: "+962 79 702 0089",
@@ -103,7 +103,7 @@ export function wrapCinematicEmail({
               <p style="margin: 0 0 10px;">
                 <a href="mailto:${BRAND.adminEmail}" style="color: #38bdf8; text-decoration: none;">${BRAND.adminEmail}</a> · 
                 <a href="${BRAND.whatsappUrl}" target="_blank" style="color: #38bdf8; text-decoration: none;">واتساب: ${BRAND.phone}</a> · 
-                <a href="${BRAND.siteUrl}" target="_blank" style="color: #38bdf8; text-decoration: none;">7z-magic.com/marketplace</a>
+                <a href="${BRAND.siteUrl}" target="_blank" style="color: #38bdf8; text-decoration: none;">7z-magic.com/academy</a>
               </p>
               <p style="margin: 0; font-size: 11px; color: #475569;">
                 &copy; 2026 ${BRAND.name}. جميع الحقوق محفوظة.
@@ -490,93 +490,43 @@ export function buildMilestoneReportHtml(totalCount, latestCount, summary = {}) 
   });
 }
 
-export function buildLeadMagnetEmailHtml(lead, downloadUrl) {
+export function buildLeadMagnetEmailHtml(lead, vaultUrl) {
   const isEn = lead.language === "en";
-  const assetId = lead.assetId || "prompt-vault";
-
-  const copyMap = {
-    "video-guide": {
-      badgeEn: "SEVEN Z STUDIO · FREE PDF HANDBOOK",
-      badgeAr: "SEVEN Z STUDIO · الدليل المجاني (PDF)",
-      titleEn: "7Z AI Video Creation Handbook",
-      titleAr: "دليل صناعة الفيديو بالذكاء الاصطناعي",
-      introEn: "Your field guide for modern creators — reference-to-motion prompting, consistent characters, and cinematic audio sync — is ready to download.",
-      introAr: "دليلك العملي لصناعة الفيديو بالذكاء الاصطناعي — من هندسة الحركة والحفاظ على ثبات الشخصيات إلى المونتاج السينمائي — جاهز الآن للتحميل.",
-      ctaEn: "Download AI Video Guide (PDF) →",
-      ctaAr: "تحميل دليل صناعة الفيديو (PDF) ←",
-      promoEn: "",
-      promoAr: ""
-    },
-    "company-profile": {
-      badgeEn: "SEVEN Z STUDIO · CORPORATE PROFILE",
-      badgeAr: "SEVEN Z STUDIO · البروفايل التعريفي",
-      titleEn: "7Z Company Profile 2026 (Landscape Edition)",
-      titleAr: "البروفايل التعريفي الرسمي لشركة 7Z Magic 2026",
-      introEn: "Thank you for your interest in SEVEN Z STUDIO. Access our official 2026 portfolio, AI filmmaking capabilities, and enterprise solutions below.",
-      introAr: "شكراً لاهتمامك بشركة SEVEN Z STUDIO. يمكنك الآن استعراض وتحميل البروفايل التعريفي الرسمي لعام 2026 وملف أعمالنا وحلول الذكاء الاصطناعي عبر الرابط التالي.",
-      ctaEn: "Download Company Profile (PDF) →",
-      ctaAr: "تحميل البروفايل التعريفي (PDF) ←"
-    },
-    "prompt-vault": {
-      badgeEn: "SEVEN Z STUDIO · 5000+ PROMPT VAULT (PDF)",
-      badgeAr: "SEVEN Z STUDIO · بنك البرومبتات الذهبي (PDF)",
-      titleEn: "5000+ AI Prompts Master Vault (PDF)",
-      titleAr: "بنك البرومبتات الشامل (+5000 أمر احترافي PDF)",
-      introEn: "Your comprehensive 5000+ AI Prompts Golden Vault & Production Frameworks Guide curated by SEVEN Z STUDIO is ready to download.",
-      introAr: "دليلك الشامل لبنك البرومبتات الذهبي (+5000 أمر احترافي وهيكليات العمل الإنتاجية) من SEVEN Z STUDIO جاهز الآن للتحميل المباشر.",
-      ctaEn: "Download 5000+ Prompt Vault (PDF) →",
-      ctaAr: "تحميل بنك البرومبتات الشامل (PDF) ←",
-      promoEn: "",
-      promoAr: ""
-    }
-  };
-
-  const copy = copyMap[assetId] || copyMap["prompt-vault"];
-  const displayTitle = lead.assetTitle || (isEn ? copy.titleEn : copy.titleAr);
-  const safeName = String(lead.fullName || "").replace(/[<>&"']/g, "");
-
-  const promoBlock = copy.promoEn
-    ? `<div style="margin:20px 0 0;padding:14px 18px;border-radius:10px;background:linear-gradient(135deg,rgba(0,113,227,0.14),rgba(56,189,248,0.08));border:1px solid rgba(56,189,248,0.35);color:#e2e8f0;font-size:13px;line-height:1.7;">${isEn ? copy.promoEn : copy.promoAr}</div>`
-    : "";
-
   const bodyHtml = isEn
     ? `
-      <div style="text-align:center;margin-bottom:24px;">
-        <span class="email-badge badge-cyan">${copy.badgeEn}</span>
-        <h1 style="color:#ffffff;font-size:23px;margin:14px 0 8px;font-weight:800;letter-spacing:-0.01em;">${displayTitle}</h1>
-        <p style="color:#94a3b8;font-size:14px;margin:0;">Welcome <strong style="color:#ffffff;">${safeName}</strong> to <strong style="color:#38bdf8;">SEVEN Z STUDIO</strong>.</p>
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="email-badge badge-green">FREE 5000+ AI PROMPT VAULT</span>
+        <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">Your Golden Vault Is Ready</h1>
+        <p style="color: #94a3b8; font-size: 14px; margin: 0;">Hello <strong>${lead.fullName}</strong>, thank you for joining 7Z Magic Digital Ecosystem.</p>
       </div>
-      <div class="email-card" style="background:linear-gradient(180deg,#131926 0%,#0e131d 100%);border:1px solid rgba(56,189,248,0.28);">
-        <p style="color:#cbd5e1;font-size:14.5px;margin:0 0 20px;line-height:1.75;">
-          ${copy.introEn}
+      <div class="email-card">
+        <p style="color: #cbd5e1; font-size: 14px; margin: 0 0 14px; line-height: 1.7;">
+          You now have instant access to the 5000+ AI Prompts Vault & Creative Frameworks Library.
         </p>
-        <div style="text-align:center;margin:24px 0 12px;">
-          <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaEn}</a>
+        <div style="text-align: center; margin: 20px 0 8px;">
+          <a href="${vaultUrl}" class="cta-btn" target="_blank">Open Your Golden Vault Now →</a>
         </div>
-        ${promoBlock}
-        <p style="color:#64748b;font-size:12px;margin:16px 0 0;text-align:center;">Reference ID: <code style="color:#38bdf8;">${lead.reference}</code></p>
+        <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center;">Reference ID: <code>${lead.reference}</code></p>
       </div>
     `
     : `
-      <div style="text-align:center;margin-bottom:24px;">
-        <span class="email-badge badge-cyan">${copy.badgeAr}</span>
-        <h1 style="color:#ffffff;font-size:23px;margin:14px 0 8px;font-weight:800;">${displayTitle}</h1>
-        <p style="color:#94a3b8;font-size:14px;margin:0;">أهلاً بك <strong style="color:#ffffff;">${safeName}</strong> في استوديو <strong style="color:#38bdf8;">SEVEN Z STUDIO</strong>.</p>
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="email-badge badge-green">بنك البرومبتات المجاني 5000+</span>
+        <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">تم تفعيل وصولك للمكتبة الذهبية ✨</h1>
+        <p style="color: #94a3b8; font-size: 14px; margin: 0;">أهلاً بك <strong>${lead.fullName}</strong> في منظومة 7Z Magic الرقمية.</p>
       </div>
-      <div class="email-card" style="background:linear-gradient(180deg,#131926 0%,#0e131d 100%);border:1px solid rgba(56,189,248,0.28);">
-        <p style="color:#cbd5e1;font-size:14.5px;margin:0 0 20px;line-height:1.8;">
-          ${copy.introAr}
+      <div class="email-card">
+        <p style="color: #cbd5e1; font-size: 14px; margin: 0 0 14px; line-height: 1.7;">
+          شكراً لتسجيلك! يمكنك الآن فتح وتنزيل بنك الأوامر والمكتبة العملية مباشرة عبر الزر التالي:
         </p>
-        <div style="text-align:center;margin:24px 0 12px;">
-          <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaAr}</a>
+        <div style="text-align: center; margin: 20px 0 8px;">
+          <a href="${vaultUrl}" class="cta-btn" target="_blank">فتح وتنزيل بنك البرومبتات الآن ←</a>
         </div>
-        ${promoBlock}
-        <p style="color:#64748b;font-size:12px;margin:16px 0 0;text-align:center;">رقم المرجع: <code style="color:#38bdf8;">${lead.reference}</code></p>
+        <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center;">رقم المرجع: <code>${lead.reference}</code></p>
       </div>
     `;
-
   return wrapCinematicEmail({
-    title: `${displayTitle} | SEVEN Z STUDIO`,
+    title: isEn ? `Your 5000+ AI Prompt Vault Access | 7Z Magic` : `رابط وصولك إلى بنك البرومبتات الذهبي | 7Z Magic`,
     preheader: `Reference ${lead.reference}`,
     bodyHtml,
     isRtl: !isEn

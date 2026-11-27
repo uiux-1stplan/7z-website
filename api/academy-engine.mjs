@@ -56,12 +56,28 @@ try {
   // Silent env loader fallback
 }
 
-// Default Data Storage Fallback (100% Dynamic - Zero Hardcoded Coupons or Affiliates)
+// Default Data Storage Fallback
 function defaultData() {
   return {
     registrations: [],
-    coupons: [],
-    affiliates: [],
+    coupons: [
+      { id: "c1", code: "7ZVIP", discountPercent: 20, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c2", code: "MAGIC15", discountPercent: 15, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c3", code: "DIRECT15", discountPercent: 15, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c4", code: "HASSAN25", discountPercent: 25, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c5", code: "SHAAS25", discountPercent: 25, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c6", code: "HASSAN10", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c7", code: "SHAS10", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c8", code: "ABDULRAHMAN10", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c9", code: "7Z10", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c10", code: "ALUMNI15", discountPercent: 15, courseScope: "all", status: "active", createdAt: new Date().toISOString() },
+      { id: "c11", code: "ENG7SANZ", discountPercent: 10, courseScope: "all", status: "active", createdAt: new Date().toISOString() }
+    ],
+    affiliates: [
+      { id: "a1", name: "Hasan Rayan", email: "hasan@7z-magic.com", code: "HASSAN25", discountPercent: 25, commissionPercent: 20, status: "active", createdAt: new Date().toISOString() },
+      { id: "a2", name: "Shaas Matar", email: "shaas@7z-magic.com", code: "SHAAS25", discountPercent: 25, commissionPercent: 20, status: "active", createdAt: new Date().toISOString() },
+      { id: "a3", name: "Abdulrahman Mohammed", email: "abdulrahman@7z-magic.com", code: "ABDULRAHMAN10", discountPercent: 10, commissionPercent: 25, status: "active", createdAt: new Date().toISOString() }
+    ],
     waitlist: [],
     leads: [],
     counter: 0
@@ -213,19 +229,26 @@ export async function ensureDbSchema() {
         id BIGSERIAL PRIMARY KEY,
         reference TEXT NOT NULL UNIQUE,
         campaign TEXT NOT NULL DEFAULT 'prompt_vault_5000',
-        asset_id TEXT DEFAULT 'prompt-vault',
-        asset_title TEXT DEFAULT '',
         full_name TEXT NOT NULL,
         email TEXT NOT NULL,
-        whatsapp TEXT DEFAULT '',
         status TEXT NOT NULL DEFAULT 'DELIVERED',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
     `;
+
+    // 3c. Deleted Registrations Audit Table (prevents resurrection on sync or refresh)
+    await sql`
+      CREATE TABLE IF NOT EXISTS deleted_registrations (
+        id TEXT,
+        reference TEXT,
+        email TEXT,
+        course_id TEXT,
+        deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
     try {
-      await sql`ALTER TABLE marketplace_leads ADD COLUMN IF NOT EXISTS asset_id TEXT DEFAULT 'prompt-vault';`;
-      await sql`ALTER TABLE marketplace_leads ADD COLUMN IF NOT EXISTS asset_title TEXT DEFAULT '';`;
-      await sql`ALTER TABLE marketplace_leads ADD COLUMN IF NOT EXISTS whatsapp TEXT DEFAULT '';`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_del_reg_ref ON deleted_registrations(reference);`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_del_reg_id ON deleted_registrations(id);`;
     } catch {}
 
     // 4. Bidirectional Sync from academy_registrations to course_registrations
@@ -251,6 +274,11 @@ export async function ensureDbSchema() {
         FROM academy_registrations ar
         WHERE NOT EXISTS (
           SELECT 1 FROM course_registrations cr WHERE cr.payment_reference = ar.reference
+        )
+        AND NOT EXISTS (
+          SELECT 1 FROM deleted_registrations dr
+          WHERE (dr.reference IS NOT NULL AND dr.reference = ar.reference)
+             OR (dr.id IS NOT NULL AND dr.id = ar.id::text)
         );
       `;
     } catch (e) {
@@ -297,24 +325,76 @@ export async function ensureDbSchema() {
       );
     `;
 
-    // Ensure coupon columns for expiry date and discount type
+    // Seed standard default coupons ONCE only, respecting deleted codes
     try {
-      await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;`;
-      await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS discount_type TEXT DEFAULT 'percent';`;
-      await sql`ALTER TABLE course_discount_codes ADD COLUMN IF NOT EXISTS discount_amount NUMERIC(10,2) DEFAULT 0;`;
-      await sql`ALTER TABLE academy_coupons ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;`;
-      await sql`ALTER TABLE academy_coupons ADD COLUMN IF NOT EXISTS discount_type TEXT DEFAULT 'percent';`;
-      await sql`ALTER TABLE academy_coupons ADD COLUMN IF NOT EXISTS discount_amount NUMERIC(10,2) DEFAULT 0;`;
-      await sql`ALTER TABLE academy_coupons ADD COLUMN IF NOT EXISTS max_redemptions INTEGER;`;
+      const [seedMigration] = await sql`
+        INSERT INTO academy_system_migrations (migration_key)
+        VALUES ('initial_default_coupons_seed_v1')
+        ON CONFLICT (migration_key) DO NOTHING
+        RETURNING migration_key;
+      `;
+      if (seedMigration) {
+        const defaultCodes = [
+          ["7ZVIP", 20, "all"],
+          ["MAGIC15", 15, "all"],
+          ["DIRECT15", 15, "all"],
+          ["HASSAN25", 25, "all"],
+          ["SHAAS25", 25, "all"],
+          ["HASSAN10", 10, "all"],
+          ["SHAS10", 10, "all"],
+          ["ABDULRAHMAN10", 10, "all"],
+          ["7Z10", 10, "all"],
+          ["ALUMNI15", 15, "all"]
+        ];
+        for (const [cd, disc, scope] of defaultCodes) {
+          await sql`
+            INSERT INTO academy_coupons (code, discount_percent, course_scope, status)
+            SELECT ${cd}, ${disc}, ${scope}, 'active'
+            WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = UPPER(${cd}))
+            ON CONFLICT (code) DO NOTHING;
+          `;
+          await sql`
+            INSERT INTO course_discount_codes (code, discount_percent, course_id, status)
+            SELECT ${cd}, ${disc}, ${scope}, 'active'
+            WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = UPPER(${cd}))
+            ON CONFLICT (code) DO NOTHING;
+          `;
+        }
+      }
     } catch (e) {
-      console.warn("Coupon schema notice:", e.message);
+      console.warn("Coupon seed notice:", e.message);
+    }
+
+    try {
+      const [engCouponMig] = await sql`
+        INSERT INTO academy_system_migrations (migration_key)
+        VALUES ('marketplace_eng7sanz_coupon_v1')
+        ON CONFLICT (migration_key) DO NOTHING
+        RETURNING migration_key;
+      `;
+      if (engCouponMig) {
+        await sql`
+          INSERT INTO academy_coupons (code, discount_percent, course_scope, status)
+          SELECT 'ENG7SANZ', 10, 'all', 'active'
+          WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = 'ENG7SANZ')
+          ON CONFLICT (code) DO NOTHING;
+        `;
+        await sql`
+          INSERT INTO course_discount_codes (code, discount_percent, course_id, status)
+          SELECT 'ENG7SANZ', 10, 'all', 'active'
+          WHERE NOT EXISTS (SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = 'ENG7SANZ')
+          ON CONFLICT (code) DO NOTHING;
+        `;
+      }
+    } catch (e) {
+      console.warn("ENG7SANZ coupon seed notice:", e.message);
     }
   } catch (err) {
     console.warn("Neon DB schema initialization warning (will use local fallback):", err.message);
   }
 }
 
-// Dual-Lookup: Case-insensitive, trimmed, unified status check across Postgres and local JSON (100% Dynamic - Zero Hardcoded Codes)
+// Dual-Lookup: Case-insensitive, trimmed, unified status check across Postgres and local JSON
 export async function validateAndResolveDiscountCode(codeStr, courseId = "all") {
   const code = String(codeStr || "").trim().toUpperCase();
   if (!code) {
@@ -335,29 +415,15 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
     return scope.toLowerCase() === normalizedCourse;
   };
 
-  const isExpired = (expiresAt) => {
-    if (!expiresAt) return false;
-    const expTime = new Date(expiresAt).getTime();
-    return !Number.isNaN(expTime) && expTime < Date.now();
-  };
-
   // Step 1: Database Dual-Lookup (PostgreSQL)
   const sql = getSqlClient();
   if (sql) {
     try {
-      // Check if code was marked as deleted
-      try {
-        const [delCheck] = await sql`SELECT 1 FROM deleted_discount_codes WHERE UPPER(code) = ${code} LIMIT 1;`;
-        if (delCheck) {
-          return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
-        }
-      } catch {}
-
       // 1. Check course_discount_codes
       const rows = await sql`
         SELECT 
-          c.code, c.affiliate_id, c.course_id, c.discount_type, c.discount_amount, c.discount_percent, c.commission_percent,
-          c.status, c.max_redemptions, c.expires_at,
+          c.code, c.affiliate_id, c.course_id, c.discount_percent, c.commission_percent,
+          c.status, c.max_redemptions,
           COALESCE(NULLIF(a.name, ''), c.affiliate_name, '') AS affiliate_name,
           a.status AS affiliate_status
         FROM course_discount_codes c
@@ -368,17 +434,14 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
       if (rows && rows.length > 0) {
         const item = rows[0];
         if (!isStatusActive(item.status)) {
-          return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
-        }
-        if (isExpired(item.expires_at)) {
-          return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
+          return { valid: false, message: "الكود غير مفعّل حالياً / Code is inactive" };
         }
         if (!isCourseScopeMatch(item.course_id)) {
           return { valid: false, message: "هذا الكود غير مخصص لهذه الدورة / Code not valid for this course" };
         }
         if (item.max_redemptions) {
           try {
-            const [used] = await sql`SELECT COUNT(*)::int AS count FROM course_registrations WHERE UPPER(TRIM(coupon_code)) = ${code} AND payment_status != 'REJECTED'`;
+            const [used] = await sql`SELECT COUNT(*)::int AS count FROM course_registrations WHERE UPPER(TRIM(coupon_code)) = ${code}`;
             if (Number(used?.count || 0) >= Number(item.max_redemptions)) {
               return { valid: false, message: "تم الوصول إلى الحد الأقصى لاستخدام هذا الكود / Code redemption limit reached" };
             }
@@ -387,9 +450,7 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
         return {
           valid: true,
           code: item.code.toUpperCase(),
-          discountType: item.discount_type || "percent",
-          discountPercent: Number(item.discount_percent || 0),
-          discountAmount: Number(item.discount_amount || 0),
+          discountPercent: Number(item.discount_percent),
           commissionPercent: Number(item.commission_percent || 0),
           affiliateName: item.affiliate_name || "",
           type: item.affiliate_id ? "affiliate" : "coupon"
@@ -398,7 +459,7 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
 
       // 2. Check academy_coupons
       const couponRows = await sql`
-        SELECT code, discount_type, discount_amount, discount_percent, course_scope, max_redemptions, expires_at, status
+        SELECT code, discount_percent, course_scope, status
         FROM academy_coupons
         WHERE UPPER(TRIM(code)) = ${code}
         LIMIT 1;
@@ -406,28 +467,15 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
       if (couponRows && couponRows.length > 0) {
         const item = couponRows[0];
         if (!isStatusActive(item.status)) {
-          return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
-        }
-        if (isExpired(item.expires_at)) {
-          return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
+          return { valid: false, message: "الكود غير مفعّل حالياً / Code is inactive" };
         }
         if (!isCourseScopeMatch(item.course_scope)) {
           return { valid: false, message: "هذا الكود غير مخصص لهذه الدورة / Code not valid for this course" };
         }
-        if (item.max_redemptions) {
-          try {
-            const [used] = await sql`SELECT COUNT(*)::int AS count FROM course_registrations WHERE UPPER(TRIM(coupon_code)) = ${code} AND payment_status != 'REJECTED'`;
-            if (Number(used?.count || 0) >= Number(item.max_redemptions)) {
-              return { valid: false, message: "تم الوصول إلى الحد الأقصى لاستخدام هذا الكود / Code redemption limit reached" };
-            }
-          } catch {}
-        }
         return {
           valid: true,
           code: item.code.toUpperCase(),
-          discountType: item.discount_type || "percent",
-          discountPercent: Number(item.discount_percent || 0),
-          discountAmount: Number(item.discount_amount || 0),
+          discountPercent: Number(item.discount_percent),
           commissionPercent: 0,
           affiliateName: "",
           type: "coupon"
@@ -444,14 +492,12 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
       if (affRows && affRows.length > 0) {
         const item = affRows[0];
         if (!isStatusActive(item.status)) {
-          return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
+          return { valid: false, message: "الكود غير مفعّل حالياً / Code is inactive" };
         }
         return {
           valid: true,
           code: item.code.toUpperCase(),
-          discountType: "percent",
-          discountPercent: Number(item.discount_percent || 15),
-          discountAmount: 0,
+          discountPercent: Number(item.discount_percent),
           commissionPercent: Number(item.commission_percent || 20),
           affiliateName: item.name || "",
           type: "affiliate"
@@ -462,7 +508,7 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
     }
   }
 
-  // Step 2: Local JSON Storage Fallback (Admin-managed local entries only)
+  // Step 2: Local JSON Storage Fallback
   try {
     const local = readLocalData();
     const c = (local.coupons || []).find(
@@ -470,28 +516,15 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
     );
     if (c) {
       if (!isStatusActive(c.status)) {
-        return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
-      }
-      if (isExpired(c.expiresAt)) {
-        return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
+        return { valid: false, message: "الكود غير مفعّل حالياً / Code is inactive" };
       }
       if (!isCourseScopeMatch(c.courseScope)) {
         return { valid: false, message: "هذا الكود غير مخصص لهذه الدورة / Code not valid for this course" };
       }
-      if (c.maxRedemptions) {
-        const usedCount = (local.registrations || []).filter(
-          r => String(r.coupon_code || r.promo_code || "").trim().toUpperCase() === code && r.payment_status !== "REJECTED"
-        ).length;
-        if (usedCount >= Number(c.maxRedemptions)) {
-          return { valid: false, message: "تم الوصول إلى الحد الأقصى لاستخدام هذا الكود / Code redemption limit reached" };
-        }
-      }
       return {
         valid: true,
         code: c.code.toUpperCase(),
-        discountType: c.discountType || "percent",
-        discountPercent: Number(c.discountPercent || 0),
-        discountAmount: Number(c.discountAmount || 0),
+        discountPercent: Number(c.discountPercent),
         commissionPercent: 0,
         affiliateName: "",
         type: "coupon"
@@ -503,14 +536,12 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
     );
     if (a) {
       if (!isStatusActive(a.status)) {
-        return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
+        return { valid: false, message: "الكود غير مفعّل حالياً / Code is inactive" };
       }
       return {
         valid: true,
         code: a.code.toUpperCase(),
-        discountType: "percent",
         discountPercent: Number(a.discountPercent || 15),
-        discountAmount: 0,
         commissionPercent: Number(a.commissionPercent || 20),
         affiliateName: a.name || "",
         type: "affiliate"
@@ -520,79 +551,68 @@ export async function validateAndResolveDiscountCode(codeStr, courseId = "all") 
     console.warn("[Dual-Lookup] Local store notice:", err.message);
   }
 
-  // Zero Hardcoded Coupons - Return explicit invalid/expired error
-  return { valid: false, message: "كود الخصم غير صالح أو منتهي الصلاحية / Invalid or expired promo code" };
-}
+  // Step 3: Hardcoded emergency fallbacks for guaranteed reliability
+  const HARDCODED_CODES = {
+    HASSAN10: { discountPercent: 10, affiliateName: "حسن ريان", commissionPercent: 25 },
+    SHAS10: { discountPercent: 10, affiliateName: "شأس مطر", commissionPercent: 25 },
+    ABDULRAHMAN10: { discountPercent: 10, affiliateName: "عبدالرحمن محمد", commissionPercent: 25 },
+    "7Z10": { discountPercent: 10, affiliateName: "", commissionPercent: 0 },
+    "7ZVIP": { discountPercent: 20, affiliateName: "", commissionPercent: 0 },
+    "MAGIC15": { discountPercent: 15, affiliateName: "", commissionPercent: 0 },
+    "DIRECT15": { discountPercent: 15, affiliateName: "", commissionPercent: 0 },
+    "HASSAN25": { discountPercent: 25, affiliateName: "حسن ريان", commissionPercent: 20 },
+    "SHAAS25": { discountPercent: 25, affiliateName: "شأس مطر", commissionPercent: 20 },
+    "ALUMNI15": { discountPercent: 15, affiliateName: "", commissionPercent: 0 },
+    "ENG7SANZ": { discountPercent: 10, affiliateName: "", commissionPercent: 0 }
+  };
 
-// Dual Deletion: Removes coupon from both Postgres tables and local JSON, and tracks in deleted_discount_codes
-export async function deleteDiscountCodeDual(codeOrId) {
-  const codeVal = String(codeOrId || "").trim().toUpperCase();
-  const sql = getSqlClient();
-  if (sql) {
-    try {
-      await sql`DELETE FROM course_discount_codes WHERE UPPER(code)=${codeVal} OR id::text=${codeOrId};`;
-      await sql`DELETE FROM academy_coupons WHERE UPPER(code)=${codeVal};`;
-      await sql`DELETE FROM academy_affiliates WHERE UPPER(code)=${codeVal};`;
-      if (codeVal) {
-        await sql`INSERT INTO deleted_discount_codes (code) VALUES (${codeVal}) ON CONFLICT DO NOTHING;`;
-      }
-    } catch (e) {
-      console.warn("[Dual-Delete] SQL deletion notice:", e.message);
-    }
+  if (HARDCODED_CODES[code]) {
+    const item = HARDCODED_CODES[code];
+    return {
+      valid: true,
+      code,
+      discountPercent: item.discountPercent,
+      commissionPercent: item.commissionPercent,
+      affiliateName: item.affiliateName,
+      type: item.affiliateName ? "affiliate" : "coupon"
+    };
   }
 
-  try {
-    const local = readLocalData();
-    local.coupons = (local.coupons || []).filter(c => String(c.id) !== codeOrId && String(c.code).toUpperCase() !== codeVal);
-    if (codeVal) {
-      local.affiliates = (local.affiliates || []).filter(a => String(a.code).toUpperCase() !== codeVal);
-    }
-    saveLocalData(local);
-  } catch (e) {
-    console.warn("[Dual-Delete] Local coupon notice:", e.message);
-  }
+  return { valid: false, message: "الكود المدخل غير صالح أو منتهي الصلاحية / Invalid or expired code" };
 }
+
+// Dual Persistence: Saves a coupon to both Postgres tables and local JSON
 export async function saveDiscountCodeDual(couponData) {
   const code = String(couponData.code || "").trim().toUpperCase();
-  const discountType = String(couponData.discountType || "percent").toLowerCase() === "fixed" ? "fixed" : "percent";
-  const discountPercent = Number(couponData.discountPercent || (discountType === "fixed" ? 0 : 10));
-  const discountAmount = Number(couponData.discountAmount || (discountType === "fixed" ? couponData.discountPercent || 0 : 0));
+  const discountPercent = Number(couponData.discountPercent || 10);
   const courseScope = couponData.courseScope || "all";
   const status = couponData.status || "active";
   const affiliateId = couponData.affiliateId || null;
   const affiliateName = couponData.affiliateName || "";
   const commissionPercent = Number(couponData.commissionPercent || 0);
   const maxRedemptions = couponData.maxRedemptions ? Number(couponData.maxRedemptions) : null;
-  const expiresAt = couponData.expiresAt ? new Date(couponData.expiresAt).toISOString() : null;
 
   const sql = getSqlClient();
   if (sql) {
     try {
       await sql`
         INSERT INTO course_discount_codes (
-          code, affiliate_id, affiliate_name, course_id, discount_type, discount_amount, discount_percent, commission_percent, max_redemptions, expires_at, status
+          code, affiliate_id, affiliate_name, course_id, discount_percent, commission_percent, max_redemptions, status
         ) VALUES (
-          ${code}, ${affiliateId}, ${affiliateName}, ${courseScope}, ${discountType}, ${discountAmount}, ${discountPercent}, ${commissionPercent}, ${maxRedemptions}, ${expiresAt}, ${status}
+          ${code}, ${affiliateId}, ${affiliateName}, ${courseScope}, ${discountPercent}, ${commissionPercent}, ${maxRedemptions}, ${status}
         ) ON CONFLICT (code) DO UPDATE SET
-          discount_type = ${discountType},
-          discount_amount = ${discountAmount},
           discount_percent = ${discountPercent},
           commission_percent = ${commissionPercent},
           status = ${status},
           max_redemptions = ${maxRedemptions},
-          expires_at = ${expiresAt},
           updated_at = NOW();
       `;
       await sql`
-        INSERT INTO academy_coupons (code, discount_type, discount_amount, discount_percent, course_scope, max_redemptions, expires_at, status)
-        VALUES (${code}, ${discountType}, ${discountAmount}, ${discountPercent}, ${courseScope}, ${maxRedemptions}, ${expiresAt}, ${status})
+        INSERT INTO academy_coupons (code, discount_percent, course_scope, status)
+        VALUES (${code}, ${discountPercent}, ${courseScope}, ${status})
         ON CONFLICT (code) DO UPDATE SET
-          discount_type = ${discountType},
-          discount_amount = ${discountAmount},
           discount_percent = ${discountPercent},
           course_scope = ${courseScope},
-          max_redemptions = ${maxRedemptions},
-          expires_at = ${expiresAt},
           status = ${status};
       `;
     } catch (e) {
@@ -607,15 +627,12 @@ export async function saveDiscountCodeDual(couponData) {
     local.coupons.push({
       id: couponData.id || `c_${Date.now()}`,
       code,
-      discountType,
-      discountAmount,
       discountPercent,
       courseScope,
       commissionPercent,
       affiliateName,
       status,
       maxRedemptions,
-      expiresAt,
       createdAt: new Date().toISOString()
     });
     saveLocalData(local);
@@ -794,39 +811,20 @@ export async function sendPaymentRejectedEmail(reg, reason = "") {
   });
 }
 
-// 5. Send Lead Magnet Download Email (Video Guide / Company Profile / Prompt Vault)
+// 5. Send 5000+ Prompt Vault Lead Magnet Access Email
 export async function sendLeadMagnetEmail(lead) {
-  const assetLinks = {
-    "video-guide": "https://7z-magic.com/marketplace/assets/7ZOS_AI_Video_Guide.pdf",
-    "company-profile": "https://7z-magic.com/marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf",
-    "prompt-vault": "https://7z-magic.com/marketplace/assets/7Z-Magic-5000-Prompt-Vault.pdf"
-  };
-  const assetId = assetLinks[lead.assetId] ? lead.assetId : "prompt-vault";
-  const downloadUrl = assetLinks[assetId];
-  const html = buildLeadMagnetEmailHtml({ ...lead, assetId }, downloadUrl);
-
-  const subjectMap = {
-    "video-guide": lead.language === "en"
-      ? "Your 7Z AI Video Creation Handbook (PDF) + 10% Discount | SEVEN Z STUDIO"
-      : "دليلك المجاني لصناعة الفيديو بالذكاء الاصطناعي + كود خصم 10% | SEVEN Z STUDIO",
-    "company-profile": lead.language === "en"
-      ? "SEVEN Z STUDIO — 2026 Company Profile (PDF)"
-      : "البروفايل التعريفي الرسمي لشركة SEVEN Z STUDIO 2026 (PDF)",
-    "prompt-vault": lead.language === "en"
-      ? "Your 5000+ AI Prompts Golden Vault Access | SEVEN Z STUDIO"
-      : "رابط وصولك إلى بنك البرومبتات الذهبي 5000+ | SEVEN Z STUDIO"
-  };
-
-  const adminHtml = `<div style="font-family:Arial,sans-serif;padding:16px;"><h3>New Lead Magnet Download Request</h3><p><b>File:</b> ${lead.assetTitle || assetId} (<code>${assetId}</code>)</p><p><b>Name:</b> ${lead.fullName}</p><p><b>Email:</b> ${lead.email}</p><p><b>WhatsApp:</b> ${lead.whatsapp || "—"}</p><p><b>Ref:</b> ${lead.reference}</p></div>`;
+  const vaultUrl = OFFICIAL_WHOP_URLS.visualStorytellingBundle;
+  const html = buildLeadMagnetEmailHtml(lead, vaultUrl);
+  const adminHtml = `<div style="font-family:Arial,sans-serif;padding:16px;"><h3>New Lead Magnet Unlock (5000+ Vault)</h3><p><b>Name:</b> ${lead.fullName}</p><p><b>Email:</b> ${lead.email}</p><p><b>Ref:</b> ${lead.reference}</p></div>`;
   const [userRes, adminRes] = await Promise.allSettled([
     sendEmail({
       to: lead.email,
-      subject: subjectMap[assetId] || subjectMap["prompt-vault"],
+      subject: lead.language === "en" ? "Your 5000+ AI Prompts Vault Access | 7Z Magic" : "رابط وصولك إلى بنك البرومبتات الذهبي | 7Z Magic",
       html
     }),
     sendEmail({
       to: ADMIN_EMAIL,
-      subject: `[7Z LEAD] ${lead.assetTitle || assetId}: ${lead.fullName} (${lead.reference})`,
+      subject: `[7Z LEAD] تحميل بنك البرومبتات: ${lead.fullName} (${lead.reference})`,
       html: adminHtml
     })
   ]);

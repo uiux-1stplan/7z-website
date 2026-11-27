@@ -194,6 +194,7 @@
                 <input id="z7nc-password" type="password" autocomplete="new-password" placeholder="Minimum 12 characters" required>
               </label>
             </div>
+            <div id="z7nc-drawer-message" class="z7nc-message"></div>
             <div class="z7nc-drawer-actions">
               <button type="button" id="z7nc-create" class="button button-primary">CREATE CLIENT ACCOUNT ↗</button>
               <button type="button" id="z7nc-cancel-drawer" class="button button-secondary">Cancel</button>
@@ -234,13 +235,22 @@
 
     function openDrawer() {
       if (overlay) {
+        overlay.classList.add("is-open");
         overlay.classList.remove("hidden");
-        panel.querySelector("#z7nc-name")?.focus();
+        overlay.removeAttribute("hidden");
+        const drawerMsg = panel.querySelector("#z7nc-drawer-message");
+        if (drawerMsg) {
+          drawerMsg.textContent = "";
+          drawerMsg.className = "z7nc-message";
+        }
+        setTimeout(() => panel.querySelector("#z7nc-name")?.focus(), 50);
       }
     }
     function closeDrawer() {
       if (overlay) {
+        overlay.classList.remove("is-open");
         overlay.classList.add("hidden");
+        overlay.setAttribute("hidden", "");
       }
     }
 
@@ -250,7 +260,7 @@
     cancelBtn?.addEventListener("click", closeDrawer);
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && overlay && !overlay.classList.contains("hidden")) {
+      if (e.key === "Escape" && overlay && (overlay.classList.contains("is-open") || !overlay.classList.contains("hidden"))) {
         closeDrawer();
       }
     });
@@ -353,166 +363,73 @@
 
 
   async function createClient() {
+    const button = document.getElementById("z7nc-create");
+    const drawerMsg = document.getElementById("z7nc-drawer-message");
+    const listMsg = document.getElementById("z7nc-message");
 
-    const button =
-      document.getElementById(
-        "z7nc-create"
-      );
-
-
-    const message =
-      document.getElementById(
-        "z7nc-message"
-      );
-
-
-    const payload = {
-
-      displayName:
-        document
-          .getElementById(
-            "z7nc-name"
-          )
-          ?.value
-          .trim(),
-
-      username:
-        document
-          .getElementById(
-            "z7nc-client-id"
-          )
-          ?.value
-          .trim(),
-
-      company:
-        document
-          .getElementById(
-            "z7nc-company"
-          )
-          ?.value
-          .trim(),
-
-      password:
-        document
-          .getElementById(
-            "z7nc-password"
-          )
-          ?.value || ""
+    const setMsg = (text, isError = false) => {
+      if (drawerMsg) {
+        drawerMsg.textContent = text;
+        drawerMsg.className = "z7nc-message " + (isError ? "is-error" : "is-success");
+      }
+      if (listMsg) {
+        listMsg.textContent = text;
+        listMsg.className = "z7nc-message " + (isError ? "is-error" : "is-success");
+      }
     };
 
+    const payload = {
+      displayName: document.getElementById("z7nc-name")?.value.trim(),
+      username: document.getElementById("z7nc-client-id")?.value.trim(),
+      company: document.getElementById("z7nc-company")?.value.trim(),
+      password: document.getElementById("z7nc-password")?.value || ""
+    };
 
-    if (
-      !payload.displayName ||
-      !payload.username ||
-      payload.password.length < 12
-    ) {
-
-      message.textContent =
-        "Display Name, Client ID and a 12+ character password are required.";
-
-      message.className =
-        "z7nc-message is-error";
-
+    if (!payload.displayName || !payload.username || payload.password.length < 12) {
+      setMsg("Display Name, Client ID and a 12+ character password are required.", true);
       return;
     }
 
-
     button.disabled = true;
-
-    button.textContent =
-      "CREATING...";
-
+    button.textContent = "CREATING...";
 
     try {
+      const response = await authFetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-      const response =
-        await authFetch(
-          API,
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body:
-              JSON.stringify(
-                payload
-              )
-          }
-        );
-
-
-      const result =
-        await response.json();
-
+      const result = await response.json();
 
       if (!response.ok) {
-
-        throw new Error(
-          result.error ||
-          "Could not create client."
-        );
+        throw new Error(result.error || "Could not create client.");
       }
 
+      ["z7nc-name", "z7nc-client-id", "z7nc-company", "z7nc-password"].forEach(id => {
+        const field = document.getElementById(id);
+        if (field) field.value = "";
+      });
 
-      [
-        "z7nc-name",
-        "z7nc-client-id",
-        "z7nc-company",
-        "z7nc-password"
-      ].forEach(
-        id => {
+      setMsg("Client account created successfully.", false);
 
-          const field =
-            document.getElementById(
-              id
-            );
-
-          if (field) {
-            field.value = "";
-          }
-        }
-      );
-
-
-      message.textContent =
-        "Client account created successfully.";
-
-      message.className =
-        "z7nc-message is-success";
-
+      const overlay = document.getElementById("z7nc-drawer-overlay");
+      if (overlay) {
+        overlay.classList.remove("is-open");
+        overlay.classList.add("hidden");
+        overlay.setAttribute("hidden", "");
+      }
 
       await loadClients();
 
-
-      document
-        .getElementById(
-          "z7-cap-refresh"
-        )
-        ?.click();
-
-
+      document.getElementById("z7-cap-refresh")?.click();
     } catch (error) {
-
-      message.textContent =
-        error.message ||
-        "Could not create client.";
-
-      message.className =
-        "z7nc-message is-error";
-
-
+      setMsg(error.message || "Could not create client.", true);
     } finally {
-
       button.disabled = false;
-
-      button.textContent =
-        "CREATE CLIENT";
+      button.textContent = "CREATE CLIENT ACCOUNT ↗";
     }
   }
-
 
   async function loadClients() {
 

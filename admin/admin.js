@@ -120,13 +120,34 @@
     toast("System audit logs cleared.");
   }
 
+  function applyTheme(theme) {
+    const isLight = theme === "light";
+    const resolvedTheme = isLight ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", resolvedTheme);
+    document.documentElement.dataset.theme = resolvedTheme;
+    document.documentElement.classList.toggle("dark", !isLight);
+    document.documentElement.classList.toggle("light", isLight);
+    try {
+      localStorage.setItem("z7-theme", resolvedTheme);
+      localStorage.setItem("7z_admin_theme", resolvedTheme);
+      localStorage.setItem("theme", resolvedTheme);
+    } catch {}
+    syncThemePills();
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.dataset.theme || (document.documentElement.classList.contains("dark") ? "dark" : "light");
+    const nextTheme = current === "light" ? "dark" : "light";
+    applyTheme(nextTheme);
+  }
+
   function syncThemePills() {
     const light = document.documentElement.dataset.theme === "light";
     document.querySelectorAll(".theme-pill").forEach(button => {
       button.setAttribute("aria-pressed", String(light));
       const label = button.querySelector(".theme-pill__label");
-      if (label) label.textContent = light ? "Light" : "Dark";
-      button.title = "Current theme: " + (light ? "Light" : "Dark") + ". Activate to switch.";
+      if (label) label.textContent = light ? "LIGHT" : "DARK";
+      button.title = "Current theme: " + (light ? "Light" : "Dark") + ". Click to switch.";
     });
     document.querySelectorAll(".theme-seg-btn").forEach(button => {
       const isDark = button.dataset.themeSet === "dark";
@@ -911,15 +932,26 @@
     $("#clear-system-logs")?.addEventListener("click", clearSystemAuditLogs);
     renderSystemAuditLogs();
 
-    syncThemePills();
+    const initialTheme = (() => {
+      try {
+        return localStorage.getItem("7z_admin_theme") || localStorage.getItem("z7-theme") || localStorage.getItem("theme") || "dark";
+      } catch {
+        return "dark";
+      }
+    })();
+    applyTheme(initialTheme);
+
     document.addEventListener("click", (e) => {
+      const toggle = e.target.closest("[data-theme-toggle]");
+      if (toggle) {
+        e.preventDefault();
+        toggleTheme();
+        return;
+      }
       const seg = e.target.closest("[data-theme-set]");
       if (seg) {
-        const theme = seg.dataset.themeSet;
-        document.documentElement.setAttribute("data-theme", theme);
-        document.documentElement.dataset.theme = theme;
-        localStorage.setItem("theme", theme);
-        syncThemePills();
+        e.preventDefault();
+        applyTheme(seg.dataset.themeSet);
       }
     });
     new MutationObserver(syncThemePills).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });

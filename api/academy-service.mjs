@@ -92,12 +92,8 @@ export async function handleValidateCode(codeStr, courseId = "all") {
   const product = canonicalCourse !== "all" ? resolveProduct(canonicalCourse) : null;
   const basePriceUsd = Number(product?.priceUsd || 0);
   if (res?.valid && basePriceUsd > 0) {
-    const isFixed = String(res.discountType || "").toLowerCase() === "fixed";
     const discountPercent = Number(res.discountPercent || 0);
-    const discountAmount = Number(res.discountAmount || 0);
-    const discountUsd = isFixed
-      ? roundMoney(Math.min(basePriceUsd, discountAmount))
-      : roundMoney((basePriceUsd * discountPercent) / 100);
+    const discountUsd = roundMoney((basePriceUsd * discountPercent) / 100);
     const finalPriceUsd = roundMoney(Math.max(0, basePriceUsd - discountUsd));
     return {
       ...res,
@@ -205,26 +201,19 @@ export async function handleRegistration(body) {
   const basePriceUsd = roundMoney(product.priceUsd || 0);
   const promoCode = String(body.promoCode || "").trim().toUpperCase().slice(0, 32);
   let discountPercent = 0;
-  let discountAmount = 0;
-  let discountType = "percent";
   let affiliateName = "";
   let commissionPercent = 0;
 
   if (promoCode) {
     const codeCheck = await validateAndResolveDiscountCode(promoCode, product.id);
     if (codeCheck && codeCheck.valid) {
-      discountType = codeCheck.discountType || "percent";
       discountPercent = Number(codeCheck.discountPercent || 0);
-      discountAmount = Number(codeCheck.discountAmount || 0);
       affiliateName = codeCheck.affiliateName || "";
       commissionPercent = Number(codeCheck.commissionPercent || 0);
     }
   }
 
-  const isFixed = discountType === "fixed";
-  const discountUsd = basePriceUsd > 0
-    ? (isFixed ? roundMoney(Math.min(basePriceUsd, discountAmount)) : roundMoney((basePriceUsd * discountPercent) / 100))
-    : 0;
+  const discountUsd = basePriceUsd > 0 ? roundMoney((basePriceUsd * discountPercent) / 100) : 0;
   const finalPriceUsd = roundMoney(Math.max(0, basePriceUsd - discountUsd));
   const commissionUsd = finalPriceUsd > 0 ? roundMoney((finalPriceUsd * commissionPercent) / 100) : 0;
 
@@ -446,54 +435,25 @@ export async function handleWaitlist(body) {
   return { ok: true, reference, entry, emailStatus };
 }
 
-// 2c. Lead Magnet (Video Guide PDF / Company Profile PDF / 5000+ Prompt Vault)
-const LEAD_ASSET_CATALOG = {
-  "video-guide": {
-    id: "video-guide",
-    titleEn: "7Z AI Video Creation Handbook (PDF)",
-    titleAr: "دليل صناعة الفيديو بالذكاء الاصطناعي (PDF)"
-  },
-  "company-profile": {
-    id: "company-profile",
-    titleEn: "7Z Company Profile 2026 (PDF)",
-    titleAr: "البروفايل التعريفي للشركة 2026 (PDF)"
-  },
-  "prompt-vault": {
-    id: "prompt-vault",
-    titleEn: "5000+ AI Prompts Master Vault (PDF)",
-    titleAr: "بنك البرومبتات الشامل 5000+ (PDF)",
-    downloadUrl: "https://7z-magic.com/marketplace/assets/7Z-Magic-5000-Prompt-Vault.pdf"
-  }
-};
-
+// 2c. Lead Magnet (Free 5000+ AI Prompt Vault)
 export async function handleLeadMagnet(body) {
   await ensureDbSchema().catch(() => {});
 
   const fullName = String(body.fullName || "").trim().slice(0, 160);
   const email = String(body.email || "").trim().toLowerCase().slice(0, 180);
-  const whatsapp = String(body.whatsapp || "").trim().slice(0, 40);
-  const rawAssetId = String(body.assetId || "prompt-vault").trim();
-  const assetMeta = LEAD_ASSET_CATALOG[rawAssetId] || LEAD_ASSET_CATALOG["prompt-vault"];
   const language = body.language === "en" ? "en" : "ar";
-  const assetTitle = String(body.assetTitle || "").trim().slice(0, 180) || (language === "en" ? assetMeta.titleEn : assetMeta.titleAr);
-  const campaignLabel = `${assetMeta.id} · ${assetMeta.titleEn}`;
 
   if (fullName.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, status: 400, error: "يرجى إدخال الاسم والبريد الإلكتروني الصحيح / Enter valid name and email." };
   }
-  if (whatsapp.replace(/[^0-9]/g, "").length < 7) {
-    return { ok: false, status: 400, error: "يرجى إدخال رقم واتساب صحيح / Enter a valid WhatsApp number." };
-  }
 
-  const reference = `7Z-LEAD-${Math.floor(100000 + Math.random() * 900000)}`;
+  const reference = `7Z-VAULT-${Math.floor(100000 + Math.random() * 900000)}`;
+  const downloadUrl = OFFICIAL_WHOP_URLS.visualStorytellingBundle;
   const lead = {
     reference,
-    campaign: campaignLabel,
-    assetId: assetMeta.id,
-    assetTitle,
+    campaign: "prompt_vault_5000",
     fullName,
     email,
-    whatsapp,
     language,
     status: "DELIVERED",
     createdAt: new Date().toISOString()
@@ -503,8 +463,8 @@ export async function handleLeadMagnet(body) {
   if (sql) {
     try {
       await sql`
-        INSERT INTO marketplace_leads (reference, campaign, asset_id, asset_title, full_name, email, whatsapp, status)
-        VALUES (${reference}, ${campaignLabel}, ${assetMeta.id}, ${assetTitle}, ${fullName}, ${email}, ${whatsapp}, 'DELIVERED');
+        INSERT INTO marketplace_leads (reference, campaign, full_name, email, status)
+        VALUES (${reference}, 'prompt_vault_5000', ${fullName}, ${email}, 'DELIVERED');
       `;
     } catch (e) {
       console.warn("[lead-magnet] SQL insert notice:", e.message);
@@ -516,20 +476,12 @@ export async function handleLeadMagnet(body) {
   local.leads.unshift(lead);
   saveLocalData(local);
 
-  const assetLinks = {
-    "video-guide": "https://7z-magic.com/marketplace/assets/7ZOS_AI_Video_Guide.pdf",
-    "company-profile": "https://7z-magic.com/marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf",
-    "prompt-vault": "https://7z-magic.com/marketplace/assets/7Z-Magic-5000-Prompt-Vault.pdf"
-  };
-  const downloadUrl = assetLinks[assetMeta.id] || assetLinks["prompt-vault"];
-
   const emailStatus = await sendLeadMagnetEmail(lead).catch((e) => ({ error: e.message }));
   return {
     ok: true,
     reference,
-    assetId: assetMeta.id,
-    assetTitle,
     downloadUrl,
+    storeUrl: OFFICIAL_WHOP_URLS.storeMain,
     emailStatus
   };
 }
