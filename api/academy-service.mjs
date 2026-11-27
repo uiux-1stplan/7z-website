@@ -449,8 +449,9 @@ const LEAD_ASSET_CATALOG = {
   },
   "prompt-vault": {
     id: "prompt-vault",
-    titleEn: "5000+ AI Prompts Master Vault",
-    titleAr: "بنك البرومبتات الشامل 5000+"
+    titleEn: "5000+ AI Prompts Master Vault (PDF)",
+    titleAr: "بنك البرومبتات الشامل 5000+ (PDF)",
+    downloadUrl: "https://7z-magic.com/marketplace/assets/7Z-Magic-5000-Prompt-Vault.pdf"
   }
 };
 
@@ -504,12 +505,20 @@ export async function handleLeadMagnet(body) {
   local.leads.unshift(lead);
   saveLocalData(local);
 
+  const assetLinks = {
+    "video-guide": "https://7z-magic.com/marketplace/assets/7ZOS_AI_Video_Guide.pdf",
+    "company-profile": "https://7z-magic.com/marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf",
+    "prompt-vault": "https://7z-magic.com/marketplace/assets/7Z-Magic-5000-Prompt-Vault.pdf"
+  };
+  const downloadUrl = assetLinks[assetMeta.id] || assetLinks["prompt-vault"];
+
   const emailStatus = await sendLeadMagnetEmail(lead).catch((e) => ({ error: e.message }));
   return {
     ok: true,
     reference,
     assetId: assetMeta.id,
     assetTitle,
+    downloadUrl,
     emailStatus
   };
 }

@@ -11,6 +11,8 @@ dist/
 *.pdf
 !marketplace/assets/7ZOS_AI_Video_Guide.pdf
 !marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf
+!marketplace/assets/7Z-Magic-5000-Prompt-Vault.pdf
+!assets/7Z-Magic-5000-Prompt-Vault.pdf
 7Z_Digital_Marketplace/
 7Z_Digital_Marketplace.zip
 private/

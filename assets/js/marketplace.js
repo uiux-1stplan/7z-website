@@ -1199,12 +1199,12 @@
       subAr: "أدخل بياناتك لإرسال رابط التحميل المباشر للبروفايل التعريفي الرسمي عبر البريد الإلكتروني."
     },
     "prompt-vault": {
-      badgeEn: "5000+ AI PROMPTS MASTER VAULT",
-      badgeAr: "بنك البرومبتات الشامل · 5000+ أمر",
-      titleEn: "Free 5000+ AI Prompts Golden Vault",
-      titleAr: "بنك البرومبتات الشامل (المكتبة الذهبية)",
-      subEn: "Enter your details to register your access and immediately receive the golden prompt vault link via email.",
-      subAr: "أدخل بياناتك لتفعيل وصولك واستلام رابط بنك البرومبتات الذهبي مباشرة عبر البريد الإلكتروني."
+      badgeEn: "FREE PDF VAULT · 5000+ PROMPTS",
+      badgeAr: "ملف PDF مجاني · أكثر من 5000 برومبت",
+      titleEn: "Free 5000+ AI Prompts Master Vault (PDF)",
+      titleAr: "بنك البرومبتات الشامل (المكتبة الذهبية PDF)",
+      subEn: "Enter your details to receive the direct PDF download link for the 5000+ AI Prompts Master Vault via email.",
+      subAr: "أدخل بياناتك لإرسال رابط التحميل المباشر لبنك البرومبتات الشامل (PDF) إلى بريدك الإلكتروني."
     }
   };
 

@@ -518,14 +518,16 @@ export function buildLeadMagnetEmailHtml(lead, downloadUrl) {
       ctaAr: "تحميل البروفايل التعريفي (PDF) ←"
     },
     "prompt-vault": {
-      badgeEn: "SEVEN Z STUDIO · 5000+ PROMPT VAULT",
-      badgeAr: "SEVEN Z STUDIO · بنك البرومبتات الذهبي",
-      titleEn: "5000+ AI Prompts Golden Vault",
-      titleAr: "بنك البرومبتات الشامل (+5000 أمر احترافي)",
-      introEn: "You now have instant access to the 5000+ AI Prompts Vault & Creative Frameworks Library curated by SEVEN Z STUDIO.",
-      introAr: "تم تفعيل وصولك بنجاح إلى المكتبة الذهبية لأكثر من 5000 برومبت احترافي وهيكليات العمل الإبداعية من SEVEN Z STUDIO.",
-      ctaEn: "Open Your Golden Vault Now →",
-      ctaAr: "فتح والوصول لبنك البرومبتات الآن ←"
+      badgeEn: "SEVEN Z STUDIO · 5000+ PROMPT VAULT (PDF)",
+      badgeAr: "SEVEN Z STUDIO · بنك البرومبتات الذهبي (PDF)",
+      titleEn: "5000+ AI Prompts Master Vault (PDF)",
+      titleAr: "بنك البرومبتات الشامل (+5000 أمر احترافي PDF)",
+      introEn: "Your comprehensive 5000+ AI Prompts Golden Vault & Production Frameworks Guide curated by SEVEN Z STUDIO is ready to download.",
+      introAr: "دليلك الشامل لبنك البرومبتات الذهبي (+5000 أمر احترافي وهيكليات العمل الإنتاجية) من SEVEN Z STUDIO جاهز الآن للتحميل المباشر.",
+      ctaEn: "Download 5000+ Prompt Vault (PDF) →",
+      ctaAr: "تحميل بنك البرومبتات الشامل (PDF) ←",
+      promoEn: `Exclusive Bonus: Use promo code <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> for <strong>10% OFF</strong> on our AI for Engineers & Filmmaking Masterclasses.`,
+      promoAr: `هدية حصرية: استخدم كود الخصم <strong style="color:#38bdf8;font-family:monospace;">ENG7SANZ</strong> للحصول على <strong>خصم 10%</strong> على دورات الهندسة وصناعة الأفلام بالذكاء الاصطناعي.`
     }
   };
 
@@ -549,7 +551,7 @@ export function buildLeadMagnetEmailHtml(lead, downloadUrl) {
           ${copy.introEn}
         </p>
         <div style="text-align:center;margin:24px 0 12px;">
-          <a href="${downloadUrl}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaEn}</a>
+          <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaEn}</a>
         </div>
         ${promoBlock}
         <p style="color:#64748b;font-size:12px;margin:16px 0 0;text-align:center;">Reference ID: <code style="color:#38bdf8;">${lead.reference}</code></p>
@@ -566,7 +568,7 @@ export function buildLeadMagnetEmailHtml(lead, downloadUrl) {
           ${copy.introAr}
         </p>
         <div style="text-align:center;margin:24px 0 12px;">
-          <a href="${downloadUrl}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaAr}</a>
+          <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:linear-gradient(135deg,#0071e3 0%,#10b981 100%);color:#ffffff !important;padding:15px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14.5px;box-shadow:0 8px 24px rgba(0,113,227,0.35);border:1px solid rgba(255,255,255,0.22);">${copy.ctaAr}</a>
         </div>
         ${promoBlock}
         <p style="color:#64748b;font-size:12px;margin:16px 0 0;text-align:center;">رقم المرجع: <code style="color:#38bdf8;">${lead.reference}</code></p>

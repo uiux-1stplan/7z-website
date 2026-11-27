@@ -804,7 +804,7 @@ export async function sendLeadMagnetEmail(lead) {
   const assetLinks = {
     "video-guide": "https://7z-magic.com/marketplace/assets/7ZOS_AI_Video_Guide.pdf",
     "company-profile": "https://7z-magic.com/marketplace/assets/7Z_Company_Profile_2026_Landscape_Edition.pdf",
-    "prompt-vault": "https://whop.com/7z-magic/7z-magic-b0/"
+    "prompt-vault": "https://7z-magic.com/marketplace/assets/7Z-Magic-5000-Prompt-Vault.pdf"
   };
   const assetId = assetLinks[lead.assetId] ? lead.assetId : "prompt-vault";
   const downloadUrl = assetLinks[assetId];
