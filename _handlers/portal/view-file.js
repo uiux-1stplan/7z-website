@@ -31,13 +31,6 @@ function toWebRequest(req) {
     }
   }
 
-  // If query auth token is provided and Authorization header is absent, wire it
-  const rawAuth = req.query?.auth;
-  const authVal = Array.isArray(rawAuth) ? rawAuth[0] : rawAuth;
-  if (authVal && !headers.has("authorization")) {
-    headers.set("authorization", `Bearer ${authVal}`);
-  }
-
   return new Request(`${protocol}://${host}${req.url || "/"}`, {
     method: req.method || "GET",
     headers

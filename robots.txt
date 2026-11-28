@@ -3,6 +3,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /private-access/
 Disallow: /api/
+Disallow: /view/
 Disallow: /course-registration/form/
 Disallow: /course-registration/checkout/
 Disallow: /marketplace/*/registration/

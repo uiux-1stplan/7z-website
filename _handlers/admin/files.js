@@ -15,6 +15,10 @@ import {
   sendWebResponse
 } from "../../lib/vercel-api.mjs";
 
+import {
+  createViewTicket
+} from "../../lib/view-ticket.mjs";
+
 
 function toWebRequest(req) {
 
@@ -107,11 +111,11 @@ export default async function handler(
   );
 
 
-  if (req.method !== "GET") {
+  if (req.method !== "GET" && req.method !== "POST") {
 
     res.setHeader(
       "Allow",
-      "GET"
+      "GET, POST"
     );
 
     return res
@@ -286,6 +290,15 @@ export default async function handler(
 
     if (mode === "view") {
       return res.redirect(302, `/view/file?id=${encodeURIComponent(id)}`);
+    }
+
+    if (mode === "ticket") {
+      try {
+        const ticket = createViewTicket(id.trim(), 300);
+        return res.status(200).json({ ok: true, ticket });
+      } catch (ticketErr) {
+        return res.status(500).json({ ok: false, error: "Unable to generate ticket." });
+      }
     }
 
     const download =

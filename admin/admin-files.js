@@ -529,15 +529,24 @@
 
 
     try {
-      const token =
-        await window
-          .Clerk
-          ?.session
-          ?.getToken?.();
+      let ticket = "";
+      try {
+        const ticketRes = await authFetch(
+          `${API}?id=${encodeURIComponent(id)}&mode=ticket`
+        );
+        if (ticketRes.ok) {
+          const data = await ticketRes.json();
+          if (data?.ticket) {
+            ticket = data.ticket;
+          }
+        }
+      } catch {
+        // Fall back to relying on active session cookies
+      }
 
       const viewUrl =
         `/view/file?id=${encodeURIComponent(id)}${
-          token ? `&auth=${encodeURIComponent(token)}` : ""
+          ticket ? `&ticket=${encodeURIComponent(ticket)}` : ""
         }`;
 
       // Directly render the uploaded deliverable in the dedicated isolated viewer endpoint with scoped CSP
