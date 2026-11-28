@@ -7,6 +7,17 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "destination": "/learn/",
+      "permanent": false
+    },
+    {
       "source": "/academey/",
       "destination": "/marketplace/",
       "statusCode": 301
@@ -307,7 +318,7 @@
       "destination": "/learn/index.html"
     },
     {
-      "source": "/((?!api/|assets/|learn/).*)",
+      "source": "/:path((?!api/|assets/|learn/).*)",
       "has": [
         {
           "type": "host",
