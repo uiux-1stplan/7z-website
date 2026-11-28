@@ -18,6 +18,28 @@
       "permanent": false
     },
     {
+      "source": "/marketplace/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "destination": "https://7z-magic.com/marketplace/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/admin/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "destination": "https://7z-magic.com/admin/:path*",
+      "permanent": true
+    },
+    {
       "source": "/academey/",
       "destination": "/marketplace/",
       "statusCode": 301

@@ -302,7 +302,7 @@
         <div class="majara-course-card p-6 text-center">
           <h3 class="majara-card-title">${state.lang === "ar" ? "لم يتم تفعيل أي دورة بعد" : "No Active Masterclasses"}</h3>
           <p class="majara-card-desc">${state.lang === "ar" ? "يرجى مراجعة الإدارة أو إتمام التسجيل في المتجر." : "Please contact studio administration or complete registration in marketplace."}</p>
-          <a href="/marketplace/" class="majara-btn-primary d-inline-block mt-3">${state.lang === "ar" ? "تصفح المتجر والماستر كلاس ↗" : "Browse Marketplace Catalog ↗"}</a>
+          <a href="https://7z-magic.com/" class="majara-btn-primary d-inline-block mt-3">${state.lang === "ar" ? "تصفح المتجر والماستر كلاس ↗" : "Browse Marketplace Catalog ↗"}</a>
         </div>
       `;
       return;
