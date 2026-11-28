@@ -20,6 +20,17 @@
   const API_URL = "/api/admin/course-engine";
 
   let activeLessonResources = [];
+  let activeLessonCaptions = [];
+
+  function detectFileType(fileNameOrUrl) {
+    const str = String(fileNameOrUrl || "").toLowerCase().split("?")[0];
+    if (str.endsWith(".pptx") || str.endsWith(".ppt")) return "pptx";
+    if (str.endsWith(".docx") || str.endsWith(".doc")) return "docx";
+    if (str.endsWith(".xlsx") || str.endsWith(".xls") || str.endsWith(".csv")) return "xlsx";
+    if (str.endsWith(".pdf")) return "pdf";
+    if (str.endsWith(".zip") || str.endsWith(".rar") || str.endsWith(".7z") || str.endsWith(".tar") || str.endsWith(".gz")) return "zip";
+    return "link";
+  }
 
   function renderLessonResources() {
     const container = $("#majara-res-tags-container");
@@ -30,12 +41,17 @@
     if (!activeLessonResources || activeLessonResources.length === 0) {
       const note = document.createElement("small");
       note.className = "text-muted";
-      note.textContent = "No attachments added yet. Enter Title & URL above and click + Add.";
+      note.textContent = "No attachments added yet. Choose a file or enter Title & URL above and click + Add.";
       container.appendChild(note);
     } else {
       activeLessonResources.forEach((res, idx) => {
         const pill = document.createElement("div");
         pill.className = "majara-res-pill";
+
+        const fType = res.fileType || detectFileType(res.name || res.url);
+        const typeBadge = document.createElement("span");
+        typeBadge.className = `majara-res-type-badge badge-${fType}`;
+        typeBadge.textContent = fType.toUpperCase();
 
         const titleSpan = document.createElement("span");
         titleSpan.className = "majara-res-pill-title";
@@ -52,6 +68,7 @@
           renderLessonResources();
         });
 
+        pill.appendChild(typeBadge);
         pill.appendChild(titleSpan);
         pill.appendChild(delBtn);
         container.appendChild(pill);
@@ -60,6 +77,52 @@
 
     if (hiddenInput) {
       hiddenInput.value = JSON.stringify(activeLessonResources);
+    }
+  }
+
+  function renderLessonCaptions() {
+    const container = $("#majara-cap-tags-container");
+    const hiddenInput = $("#majara-lesson-captions");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (!activeLessonCaptions || activeLessonCaptions.length === 0) {
+      const note = document.createElement("small");
+      note.className = "text-muted";
+      note.textContent = "No subtitle tracks added yet. Choose language and enter URL or paste raw text above.";
+      container.appendChild(note);
+    } else {
+      activeLessonCaptions.forEach((cap, idx) => {
+        const pill = document.createElement("div");
+        pill.className = "majara-cap-pill";
+
+        const langBadge = document.createElement("span");
+        langBadge.className = "majara-cap-lang-badge";
+        langBadge.textContent = (cap.lang || "en").toUpperCase();
+
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "majara-cap-label";
+        labelSpan.textContent = cap.label || cap.lang;
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "majara-cap-del-btn";
+        delBtn.textContent = "×";
+        delBtn.setAttribute("aria-label", `Remove ${cap.label || "track"}`);
+        delBtn.addEventListener("click", () => {
+          activeLessonCaptions.splice(idx, 1);
+          renderLessonCaptions();
+        });
+
+        pill.appendChild(langBadge);
+        pill.appendChild(labelSpan);
+        pill.appendChild(delBtn);
+        container.appendChild(pill);
+      });
+    }
+
+    if (hiddenInput) {
+      hiddenInput.value = JSON.stringify(activeLessonCaptions);
     }
   }
 
@@ -238,16 +301,33 @@
       tdLessons.appendChild(btnViewLessons);
 
       const tdDrive = document.createElement("td");
-      if (c.drive_folder_url) {
-        const linkDrive = document.createElement("a");
-        linkDrive.href = c.drive_folder_url;
-        linkDrive.target = "_blank";
-        linkDrive.rel = "noopener noreferrer";
-        linkDrive.className = "button button-secondary button-small";
-        linkDrive.textContent = "Google Drive ↗";
-        tdDrive.appendChild(linkDrive);
+      const sourceType = c.storage_source_type || (c.drive_folder_url ? "gdrive" : "mixed");
+      const badgeSource = document.createElement("span");
+      if (sourceType === "youtube") {
+        badgeSource.className = "tag tag-sky mr-1";
+        badgeSource.textContent = "YouTube";
+      } else if (sourceType === "gdrive") {
+        badgeSource.className = "tag tag-amber mr-1";
+        badgeSource.textContent = "Google Drive";
       } else {
-        tdDrive.textContent = "—";
+        badgeSource.className = "tag tag-emerald mr-1";
+        badgeSource.textContent = "Hybrid";
+      }
+      tdDrive.appendChild(badgeSource);
+
+      if (c.drive_folder_url) {
+        const linkVault = document.createElement("a");
+        linkVault.href = c.drive_folder_url;
+        linkVault.target = "_blank";
+        linkVault.rel = "noopener noreferrer";
+        linkVault.className = "button button-secondary button-small";
+        linkVault.textContent = "Vault ↗";
+        tdDrive.appendChild(linkVault);
+      } else {
+        const spanNoVault = document.createElement("span");
+        spanNoVault.className = "text-muted";
+        spanNoVault.textContent = "—";
+        tdDrive.appendChild(spanNoVault);
       }
 
       const tdStatus = document.createElement("td");
@@ -613,6 +693,8 @@
     $("#majara-course-title-ar").value = course?.title_ar || "";
     $("#majara-course-slug").value = course?.slug || "";
     $("#majara-course-price").value = course?.price_usd ?? 250;
+    const srcTypeSelect = $("#majara-course-source-type");
+    if (srcTypeSelect) srcTypeSelect.value = course?.storage_source_type || "mixed";
     $("#majara-course-drive").value = course?.drive_folder_url || "";
     $("#majara-course-cover").value = course?.cover_image || "/media/posters/film/1.webp";
     $("#majara-course-desc-ar").value = course?.description_ar || "";
@@ -640,6 +722,16 @@
     $("#majara-lesson-summary").value = lesson?.summary || "";
     $("#majara-lesson-preview").checked = Boolean(lesson?.is_free_preview);
 
+    // Initialize visual zero-JSON subtitles builder
+    activeLessonCaptions = Array.isArray(lesson?.captions_json) ? [...lesson.captions_json] : [];
+    renderLessonCaptions();
+    const capLabelInput = $("#majara-cap-label-input");
+    const capUrlInput = $("#majara-cap-url-input");
+    const capTextInput = $("#majara-cap-text-input");
+    if (capLabelInput) capLabelInput.value = "";
+    if (capUrlInput) capUrlInput.value = "";
+    if (capTextInput) capTextInput.value = "";
+
     // Initialize visual zero-JSON resource builder
     activeLessonResources = Array.isArray(lesson?.resources_json) ? [...lesson.resources_json] : [];
     renderLessonResources();
@@ -666,7 +758,72 @@
     $("#majara-student-password").value = "";
     $("#majara-student-activation").checked = true;
 
-    $("#majara-student-dialog-title").textContent = student ? "Edit Student Record" : "Enroll New Student";
+    // Render Student Multi-Course Access Matrix
+    const matrixContainer = $("#majara-student-matrix-container");
+    if (matrixContainer) {
+      matrixContainer.innerHTML = "";
+      const studentEnrollments = student?.enrollments || [];
+      const enrolledCourseIds = new Set(
+        studentEnrollments
+          .filter(e => e.status !== "suspended")
+          .map(e => String(e.course_id))
+      );
+
+      if (state.courses.length === 0) {
+        matrixContainer.innerHTML = '<small class="text-muted">No courses available yet. Create masterclass courses first.</small>';
+      } else {
+        state.courses.forEach(course => {
+          const isEnrolled = enrolledCourseIds.has(String(course.id));
+          const row = document.createElement("div");
+          row.className = "majara-matrix-row";
+
+          const info = document.createElement("div");
+          info.className = "majara-matrix-course-info";
+          const title = document.createElement("strong");
+          title.textContent = course.title_en || course.title_ar;
+          const slug = document.createElement("code");
+          slug.textContent = course.slug;
+          info.appendChild(title);
+          info.appendChild(slug);
+
+          const toggleWrap = document.createElement("div");
+          toggleWrap.className = "majara-matrix-toggle-wrap";
+
+          const statusBadge = document.createElement("span");
+          statusBadge.className = `tag ${isEnrolled ? "tag-emerald" : "tag-slate"} majara-matrix-status-badge`;
+          statusBadge.textContent = isEnrolled ? "Granted" : "Revoked";
+
+          const switchLabel = document.createElement("label");
+          switchLabel.className = "majara-switch";
+
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.className = "majara-matrix-toggle";
+          input.dataset.courseId = course.id;
+          input.checked = isEnrolled;
+          input.addEventListener("change", () => {
+            const checked = input.checked;
+            statusBadge.className = `tag ${checked ? "tag-emerald" : "tag-slate"} majara-matrix-status-badge`;
+            statusBadge.textContent = checked ? "Granted" : "Revoked";
+          });
+
+          const slider = document.createElement("span");
+          slider.className = "majara-slider";
+
+          switchLabel.appendChild(input);
+          switchLabel.appendChild(slider);
+
+          toggleWrap.appendChild(statusBadge);
+          toggleWrap.appendChild(switchLabel);
+
+          row.appendChild(info);
+          row.appendChild(toggleWrap);
+          matrixContainer.appendChild(row);
+        });
+      }
+    }
+
+    $("#majara-student-dialog-title").textContent = student ? "Edit Student Record & Permissions" : "Enroll New Student";
     dialog.showModal();
   }
 
@@ -730,10 +887,89 @@
         return;
       }
 
-      activeLessonResources.push({ name, url });
+      const fType = detectFileType(name || url);
+      activeLessonResources.push({ name, url, fileType: fType });
       if (nameInput) nameInput.value = "";
       if (urlInput) urlInput.value = "";
       renderLessonResources();
+    });
+
+    // 5b. Local File Picker & Uploader
+    $("#majara-res-browse-btn")?.addEventListener("click", () => {
+      $("#majara-res-file-picker")?.click();
+    });
+
+    $("#majara-res-file-picker")?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const browseBtn = $("#majara-res-browse-btn");
+      if (browseBtn) browseBtn.textContent = "Processing...";
+
+      const nameInput = $("#majara-res-name-input");
+      const urlInput = $("#majara-res-url-input");
+      if (nameInput && !nameInput.value) {
+        nameInput.value = file.name;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64Data = reader.result;
+        try {
+          const res = await apiPost("upload-lesson-asset", {
+            fileName: file.name,
+            fileData: base64Data
+          });
+          if (res?.fileUrl && urlInput) {
+            urlInput.value = res.fileUrl;
+          } else if (urlInput) {
+            urlInput.value = base64Data;
+          }
+          notify(`File attached: ${file.name}`);
+        } catch (err) {
+          if (urlInput) urlInput.value = base64Data;
+          notify(`Using local file payload: ${file.name}`);
+        } finally {
+          if (browseBtn) browseBtn.textContent = "📁 Choose File";
+        }
+      };
+      reader.onerror = () => {
+        notify("Failed to read file from disk", true);
+        if (browseBtn) browseBtn.textContent = "📁 Choose File";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 5c. Subtitles & Captions Track Add Button
+    $("#majara-cap-add-btn")?.addEventListener("click", () => {
+      const lang = $("#majara-cap-lang-select")?.value || "en";
+      const labelInput = $("#majara-cap-label-input");
+      const urlInput = $("#majara-cap-url-input");
+      const textInput = $("#majara-cap-text-input");
+
+      const label = (labelInput?.value || "").trim() || (lang === "ar" ? "العربية [CC]" : "English [CC]");
+      let url = (urlInput?.value || "").trim();
+      const rawText = (textInput?.value || "").trim();
+
+      if (!url && !rawText) {
+        notify("Please enter a subtitle URL (.vtt/.srt) or paste subtitle text", true);
+        return;
+      }
+
+      if (!url && rawText) {
+        let vttText = rawText;
+        if (!vttText.startsWith("WEBVTT")) {
+          vttText = "WEBVTT\n\n" + vttText;
+        }
+        url = "data:text/vtt;charset=utf-8," + encodeURIComponent(vttText);
+      }
+
+      activeLessonCaptions.push({ lang, label, url });
+      if (labelInput) labelInput.value = "";
+      if (urlInput) urlInput.value = "";
+      if (textInput) textInput.value = "";
+      renderLessonCaptions();
+      notify(`Added subtitle track: ${label} (${lang})`);
     });
 
     // 6. Live video source extractor on input
@@ -755,6 +991,7 @@
         title_ar: $("#majara-course-title-ar").value,
         slug: $("#majara-course-slug").value,
         price_usd: Number($("#majara-course-price").value || 0),
+        storage_source_type: $("#majara-course-source-type")?.value || "mixed",
         drive_folder_url: $("#majara-course-drive").value,
         cover_image: $("#majara-course-cover").value,
         description_ar: $("#majara-course-desc-ar").value,
@@ -788,6 +1025,13 @@
         resJson = activeLessonResources || [];
       }
 
+      let capJson = [];
+      try {
+        capJson = JSON.parse($("#majara-lesson-captions")?.value || "[]");
+      } catch {
+        capJson = activeLessonCaptions || [];
+      }
+
       const payload = {
         id: $("#majara-lesson-id").value || undefined,
         course_id: $("#majara-lesson-course-id").value || state.currentCourseId,
@@ -800,6 +1044,7 @@
         source_id: $("#majara-lesson-source-id").value,
         duration_label: $("#majara-lesson-duration").value,
         summary: $("#majara-lesson-summary").value,
+        captions_json: capJson,
         resources_json: resJson,
         is_free_preview: $("#majara-lesson-preview").checked
       };
@@ -824,19 +1069,25 @@
     // 9. Student Form Submission
     $("#majara-student-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const toggles = $$(".majara-matrix-toggle");
+      const permissions = toggles.map(input => ({
+        courseId: input.dataset.courseId,
+        granted: Boolean(input.checked)
+      }));
+
       const payload = {
         id: $("#majara-student-id").value || undefined,
         full_name: $("#majara-student-name").value,
         email: $("#majara-student-email").value,
         phone: $("#majara-student-phone").value,
-        courseId: $("#majara-student-course-select")?.value || undefined,
+        permissions,
         password: $("#majara-student-password").value || undefined,
         sendActivation: $("#majara-student-activation").checked
       };
 
       try {
         await apiPost("save-majara-student", payload);
-        notify("Student saved & enrolled successfully!");
+        notify("Student record & course permissions saved!");
         $("#majara-student-dialog")?.close();
         loadMajaraData();
       } catch (err) {

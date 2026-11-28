@@ -314,9 +314,19 @@ export default async function handler(req, res) {
       const progressList = await getStudentCourseProgress(student.id, lesson.course_id);
       const prog = progressList.find(p => String(p.lesson_id) === String(lesson.id));
 
+      const formattedLesson = {
+        ...lesson,
+        resources_json: Array.isArray(lesson.resources_json)
+          ? lesson.resources_json
+          : (typeof lesson.resources_json === "string" ? JSON.parse(lesson.resources_json || "[]") : []),
+        captions_json: Array.isArray(lesson.captions_json)
+          ? lesson.captions_json
+          : (typeof lesson.captions_json === "string" ? JSON.parse(lesson.captions_json || "[]") : [])
+      };
+
       return sendJson(res, 200, {
         ok: true,
-        lesson,
+        lesson: formattedLesson,
         progress: prog || { completed: false, last_position_sec: 0 },
         // Forensic Watermark Payload (Tamper-evident identity data)
         watermark: {

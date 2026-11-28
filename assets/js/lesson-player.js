@@ -24,8 +24,117 @@
     lessons: [],
     progressMap: {},
     watermarkInterval: null,
-    ytPlayer: null
+    ytPlayer: null,
+    captions: [],
+    activeCaptionLang: "off",
+    captionCues: [],
+    captionTimer: null,
+    videoPlaybackSec: 0
   };
+
+  function detectFileType(fileNameOrUrl) {
+    const str = String(fileNameOrUrl || "").toLowerCase().split("?")[0];
+    if (str.endsWith(".pptx") || str.endsWith(".ppt")) return "pptx";
+    if (str.endsWith(".docx") || str.endsWith(".doc")) return "docx";
+    if (str.endsWith(".xlsx") || str.endsWith(".xls") || str.endsWith(".csv")) return "xlsx";
+    if (str.endsWith(".pdf")) return "pdf";
+    if (str.endsWith(".zip") || str.endsWith(".rar") || str.endsWith(".7z") || str.endsWith(".tar") || str.endsWith(".gz")) return "zip";
+    return "link";
+  }
+
+  function parseVttTimestamp(str) {
+    if (!str) return 0;
+    const parts = str.trim().split(":");
+    let h = 0, m = 0, s = 0;
+    if (parts.length === 3) {
+      h = parseFloat(parts[0]) || 0;
+      m = parseFloat(parts[1]) || 0;
+      s = parseFloat(parts[2].replace(",", ".")) || 0;
+    } else if (parts.length === 2) {
+      m = parseFloat(parts[0]) || 0;
+      s = parseFloat(parts[1].replace(",", ".")) || 0;
+    }
+    return h * 3600 + m * 60 + s;
+  }
+
+  function parseWebVtt(vttContent) {
+    const cues = [];
+    if (!vttContent) return cues;
+    const text = vttContent.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    const blocks = text.split(/\n\n+/);
+
+    for (const block of blocks) {
+      const lines = block.trim().split("\n");
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.includes("-->")) {
+          const [startStr, endStr] = line.split("-->").map(s => s.trim().split(" ")[0]);
+          const startSec = parseVttTimestamp(startStr);
+          const endSec = parseVttTimestamp(endStr);
+          const cueText = lines.slice(i + 1).join(" ").trim();
+          if (cueText) {
+            cues.push({ startSec, endSec, text: cueText });
+          }
+          break;
+        }
+      }
+    }
+    return cues;
+  }
+
+  async function loadCaptionTrack(track) {
+    if (!track || track === "off") {
+      state.activeCaptionLang = "off";
+      state.captionCues = [];
+      const overlay = $("#cinema-caption-overlay");
+      if (overlay) {
+        overlay.classList.add("hidden");
+        overlay.textContent = "";
+      }
+      return;
+    }
+
+    state.activeCaptionLang = track.lang;
+    let vttText = "";
+
+    try {
+      if (track.url?.startsWith("data:")) {
+        const commaIdx = track.url.indexOf(",");
+        vttText = decodeURIComponent(track.url.slice(commaIdx + 1));
+      } else if (track.url) {
+        const res = await fetch(track.url);
+        vttText = await res.text();
+      }
+      state.captionCues = parseWebVtt(vttText);
+    } catch (err) {
+      console.warn("[Captions] Failed to load subtitle track:", err);
+      state.captionCues = [];
+    }
+  }
+
+  function startCaptionSync() {
+    clearInterval(state.captionTimer);
+    const overlay = $("#cinema-caption-overlay");
+    if (!overlay) return;
+
+    state.captionTimer = setInterval(() => {
+      if (state.activeCaptionLang === "off" || !state.captionCues.length) {
+        if (!overlay.classList.contains("hidden")) overlay.classList.add("hidden");
+        return;
+      }
+
+      state.videoPlaybackSec += 0.25;
+      const current = state.videoPlaybackSec;
+      const activeCue = state.captionCues.find(c => current >= c.startSec && current <= c.endSec);
+
+      if (activeCue) {
+        overlay.textContent = activeCue.text;
+        overlay.classList.remove("hidden");
+      } else {
+        overlay.classList.add("hidden");
+      }
+    }, 250);
+  }
 
   // Translations dictionary
   const i18n = {
@@ -302,7 +411,7 @@
         <div class="majara-course-card p-6 text-center">
           <h3 class="majara-card-title">${state.lang === "ar" ? "لم يتم تفعيل أي دورة بعد" : "No Active Masterclasses"}</h3>
           <p class="majara-card-desc">${state.lang === "ar" ? "يرجى مراجعة الإدارة أو إتمام التسجيل في المتجر." : "Please contact studio administration or complete registration in marketplace."}</p>
-          <a href="https://7z-magic.com/" class="majara-btn-primary d-inline-block mt-3">${state.lang === "ar" ? "تصفح المتجر والماستر كلاس ↗" : "Browse Marketplace Catalog ↗"}</a>
+          <a href="/marketplace/" class="majara-btn-primary d-inline-block mt-3">${state.lang === "ar" ? "تصفح المتجر والماستر كلاس ↗" : "Browse Marketplace Catalog ↗"}</a>
         </div>
       `;
       return;
@@ -455,6 +564,61 @@
       notesEl.textContent = lesson.summary || (isAr ? "لا توجد ملاحظات إضافية لهذا الدرس." : "No additional notes for this lesson.");
     }
 
+    // Setup CC Tracks Menu
+    const ccBtn = $("#ctrl-cc");
+    const ccMenu = $("#cinema-cc-menu");
+    state.captions = Array.isArray(lesson.captions_json) ? lesson.captions_json : [];
+    state.videoPlaybackSec = 0;
+
+    if (ccMenu) {
+      ccMenu.innerHTML = "";
+      const offOpt = document.createElement("button");
+      offOpt.type = "button";
+      offOpt.className = `majara-cc-opt ${state.activeCaptionLang === "off" ? "active" : ""}`;
+      offOpt.dataset.lang = "off";
+      offOpt.textContent = "Subtitles: Off";
+      offOpt.addEventListener("click", () => {
+        loadCaptionTrack("off");
+        updateCcMenuUI();
+        ccMenu.classList.add("hidden");
+        if (ccBtn) {
+          ccBtn.classList.remove("active");
+          ccBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+      ccMenu.appendChild(offOpt);
+
+      state.captions.forEach(cap => {
+        const opt = document.createElement("button");
+        opt.type = "button";
+        opt.className = `majara-cc-opt ${state.activeCaptionLang === cap.lang ? "active" : ""}`;
+        opt.dataset.lang = cap.lang;
+        opt.textContent = `${cap.label || cap.lang.toUpperCase()} [CC]`;
+        opt.addEventListener("click", async () => {
+          await loadCaptionTrack(cap);
+          updateCcMenuUI();
+          ccMenu.classList.add("hidden");
+          if (ccBtn) {
+            ccBtn.classList.add("active");
+            ccBtn.setAttribute("aria-expanded", "false");
+          }
+        });
+        ccMenu.appendChild(opt);
+      });
+    }
+
+    function updateCcMenuUI() {
+      if (!ccMenu) return;
+      $$(".majara-cc-opt", ccMenu).forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === state.activeCaptionLang);
+      });
+      if (ccBtn) {
+        ccBtn.classList.toggle("active", state.activeCaptionLang !== "off");
+      }
+    }
+
+    startCaptionSync();
+
     // Resources List
     const resListEl = $("#classroom-resources-list");
     if (resListEl) {
@@ -464,13 +628,45 @@
         resListEl.innerHTML = `<p class="text-muted">${t("no_resources")}</p>`;
       } else {
         resources.forEach(r => {
-          const a = document.createElement("a");
-          a.className = "majara-resource-item";
-          a.href = r.url || "#";
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-          a.innerHTML = `<span>${r.name || "Resource File"}</span><span>${t("download")}</span>`;
-          resListEl.appendChild(a);
+          const card = document.createElement("a");
+          card.className = "majara-resource-card";
+          card.href = r.url || "#";
+          card.target = "_blank";
+          card.rel = "noopener noreferrer";
+          if (r.name) card.setAttribute("download", r.name);
+
+          const left = document.createElement("div");
+          left.className = "majara-resource-card-left";
+
+          const fType = r.fileType || detectFileType(r.name || r.url);
+          const typeBadge = document.createElement("span");
+          typeBadge.className = `majara-resource-type-badge badge-${fType}`;
+          typeBadge.textContent = fType.toUpperCase();
+
+          const meta = document.createElement("div");
+          meta.className = "majara-resource-meta";
+
+          const nameSpan = document.createElement("span");
+          nameSpan.className = "majara-resource-name";
+          nameSpan.textContent = r.name || "Resource File";
+
+          const urlSub = document.createElement("span");
+          urlSub.className = "majara-resource-url-sub";
+          urlSub.textContent = r.url && r.url.startsWith("http") ? r.url : "Direct Studio Download";
+
+          meta.appendChild(nameSpan);
+          meta.appendChild(urlSub);
+
+          left.appendChild(typeBadge);
+          left.appendChild(meta);
+
+          const dlBtn = document.createElement("span");
+          dlBtn.className = "majara-resource-download-btn";
+          dlBtn.textContent = t("download");
+
+          card.appendChild(left);
+          card.appendChild(dlBtn);
+          resListEl.appendChild(card);
         });
       }
     }
@@ -670,7 +866,23 @@
     // 6. Complete Lesson Button
     $("#classroom-mark-completed-btn")?.addEventListener("click", toggleLessonCompletion);
 
-    // 7. Cinema Custom Controls (Play/Pause, Rewind, Forward, Fullscreen)
+    // 7. Cinema Custom Controls (Fullscreen & CC Dropdown)
+    const ccBtn = $("#ctrl-cc");
+    const ccMenu = $("#cinema-cc-menu");
+    ccBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isHidden = ccMenu?.classList.contains("hidden");
+      if (ccMenu) ccMenu.classList.toggle("hidden", !isHidden);
+      ccBtn.setAttribute("aria-expanded", isHidden ? "true" : "false");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (ccMenu && !ccMenu.contains(e.target) && e.target !== ccBtn) {
+        ccMenu.classList.add("hidden");
+        if (ccBtn) ccBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
     $("#ctrl-fullscreen")?.addEventListener("click", () => {
       const stage = $("#cinema-container");
       if (!stage) return;

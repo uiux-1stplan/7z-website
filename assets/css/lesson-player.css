@@ -524,6 +524,80 @@ body.majara-portal-body {
   color: var(--majara-text-muted);
 }
 
+/* Cinematic Translucent Caption Overlay (CC) */
+.majara-caption-overlay {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 84%;
+  padding: 10px 22px;
+  background: rgba(7, 9, 14, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+  z-index: 35;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+/* CC Dropdown Menu */
+.majara-cc-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.majara-cc-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  min-width: 170px;
+  background: rgba(10, 13, 20, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-sm);
+  padding: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.majara-cc-opt {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--majara-text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: start;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.majara-cc-opt:hover {
+  background: rgba(56, 189, 248, 0.1);
+  color: #fff;
+}
+
+.majara-cc-opt.active {
+  background: rgba(56, 189, 248, 0.18);
+  color: var(--majara-cyan);
+  font-weight: 700;
+}
+
 /* Classroom Interactive Sidebar */
 .majara-curriculum-panel {
   background: var(--majara-surface);
@@ -722,11 +796,102 @@ body.majara-portal-body {
   display: none;
 }
 
-/* Resources List */
+/* Resources List & Modern Cards */
 .majara-resources-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+}
+
+.majara-resource-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(18, 24, 38, 0.5);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-md);
+  text-decoration: none;
+  color: var(--majara-text);
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.majara-resource-card:hover {
+  border-color: var(--majara-cyan);
+  background: rgba(56, 189, 248, 0.06);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.majara-resource-card-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.majara-resource-type-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  flex-shrink: 0;
+}
+
+.badge-pptx { background: rgba(225, 112, 85, 0.18); color: #e17055; border: 1px solid rgba(225, 112, 85, 0.4); }
+.badge-docx { background: rgba(9, 132, 227, 0.18); color: #0984e3; border: 1px solid rgba(9, 132, 227, 0.4); }
+.badge-xlsx { background: rgba(0, 184, 148, 0.18); color: #00b894; border: 1px solid rgba(0, 184, 148, 0.4); }
+.badge-pdf  { background: rgba(214, 48, 49, 0.18); color: #d63031; border: 1px solid rgba(214, 48, 49, 0.4); }
+.badge-zip  { background: rgba(253, 203, 110, 0.18); color: #fdcb6e; border: 1px solid rgba(253, 203, 110, 0.4); }
+.badge-link { background: rgba(108, 92, 231, 0.18); color: #a29bfe; border: 1px solid rgba(108, 92, 231, 0.4); }
+
+.majara-resource-meta {
+  min-width: 0;
+}
+
+.majara-resource-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.majara-resource-url-sub {
+  font-size: 11.5px;
+  color: var(--majara-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  margin-top: 2px;
+}
+
+.majara-resource-download-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--majara-cyan);
+  padding: 6px 14px;
+  border-radius: var(--majara-radius-sm);
+  font-size: 12.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.majara-resource-card:hover .majara-resource-download-btn {
+  background: var(--majara-cyan);
+  color: #030407;
+  border-color: var(--majara-cyan);
 }
 
 .majara-resource-item {

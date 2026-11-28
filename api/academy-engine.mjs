@@ -21,7 +21,8 @@ import {
   buildLeadMagnetEmailHtml,
   buildWaitlistEmailHtml,
   buildStudentActivationHtml,
-  buildStudentPasswordResetHtml
+  buildStudentPasswordResetHtml,
+  buildCourseUnlockedHtml
 } from "./_email-templates.mjs";
 import {
   OFFICIAL_WHOP_URLS,
@@ -543,11 +544,13 @@ export async function ensureDbSchema() {
           description_en TEXT,
           cover_image TEXT,
           price_usd NUMERIC(10,2) DEFAULT 0,
+          storage_source_type TEXT DEFAULT 'mixed',
           drive_folder_url TEXT,
           is_published BOOLEAN NOT NULL DEFAULT FALSE,
           created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
       `;
+      await sql`ALTER TABLE academy_courses ADD COLUMN IF NOT EXISTS storage_source_type TEXT DEFAULT 'mixed';`;
 
       await sql`
         CREATE TABLE IF NOT EXISTS academy_lessons (
@@ -563,10 +566,12 @@ export async function ensureDbSchema() {
           source_id TEXT NOT NULL,
           duration_label TEXT,
           resources_json JSONB DEFAULT '[]'::jsonb,
+          captions_json JSONB DEFAULT '[]'::jsonb,
           is_free_preview BOOLEAN NOT NULL DEFAULT FALSE,
           created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
       `;
+      await sql`ALTER TABLE academy_lessons ADD COLUMN IF NOT EXISTS captions_json JSONB DEFAULT '[]'::jsonb;`;
 
       await sql`
         CREATE TABLE IF NOT EXISTS student_course_enrollments (
@@ -1323,6 +1328,7 @@ export async function saveMajaraCourse(courseData) {
   const description_en = String(courseData.description_en || "").trim();
   const cover_image = String(courseData.cover_image || "/media/posters/film/1.webp").trim();
   const price_usd = Number(courseData.price_usd || 0);
+  const storage_source_type = String(courseData.storage_source_type || "mixed").trim();
   const drive_folder_url = String(courseData.drive_folder_url || "").trim();
   const is_published = Boolean(courseData.is_published);
   const created_at = courseData.created_at || new Date().toISOString();
@@ -1331,8 +1337,8 @@ export async function saveMajaraCourse(courseData) {
   if (sql) {
     try {
       const [r] = await sql`
-        INSERT INTO academy_courses (slug, title_ar, title_en, description_ar, description_en, cover_image, price_usd, drive_folder_url, is_published)
-        VALUES (${slug}, ${title_ar}, ${title_en}, ${description_ar}, ${description_en}, ${cover_image}, ${price_usd}, ${drive_folder_url}, ${is_published})
+        INSERT INTO academy_courses (slug, title_ar, title_en, description_ar, description_en, cover_image, price_usd, storage_source_type, drive_folder_url, is_published)
+        VALUES (${slug}, ${title_ar}, ${title_en}, ${description_ar}, ${description_en}, ${cover_image}, ${price_usd}, ${storage_source_type}, ${drive_folder_url}, ${is_published})
         ON CONFLICT (slug) DO UPDATE SET
           title_ar = EXCLUDED.title_ar,
           title_en = EXCLUDED.title_en,
@@ -1340,6 +1346,7 @@ export async function saveMajaraCourse(courseData) {
           description_en = EXCLUDED.description_en,
           cover_image = EXCLUDED.cover_image,
           price_usd = EXCLUDED.price_usd,
+          storage_source_type = EXCLUDED.storage_source_type,
           drive_folder_url = EXCLUDED.drive_folder_url,
           is_published = EXCLUDED.is_published
         RETURNING *;
@@ -1360,6 +1367,7 @@ export async function saveMajaraCourse(courseData) {
     description_en,
     cover_image,
     price_usd,
+    storage_source_type,
     drive_folder_url,
     is_published,
     created_at
@@ -1467,6 +1475,9 @@ export async function saveMajaraLesson(lessonData) {
   const resources_json = Array.isArray(lessonData.resources_json)
     ? lessonData.resources_json
     : (typeof lessonData.resources_json === "string" ? JSON.parse(lessonData.resources_json || "[]") : []);
+  const captions_json = Array.isArray(lessonData.captions_json)
+    ? lessonData.captions_json
+    : (typeof lessonData.captions_json === "string" ? JSON.parse(lessonData.captions_json || "[]") : []);
   const is_free_preview = Boolean(lessonData.is_free_preview);
   const created_at = lessonData.created_at || new Date().toISOString();
 
@@ -1476,8 +1487,8 @@ export async function saveMajaraLesson(lessonData) {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
       if (isUuid) {
         const [r] = await sql`
-          INSERT INTO academy_lessons (id, course_id, module_order, module_title, lesson_order, title_ar, title_en, summary, source_type, source_id, duration_label, resources_json, is_free_preview)
-          VALUES (${id}, ${course_id}, ${module_order}, ${module_title}, ${lesson_order}, ${title_ar}, ${title_en}, ${summary}, ${source_type}, ${source_id}, ${duration_label}, ${JSON.stringify(resources_json)}::jsonb, ${is_free_preview})
+          INSERT INTO academy_lessons (id, course_id, module_order, module_title, lesson_order, title_ar, title_en, summary, source_type, source_id, duration_label, resources_json, captions_json, is_free_preview)
+          VALUES (${id}, ${course_id}, ${module_order}, ${module_title}, ${lesson_order}, ${title_ar}, ${title_en}, ${summary}, ${source_type}, ${source_id}, ${duration_label}, ${JSON.stringify(resources_json)}::jsonb, ${JSON.stringify(captions_json)}::jsonb, ${is_free_preview})
           ON CONFLICT (id) DO UPDATE SET
             course_id = EXCLUDED.course_id,
             module_order = EXCLUDED.module_order,
@@ -1490,14 +1501,15 @@ export async function saveMajaraLesson(lessonData) {
             source_id = EXCLUDED.source_id,
             duration_label = EXCLUDED.duration_label,
             resources_json = EXCLUDED.resources_json,
+            captions_json = EXCLUDED.captions_json,
             is_free_preview = EXCLUDED.is_free_preview
           RETURNING *;
         `;
         if (r) saved = r;
       } else {
         const [r] = await sql`
-          INSERT INTO academy_lessons (course_id, module_order, module_title, lesson_order, title_ar, title_en, summary, source_type, source_id, duration_label, resources_json, is_free_preview)
-          VALUES (${course_id}, ${module_order}, ${module_title}, ${lesson_order}, ${title_ar}, ${title_en}, ${summary}, ${source_type}, ${source_id}, ${duration_label}, ${JSON.stringify(resources_json)}::jsonb, ${is_free_preview})
+          INSERT INTO academy_lessons (course_id, module_order, module_title, lesson_order, title_ar, title_en, summary, source_type, source_id, duration_label, resources_json, captions_json, is_free_preview)
+          VALUES (${course_id}, ${module_order}, ${module_title}, ${lesson_order}, ${title_ar}, ${title_en}, ${summary}, ${source_type}, ${source_id}, ${duration_label}, ${JSON.stringify(resources_json)}::jsonb, ${JSON.stringify(captions_json)}::jsonb, ${is_free_preview})
           RETURNING *;
         `;
         if (r) saved = r;
@@ -1520,6 +1532,7 @@ export async function saveMajaraLesson(lessonData) {
     source_id,
     duration_label,
     resources_json,
+    captions_json,
     is_free_preview,
     created_at
   };

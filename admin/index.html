@@ -669,7 +669,7 @@
                 <th>Slug</th>
                 <th>Price (USD)</th>
                 <th>Lessons</th>
-                <th>Drive Vault</th>
+                <th>Source &amp; Vault</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -1210,14 +1210,22 @@
         Price (USD)
         <input type="number" id="majara-course-price" step="1" min="0" value="250">
       </label>
-      <label class="majara-form-label majara-field-full">
-        Google Drive Vault URL
-        <input type="url" id="majara-course-drive" placeholder="https://drive.google.com/drive/folders/...">
-        <small>Shared repository containing downloadable deliverables and workshop source assets.</small>
+      <label class="majara-form-label">
+        Storage Source Type
+        <select id="majara-course-source-type">
+          <option value="mixed">Mixed Sources / Hybrid</option>
+          <option value="youtube">YouTube Playlist / Unlisted</option>
+          <option value="gdrive">Google Drive Folder</option>
+        </select>
       </label>
-      <label class="majara-form-label majara-field-full">
+      <label class="majara-form-label">
         Cover Poster Image URL
         <input type="text" id="majara-course-cover" value="/media/posters/film/1.webp">
+      </label>
+      <label class="majara-form-label majara-field-full">
+        Course Vault / Storage Source (Optional)
+        <input type="url" id="majara-course-drive" placeholder="https://drive.google.com/drive/folders/... or YouTube playlist link">
+        <small>Shared repository containing downloadable deliverables and workshop source assets.</small>
       </label>
       <label class="majara-form-label majara-field-full">
         Arabic Description
@@ -1294,14 +1302,63 @@
         Lesson Summary &amp; Notes
         <textarea id="majara-lesson-summary" rows="3" placeholder="Detailed notes for students to read..."></textarea>
       </label>
+
+      <!-- Subtitles & Captions (CC) Section -->
+      <div class="majara-captions-builder-box majara-field-full">
+        <div class="majara-builder-head">
+          <span class="majara-form-label">Subtitles &amp; Captions (CC)</span>
+          <small class="text-muted">Add multi-language captions via URL or paste raw WebVTT / SRT text ($0 storage).</small>
+        </div>
+        <div class="majara-cap-inputs-row">
+          <label class="majara-form-label">
+            Language
+            <select id="majara-cap-lang-select">
+              <option value="en">English (en)</option>
+              <option value="ar">العربية (ar)</option>
+              <option value="fr">Français (fr)</option>
+              <option value="es">Español (es)</option>
+            </select>
+          </label>
+          <label class="majara-form-label">
+            Track Label
+            <input type="text" id="majara-cap-label-input" placeholder="e.g. English [CC]">
+          </label>
+          <label class="majara-form-label majara-field-full">
+            Subtitle Source URL (.vtt / .srt link)
+            <input type="url" id="majara-cap-url-input" placeholder="https://.../subtitles.vtt">
+          </label>
+          <label class="majara-form-label majara-field-full">
+            Or Paste Raw WebVTT / SRT Subtitle Text
+            <textarea id="majara-cap-text-input" rows="2" placeholder="WEBVTT&#10;&#10;00:00:01.000 --> 00:00:05.000&#10;Welcome to this masterclass..."></textarea>
+          </label>
+          <div class="majara-field-full">
+            <button type="button" class="button button-secondary" id="majara-cap-add-btn">+ Add Subtitle Track</button>
+          </div>
+        </div>
+        <div id="majara-cap-tags-container" class="majara-cap-tags-container"></div>
+        <input type="hidden" id="majara-lesson-captions" value="[]">
+      </div>
       
-      <!-- Visual Resource Builder (Zero-JSON UI) -->
-      <div class="majara-resource-builder-box">
-        <span class="majara-form-label">Attached Lesson Resources (PDF, Guides, Links)</span>
+      <!-- Visual Downloadable Attachments Builder (.pptx, .docx, .xlsx, .pdf, .zip) -->
+      <div class="majara-resource-builder-box majara-field-full">
+        <div class="majara-builder-head">
+          <span class="majara-form-label">Downloadable Lesson Attachments (.pptx, .docx, .xlsx, .pdf, .zip)</span>
+          <small class="text-muted">Upload directly from computer or enter external URL with auto file-type detection.</small>
+        </div>
         <div class="majara-res-inputs-row">
-          <label class="majara-form-label">Resource Title<input type="text" id="majara-res-name-input" placeholder="e.g. Masterclass PDF Guide"></label>
-          <label class="majara-form-label">Resource URL<input type="url" id="majara-res-url-input" placeholder="https://drive.google.com/file/... or link"></label>
-          <button type="button" class="button button-secondary majara-res-btn-add" id="majara-res-add-btn">+ Add</button>
+          <label class="majara-form-label">
+            Attachment Title
+            <input type="text" id="majara-res-name-input" placeholder="e.g. Cinematic Lighting Deck (PPTX)">
+          </label>
+          <label class="majara-form-label">
+            Direct Link / File URL
+            <input type="url" id="majara-res-url-input" placeholder="https://drive.google.com/file/... or link">
+          </label>
+          <div class="majara-res-actions-col">
+            <input type="file" id="majara-res-file-picker" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.zip" class="hidden" hidden>
+            <button type="button" class="button button-secondary" id="majara-res-browse-btn">📁 Choose File</button>
+            <button type="button" class="button button-secondary majara-res-btn-add" id="majara-res-add-btn">+ Add</button>
+          </div>
         </div>
         <div id="majara-res-tags-container" class="majara-res-tags-container"></div>
         <input type="hidden" id="majara-lesson-resources" value="[]">
@@ -1325,8 +1382,8 @@
   <form id="majara-student-form">
     <div class="course-edit-head">
       <div>
-        <span class="eyebrow">STUDENT ACCESS / ENROLLMENT</span>
-        <h2 id="majara-student-dialog-title">Enroll / Edit Student</h2>
+        <span class="eyebrow">STUDENT ACCESS / ENROLLMENT MATRIX</span>
+        <h2 id="majara-student-dialog-title">Enroll / Edit Student Record</h2>
       </div>
       <button type="button" class="course-edit-close" id="majara-student-cancel" aria-label="Close">✕</button>
     </div>
@@ -1346,19 +1403,24 @@
         <input type="text" id="majara-student-phone" placeholder="+96279...">
       </label>
       <label class="majara-form-label">
-        Enroll in Course
-        <select id="majara-student-course-select">
-          <!-- Populated dynamically -->
-        </select>
-      </label>
-      <label class="majara-form-label majara-field-full">
         Initial Password (Optional)
         <input type="password" id="majara-student-password" placeholder="Leave blank to let student set it">
-        <small>If left blank, the student will be prompted to set their own password upon first activation.</small>
       </label>
+
+      <!-- Student Multi-Course Access Matrix -->
+      <div class="majara-field-full">
+        <div class="majara-matrix-header">
+          <span class="majara-form-label">Course Access Permissions Matrix</span>
+          <small class="text-muted">Toggle masterclass clearance for this student (instantly effective in student portal).</small>
+        </div>
+        <div class="majara-permissions-matrix-box" id="majara-student-matrix-container">
+          <!-- Populated dynamically with all courses and instant toggles -->
+        </div>
+      </div>
+
       <label class="majara-checkbox-row">
         <input type="checkbox" id="majara-student-activation" checked>
-        <span>Send Activation &amp; Portal Login Email Immediately</span>
+        <span>Send Activation &amp; Portal Login Email Immediately (100% English VIP Pass)</span>
       </label>
     </div>
 

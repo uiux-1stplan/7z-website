@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS academy_courses (
   description_en TEXT,
   cover_image TEXT,
   price_usd NUMERIC(10,2) DEFAULT 0,
+  storage_source_type TEXT DEFAULT 'mixed' CHECK (storage_source_type IN ('youtube', 'gdrive', 'mixed')),
   drive_folder_url TEXT,
   is_published BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -54,6 +55,7 @@ CREATE TABLE IF NOT EXISTS academy_lessons (
   source_id TEXT NOT NULL,
   duration_label TEXT,
   resources_json JSONB DEFAULT '[]'::jsonb,
+  captions_json JSONB DEFAULT '[]'::jsonb,
   is_free_preview BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

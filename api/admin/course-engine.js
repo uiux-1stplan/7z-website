@@ -1169,7 +1169,15 @@ export default async function handler(req, res) {
     if (body.action === "save-majara-student" || body.action === "create-majara-student" || body.action === "update-majara-student") {
       try {
         const saved = await saveMajaraStudent(body);
-        if (body.courseId) {
+        if (Array.isArray(body.permissions)) {
+          for (const perm of body.permissions) {
+            if (perm.granted) {
+              await setMajaraEnrollment(saved.id, perm.courseId, "active", "admin_matrix");
+            } else {
+              await deleteMajaraEnrollment(saved.id, perm.courseId);
+            }
+          }
+        } else if (body.courseId) {
           await setMajaraEnrollment(saved.id, body.courseId, "active", "admin_manual");
         }
         let activationLink = null;
@@ -1183,6 +1191,51 @@ export default async function handler(req, res) {
           activationLink = resAct?.activationLink;
         }
         return send(res, 200, { ok: true, student: saved, activationLink });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "upload-lesson-asset") {
+      try {
+        const rawFileName = text(body.fileName, 120) || "attachment.bin";
+        const cleanName = rawFileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const fileData = String(body.fileData || "");
+        
+        // Detect extension / type
+        const ext = cleanName.split(".").pop().toLowerCase();
+        let fileType = "other";
+        if (["ppt", "pptx"].includes(ext)) fileType = "pptx";
+        else if (["doc", "docx"].includes(ext)) fileType = "docx";
+        else if (["xls", "xlsx"].includes(ext)) fileType = "xlsx";
+        else if (ext === "pdf") fileType = "pdf";
+        else if (["zip", "rar", "7z", "tar", "gz"].includes(ext)) fileType = "zip";
+
+        let finalUrl = fileData;
+        try {
+          const uploadsDir = join(process.cwd(), "media", "uploads", "lessons");
+          const { mkdirSync, writeFileSync } = await import("node:fs");
+          if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
+          const diskFileName = `${Date.now()}-${cleanName}`;
+          const diskPath = join(uploadsDir, diskFileName);
+          
+          if (fileData.startsWith("data:")) {
+            const base64Data = fileData.split(",")[1];
+            if (base64Data) {
+              writeFileSync(diskPath, Buffer.from(base64Data, "base64"));
+              finalUrl = `/media/uploads/lessons/${diskFileName}`;
+            }
+          }
+        } catch (e) {
+          // If disk write is unsupported, finalUrl remains fileData
+        }
+
+        return send(res, 200, {
+          ok: true,
+          url: finalUrl,
+          name: rawFileName,
+          type: fileType
+        });
       } catch (err) {
         return send(res, 500, { ok: false, error: err.message });
       }

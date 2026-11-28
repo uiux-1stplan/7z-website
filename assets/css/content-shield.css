@@ -1,38 +1,29 @@
-/**
- * 7Z MAGIC & MAJARA ACADEMY — CONTENT SHIELD
- * Zero-Pixel-Impact & Zero-Cost Content & Media Protection
- */
-
-/* Disable selection and touch callouts globally outside admin */
+/* 7Z Magic & Majara Academy Global Content Shield */
 html:not(.admin-shield-exempt),
-html:not(.admin-shield-exempt) body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
+html:not(.admin-shield-exempt) body,
+html:not(.admin-shield-exempt) *:not(input):not(textarea):not(select):not([contenteditable="true"]) {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
 }
 
-/* Smart exception for form inputs, textareas, selects, and editable fields */
+html:not(.admin-shield-exempt) img,
+html:not(.admin-shield-exempt) video,
+html:not(.admin-shield-exempt) svg,
+html:not(.admin-shield-exempt) canvas {
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+}
+
 html:not(.admin-shield-exempt) input,
 html:not(.admin-shield-exempt) textarea,
 html:not(.admin-shield-exempt) select,
-html:not(.admin-shield-exempt) [contenteditable="true"],
-html:not(.admin-shield-exempt) .allow-select,
-html:not(.admin-shield-exempt) .shield-selectable {
+html:not(.admin-shield-exempt) [contenteditable="true"] {
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   -ms-user-select: text !important;
   user-select: text !important;
-  -webkit-touch-callout: default !important;
-}
-
-/* Prevent native dragging of media and structural elements */
-html:not(.admin-shield-exempt) img,
-html:not(.admin-shield-exempt) video,
-html:not(.admin-shield-exempt) iframe,
-html:not(.admin-shield-exempt) a,
-html:not(.admin-shield-exempt) svg {
-  -webkit-user-drag: none;
-  user-drag: none;
+  cursor: text !important;
 }

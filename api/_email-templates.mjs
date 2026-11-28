@@ -555,89 +555,237 @@ export function buildWaitlistEmailHtml(entry) {
   });
 }
 
-export function buildStudentActivationHtml({ fullName, email, activationLink, courseTitle, isRtl = true }) {
-  const bodyHtml = isRtl ? `
-    <div style="text-align: center; margin-bottom: 24px;">
-      <span class="email-badge badge-cyan">MAJARA ACADEMY · تفعيل الحساب</span>
-      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">مرحباً بك في أكاديمية مجرة 🚀</h1>
-      <p style="color: #94a3b8; font-size: 14px; margin: 0;">أهلاً بك <strong>${fullName}</strong>، تم إنشاء حسابك الأكاديمي وتفعيل اشتراكك بنجاح.</p>
+/**
+ * 6. Majara Cinema Studio VIP Access Email Wrapper (100% English Avant-Garde Aesthetic)
+ */
+export function wrapMajaraCinemaEmail({
+  title,
+  preheader = "VIP Studio Access Pass // Majara Academy & Studios",
+  bodyHtml,
+  passCode = "Z7-MAJARA-PASS"
+}) {
+  return `<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="dark">
+  <title>${title}</title>
+  <style>
+    :root { color-scheme: dark; }
+    body, table, td, p, a, li, blockquote { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    body { margin: 0; padding: 0; width: 100% !important; background-color: #07090e; color: #e2e8f0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .studio-container { max-width: 620px; margin: 0 auto; background: #0c1017; border: 1px solid rgba(56, 189, 248, 0.28); border-radius: 20px; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(56, 189, 248, 0.12); }
+    .studio-pass-badge { display: inline-block; padding: 5px 14px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #38bdf8; text-transform: uppercase; }
+    .studio-header { background: radial-gradient(circle at 50% 0%, #151d2a 0%, #0c1017 80%); padding: 38px 30px 24px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .studio-card { background: #111722; border: 1px solid rgba(56, 189, 248, 0.16); border-radius: 14px; padding: 24px; margin: 24px 0; }
+    .pass-row { display: table; width: 100%; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); font-size: 13.5px; }
+    .pass-label { display: table-cell; color: #94a3b8; font-weight: 600; width: 38%; text-align: left; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11.5px; }
+    .pass-val { display: table-cell; color: #f8fafc; font-weight: 700; text-align: right; }
+    .cta-cinema-btn { display: inline-block; background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); color: #ffffff !important; padding: 15px 34px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 14px; letter-spacing: 0.5px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 0 24px rgba(56, 189, 248, 0.45); }
+    .studio-footer { background: #07090e; padding: 28px 24px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.06); font-size: 12px; color: #64748b; line-height: 1.6; }
+    @media only screen and (max-width: 620px) {
+      .studio-container { width: 100% !important; border-radius: 0 !important; }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 28px 12px; background-color: #07090e;">
+  <div style="display: none; max-height: 0px; overflow: hidden; opacity: 0; font-size: 1px; line-height: 1px; color: #fff;">
+    ${preheader}
+  </div>
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td align="center">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="studio-container" style="max-width: 620px; background-color: #0c1017; border: 1px solid rgba(56, 189, 248, 0.28); border-radius: 20px;">
+          <!-- Studio Header & Holographic VIP Strip -->
+          <tr>
+            <td class="studio-header" align="center" style="padding: 38px 24px 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background-color: #111722;">
+              <div style="margin-bottom: 12px;">
+                <span class="studio-pass-badge" style="display: inline-block; padding: 5px 14px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #38bdf8; text-transform: uppercase;">
+                  ACCESS PASS // MAJARA STUDIO
+                </span>
+              </div>
+              <a href="https://majara.7z-magic.com" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="${BRAND.logoUrl}" alt="${BRAND.name}" width="140" height="40" style="display: block; border: 0; max-width: 140px; height: auto;" />
+              </a>
+              <div style="font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 11px; color: #818cf8; letter-spacing: 1.8px; margin-top: 10px; text-transform: uppercase; font-weight: 600;">
+                STUDIO CLEARANCE: ${passCode}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Main VIP Body -->
+          <tr>
+            <td style="padding: 36px 32px; font-size: 14.5px; line-height: 1.7; color: #cbd5e1; direction: ltr; text-align: left;">
+              ${bodyHtml}
+            </td>
+          </tr>
+
+          <!-- Studio Footer -->
+          <tr>
+            <td class="studio-footer" align="center" style="padding: 26px 20px; border-top: 1px solid rgba(255, 255, 255, 0.06); background-color: #07090e; color: #64748b; font-size: 12px; line-height: 1.6;">
+              <p style="margin: 0 0 6px; font-weight: 700; color: #94a3b8; letter-spacing: 0.5px;">7Z MAGIC STUDIOS · MAJARA ACADEMY</p>
+              <p style="margin: 0 0 8px;">
+                <a href="mailto:${BRAND.adminEmail}" style="color: #38bdf8; text-decoration: none;">${BRAND.adminEmail}</a> · 
+                <a href="https://majara.7z-magic.com" target="_blank" style="color: #38bdf8; text-decoration: none;">majara.7z-magic.com</a>
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #475569;">
+                &copy; 2026 7Z Magic Studios. All rights reserved. Single-Session Forensic Lock Active.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+export function buildStudentActivationHtml({ fullName, studentName, email, activationLink, courseTitle }) {
+  const name = fullName || studentName || "Student";
+  const studentEmail = email || "";
+  const bodyHtml = `
+    <div style="text-align: center; margin-bottom: 26px;">
+      <h1 style="color: #ffffff; font-size: 24px; margin: 0 0 8px; font-weight: 800; letter-spacing: -0.3px;">Welcome to the Studio, ${name}</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0; line-height: 1.6;">Your VIP student clearance has been provisioned. Activate your security keycard to unlock high-definition masterclasses, forensic study environments, and raw production deliverables.</p>
     </div>
-    <div class="email-card">
-      ${courseTitle ? `<div class="info-row"><div class="info-label">الدورة المفعلة:</div><div class="info-val" style="color: #38bdf8;">${courseTitle}</div></div>` : ""}
-      <div class="info-row"><div class="info-label">البريد الإلكتروني:</div><div class="info-val" dir="ltr">${email}</div></div>
-      <div class="info-row" style="border-bottom: none;"><div class="info-label">البوابة التعليمية:</div><div class="info-val" dir="ltr">majara.7z-magic.com</div></div>
-      <div style="text-align: center; margin: 24px 0 10px;">
-        <a href="${activationLink}" class="cta-btn" target="_blank">تفعيل الحساب وتعيين كلمة المرور ←</a>
+
+    <div class="studio-card">
+      <div style="font-size: 11px; color: #38bdf8; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; letter-spacing: 1.2px;">VIP CLEARANCE RECORD</div>
+      <div class="pass-row">
+        <div class="pass-label">Student Name</div>
+        <div class="pass-val" style="color: #38bdf8;">${name}</div>
       </div>
-      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
-        هذا الرابط مخصص لك وحدك لتفعيل حسابك والبدء في حضور الدروس.
-      </p>
-    </div>
-  ` : `
-    <div style="text-align: center; margin-bottom: 24px;">
-      <span class="email-badge badge-cyan">MAJARA ACADEMY · ACCOUNT ACTIVATION</span>
-      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">Welcome to Majara Academy 🚀</h1>
-      <p style="color: #94a3b8; font-size: 14px; margin: 0;">Hello <strong>${fullName}</strong>, your student portal account is ready.</p>
-    </div>
-    <div class="email-card">
-      ${courseTitle ? `<div class="info-row"><div class="info-label">Enrolled Course:</div><div class="info-val" style="color: #38bdf8;">${courseTitle}</div></div>` : ""}
-      <div class="info-row"><div class="info-label">Email:</div><div class="info-val" dir="ltr">${email}</div></div>
-      <div class="info-row" style="border-bottom: none;"><div class="info-label">Portal Domain:</div><div class="info-val" dir="ltr">majara.7z-magic.com</div></div>
-      <div style="text-align: center; margin: 24px 0 10px;">
-        <a href="${activationLink}" class="cta-btn" target="_blank">Activate Account & Set Password →</a>
+      <div class="pass-row">
+        <div class="pass-label">Registered Email</div>
+        <div class="pass-val">${studentEmail}</div>
       </div>
-      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
-        This activation link is exclusively for your account to access your enrolled courses.
-      </p>
+      ${courseTitle ? `
+      <div class="pass-row">
+        <div class="pass-label">Unlocked Masterclass</div>
+        <div class="pass-val" style="color: #818cf8;">${courseTitle}</div>
+      </div>` : ""}
+      <div class="pass-row">
+        <div class="pass-label">Access Level</div>
+        <div class="pass-val" style="color: #10b981;">Unlimited VIP Studio Access</div>
+      </div>
+      <div class="pass-row" style="border-bottom: none;">
+        <div class="pass-label">Security Architecture</div>
+        <div class="pass-val" style="color: #38bdf8;">Single-Session Anti-Piracy Lock</div>
+      </div>
     </div>
+
+    <div style="text-align: center; margin: 32px 0 16px;">
+      <a href="${activationLink}" class="cta-cinema-btn" target="_blank">
+        Enter The Studio →
+      </a>
+    </div>
+
+    <p style="color: #64748b; font-size: 12px; margin: 16px 0 0; text-align: center; line-height: 1.6;">
+      This single-use activation token establishes your personal password and grants immediate access to your cinema classroom.
+    </p>
   `;
-  return wrapCinematicEmail({
-    title: isRtl ? `تفعيل حسابك في أكاديمية مجرة | 7Z Magic` : `Activate Your Majara Academy Account | 7Z Magic`,
-    preheader: `Welcome to Majara Academy, ${fullName}`,
+
+  return wrapMajaraCinemaEmail({
+    title: "VIP Studio Access Pass // Majara Academy",
+    preheader: `Welcome to Majara Academy, ${name}. Your VIP Studio pass is active.`,
     bodyHtml,
-    isRtl
+    passCode: "VIP-KEY-ACTIVATION"
   });
 }
 
-export function buildStudentPasswordResetHtml({ fullName, email, resetLink, isRtl = true }) {
-  const bodyHtml = isRtl ? `
-    <div style="text-align: center; margin-bottom: 24px;">
-      <span class="email-badge badge-amber">استعادة كلمة المرور</span>
-      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">إعادة تعيين كلمة مرور بوابة مجرة</h1>
-      <p style="color: #94a3b8; font-size: 14px; margin: 0;">مرحباً <strong>${fullName}</strong>، تلقينا طلباً لاستعادة كلمة المرور الخاصة بحسابك الأكاديمي.</p>
+export function buildStudentPasswordResetHtml({ fullName, studentName, email, resetLink }) {
+  const name = fullName || studentName || "Student";
+  const studentEmail = email || "";
+  const bodyHtml = `
+    <div style="text-align: center; margin-bottom: 26px;">
+      <h1 style="color: #ffffff; font-size: 24px; margin: 0 0 8px; font-weight: 800; letter-spacing: -0.3px;">Security Keycard Reset</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0; line-height: 1.6;">Hello <strong>${name}</strong>, an authorization request was initiated to reset your Majara Studio access keycard.</p>
     </div>
-    <div class="email-card">
-      <div class="info-row"><div class="info-label">البريد الإلكتروني:</div><div class="info-val" dir="ltr">${email}</div></div>
-      <div class="info-row" style="border-bottom: none;"><div class="info-label">الصلاحية:</div><div class="info-val">صالحة لمدة ساعتين</div></div>
-      <div style="text-align: center; margin: 24px 0 10px;">
-        <a href="${resetLink}" class="cta-btn" target="_blank">إعادة تعيين كلمة المرور ←</a>
+
+    <div class="studio-card">
+      <div style="font-size: 11px; color: #fbbf24; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; letter-spacing: 1.2px;">SECURITY DISPATCH DETAILS</div>
+      <div class="pass-row">
+        <div class="pass-label">Target Account</div>
+        <div class="pass-val">${studentEmail}</div>
       </div>
-      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
-        إذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد بأمان.
-      </p>
-    </div>
-  ` : `
-    <div style="text-align: center; margin-bottom: 24px;">
-      <span class="email-badge badge-amber">PASSWORD RESET</span>
-      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">Reset Your Majara Portal Password</h1>
-      <p style="color: #94a3b8; font-size: 14px; margin: 0;">Hello <strong>${fullName}</strong>, we received a request to reset your password.</p>
-    </div>
-    <div class="email-card">
-      <div class="info-row"><div class="info-label">Email:</div><div class="info-val" dir="ltr">${email}</div></div>
-      <div class="info-row" style="border-bottom: none;"><div class="info-label">Validity:</div><div class="info-val">Valid for 2 hours</div></div>
-      <div style="text-align: center; margin: 24px 0 10px;">
-        <a href="${resetLink}" class="cta-btn" target="_blank">Reset Password Now →</a>
+      <div class="pass-row">
+        <div class="pass-label">Token Validity</div>
+        <div class="pass-val" style="color: #fbbf24;">Expires in 2 Hours</div>
       </div>
-      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
-        If you did not request a password reset, you can safely ignore this email.
-      </p>
+      <div class="pass-row" style="border-bottom: none;">
+        <div class="pass-label">Target Portal</div>
+        <div class="pass-val" style="color: #38bdf8;">majara.7z-magic.com</div>
+      </div>
     </div>
+
+    <div style="text-align: center; margin: 32px 0 16px;">
+      <a href="${resetLink}" class="cta-cinema-btn" target="_blank" style="background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%); box-shadow: 0 0 24px rgba(251, 191, 36, 0.4);">
+        Reset Access Keycard →
+      </a>
+    </div>
+
+    <p style="color: #64748b; font-size: 12px; margin: 16px 0 0; text-align: center; line-height: 1.6;">
+      If you did not request this credentials reset, you may disregard this transmission. Your existing session remains safe and protected.
+    </p>
   `;
-  return wrapCinematicEmail({
-    title: isRtl ? `استعادة كلمة مرور أكاديمية مجرة | 7Z Magic` : `Reset Password | Majara Academy`,
-    preheader: `Password reset request for ${email}`,
+
+  return wrapMajaraCinemaEmail({
+    title: "Security Keycard Reset // Majara Studio",
+    preheader: `Security reset authorization for ${studentEmail || name}`,
     bodyHtml,
-    isRtl
+    passCode: "SEC-RESET-DISPATCH"
+  });
+}
+
+export function buildCourseUnlockedHtml({ fullName, studentName, email, courseTitle, portalUrl = "https://majara.7z-magic.com/learn/", classroomLink }) {
+  const name = fullName || studentName || "Student";
+  const studentEmail = email || "";
+  const targetLink = classroomLink || portalUrl;
+  const bodyHtml = `
+    <div style="text-align: center; margin-bottom: 26px;">
+      <h1 style="color: #ffffff; font-size: 24px; margin: 0 0 8px; font-weight: 800; letter-spacing: -0.3px;">New Masterclass Unlocked</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0; line-height: 1.6;">Congratulations <strong>${name}</strong>, new studio clearance has been granted and bound to your student keycard.</p>
+    </div>
+
+    <div class="studio-card">
+      <div style="font-size: 11px; color: #10b981; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; letter-spacing: 1.2px;">NEW PRODUCTION CLEARANCE</div>
+      <div class="pass-row">
+        <div class="pass-label">Unlocked Masterclass</div>
+        <div class="pass-val" style="color: #38bdf8; font-size: 15px;">${courseTitle}</div>
+      </div>
+      <div class="pass-row">
+        <div class="pass-label">Clearance Tier</div>
+        <div class="pass-val" style="color: #10b981;">Unlimited VIP Streaming &amp; Downloads</div>
+      </div>
+      <div class="pass-row">
+        <div class="pass-label">Classroom Studio</div>
+        <div class="pass-val">Majara 4K Protected Player</div>
+      </div>
+      <div class="pass-row" style="border-bottom: none;">
+        <div class="pass-label">Student ID</div>
+        <div class="pass-val">${studentEmail}</div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 32px 0 16px;">
+      <a href="${targetLink}" class="cta-cinema-btn" target="_blank">
+        Enter The Studio →
+      </a>
+    </div>
+
+    <p style="color: #64748b; font-size: 12px; margin: 16px 0 0; text-align: center; line-height: 1.6;">
+      All masterclass modules, video lessons, downloadable slide decks, and code files are now active in your dashboard.
+    </p>
+  `;
+
+  return wrapMajaraCinemaEmail({
+    title: `Masterclass Unlocked // Your VIP Studio Access`,
+    preheader: `New masterclass clearance granted: ${courseTitle}`,
+    bodyHtml,
+    passCode: "VIP-COURSE-UNLOCKED"
   });
 }
 

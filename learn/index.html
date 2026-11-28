@@ -12,8 +12,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/7z-core.bundle.min.css">
-  <link rel="stylesheet" href="/assets/css/content-shield.css">
   <link rel="stylesheet" href="/assets/css/lesson-player.css">
+
+  <link rel="stylesheet" href="/assets/css/content-shield.css?v=3">
+  <script src="/assets/js/content-shield.js?v=3"></script>
 </head>
 <body class="majara-portal-body">
 
@@ -24,7 +26,7 @@
   <header class="majara-nav" aria-label="Portal Navigation">
     <div class="majara-nav-inner">
       <div class="majara-brand-group">
-        <a href="https://7z-magic.com/" aria-label="7Z Magic Home">
+        <a href="/" aria-label="7Z Magic Home">
           <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="majara-brand-logo">
         </a>
         <span class="majara-brand-sep" aria-hidden="true"></span>
@@ -47,7 +49,7 @@
           تسجيل الخروج
         </button>
 
-        <a href="https://7z-magic.com/" class="majara-nav-btn" id="nav-login-btn">
+        <a href="/marketplace/" class="majara-nav-btn" id="nav-login-btn">
           <span>7z-magic.com ↗</span>
         </a>
 
@@ -193,6 +195,9 @@
               <div class="majara-forensic-watermark" id="cinema-watermark">
                 MAJARA // 7Z MAGIC
               </div>
+
+              <!-- Cinematic Translucent Caption Overlay (CC) -->
+              <div id="cinema-caption-overlay" class="majara-caption-overlay hidden" aria-live="polite"></div>
             </div>
 
             <!-- Custom Controls -->
@@ -202,6 +207,17 @@
                 <span class="majara-time-display">PROTECTED PLAYER</span>
               </div>
               <div class="majara-controls-group">
+                <!-- CC Subtitle Switcher -->
+                <div class="majara-cc-dropdown-wrap">
+                  <button type="button" class="majara-ctrl-btn" id="ctrl-cc" title="Subtitles &amp; Captions (CC)" aria-expanded="false">
+                    CC
+                  </button>
+                  <div class="majara-cc-menu hidden" id="cinema-cc-menu">
+                    <button type="button" class="majara-cc-opt active" data-lang="off">Subtitles: Off</button>
+                    <!-- Tracks populated dynamically -->
+                  </div>
+                </div>
+
                 <button type="button" class="majara-ctrl-btn" id="ctrl-fullscreen" title="Toggle Fullscreen">
                   ⛶ Fullscreen
                 </button>
@@ -290,8 +306,6 @@
     </section>
 
   </main>
-
-  <script defer src="/assets/js/content-shield.js"></script>
   <script defer src="/assets/js/lesson-player.js"></script>
 </body>
 </html>
