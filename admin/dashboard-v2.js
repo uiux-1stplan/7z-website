@@ -10,6 +10,7 @@
     "courses-affiliates": ["ACADEMY / PROMO CODES", "Promo Codes & Affiliates Hub", "Manage promotional discount codes, partner profiles and campaigns."],
     registrations: ["ACADEMY / PAYMENT REVIEW", "Registrations & Payment Receipts", "Review registration records, payment submissions and verify real transfer receipts."],
     accounting: ["ACADEMY / FINANCIAL LEDGER", "Financial & Marketers Ledger", "Accounting ledger, marketer commission breakdown, and official excel reporting."],
+    "majara-academy": ["MAJARA ACADEMY / COURSES & STUDENTS", "Majara Academy", "Manage courses, curriculum modules, lessons, and student access."],
     settings: ["STUDIO CONTROL / PREFERENCES", "Settings & Logs", "Workspace appearance, session security and system audit logs."],
   };
   const months = new Intl.DateTimeFormat("en", { month: "short" });

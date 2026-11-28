@@ -651,7 +651,17 @@ function serveStatic(req, res, url) {
     res.end();
     return;
   }
-  const requestedPath = decodedPath === "/" ? "/index.html" : decodedPath === "/admin" ? "/admin/index.html" : decodedPath;
+
+  const host = (req.headers.host || "").toLowerCase();
+  const isMajaraHost = host.includes("majara");
+  let requestedPath;
+  if (isMajaraHost && (decodedPath === "/" || decodedPath === "/index.html")) {
+    requestedPath = "/learn/index.html";
+  } else if (decodedPath === "/learn" || decodedPath === "/learn/") {
+    requestedPath = "/learn/index.html";
+  } else {
+    requestedPath = decodedPath === "/" ? "/index.html" : decodedPath === "/admin" ? "/admin/index.html" : decodedPath;
+  }
   const safePath = normalize(requestedPath).replace(/^(\.\.[/\\])+/, "");
   let filePath = resolve(join(root, safePath));
 
@@ -1016,10 +1026,40 @@ async function handleApi(req, res, url) {
     return true;
   }
 
+  // Student Portal API Handler for Local Server
+  if (url.pathname === "/api/student-portal" || url.pathname.startsWith("/api/student-portal")) {
+    const studentPortalHandler = (await import("./api/student-portal.mjs")).default;
+    req.query = Object.fromEntries(url.searchParams.entries());
+    if (req.method === "POST" && !req.body) {
+      req.body = await readJsonBody(req).catch(() => ({}));
+    }
+    if (!res.status) {
+      res.status = (code) => { res.statusCode = code; return res; };
+    }
+    if (!res.json) {
+      res.json = (data) => { sendJson(res, res.statusCode || 200, data); return res; };
+    }
+    await studentPortalHandler(req, res);
+    return true;
+  }
+
   // Course Engine Fallback for Local Server
   if (url.pathname === "/api/admin/course-engine") {
     if (!requireAdmin(req, res)) return true;
     if (req.method === "GET") {
+      if (url.searchParams.get("action") === "majara-data" || url.searchParams.get("view") === "majara-data") {
+        const { getMajaraCourses, getMajaraStudents } = await import("./api/academy-engine.mjs");
+        const [courses, students] = await Promise.all([getMajaraCourses(), getMajaraStudents()]);
+        sendJson(res, 200, { ok: true, courses, students });
+        return true;
+      }
+      if (url.searchParams.get("action") === "majara-lessons" || url.searchParams.get("view") === "majara-lessons") {
+        const { getMajaraLessons } = await import("./api/academy-engine.mjs");
+        const lessons = await getMajaraLessons(url.searchParams.get("courseId") || url.searchParams.get("id"));
+        sendJson(res, 200, { ok: true, lessons });
+        return true;
+      }
+
       const adminData = await getAdminData();
       if (url.searchParams.get("action") === "receipt" || url.searchParams.get("view") === "receipt") {
         const id = String(url.searchParams.get("id") || "").trim();
@@ -1130,6 +1170,20 @@ async function handleApi(req, res, url) {
 
     if (req.method === "POST") {
       const body = await readJsonBody(req);
+      if (body.action?.includes("majara") || body.action === "send-student-activation") {
+        const courseEngineHandler = (await import("./api/admin/course-engine.js")).default;
+        req.body = body;
+        req.query = Object.fromEntries(url.searchParams.entries());
+        if (!res.status) {
+          res.status = (code) => { res.statusCode = code; return res; };
+        }
+        if (!res.json) {
+          res.json = (data) => { sendJson(res, res.statusCode || 200, data); return res; };
+        }
+        await courseEngineHandler(req, res);
+        return true;
+      }
+
       const isApprove = ["PAID", "APPROVED", "VERIFIED"].includes(String(body.status || "").toUpperCase());
       const mappedAction = body.action === "set-payment-status"
         ? (isApprove ? "approve-payment" : "reject-payment")

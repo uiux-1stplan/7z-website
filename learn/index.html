@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030407">
+  <title>بوابة مجرة الأكاديمية | 7Z Magic Academy</title>
+  <meta name="description" content="البوابة التعليمية الذكية لطلاب 7Z Magic: استوديو المشاهدة السينمائي، المنهج التعليمي التفاعلي، والحماية الرقمية للمحتوى.">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="icon" type="image/png" href="/assets/brand/7Z-LogoT(3).png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/7z-core.bundle.min.css">
+  <link rel="stylesheet" href="/assets/css/content-shield.css">
+  <link rel="stylesheet" href="/assets/css/lesson-player.css">
+</head>
+<body class="majara-portal-body">
+
+  <!-- Ambient Cinematic Mesh Background -->
+  <div class="majara-ambient-canvas" aria-hidden="true"></div>
+
+  <!-- Ultra-Luxury Header -->
+  <header class="majara-nav" aria-label="Portal Navigation">
+    <div class="majara-nav-inner">
+      <div class="majara-brand-group">
+        <a href="/" aria-label="7Z Magic Home">
+          <img src="/assets/brand/7Z-LogoT(3).png" alt="7Z Magic" class="majara-brand-logo">
+        </a>
+        <span class="majara-brand-sep" aria-hidden="true"></span>
+        <span class="majara-brand-kicker">MAJARA</span>
+        <span class="majara-brand-sub" data-i18n="brand_sub">بوابة الطالب الأكاديمية</span>
+      </div>
+
+      <div class="majara-nav-actions">
+        <button type="button" class="majara-nav-btn hidden" id="nav-mycourses-btn">
+          <span>📚</span> <span data-i18n="my_courses">دوراتي</span>
+        </button>
+
+        <div class="majara-user-pill hidden" id="nav-user-pill">
+          <span class="majara-avatar-dot" aria-hidden="true"></span>
+          <span id="nav-student-name">Student</span>
+          <button type="button" class="majara-switch-link" id="nav-profile-btn" title="Profile &amp; Security">⚙</button>
+        </div>
+
+        <button type="button" class="majara-nav-btn hidden" id="nav-logout-btn" data-i18n="sign_out">
+          تسجيل الخروج
+        </button>
+
+        <a href="/marketplace/" class="majara-nav-btn" id="nav-login-btn">
+          <span>7z-magic.com ↗</span>
+        </a>
+
+        <button type="button" class="majara-lang-toggle" id="majara-lang-toggle" aria-label="Toggle Language">
+          EN
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Portal Viewport -->
+  <main class="majara-main-container" id="majara-main-viewport">
+
+    <!-- ================================================================= -->
+    <!-- 1. AUTHENTICATION SCREENS (LOGIN / ACTIVATION / RESET)            -->
+    <!-- ================================================================= -->
+    <section class="majara-auth-stage" id="auth-view">
+      <!-- 1.1 Login Pane -->
+      <div id="auth-login-pane">
+        <div class="majara-auth-header">
+          <span class="majara-brand-sub">MAJARA ACADEMY</span>
+          <h1 class="majara-auth-title" data-i18n="login_title">تسجيل دخول الطالب</h1>
+          <p class="majara-auth-desc" data-i18n="login_desc">أدخل بريدك الإلكتروني وكلمة المرور للمتابعة إلى استوديو الدروس.</p>
+        </div>
+
+        <form id="auth-login-form">
+          <div class="majara-form-group">
+            <label class="majara-form-label" for="login-email">البريد الإلكتروني / Email</label>
+            <input type="email" id="login-email" class="majara-form-input" required autocomplete="email" placeholder="student@example.com">
+          </div>
+          <div class="majara-form-group">
+            <label class="majara-form-label" for="login-password">كلمة المرور / Password</label>
+            <input type="password" id="login-password" class="majara-form-input" required autocomplete="current-password" placeholder="••••••••">
+          </div>
+          <button type="submit" class="majara-btn-primary" data-i18n="login_btn">تسجيل الدخول إلى الأكاديمية ←</button>
+        </form>
+
+        <div class="majara-auth-switch">
+          <button type="button" class="majara-switch-link" id="switch-to-activate" data-i18n="switch_to_activate">تفعيل حساب جديد لأول مرة</button>
+          <button type="button" class="majara-switch-link" id="switch-to-reset" data-i18n="switch_to_reset">نسيت كلمة المرور؟</button>
+        </div>
+      </div>
+
+      <!-- 1.2 First-Time Activation Pane -->
+      <div id="auth-activate-pane" class="hidden">
+        <div class="majara-auth-header">
+          <span class="majara-brand-sub">FIRST-TIME SETUP</span>
+          <h1 class="majara-auth-title" data-i18n="activate_title">تفعيل الحساب لأول مرة</h1>
+          <p class="majara-auth-desc" data-i18n="activate_desc">قم بتعيين كلمة المرور الخاصة بحسابك الأكاديمي للوصول الفوري.</p>
+        </div>
+
+        <form id="auth-activate-form">
+          <div class="majara-form-group">
+            <label class="majara-form-label" for="activate-email">البريد الإلكتروني المسجل به / Registered Email</label>
+            <input type="email" id="activate-email" class="majara-form-input" required autocomplete="email" placeholder="student@example.com">
+          </div>
+          <div class="majara-form-group">
+            <label class="majara-form-label" for="activate-password">كلمة المرور الجديدة / New Password (6+ characters)</label>
+            <input type="password" id="activate-password" class="majara-form-input" required minlength="6" autocomplete="new-password" placeholder="••••••••">
+          </div>
+          <button type="submit" class="majara-btn-primary" data-i18n="activate_btn">تفعيل الحساب والدخول ←</button>
+        </form>
+
+        <div class="majara-auth-switch">
+          <button type="button" class="majara-switch-link" id="switch-to-login" data-i18n="switch_to_login">لديك حساب مفعل؟ تسجيل الدخول</button>
+        </div>
+      </div>
+
+      <!-- 1.3 Password Reset Pane -->
+      <div id="auth-reset-pane" class="hidden">
+        <div class="majara-auth-header">
+          <span class="majara-brand-sub">PASSWORD RECOVERY</span>
+          <h1 class="majara-auth-title" data-i18n="reset_title">استعادة كلمة المرور</h1>
+          <p class="majara-auth-desc" data-i18n="reset_desc">أدخل بريدك الإلكتروني لإرسال رابط إعادة التعيين عبر Zoho SMTP.</p>
+        </div>
+
+        <form id="auth-reset-form">
+          <div class="majara-form-group">
+            <label class="majara-form-label" for="reset-email">البريد الإلكتروني / Registered Email</label>
+            <input type="email" id="reset-email" class="majara-form-input" required autocomplete="email" placeholder="student@example.com">
+          </div>
+          <button type="submit" class="majara-btn-primary" data-i18n="reset_btn">إرسال رابط الاستعادة ←</button>
+        </form>
+
+        <div class="majara-auth-switch">
+          <button type="button" class="majara-switch-link" id="reset-to-login" data-i18n="switch_to_login">العودة لتسجيل الدخول</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 2. STUDENT DASHBOARD (MY COURSES LIBRARY)                         -->
+    <!-- ================================================================= -->
+    <section id="dashboard-view" class="hidden">
+      <div class="majara-hero-banner">
+        <div>
+          <span class="majara-brand-sub">STUDENT DASHBOARD</span>
+          <h2 class="majara-hero-title" data-i18n="my_courses">مكتبة دوراتي المسجل بها</h2>
+          <p class="majara-hero-subtitle">استمر في تطوير مهاراتك الهندسية والسينمائية وتابع تقدمك في الماستر كلاس.</p>
+        </div>
+      </div>
+
+      <div class="majara-courses-grid" id="dashboard-courses-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 3. CINEMA CLASSROOM (STUDY & VIEWING ROOM)                       -->
+    <!-- ================================================================= -->
+    <section id="classroom-view" class="hidden">
+      <!-- Breadcrumb Bar -->
+      <div class="majara-hero-banner py-4 mb-4">
+        <div>
+          <button type="button" class="majara-nav-btn mb-2" id="nav-back-dashboard-btn">
+            <span>←</span> <span data-i18n="back_dashboard">العودة إلى دوراتي</span>
+          </button>
+          <h2 class="majara-hero-title mb-1" id="classroom-course-title">Masterclass Title</h2>
+          <p class="majara-hero-subtitle" id="classroom-lesson-title">Lesson Title</p>
+        </div>
+      </div>
+
+      <div class="majara-classroom-grid">
+        <!-- Main Column: Cinema Video Player + Notes -->
+        <div class="majara-main-column">
+          <!-- Cinema Player Stage -->
+          <div class="majara-cinema-container" id="cinema-container">
+            <div class="majara-video-frame-box">
+              <iframe
+                id="cinema-video-iframe"
+                class="majara-video-iframe"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                title="Majara Cinema Video"
+              ></iframe>
+
+              <!-- Anti-Branding Protective Shields -->
+              <div class="majara-conceal-shield-top" aria-hidden="true"></div>
+              <div class="majara-popout-blocker" title="Protected Content" aria-hidden="true"></div>
+              <div class="majara-yt-corner-blocker" title="Protected Content" aria-hidden="true"></div>
+
+              <!-- Dynamic Forensic Watermark (Tamper-evident anti-piracy layer) -->
+              <div class="majara-forensic-watermark" id="cinema-watermark">
+                MAJARA // 7Z MAGIC
+              </div>
+            </div>
+
+            <!-- Custom Controls -->
+            <div class="majara-player-controls">
+              <div class="majara-controls-group">
+                <span class="majara-brand-sub">CINEMA 4K</span>
+                <span class="majara-time-display">PROTECTED PLAYER</span>
+              </div>
+              <div class="majara-controls-group">
+                <button type="button" class="majara-ctrl-btn" id="ctrl-fullscreen" title="Toggle Fullscreen">
+                  ⛶ Fullscreen
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lesson Interaction & Content Details -->
+          <div class="majara-lesson-details-card">
+            <div class="majara-details-head">
+              <h3 class="majara-lesson-headline" id="classroom-lesson-headline">Lesson Details</h3>
+              <button type="button" class="majara-complete-btn" id="classroom-mark-completed-btn" data-i18n="mark_completed">
+                تحديد الدرس كمكتمل ✓
+              </button>
+            </div>
+
+            <div class="majara-tabs-row" role="tablist">
+              <button type="button" class="majara-tab-link active" id="tab-notes-btn" data-i18n="tab_notes">
+                ملخص وملاحظات الدرس
+              </button>
+              <button type="button" class="majara-tab-link" id="tab-resources-btn" data-i18n="tab_resources">
+                المرفقات والملفات الرقمية
+              </button>
+            </div>
+
+            <div class="majara-tab-pane" id="classroom-notes-pane">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="majara-tab-pane hidden" id="classroom-resources-pane">
+              <div class="majara-resources-list" id="classroom-resources-list">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Column: Modules & Lessons Playlist -->
+        <aside class="majara-curriculum-panel" aria-label="Curriculum Navigation">
+          <div class="majara-panel-header">
+            <h4 class="majara-panel-header-title">منهج الدورة والدروس</h4>
+          </div>
+          <div class="majara-lessons-scroll" id="classroom-curriculum-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 4. PROFILE & SECURITY VIEW                                        -->
+    <!-- ================================================================= -->
+    <section id="profile-view" class="majara-auth-stage hidden">
+      <div class="majara-auth-header">
+        <span class="majara-brand-sub">STUDENT SETTINGS</span>
+        <h2 class="majara-auth-title" data-i18n="profile_title">الملف الشخصي والأمان</h2>
+      </div>
+
+      <form id="profile-form">
+        <div class="majara-form-group">
+          <label class="majara-form-label" for="profile-name">الاسم الكامل / Full Name</label>
+          <input type="text" id="profile-name" class="majara-form-input" required>
+        </div>
+        <div class="majara-form-group">
+          <label class="majara-form-label" for="profile-phone">رقم الهاتف / Phone (WhatsApp)</label>
+          <input type="text" id="profile-phone" class="majara-form-input">
+        </div>
+        <button type="submit" class="majara-btn-primary mb-4" data-i18n="save_profile">حفظ التغييرات</button>
+      </form>
+
+      <div class="majara-auth-header mt-4">
+        <h3 class="majara-auth-title text-base" data-i18n="change_password_title">تغيير كلمة المرور</h3>
+      </div>
+
+      <form id="password-change-form">
+        <div class="majara-form-group">
+          <label class="majara-form-label" for="profile-old-pass">كلمة المرور الحالية</label>
+          <input type="password" id="profile-old-pass" class="majara-form-input" required>
+        </div>
+        <div class="majara-form-group">
+          <label class="majara-form-label" for="profile-new-pass">كلمة المرور الجديدة (6+ أحرف)</label>
+          <input type="password" id="profile-new-pass" class="majara-form-input" required minlength="6">
+        </div>
+        <button type="submit" class="majara-btn-primary">تحديث كلمة المرور</button>
+      </form>
+    </section>
+
+  </main>
+
+  <script defer src="/assets/js/content-shield.js"></script>
+  <script defer src="/assets/js/lesson-player.js"></script>
+</body>
+</html>

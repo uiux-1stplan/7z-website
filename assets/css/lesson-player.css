@@ -1,0 +1,768 @@
+/**
+ * 7Z MAGIC — MAJARA ACADEMY CINEMA PLAYER & CLASSROOM STYLES
+ * Dark-Luxury Glassmorphic Design, Strict CSP, Full RTL/LTR Support
+ */
+
+:root {
+  --majara-bg: #030407;
+  --majara-surface: rgba(13, 17, 28, 0.75);
+  --majara-surface-card: rgba(18, 24, 38, 0.65);
+  --majara-border: rgba(255, 255, 255, 0.08);
+  --majara-border-focus: rgba(56, 189, 248, 0.35);
+  --majara-cyan: #38bdf8;
+  --majara-cyan-glow: rgba(56, 189, 248, 0.2);
+  --majara-emerald: #10b981;
+  --majara-emerald-glow: rgba(16, 185, 129, 0.2);
+  --majara-amber: #fbbf24;
+  --majara-text: #f1f5f9;
+  --majara-text-muted: #94a3b8;
+  --majara-radius-lg: 18px;
+  --majara-radius-md: 12px;
+  --majara-radius-sm: 8px;
+  --majara-font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+  --majara-font-ar: 'Cairo', 'Alexandria', sans-serif;
+  --majara-font-mono: 'JetBrains Mono', monospace;
+}
+
+[dir="rtl"] {
+  font-family: var(--majara-font-ar);
+}
+
+[dir="ltr"] {
+  font-family: var(--majara-font-sans);
+}
+
+body.majara-portal-body {
+  background-color: var(--majara-bg);
+  color: var(--majara-text);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Ambient glow background */
+.majara-ambient-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.06), transparent 45%),
+              radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.05), transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(14, 18, 29, 0.95), var(--majara-bg));
+}
+
+/* Top Navigation Bar */
+.majara-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7, 9, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--majara-border);
+  padding: 14px 28px;
+}
+
+.majara-nav-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.majara-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.majara-brand-logo {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+.majara-brand-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--majara-border);
+}
+
+.majara-brand-kicker {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--majara-text);
+  text-transform: uppercase;
+}
+
+.majara-brand-sub {
+  font-size: 11px;
+  color: var(--majara-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  font-weight: 600;
+}
+
+.majara-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.majara-lang-toggle,
+.majara-nav-btn {
+  background: var(--majara-surface);
+  border: 1px solid var(--majara-border);
+  color: var(--majara-text);
+  padding: 8px 14px;
+  border-radius: var(--majara-radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.majara-lang-toggle:hover,
+.majara-nav-btn:hover {
+  border-color: var(--majara-cyan);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.majara-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--majara-border);
+  border-radius: 30px;
+  font-size: 13px;
+}
+
+.majara-avatar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--majara-emerald);
+  box-shadow: 0 0 10px var(--majara-emerald);
+}
+
+/* Layout Shells */
+.majara-main-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+/* Auth Screens (Login / Activation / Reset) */
+.majara-auth-stage {
+  max-width: 460px;
+  margin: 40px auto;
+  background: var(--majara-surface);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-lg);
+  padding: 40px 36px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+.majara-auth-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.majara-auth-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 8px 0 6px;
+  color: #fff;
+}
+
+.majara-auth-desc {
+  font-size: 13px;
+  color: var(--majara-text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.majara-form-group {
+  margin-bottom: 18px;
+}
+
+.majara-form-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--majara-text);
+}
+
+.majara-form-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(8, 11, 18, 0.7);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-sm);
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.majara-form-input:focus {
+  outline: none;
+  border-color: var(--majara-cyan);
+  box-shadow: 0 0 0 3px var(--majara-cyan-glow);
+}
+
+.majara-btn-primary {
+  width: 100%;
+  padding: 13px 20px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: var(--majara-radius-sm);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+}
+
+.majara-btn-primary:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+  box-shadow: 0 10px 24px rgba(2, 132, 199, 0.35);
+  transform: translateY(-1px);
+}
+
+.majara-auth-switch {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--majara-border);
+}
+
+.majara-switch-link {
+  background: none;
+  border: none;
+  color: var(--majara-cyan);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* Dashboard View */
+.majara-hero-banner {
+  background: linear-gradient(135deg, rgba(14, 22, 38, 0.8) 0%, rgba(9, 13, 22, 0.9) 100%);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-lg);
+  padding: 36px 40px;
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.majara-hero-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.majara-hero-subtitle {
+  font-size: 14px;
+  color: var(--majara-text-muted);
+  margin: 0;
+}
+
+.majara-courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.majara-course-card {
+  background: var(--majara-surface);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-md);
+  overflow: hidden;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.majara-course-card:hover {
+  border-color: var(--majara-border-focus);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+.majara-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+
+.majara-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.majara-course-card:hover .majara-card-img {
+  transform: scale(1.04);
+}
+
+.majara-card-content {
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.majara-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.majara-card-desc {
+  font-size: 13px;
+  color: var(--majara-text-muted);
+  line-height: 1.6;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.majara-progress-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.majara-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--majara-cyan) 0%, var(--majara-emerald) 100%);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.majara-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--majara-text-muted);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* =============================================================================
+   CINEMA CLASSROOM & CUSTOM MAJARA VIDEO PLAYER
+   ============================================================================= */
+
+.majara-classroom-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .majara-classroom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cinema Stage */
+.majara-cinema-container {
+  background: #000;
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-lg);
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  position: relative;
+}
+
+.majara-video-frame-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+
+.majara-video-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Branding Concealment & Pop-out Shields */
+.majara-conceal-shield-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(180deg, rgba(3, 4, 7, 0.95) 0%, rgba(3, 4, 7, 0) 100%);
+  pointer-events: none;
+  z-index: 15;
+}
+
+.majara-popout-blocker {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 72px;
+  height: 56px;
+  background: transparent;
+  z-index: 25;
+  cursor: default;
+}
+
+.majara-yt-corner-blocker {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 110px;
+  height: 48px;
+  background: transparent;
+  z-index: 25;
+  cursor: default;
+}
+
+/* Dynamic Forensic Watermark Layer (Tamper-Evident Anti-Piracy) */
+.majara-forensic-watermark {
+  position: absolute;
+  pointer-events: none;
+  z-index: 45;
+  color: rgba(255, 255, 255, 0.32);
+  font-family: var(--majara-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.22);
+  padding: 4px 8px;
+  border-radius: 4px;
+  backdrop-filter: blur(2px);
+  transition: top 2.2s cubic-bezier(0.16, 1, 0.3, 1), left 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+/* Player Custom Control Bar */
+.majara-player-controls {
+  background: rgba(10, 13, 20, 0.92);
+  border-top: 1px solid var(--majara-border);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.majara-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.majara-ctrl-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.majara-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--majara-cyan);
+}
+
+.majara-ctrl-btn.active {
+  color: var(--majara-emerald);
+}
+
+.majara-time-display {
+  font-family: var(--majara-font-mono);
+  font-size: 12px;
+  color: var(--majara-text-muted);
+}
+
+/* Classroom Interactive Sidebar */
+.majara-curriculum-panel {
+  background: var(--majara-surface);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 820px;
+}
+
+.majara-panel-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--majara-border);
+  background: rgba(7, 9, 15, 0.6);
+}
+
+.majara-panel-header-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.majara-lessons-scroll {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 0;
+}
+
+.majara-module-header {
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--majara-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-top: 1px solid var(--majara-border);
+  border-bottom: 1px solid var(--majara-border);
+}
+
+.majara-module-header:first-child {
+  border-top: none;
+}
+
+.majara-lesson-item {
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.majara-lesson-item:hover {
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.majara-lesson-item.is-active {
+  background: rgba(56, 189, 248, 0.12);
+  border-inline-start: 3px solid var(--majara-cyan);
+}
+
+.majara-lesson-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.majara-check-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: transparent;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.majara-check-indicator.is-completed {
+  background: var(--majara-emerald);
+  border-color: var(--majara-emerald);
+  color: #fff;
+  box-shadow: 0 0 10px var(--majara-emerald-glow);
+}
+
+.majara-lesson-item-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--majara-text);
+  line-height: 1.4;
+}
+
+.majara-lesson-item.is-active .majara-lesson-item-title {
+  color: #fff;
+}
+
+.majara-lesson-item-dur {
+  font-family: var(--majara-font-mono);
+  font-size: 11px;
+  color: var(--majara-text-muted);
+}
+
+/* Lesson Content Area (Notes, Resources) */
+.majara-lesson-details-card {
+  background: var(--majara-surface);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-lg);
+  padding: 28px;
+  margin-top: 24px;
+}
+
+.majara-details-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--majara-border);
+  flex-wrap: wrap;
+}
+
+.majara-lesson-headline {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+  color: #fff;
+}
+
+.majara-complete-btn {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--majara-emerald);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: var(--majara-radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.majara-complete-btn:hover {
+  background: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 12px var(--majara-emerald-glow);
+}
+
+.majara-complete-btn.is-done {
+  background: var(--majara-emerald);
+  color: #fff;
+}
+
+.majara-tabs-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--majara-border);
+}
+
+.majara-tab-link {
+  background: none;
+  border: none;
+  color: var(--majara-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 14px 12px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.majara-tab-link.active {
+  color: var(--majara-cyan);
+  border-bottom-color: var(--majara-cyan);
+}
+
+.majara-tab-pane {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #cbd5e1;
+}
+
+.majara-tab-pane.hidden {
+  display: none;
+}
+
+/* Resources List */
+.majara-resources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.majara-resource-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--majara-border);
+  border-radius: var(--majara-radius-sm);
+  text-decoration: none;
+  color: var(--majara-text);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: all 0.18s ease;
+}
+
+.majara-resource-item:hover {
+  border-color: var(--majara-cyan);
+  background: rgba(56, 189, 248, 0.05);
+  color: #fff;
+}
+
+/* Helpers */
+.hidden {
+  display: none !important;
+}
+
+.text-cyan {
+  color: var(--majara-cyan) !important;
+}
+
+.text-emerald {
+  color: var(--majara-emerald) !important;
+}
+
+.text-muted {
+  color: var(--majara-text-muted) !important;
+}

@@ -140,6 +140,13 @@
         <span class="nav-label"><strong>Promo Codes</strong><small>Campaigns &amp; Affiliates</small></span>
       </button>
 
+      <button class="nav-item" type="button" data-dashboard-nav="majara-academy">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </span>
+        <span class="nav-label"><strong>Majara Academy</strong><small>Courses &amp; Students</small></span>
+      </button>
+
       <button class="nav-item" type="button" data-dashboard-nav="media">
         <span class="nav-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H10l2 2h5.5A2.5 2.5 0 0 1 20 7.5v10a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 9h16"/></svg>
@@ -608,6 +615,142 @@
     </section>
 
     <!-- ================================================================= -->
+    <!-- TAB: MAJARA ACADEMY & COURSES COMMAND (أكاديمية مجرة والكورسات)   -->
+    <!-- ================================================================= -->
+    <section class="admin-view dashboard-view" id="majara-academy-view" data-dashboard-panel="majara-academy" aria-labelledby="majara-heading" hidden>
+      <div class="view-intro">
+        <div>
+          <span class="eyebrow">MAJARA ACADEMY / PORTAL COMMAND (majara.7z-magic.com)</span>
+          <h2 id="majara-heading">Majara Academy &amp; Student Management</h2>
+          <p>Full control over masterclasses, modular curriculum lessons, and enrolled students with zero third-party costs.</p>
+        </div>
+        <div class="engine-actions-row">
+          <button class="button button-primary" type="button" id="majara-add-course-btn">
+            + Add New Course
+          </button>
+          <button class="button button-secondary" type="button" id="majara-add-student-btn">
+            + Enroll / Add Student
+          </button>
+          <button class="button button-secondary" type="button" id="majara-refresh-btn">
+            Refresh Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-Navigation Pills -->
+      <div class="engine-subnav" role="tablist">
+        <button class="button button-secondary active" type="button" id="majara-sub-courses-tab">
+          Courses Manager (<span id="majara-courses-count">0</span>)
+        </button>
+        <button class="button button-secondary" type="button" id="majara-sub-lessons-tab">
+          Curriculum &amp; Lessons Builder
+        </button>
+        <button class="button button-secondary" type="button" id="majara-sub-students-tab">
+          Students &amp; Enrollments (<span id="majara-students-count">0</span>)
+        </button>
+      </div>
+
+      <!-- 1. COURSES MANAGER SECTION -->
+      <div class="engine-panel engine-table-panel mt-22" id="majara-courses-subpanel">
+        <div class="engine-panel-head">
+          <div>
+            <span class="eyebrow">ACADEMY / COURSES MANAGER</span>
+            <h3>Masterclass Catalog</h3>
+            <p class="panel-subtitle-muted">Manage published courses, pricing, Drive repository links, and marketplace associations.</p>
+          </div>
+          <span class="engine-live"><i></i> LIVE CATALOG</span>
+        </div>
+        <div class="engine-table-wrap">
+          <table id="majara-courses-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Slug</th>
+                <th>Price (USD)</th>
+                <th>Lessons</th>
+                <th>Drive Vault</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="majara-courses-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. CURRICULUM & LESSONS BUILDER SECTION -->
+      <div class="engine-panel engine-table-panel mt-22 hidden" id="majara-lessons-subpanel" hidden>
+        <div class="engine-panel-head">
+          <div>
+            <span class="eyebrow">CURRICULUM BUILDER / LESSONS &amp; MODULES</span>
+            <h3 id="majara-current-course-title">Curriculum Structure</h3>
+            <p class="panel-subtitle-muted">Select a course to build modules, add video sources (YouTube/Drive auto ID extract), and attach downloadable resources.</p>
+          </div>
+          <div class="engine-actions-row">
+            <select id="majara-lessons-course-select" class="form-input">
+              <!-- Courses populated dynamically -->
+            </select>
+            <button class="button button-primary" type="button" id="majara-add-lesson-btn">
+              + Add Lesson
+            </button>
+          </div>
+        </div>
+        <div class="engine-table-wrap">
+          <table id="majara-lessons-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Module</th>
+                <th>Lesson Title</th>
+                <th>Source</th>
+                <th>Video ID</th>
+                <th>Duration</th>
+                <th>Preview</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="majara-lessons-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. STUDENTS & ENROLLMENTS MANAGER SECTION -->
+      <div class="engine-panel engine-table-panel mt-22 hidden" id="majara-students-subpanel" hidden>
+        <div class="engine-panel-head">
+          <div>
+            <span class="eyebrow">STUDENTS &amp; ACCESS CONTROL / ZERO-THIRD-PARTY</span>
+            <h3>Student Roster &amp; Single-Session Enrollments</h3>
+            <p class="panel-subtitle-muted">Manage active student credentials, one-click email copy for Google Drive sharing, and course access status.</p>
+          </div>
+          <div class="engine-actions-row">
+            <input type="text" id="majara-student-search" placeholder="Search student by name, email, phone..." class="form-input">
+          </div>
+        </div>
+        <div class="engine-table-wrap">
+          <table id="majara-students-table">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Enrolled Masterclasses</th>
+                <th>Session Lock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="majara-students-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
     <!-- TAB 4: CLIENTS & VAULT FILES (إدارة ملفات وحسابات العملاء)         -->
     <!-- ================================================================= -->
     <section class="admin-view dashboard-view" id="clients-view" data-dashboard-panel="media" aria-labelledby="files-heading" hidden>
@@ -1037,9 +1180,138 @@
   </div>
 </dialog>
 
+<!-- Majara Academy: Course Dialog -->
+<dialog id="majara-course-dialog" class="course-edit-dialog">
+  <form id="majara-course-form">
+    <div class="course-edit-head">
+      <span class="eyebrow">MAJARA ACADEMY / MASTERCLASS CONFIG</span>
+      <button type="button" class="course-edit-close" id="majara-course-cancel" aria-label="Close">×</button>
+    </div>
+    <h2 id="majara-course-dialog-title">Create / Edit Masterclass</h2>
+    <input type="hidden" id="majara-course-id">
+    
+    <div class="course-edit-fields">
+      <div class="form-row">
+        <label>Title (English)<input type="text" id="majara-course-title-en" required placeholder="Cinematic AI Filmmaking"></label>
+        <label>Title (Arabic)<input type="text" id="majara-course-title-ar" required placeholder="ماستر كلاس صناعة الأفلام"></label>
+      </div>
+      <div class="form-row">
+        <label>URL Slug<input type="text" id="majara-course-slug" placeholder="cinematic-film"></label>
+        <label>Price (USD)<input type="number" id="majara-course-price" step="1" min="0" value="250"></label>
+      </div>
+      <div class="form-row">
+        <label>Google Drive Vault URL<input type="url" id="majara-course-drive" placeholder="https://drive.google.com/drive/folders/..."></label>
+        <label>Cover Poster Image URL<input type="text" id="majara-course-cover" value="/media/posters/film/1.webp"></label>
+      </div>
+      <label>Arabic Description<textarea id="majara-course-desc-ar" rows="2" placeholder="وصف الدورة بالعربية..."></textarea></label>
+      <label>English Description<textarea id="majara-course-desc-en" rows="2" placeholder="English course summary..."></textarea></label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="majara-course-published" checked>
+        <span>Published &amp; Visible in Academy Portal</span>
+      </label>
+    </div>
+
+    <div class="course-edit-actions">
+      <button type="button" class="button button-secondary" id="majara-course-close-btn">Cancel</button>
+      <button type="submit" class="button button-primary">Save Masterclass</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Majara Academy: Lesson Dialog -->
+<dialog id="majara-lesson-dialog" class="course-edit-dialog">
+  <form id="majara-lesson-form">
+    <div class="course-edit-head">
+      <span class="eyebrow">CURRICULUM BUILDER / LESSON</span>
+      <button type="button" class="course-edit-close" id="majara-lesson-cancel" aria-label="Close">×</button>
+    </div>
+    <h2 id="majara-lesson-dialog-title">Add / Edit Lesson</h2>
+    <input type="hidden" id="majara-lesson-id">
+    <input type="hidden" id="majara-lesson-course-id">
+
+    <div class="course-edit-fields">
+      <div class="form-row">
+        <label>Module Order #<input type="number" id="majara-lesson-mod-order" min="1" value="1"></label>
+        <label>Module Title<input type="text" id="majara-lesson-mod-title" required placeholder="الوحدة 1: التأسيس والرؤية"></label>
+      </div>
+      <div class="form-row">
+        <label>Lesson Order #<input type="number" id="majara-lesson-order" min="1" value="1"></label>
+        <label>Duration Label<input type="text" id="majara-lesson-duration" placeholder="15:30"></label>
+      </div>
+      <div class="form-row">
+        <label>Lesson Title (English)<input type="text" id="majara-lesson-title-en" required placeholder="Cinematic Scene Lighting"></label>
+        <label>Lesson Title (Arabic)<input type="text" id="majara-lesson-title-ar" required placeholder="الإضاءة والمشهد السينمائي"></label>
+      </div>
+      <div class="form-row">
+        <label>Video Host
+          <select id="majara-lesson-source-type">
+            <option value="youtube">YouTube Unlisted / Private</option>
+            <option value="gdrive">Google Drive Video</option>
+          </select>
+        </label>
+        <label>Video URL or ID (Auto-extracted)
+          <input type="text" id="majara-lesson-source-id" required placeholder="Paste YouTube link or Drive URL">
+          <small id="majara-lesson-source-helper" class="text-muted d-block mt-1"></small>
+        </label>
+      </div>
+      <label>Lesson Summary &amp; Notes<textarea id="majara-lesson-summary" rows="3" placeholder="Detailed notes for students to read..."></textarea></label>
+      <label>Resources &amp; Attachments (JSON format)<textarea id="majara-lesson-resources" rows="2" placeholder='[{"name": "File Name", "url": "https://..."}]'></textarea></label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="majara-lesson-preview">
+        <span>Free Preview Lesson (Unauthenticated Students Can Watch)</span>
+      </label>
+    </div>
+
+    <div class="course-edit-actions">
+      <button type="button" class="button button-secondary" id="majara-lesson-close-btn">Cancel</button>
+      <button type="submit" class="button button-primary">Save Lesson</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Majara Academy: Student Dialog -->
+<dialog id="majara-student-dialog" class="course-edit-dialog">
+  <form id="majara-student-form">
+    <div class="course-edit-head">
+      <span class="eyebrow">STUDENT ACCESS / ENROLLMENT</span>
+      <button type="button" class="course-edit-close" id="majara-student-cancel" aria-label="Close">×</button>
+    </div>
+    <h2 id="majara-student-dialog-title">Enroll / Edit Student</h2>
+    <input type="hidden" id="majara-student-id">
+
+    <div class="course-edit-fields">
+      <div class="form-row">
+        <label>Full Name<input type="text" id="majara-student-name" required placeholder="Student Name"></label>
+        <label>Email Address<input type="email" id="majara-student-email" required placeholder="student@example.com"></label>
+      </div>
+      <div class="form-row">
+        <label>Phone / WhatsApp<input type="text" id="majara-student-phone" placeholder="+96279..."></label>
+        <label>Enroll in Course
+          <select id="majara-student-course-select">
+            <!-- Populated dynamically -->
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Initial Password (Optional)<input type="password" id="majara-student-password" placeholder="Leave blank to let student set it"></label>
+      </div>
+      <label class="checkbox-label">
+        <input type="checkbox" id="majara-student-activation" checked>
+        <span>Send Activation &amp; Portal Login Email Immediately</span>
+      </label>
+    </div>
+
+    <div class="course-edit-actions">
+      <button type="button" class="button button-secondary" id="majara-student-close-btn">Cancel</button>
+      <button type="submit" class="button button-primary">Save &amp; Enroll</button>
+    </div>
+  </form>
+</dialog>
+
 <script src="/admin/admin.js?v=20261116-7z-dna-v5"></script>
 <script src="/admin/course-engine.js?v=20261116-7z-dna-v5"></script>
 <script src="/admin/dashboard-v2.js?v=20261116-7z-dna-v5"></script>
+<script src="/admin/majara-engine.js?v=20261128-majara-v1"></script>
 <script src="/admin/private-file-upload.bundle.js?v=20261116-7z-dna-v5"></script>
 <script src="/admin/native-clients.js?v=20261116-7z-dna-v5"></script>
 <script src="/admin/admin-files.js?v=20261116-7z-dna-v5"></script>

@@ -15,7 +15,23 @@ import {
   saveDiscountCodeDual,
   saveAffiliateDual,
   sendPaymentApprovedEmail,
-  sendPaymentRejectedEmail
+  sendPaymentRejectedEmail,
+  getMajaraCourses,
+  getMajaraCourseByIdOrSlug,
+  saveMajaraCourse,
+  deleteMajaraCourse,
+  getMajaraLessons,
+  getMajaraLesson,
+  saveMajaraLesson,
+  deleteMajaraLesson,
+  getMajaraStudents,
+  getMajaraStudentById,
+  getMajaraStudentByEmail,
+  saveMajaraStudent,
+  deleteMajaraStudent,
+  setMajaraEnrollment,
+  deleteMajaraEnrollment,
+  enrollStudentByPurchase
 } from "../academy-engine.mjs";
 import { get } from "@vercel/blob";
 import {
@@ -1090,11 +1106,122 @@ export default async function handler(req, res) {
         const accountingData = await getAccounting(sql);
         return send(res, 200, accountingData);
       }
+
+      if (req.query?.action === "majara-data" || req.query?.view === "majara-data") {
+        const [courses, students] = await Promise.all([
+          getMajaraCourses(),
+          getMajaraStudents()
+        ]);
+        return send(res, 200, { ok: true, courses: courses || [], students: students || [] });
+      }
+
+      if (req.query?.action === "majara-lessons" || req.query?.view === "majara-lessons") {
+        const courseId = text(req.query.courseId || req.query.id, 64);
+        const lessons = await getMajaraLessons(courseId);
+        return send(res, 200, { ok: true, lessons: lessons || [] });
+      }
+
       const [affiliates, codes] = await Promise.all([getAffiliates(sql), getCodes(sql)]);
       return send(res, 200, { affiliates: affiliates || [], codes: codes || [] });
     }
 
     const body = bodyOf(req);
+
+    // =========================================================================
+    // MAJARA ACADEMY ADMIN POST ACTIONS
+    // =========================================================================
+    if (body.action === "save-majara-course" || body.action === "create-majara-course" || body.action === "update-majara-course") {
+      try {
+        const saved = await saveMajaraCourse(body);
+        return send(res, 200, { ok: true, course: saved });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "delete-majara-course") {
+      try {
+        const result = await deleteMajaraCourse(body.id || body.courseId);
+        return send(res, 200, { ok: true, ...result });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "save-majara-lesson" || body.action === "create-majara-lesson" || body.action === "update-majara-lesson") {
+      try {
+        const saved = await saveMajaraLesson(body);
+        return send(res, 200, { ok: true, lesson: saved });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "delete-majara-lesson") {
+      try {
+        const result = await deleteMajaraLesson(body.id || body.lessonId);
+        return send(res, 200, { ok: true, ...result });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "save-majara-student" || body.action === "create-majara-student" || body.action === "update-majara-student") {
+      try {
+        const saved = await saveMajaraStudent(body);
+        if (body.courseId) {
+          await setMajaraEnrollment(saved.id, body.courseId, "active", "admin_manual");
+        }
+        let activationLink = null;
+        if (body.sendActivation) {
+          const resAct = await enrollStudentByPurchase({
+            fullName: saved.full_name,
+            email: saved.email,
+            phone: saved.phone,
+            courseId: body.courseId || "cinematic-film"
+          });
+          activationLink = resAct?.activationLink;
+        }
+        return send(res, 200, { ok: true, student: saved, activationLink });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "delete-majara-student") {
+      try {
+        const result = await deleteMajaraStudent(body.id || body.studentId);
+        return send(res, 200, { ok: true, ...result });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "toggle-majara-enrollment") {
+      try {
+        const status = body.status === "suspended" ? "suspended" : "active";
+        const enrollment = await setMajaraEnrollment(body.studentId, body.courseId, status, "admin");
+        return send(res, 200, { ok: true, enrollment });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
+
+    if (body.action === "send-student-activation") {
+      try {
+        const student = await getMajaraStudentById(body.studentId || body.id) || await getMajaraStudentByEmail(body.email);
+        if (!student) return send(res, 404, { ok: false, error: "Student not found" });
+        const resAct = await enrollStudentByPurchase({
+          fullName: student.full_name,
+          email: student.email,
+          phone: student.phone,
+          courseId: body.courseId || "cinematic-film"
+        });
+        return send(res, 200, { ok: true, sent: true, activationLink: resAct?.activationLink });
+      } catch (err) {
+        return send(res, 500, { ok: false, error: err.message });
+      }
+    }
 
     if (body.action === "create-affiliate") {
       const name = text(body.name, 120);
@@ -1664,6 +1791,18 @@ export default async function handler(req, res) {
           seatNumber: registration.seat_number || registration.id,
           reference: registration.payment_reference || `7Z-REG-${registration.id}`
         }).catch((err) => console.error("Admin approve email error:", err.message));
+
+        // Auto-enroll in Majara Academy and send student portal login / activation
+        try {
+          await enrollStudentByPurchase({
+            fullName: registration.full_name,
+            email: registration.email,
+            phone: registration.phone || "",
+            courseId: registration.course_id || "cinematic-film"
+          });
+        } catch (enrollErr) {
+          console.warn("[auto-enroll notice]:", enrollErr.message);
+        }
       } else if (status === "REJECTED" && registration.email) {
         await sendPaymentRejectedEmail({
           fullName: registration.full_name,

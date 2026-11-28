@@ -297,6 +297,60 @@
   ],
   "rewrites": [
     {
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "source": "/api/student-portal",
+      "destination": "/api/student-portal"
+    },
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "source": "/media/(.*)",
+      "destination": "/media/$1"
+    },
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "majara.7z-magic.com"
+        }
+      ],
+      "source": "/(.*)",
+      "destination": "/learn/$1"
+    },
+    {
+      "source": "/api/student-portal",
+      "destination": "/api/student-portal"
+    },
+    {
       "source": "/api/academy/:path*",
       "destination": "/api/academy-router"
     },

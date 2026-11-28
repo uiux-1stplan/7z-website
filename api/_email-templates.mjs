@@ -554,3 +554,90 @@ export function buildWaitlistEmailHtml(entry) {
     isRtl: true
   });
 }
+
+export function buildStudentActivationHtml({ fullName, email, activationLink, courseTitle, isRtl = true }) {
+  const bodyHtml = isRtl ? `
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span class="email-badge badge-cyan">MAJARA ACADEMY · تفعيل الحساب</span>
+      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">مرحباً بك في أكاديمية مجرة 🚀</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0;">أهلاً بك <strong>${fullName}</strong>، تم إنشاء حسابك الأكاديمي وتفعيل اشتراكك بنجاح.</p>
+    </div>
+    <div class="email-card">
+      ${courseTitle ? `<div class="info-row"><div class="info-label">الدورة المفعلة:</div><div class="info-val" style="color: #38bdf8;">${courseTitle}</div></div>` : ""}
+      <div class="info-row"><div class="info-label">البريد الإلكتروني:</div><div class="info-val" dir="ltr">${email}</div></div>
+      <div class="info-row" style="border-bottom: none;"><div class="info-label">البوابة التعليمية:</div><div class="info-val" dir="ltr">majara.7z-magic.com</div></div>
+      <div style="text-align: center; margin: 24px 0 10px;">
+        <a href="${activationLink}" class="cta-btn" target="_blank">تفعيل الحساب وتعيين كلمة المرور ←</a>
+      </div>
+      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
+        هذا الرابط مخصص لك وحدك لتفعيل حسابك والبدء في حضور الدروس.
+      </p>
+    </div>
+  ` : `
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span class="email-badge badge-cyan">MAJARA ACADEMY · ACCOUNT ACTIVATION</span>
+      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">Welcome to Majara Academy 🚀</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0;">Hello <strong>${fullName}</strong>, your student portal account is ready.</p>
+    </div>
+    <div class="email-card">
+      ${courseTitle ? `<div class="info-row"><div class="info-label">Enrolled Course:</div><div class="info-val" style="color: #38bdf8;">${courseTitle}</div></div>` : ""}
+      <div class="info-row"><div class="info-label">Email:</div><div class="info-val" dir="ltr">${email}</div></div>
+      <div class="info-row" style="border-bottom: none;"><div class="info-label">Portal Domain:</div><div class="info-val" dir="ltr">majara.7z-magic.com</div></div>
+      <div style="text-align: center; margin: 24px 0 10px;">
+        <a href="${activationLink}" class="cta-btn" target="_blank">Activate Account & Set Password →</a>
+      </div>
+      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
+        This activation link is exclusively for your account to access your enrolled courses.
+      </p>
+    </div>
+  `;
+  return wrapCinematicEmail({
+    title: isRtl ? `تفعيل حسابك في أكاديمية مجرة | 7Z Magic` : `Activate Your Majara Academy Account | 7Z Magic`,
+    preheader: `Welcome to Majara Academy, ${fullName}`,
+    bodyHtml,
+    isRtl
+  });
+}
+
+export function buildStudentPasswordResetHtml({ fullName, email, resetLink, isRtl = true }) {
+  const bodyHtml = isRtl ? `
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span class="email-badge badge-amber">استعادة كلمة المرور</span>
+      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">إعادة تعيين كلمة مرور بوابة مجرة</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0;">مرحباً <strong>${fullName}</strong>، تلقينا طلباً لاستعادة كلمة المرور الخاصة بحسابك الأكاديمي.</p>
+    </div>
+    <div class="email-card">
+      <div class="info-row"><div class="info-label">البريد الإلكتروني:</div><div class="info-val" dir="ltr">${email}</div></div>
+      <div class="info-row" style="border-bottom: none;"><div class="info-label">الصلاحية:</div><div class="info-val">صالحة لمدة ساعتين</div></div>
+      <div style="text-align: center; margin: 24px 0 10px;">
+        <a href="${resetLink}" class="cta-btn" target="_blank">إعادة تعيين كلمة المرور ←</a>
+      </div>
+      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
+        إذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد بأمان.
+      </p>
+    </div>
+  ` : `
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span class="email-badge badge-amber">PASSWORD RESET</span>
+      <h1 style="color: #ffffff; font-size: 22px; margin: 12px 0 6px; font-weight: 700;">Reset Your Majara Portal Password</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin: 0;">Hello <strong>${fullName}</strong>, we received a request to reset your password.</p>
+    </div>
+    <div class="email-card">
+      <div class="info-row"><div class="info-label">Email:</div><div class="info-val" dir="ltr">${email}</div></div>
+      <div class="info-row" style="border-bottom: none;"><div class="info-label">Validity:</div><div class="info-val">Valid for 2 hours</div></div>
+      <div style="text-align: center; margin: 24px 0 10px;">
+        <a href="${resetLink}" class="cta-btn" target="_blank">Reset Password Now →</a>
+      </div>
+      <p style="color: #94a3b8; font-size: 12px; margin: 12px 0 0; text-align: center; line-height: 1.6;">
+        If you did not request a password reset, you can safely ignore this email.
+      </p>
+    </div>
+  `;
+  return wrapCinematicEmail({
+    title: isRtl ? `استعادة كلمة مرور أكاديمية مجرة | 7Z Magic` : `Reset Password | Majara Academy`,
+    preheader: `Password reset request for ${email}`,
+    bodyHtml,
+    isRtl
+  });
+}
+
