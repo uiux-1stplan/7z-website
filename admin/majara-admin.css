@@ -1,0 +1,454 @@
+/**
+ * 7Z MAGIC — MAJARA ACADEMY ADMIN STYLESHEET
+ * Luxury Glassmorphic Design, Light & Dark Mode, Responsive CSS Grid
+ * Strict CSP Compliant (Zero inline styles)
+ */
+
+:root {
+  --majara-admin-bg: #0c1119;
+  --majara-admin-surface: #111823;
+  --majara-admin-surface-subtle: rgba(17, 24, 35, 0.6);
+  --majara-admin-border: #1f2a38;
+  --majara-admin-border-focus: #38bdf8;
+  --majara-admin-text: #f4f7fa;
+  --majara-admin-text-muted: #8e9bae;
+  --majara-admin-cyan: #38bdf8;
+  --majara-admin-cyan-glow: rgba(56, 189, 248, 0.2);
+  --majara-admin-emerald: #10b981;
+  --majara-admin-emerald-glow: rgba(16, 185, 129, 0.2);
+  --majara-admin-amber: #fbbf24;
+  --majara-admin-backdrop: rgba(3, 5, 8, 0.82);
+  --majara-admin-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme="light"] {
+  --majara-admin-bg: #ffffff;
+  --majara-admin-surface: #f8fafc;
+  --majara-admin-surface-subtle: #f1f5f9;
+  --majara-admin-border: #cbd5e1;
+  --majara-admin-border-focus: #0284c7;
+  --majara-admin-text: #0f172a;
+  --majara-admin-text-muted: #64748b;
+  --majara-admin-cyan: #0284c7;
+  --majara-admin-cyan-glow: rgba(2, 132, 199, 0.15);
+  --majara-admin-emerald: #059669;
+  --majara-admin-emerald-glow: rgba(5, 150, 105, 0.15);
+  --majara-admin-amber: #d97706;
+  --majara-admin-backdrop: rgba(15, 23, 42, 0.65);
+  --majara-admin-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+
+/* =============================================================================
+   1. DIALOGS & MODALS (Add/Edit Course, Add/Edit Lesson, Enroll Student)
+   ============================================================================= */
+
+.majara-admin-dialog,
+#majara-course-dialog,
+#majara-lesson-dialog,
+#majara-student-dialog {
+  max-width: 720px;
+  width: 92vw;
+  background: var(--majara-admin-bg);
+  color: var(--majara-admin-text);
+  border: 1px solid var(--majara-admin-border);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--majara-admin-shadow), 0 0 40px var(--majara-admin-cyan-glow);
+  box-sizing: border-box;
+  margin: auto;
+}
+
+.majara-admin-dialog::backdrop,
+#majara-course-dialog::backdrop,
+#majara-lesson-dialog::backdrop,
+#majara-student-dialog::backdrop {
+  background: var(--majara-admin-backdrop);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Modal Header Bar */
+.majara-admin-dialog .course-edit-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--majara-admin-border);
+}
+
+.majara-admin-dialog .course-edit-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--majara-admin-surface);
+  border: 1px solid var(--majara-admin-border);
+  color: var(--majara-admin-text-muted);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.majara-admin-dialog .course-edit-close:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.35);
+  transform: rotate(90deg);
+}
+
+/* Modal Titles */
+#majara-course-dialog-title,
+#majara-lesson-dialog-title,
+#majara-student-dialog-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 4px 0 0 0;
+  color: var(--majara-admin-text);
+  letter-spacing: -0.3px;
+}
+
+/* Form Fields Grid Layout */
+.majara-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 640px) {
+  .majara-modal-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.majara-field-full {
+  grid-column: 1 / -1;
+}
+
+.majara-form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--majara-admin-text);
+}
+
+.majara-form-label small {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--majara-admin-text-muted);
+}
+
+/* Inputs, Selects, and Textareas */
+.majara-form-control,
+.majara-admin-dialog input[type="text"],
+.majara-admin-dialog input[type="email"],
+.majara-admin-dialog input[type="url"],
+.majara-admin-dialog input[type="password"],
+.majara-admin-dialog input[type="number"],
+.majara-admin-dialog select,
+.majara-admin-dialog textarea {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px;
+  background: var(--majara-admin-surface);
+  border: 1px solid var(--majara-admin-border);
+  border-radius: 10px;
+  color: var(--majara-admin-text);
+  font-size: 13.5px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.majara-admin-dialog textarea {
+  height: auto;
+  min-height: 84px;
+  padding: 10px 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.majara-admin-dialog input:focus,
+.majara-admin-dialog select:focus,
+.majara-admin-dialog textarea:focus,
+#majara-lessons-course-select:focus,
+#majara-student-search:focus {
+  outline: none;
+  border-color: var(--majara-admin-border-focus);
+  box-shadow: 0 0 0 3px var(--majara-admin-cyan-glow);
+}
+
+/* Checkbox Label */
+.majara-checkbox-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--majara-admin-surface-subtle);
+  border: 1px solid var(--majara-admin-border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--majara-admin-text);
+}
+
+.majara-checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--majara-admin-cyan);
+  cursor: pointer;
+  margin: 0;
+}
+
+/* Modal Actions Footer */
+.majara-admin-dialog .course-edit-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--majara-admin-border);
+}
+
+/* =============================================================================
+   2. INTUITIVE RESOURCE BUILDER (Zero-JSON Visual Attachments)
+   ============================================================================= */
+
+.majara-resource-builder-box {
+  grid-column: 1 / -1;
+  background: var(--majara-admin-surface-subtle);
+  border: 1px dashed var(--majara-admin-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.majara-res-inputs-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+@media (max-width: 600px) {
+  .majara-res-inputs-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.majara-res-btn-add {
+  height: 42px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+.majara-res-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.majara-res-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  color: var(--majara-admin-cyan);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.majara-res-pill-title {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.majara-res-del-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.majara-res-del-btn:hover {
+  opacity: 1;
+  color: #ef4444;
+}
+
+/* =============================================================================
+   3. CURRICULUM COURSE SELECTOR DROPDOWN & HEADER CONTROLS
+   ============================================================================= */
+
+#majara-lessons-course-select {
+  min-width: 290px;
+  height: 42px;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--majara-admin-surface);
+  border: 1px solid var(--majara-admin-border);
+  color: var(--majara-admin-text);
+  cursor: pointer;
+}
+
+#majara-student-search {
+  min-width: 280px;
+  height: 40px;
+  border-radius: 10px;
+  padding: 0 14px;
+  background: var(--majara-admin-surface);
+  border: 1px solid var(--majara-admin-border);
+  color: var(--majara-admin-text);
+  font-size: 13px;
+}
+
+/* =============================================================================
+   4. SUB-TABS NAVIGATION (Real Section Toggle & Live Counters)
+   ============================================================================= */
+
+.majara-subnav-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--majara-admin-border);
+  flex-wrap: wrap;
+}
+
+.majara-subnav-btn {
+  background: var(--majara-admin-surface);
+  border: 1px solid var(--majara-admin-border);
+  color: var(--majara-admin-text-muted);
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.majara-subnav-btn:hover {
+  color: var(--majara-admin-text);
+  border-color: var(--majara-admin-cyan);
+}
+
+.majara-subnav-btn.active,
+.majara-subnav-btn.is-active {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: var(--majara-admin-cyan);
+  color: var(--majara-admin-cyan);
+  box-shadow: 0 0 14px var(--majara-admin-cyan-glow);
+}
+
+.majara-counter-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.majara-subnav-btn.active .majara-counter-badge {
+  background: var(--majara-admin-cyan);
+  color: #fff;
+}
+
+/* =============================================================================
+   5. ELEGANT EMPTY STATES
+   ============================================================================= */
+
+.majara-empty-state-card {
+  text-align: center;
+  padding: 56px 28px;
+  background: var(--majara-admin-surface);
+  border: 1px dashed var(--majara-admin-border);
+  border-radius: 16px;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.majara-empty-state-icon {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.majara-empty-state-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--majara-admin-text);
+  margin: 0;
+}
+
+.majara-empty-state-desc {
+  font-size: 13.5px;
+  color: var(--majara-admin-text-muted);
+  max-width: 440px;
+  line-height: 1.6;
+  margin: 0 0 8px 0;
+}
+
+/* Notification Toast */
+.admin-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  background: var(--majara-admin-surface);
+  border: 1px solid var(--majara-admin-cyan);
+  color: var(--majara-admin-text);
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-error {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.toast-success {
+  border-color: var(--majara-admin-emerald);
+  color: var(--majara-admin-emerald);
+}
+
+.toast-fadeout {
+  opacity: 0;
+  transform: translateY(10px);
+}

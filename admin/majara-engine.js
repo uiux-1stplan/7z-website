@@ -19,6 +19,50 @@
 
   const API_URL = "/api/admin/course-engine";
 
+  let activeLessonResources = [];
+
+  function renderLessonResources() {
+    const container = $("#majara-res-tags-container");
+    const hiddenInput = $("#majara-lesson-resources");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (!activeLessonResources || activeLessonResources.length === 0) {
+      const note = document.createElement("small");
+      note.className = "text-muted";
+      note.textContent = "No attachments added yet. Enter Title & URL above and click + Add.";
+      container.appendChild(note);
+    } else {
+      activeLessonResources.forEach((res, idx) => {
+        const pill = document.createElement("div");
+        pill.className = "majara-res-pill";
+
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "majara-res-pill-title";
+        titleSpan.textContent = res.name || "Attachment";
+        titleSpan.title = `${res.name} (${res.url})`;
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "majara-res-del-btn";
+        delBtn.textContent = "×";
+        delBtn.setAttribute("aria-label", `Remove ${res.name || "resource"}`);
+        delBtn.addEventListener("click", () => {
+          activeLessonResources.splice(idx, 1);
+          renderLessonResources();
+        });
+
+        pill.appendChild(titleSpan);
+        pill.appendChild(delBtn);
+        container.appendChild(pill);
+      });
+    }
+
+    if (hiddenInput) {
+      hiddenInput.value = JSON.stringify(activeLessonResources);
+    }
+  }
+
   // Toast feedback helper
   function notify(message, isError = false) {
     const existing = $("#majara-toast");
@@ -103,13 +147,26 @@
 
   // Load lessons for a specific course
   async function loadLessons(courseId) {
-    if (!courseId) return;
+    if (!courseId) {
+      state.currentCourseId = null;
+      state.lessons = [];
+      const lessonCountEl = $("#majara-lessons-count");
+      if (lessonCountEl) lessonCountEl.textContent = 0;
+      const titleEl = $("#majara-current-course-title");
+      if (titleEl) titleEl.textContent = "Curriculum Structure";
+      renderLessons();
+      return;
+    }
+
     state.currentCourseId = courseId;
     try {
       const res = await fetch(`${API_URL}?action=majara-lessons&courseId=${encodeURIComponent(courseId)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       state.lessons = data.lessons || [];
+
+      const lessonCountEl = $("#majara-lessons-count");
+      if (lessonCountEl) lessonCountEl.textContent = state.lessons.length;
 
       const currentCourse = state.courses.find(c => String(c.id) === String(courseId) || String(c.slug) === String(courseId));
       const titleEl = $("#majara-current-course-title");
@@ -131,7 +188,19 @@
     tbody.innerHTML = "";
 
     if (state.courses.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No courses found. Click "+ Add New Course" to begin.</td></tr>`;
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="majara-empty-state-card">
+              <span class="majara-empty-state-icon">🎬</span>
+              <h4 class="majara-empty-state-title">No Masterclasses Created Yet</h4>
+              <p class="majara-empty-state-desc">Get started by creating your first cinematic masterclass. You can set pricing, Drive repository links, and marketplace associations.</p>
+              <button type="button" class="button button-primary" id="majara-empty-create-course-btn">+ Create First Masterclass</button>
+            </div>
+          </td>
+        </tr>
+      `;
+      $("#majara-empty-create-course-btn")?.addEventListener("click", () => openCourseDialog());
       return;
     }
 
@@ -226,21 +295,43 @@
 
   // Populate course dropdowns
   function populateCourseSelects() {
-    const selects = [$("#majara-lessons-course-select"), $("#majara-student-course-select")];
-    selects.forEach(select => {
-      if (!select) return;
-      const currentVal = select.value;
-      select.innerHTML = "";
+    const lessonCourseSelect = $("#majara-lessons-course-select");
+    const studentCourseSelect = $("#majara-student-course-select");
+
+    if (lessonCourseSelect) {
+      const prevVal = lessonCourseSelect.value || state.currentCourseId;
+      lessonCourseSelect.innerHTML = "";
+
+      const defaultOpt = document.createElement("option");
+      defaultOpt.value = "";
+      defaultOpt.textContent = "-- Select a Masterclass Course --";
+      lessonCourseSelect.appendChild(defaultOpt);
+
       state.courses.forEach(c => {
         const opt = document.createElement("option");
         opt.value = c.id;
         opt.textContent = `${c.title_en || c.title_ar} (${c.slug})`;
-        select.appendChild(opt);
+        lessonCourseSelect.appendChild(opt);
       });
-      if (currentVal && state.courses.some(c => String(c.id) === currentVal)) {
-        select.value = currentVal;
+
+      if (prevVal && state.courses.some(c => String(c.id) === String(prevVal))) {
+        lessonCourseSelect.value = prevVal;
+      } else if (state.courses.length > 0) {
+        lessonCourseSelect.value = state.courses[0].id;
+        state.currentCourseId = state.courses[0].id;
+        loadLessons(state.currentCourseId);
       }
-    });
+    }
+
+    if (studentCourseSelect) {
+      studentCourseSelect.innerHTML = "";
+      state.courses.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = `${c.title_en || c.title_ar} (${c.slug})`;
+        studentCourseSelect.appendChild(opt);
+      });
+    }
   }
 
   // 2. Render Lessons Table
@@ -249,8 +340,35 @@
     if (!tbody) return;
     tbody.innerHTML = "";
 
+    if (!state.currentCourseId) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8">
+            <div class="majara-empty-state-card">
+              <span class="majara-empty-state-icon">📚</span>
+              <h4 class="majara-empty-state-title">No Course Selected</h4>
+              <p class="majara-empty-state-desc">Select a masterclass course from the dropdown above to view or construct its curriculum modules and video lessons.</p>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     if (state.lessons.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No lessons yet for this course. Click "+ Add Lesson" to build your curriculum.</td></tr>`;
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8">
+            <div class="majara-empty-state-card">
+              <span class="majara-empty-state-icon">🎥</span>
+              <h4 class="majara-empty-state-title">Curriculum is Empty</h4>
+              <p class="majara-empty-state-desc">This masterclass does not have any lessons yet. Add your first lesson, paste a YouTube Unlisted or Google Drive video link, and attach resources.</p>
+              <button type="button" class="button button-primary" id="majara-empty-create-lesson-btn">+ Add First Lesson</button>
+            </div>
+          </td>
+        </tr>
+      `;
+      $("#majara-empty-create-lesson-btn")?.addEventListener("click", () => openLessonDialog());
       return;
     }
 
@@ -347,7 +465,19 @@
     }
 
     if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No students matching criteria.</td></tr>`;
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            <div class="majara-empty-state-card">
+              <span class="majara-empty-state-icon">🎓</span>
+              <h4 class="majara-empty-state-title">${filterTerm ? "No Students Matching Search" : "No Enrolled Students Yet"}</h4>
+              <p class="majara-empty-state-desc">${filterTerm ? "Try searching by another name, email address, or phone number." : "Students enrolled via Marketplace will automatically appear here. You can also manually enroll students and grant instant portal access."}</p>
+              ${filterTerm ? "" : '<button type="button" class="button button-primary" id="majara-empty-create-student-btn">+ Enroll First Student</button>'}
+            </div>
+          </td>
+        </tr>
+      `;
+      $("#majara-empty-create-student-btn")?.addEventListener("click", () => openStudentDialog());
       return;
     }
 
@@ -508,8 +638,15 @@
     $("#majara-lesson-source-id").value = lesson?.source_id || "";
     $("#majara-lesson-duration").value = lesson?.duration_label || "15:00";
     $("#majara-lesson-summary").value = lesson?.summary || "";
-    $("#majara-lesson-resources").value = JSON.stringify(lesson?.resources_json || [], null, 2);
     $("#majara-lesson-preview").checked = Boolean(lesson?.is_free_preview);
+
+    // Initialize visual zero-JSON resource builder
+    activeLessonResources = Array.isArray(lesson?.resources_json) ? [...lesson.resources_json] : [];
+    renderLessonResources();
+    const resNameInput = $("#majara-res-name-input");
+    const resUrlInput = $("#majara-res-url-input");
+    if (resNameInput) resNameInput.value = "";
+    if (resUrlInput) resUrlInput.value = "";
 
     const helperText = $("#majara-lesson-source-helper");
     if (helperText) helperText.textContent = lesson?.source_id ? `Source ID: ${lesson.source_id}` : "";
@@ -546,6 +683,8 @@
       if (!item.btn || !item.panel) return;
       const isTarget = k === tabName;
       item.btn.classList.toggle("active", isTarget);
+      item.btn.classList.toggle("is-active", isTarget);
+      item.btn.setAttribute("aria-selected", isTarget ? "true" : "false");
       item.panel.hidden = !isTarget;
       item.panel.classList.toggle("hidden", !isTarget);
     });
@@ -566,7 +705,12 @@
 
     // 3. Lessons course selector
     $("#majara-lessons-course-select")?.addEventListener("change", (e) => {
-      loadLessons(e.target.value);
+      const val = e.target.value;
+      if (val) {
+        loadLessons(val);
+      } else {
+        loadLessons(null);
+      }
     });
 
     // 4. Student search input
@@ -574,7 +718,25 @@
       renderStudents(e.target.value);
     });
 
-    // 5. Live video source extractor on input
+    // 5. Visual Resource Builder + Add button
+    $("#majara-res-add-btn")?.addEventListener("click", () => {
+      const nameInput = $("#majara-res-name-input");
+      const urlInput = $("#majara-res-url-input");
+      const name = (nameInput?.value || "").trim();
+      const url = (urlInput?.value || "").trim();
+
+      if (!name || !url) {
+        notify("Please provide both resource title and URL", true);
+        return;
+      }
+
+      activeLessonResources.push({ name, url });
+      if (nameInput) nameInput.value = "";
+      if (urlInput) urlInput.value = "";
+      renderLessonResources();
+    });
+
+    // 6. Live video source extractor on input
     $("#majara-lesson-source-id")?.addEventListener("input", (e) => {
       const prefType = $("#majara-lesson-source-type")?.value || null;
       const meta = extractVideoMeta(e.target.value, prefType);
@@ -584,7 +746,7 @@
       }
     });
 
-    // 6. Course Form Submission
+    // 7. Course Form Submission
     $("#majara-course-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const payload = {
@@ -616,15 +778,14 @@
       $("#majara-course-dialog")?.close();
     });
 
-    // 7. Lesson Form Submission
+    // 8. Lesson Form Submission
     $("#majara-lesson-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       let resJson = [];
       try {
         resJson = JSON.parse($("#majara-lesson-resources").value || "[]");
       } catch {
-        notify("Invalid resources JSON format", true);
-        return;
+        resJson = activeLessonResources || [];
       }
 
       const payload = {
@@ -660,7 +821,7 @@
       $("#majara-lesson-dialog")?.close();
     });
 
-    // 8. Student Form Submission
+    // 9. Student Form Submission
     $("#majara-student-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const payload = {
