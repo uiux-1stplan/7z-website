@@ -223,13 +223,6 @@
       p19_title: "TikTok Monetized Accounts",
       p19_desc:
         "TikTok Creator Fund & Series enabled aged accounts. Full monetization activated — ready to publish and earn immediately with an established audience base.",
-      p20_title: "Mass Content Distribution Network",
-      p20_desc:
-        "Blast your content across 500 Facebook + 500 Instagram + 500 TikTok accounts simultaneously. Maximum organic reach, zero bottlenecks — 1,500 simultaneous posts in a single execution.",
-      p20_f1: "1,500 Simultaneous Posts",
-      p20_f2: "Maximum Organic Reach",
-      p20_f3: "Zero Bottlenecks",
-      p20_f4: "Custom Scheduling",
       badge_waitlist: "Coming Soon · VIP Early Access",
       badge_waitlist_short: "Coming Soon · Waitlist",
       badge_available: "Available Now",
@@ -440,13 +433,6 @@
       p19_title: "حسابات تيكتوك مفعّلة صندوق المبدعين",
       p19_desc:
         "حسابات تيكتوك مؤهلة لبرنامج مكافآت المبدعين (Creator Rewards Program) وسلاسل الفيديوهات المدفوعة. جاهزة لتحقيق دخل فوري مع قاعدة متابعين نشطة.",
-      p20_title: "شبكة النشر والتسويق الفيروسي الشامل (1,500 حساب)",
-      p20_desc:
-        "انشر محتواك وحملتك الترويجية في نفس اللحظة عبر 500 حساب فيسبوك + 500 حساب إنستغرام + 500 حساب تيكتوك. حقق أعلى وصول طبيعي وانتشار فيروسي بدون قيود.",
-      p20_f1: "1,500 منشور متزامن",
-      p20_f2: "وصول فيروسي هائل",
-      p20_f3: "بدون أي حظر أو قيود",
-      p20_f4: "جدولة زمنية مخصصة",
       badge_waitlist: "قريباً · أولوية الحجز لعملاء VIP",
       badge_waitlist_short: "قريباً · حجز مسبق",
       badge_available: "متاح للبدء الفوري",
