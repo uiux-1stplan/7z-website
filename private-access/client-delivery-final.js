@@ -470,7 +470,7 @@
               );
 
             const viewUrl =
-              `/api/private-auth/portal-file?id=${id}&mode=view`;
+              `/view/file?id=${id}`;
 
             const downloadUrl =
               `/api/private-auth/portal-file?id=${id}&mode=download`;

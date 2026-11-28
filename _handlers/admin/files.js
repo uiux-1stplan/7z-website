@@ -284,6 +284,9 @@ export default async function handler(
         ? rawMode[0]
         : rawMode;
 
+    if (mode === "view") {
+      return res.redirect(302, `/view/file?id=${encodeURIComponent(id)}`);
+    }
 
     const download =
       mode === "download";

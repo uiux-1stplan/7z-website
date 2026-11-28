@@ -106,7 +106,7 @@
 
     let actionsHtml = "";
     if (file.canView !== false) {
-      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--open" href="/api/private-auth/portal-file?id=${id}&mode=view" target="_blank" rel="noopener"><span>Preview ↗</span></a>`;
+      actionsHtml += `<a class="z7cpf-btn z7cpf-btn--open" href="/view/file?id=${id}" target="_blank" rel="noopener"><span>Preview ↗</span></a>`;
     }
     if (file.canDownload === true) {
       actionsHtml += `<a class="z7cpf-btn z7cpf-btn--download" href="/api/private-auth/portal-file?id=${id}&mode=download"><span>Download ⤓</span></a>`;

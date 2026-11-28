@@ -529,38 +529,19 @@
 
 
     try {
-      const response =
-        await authFetch(
-          `${API}?id=${
-            encodeURIComponent(id)
-          }&mode=view`
-        );
+      const token =
+        await window
+          .Clerk
+          ?.session
+          ?.getToken?.();
 
-      if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
-      }
+      const viewUrl =
+        `/view/file?id=${encodeURIComponent(id)}${
+          token ? `&auth=${encodeURIComponent(token)}` : ""
+        }`;
 
-      const blob =
-        await response.blob();
-
-      const url =
-        URL.createObjectURL(
-          blob
-        );
-
-      // Directly render the uploaded file verbatim without any wrapper headers, iframes, or stripped layouts
-      tab.location.replace(url);
-
-      setTimeout(
-        () =>
-          URL.revokeObjectURL(
-            url
-          ),
-        10 * 60 * 1000
-      );
-
+      // Directly render the uploaded deliverable in the dedicated isolated viewer endpoint with scoped CSP
+      tab.location.replace(viewUrl);
 
     } catch (error) {
 

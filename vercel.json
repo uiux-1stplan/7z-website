@@ -295,7 +295,32 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/view/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "sandbox allow-scripts allow-forms allow-modals allow-popups allow-downloads allow-presentation; default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob:; style-src * 'unsafe-inline' data: blob: https:; img-src * data: blob: https:; media-src * data: blob: https:; font-src * data: https:; connect-src * https: wss: data: blob:; frame-src * data: blob:;"
+        }
+      ]
+    },
+    {
+      "source": "/((?!view/).*)",
       "headers": [
         {
           "key": "X-Content-Type-Options",
@@ -420,6 +445,18 @@
     {
       "source": "/api/portal/me",
       "destination": "/api/portal-router?__z7route=me"
+    },
+    {
+      "source": "/view/file",
+      "destination": "/api/portal-router?__z7route=view-file"
+    },
+    {
+      "source": "/view/file/(.*)",
+      "destination": "/api/portal-router?__z7route=view-file"
+    },
+    {
+      "source": "/view/(.*)",
+      "destination": "/api/portal-router?__z7route=view-file"
     },
     {
       "source": "/api/private-auth/admin-login",

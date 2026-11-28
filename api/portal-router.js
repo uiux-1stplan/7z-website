@@ -10,6 +10,12 @@
     () =>
       import(
         "../_handlers/portal/me.js"
+      ),
+
+  "view-file":
+    () =>
+      import(
+        "../_handlers/portal/view-file.js"
       )
 };
 

@@ -193,6 +193,10 @@ export default async function handler(
         ? "download"
         : "view";
 
+    if (mode === "view" && id) {
+      return res.redirect(302, `/view/file?id=${encodeURIComponent(id)}`);
+    }
+
 
     if (
       !id ||
